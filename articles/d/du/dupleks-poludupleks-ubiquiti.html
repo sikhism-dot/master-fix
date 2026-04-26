@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Дуплекс и полудуплекс в Ubiquiti: настройка и диагностика — Мастер Фикс</title>
+    <meta name="description" content="Техническая инструкция по устранению проблем с дуплексом и автосогласованием скорости на оборудовании Ubiquiti. Диагностика линков и настройка интерфейсов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/du/dupleks-poludupleks-ubiquiti.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Дуплекс и полудуплекс в Ubiquiti: настройка и диагностика">
+    <meta property="og:description" content="Техническая инструкция по устранению проблем с дуплексом и автосогласованием скорости на оборудовании Ubiquiti. Диагностика линков и настройка интерфейсов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Дуплекс и полудуплекс в Ubiquiti: настройка и диагностика</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#фундаментальные-различия-режимов-передачи-данных">Фундаментальные различия режимов передачи данных</a></li><li><a href="#диагностика-проблем-с-дуплексом-в-интерфейсе-unifi">Диагностика проблем с дуплексом в интерфейсе UniFi</a></li><li><a href="#ручная-настройка-параметров-интерфейса-на-edgerouter-и-unifi">Ручная настройка параметров интерфейса на EdgeRouter и UniFi</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-pri-poiske-yandeks-kartinok-otklyuchit-umnuyu-kameru.html">Как отключить умную камеру в Яндекс Картинках</a></li><li><a href="/articles/k/ka/kak-postavit-getkontakt-po-umolchaniyu-na-ajfone.html">Как поставить GetContact по умолчанию на iPhone: полная инструкция</a></li><li><a href="/articles/c/ca/carrier-services-sboj-nichego-ne-pomogaet.html">Carrier Services сбой: полное руководство по устранению</a></li><li><a href="/articles/d/de/dexp-43fcs1-wi-fi-display-sink-soft.html">DEXP 43FCS1: Wi-Fi Display Sink Soft и настройка</a></li><li><a href="/articles/p/po/pochemu-kfs-trebuet-tbank-v-prilozhenii.html">Почему КФС требует Т-Банк: причины и решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка дуплекса и автосогласования на оборудовании Ubiquiti</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#фундаментальные-различия-режимов-передачи-данных">Фундаментальные различия режимов передачи данных</a></li><li><a href="#диагностика-проблем-с-дуплексом-в-интерфейсе-unifi">Диагностика проблем с дуплексом в интерфейсе UniFi</a></li><li><a href="#ручная-настройка-параметров-интерфейса-на-edgerouter-и-unifi">Ручная настройка параметров интерфейса на EdgeRouter и UniFi</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Представьте ситуацию: после плановой замены коммутатора на новый UniFi Switch скорость соединения с базой данных упала в десять раз, хотя физический линк горит зеленым. В логах системы появляются сообщения о постоянном разрыве соединения и восстановлении линка, а ping показывает огромные задержки и потерю пакетов. Администратор, пытаясь решить проблему, меняет кабели, но симптомы сохраняются, указывая на более глубокую несовместимость параметров Ethernet-порта.</p>
+<p>Подобные инциденты часто возникают из-за банального, но критичного несоответствия режимов работы интерфейса, известного как дуплекс. В сетях оборудования Ubiquiti, будь то линейка UniFi или EdgeMax, автоматическое согласование параметров (Auto-Negotiation) работает безупречно в 95% случаев, но оставшиеся 5% требуют ручного вмешательства. Неправильная настройка дуплекса превращает полнодуплексный гигабитный канал в узкое горлышко, генерирующее коллизии и поздние коллизии.</p>
+<p>Понимание принципов работы дуплекса и умение принудительно выставить нужные параметры на свитчах и роутерах Ubiquiti является обязательным навыком для сетевого инженера. Ошибки в этом узле приводят к деградации производительности всей сети, особенно в сегментах с высокой нагрузкой, таких как линки между коммутаторами или подключение серверов хранения данных.</p>
+
+<h2 id="фундаментальные-различия-режимов-передачи-данных">Фундаментальные различия режимов передачи данных</h2>
+
+<p>На практике режимы передачи данных определяют, как сетевые устройства обмениваются информацией по физической среде. Полнодуплексный режим (Full Duplex) позволяет устройству передавать и принимать данные одновременно, используя отдельные пары проводов для каждого направления или временное разделение в оптоволокне. Это эквивалент телефонного разговора, где собеседники говорят одновременно и слышат друг друга без задержек.</p>
+<p>В отличие от него, полудуплексный режим (Half Duplex) разрешает передачу данных только в одном направлении в конкретный момент времени. Устройство должно «прослушивать» среду перед отправкой, чтобы избежать коллизий, что аналогично работе рации. Если два устройства попытаются передать данные одновременно в полудуплексном режиме, происходит столкновение пакетов, и данные должны быть переданы заново, что существенно снижает полезную пропускную способность канала.</p>
+<p>Для оборудования Ubiquiti критически важно, чтобы оба конца соединения (например, порт коммутатора и порт сервера) находились в одинаковом режиме. Если одна сторона принудительно установлена в Full Duplex, а вторая работает в Half Duplex или Auto, возникает ситуация <strong>Duplex Mismatch</strong>. В этом случае устройство в полнодуплексном режиме не ожидает коллизий и игнорирует сигналы о них, продолжая передачу, в то время как полудуплексное устройство пытается остановить передачу, что приводит к лавине ошибок CRC и потере пакетов.</p>
+
+<h3>Влияние автосогласования на стабильность сети</h3>
+<p>Протокол автосогласования (Auto-Negotiation) был разработан для автоматического определения наилучшей скорости и дуплекса. Однако в реальных условиях, особенно при подключении legacy-оборудования или специфических промышленных контроллеров, этот механизм может давать сбои. На устройствах Ubiquiti с прошивками <em>UniFi Network Application</em> версии 7.x и выше алгоритмы автосогласования были улучшены, но ручная фиксация параметров иногда остается единственным решением.</p>
+<p>Если автосогласование отключено на одной стороне, вторая сторона, оставшаяся в режиме Auto, не сможет корректно определить дуплекс и по умолчанию перейдет в полудуплексный режим на соответствующей скорости. Это классическая причина возникновения «плавающих» проблем с сетью, когда линк формально поднят, но трафик практически не проходит. </p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На современных свитчах серии UniFi Pro Max и Enterprise принудительное изменение дуплекса может быть заблокировано для портов 2.5G и выше, так как эти стандарты не поддерживают полудуплексный режим.</p></aside>
+
+<p>Стоит учитывать, что некоторые старые сетевые карты или специализированные устройства (IP-камеры, принтеры) могут некорректно реализовывать стандарт автосогласования. В таких случаях оборудование Ubiquiti вынуждено «угадывать» параметры, что часто приводит к выбору Half Duplex. Проверка текущих настроек через интерфейс контроллера или CLI позволяет быстро выявить такие аномалии и применить корректирующие меры.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Full Duplex</th>
+<th>Half Duplex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Одновременная передача</td>
+<td>Возможна</td>
+<td>Невозможна</td>
+</tr>
+<tr>
+<td>Коллизии</td>
+<td>Отсутствуют</td>
+<td>Возможны</td>
+</tr>
+<tr>
+<td>Производительность</td>
+<td>Максимальная</td>
+<td>Снижена до 50-60%</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-проблем-с-дуплексом-в-интерфейсе-unifi">Диагностика проблем с дуплексом в интерфейсе UniFi</h2>
+
+<p>Первичным инструментом для выявления проблем с дуплексом в экосистеме UniFi является веб-интерфейс контроллера или облачная консоль. Если у вас наблюдаются проблемы со скоростью, первым шагом должен стать визуальный осмотр статуса портов в разделе <code>Devices</code>. Нормальное состояние линка обозначается зеленым индикатором, однако даже при зеленом статусе параметры могут быть неоптимальными.</p>
+<p>Для получения детальной информации необходимо перейти в конкретное устройство, например, коммутатор, и открыть панель свойств. В списке портов отображается текущая скорость и режим дуплекса. Если вы видите значение <code>100M/Half</code> там, где ожидается гигабитный полный дуплекс, это прямой индикатор проблемы. Часто такие значения появляются после обновления прошивки свитча или замены кабеля на более низкую категорию.</p>
+<p>Обратите внимание на счетчики ошибок. В расширенных настройках порта можно найти статистику по ошибкам CRC, FCS и поздним коллизиям (Late Collisions). Наличие растущего счетчика поздних коллизий почти гарантированно указывает на дуплекс-мисматч. Если счетчики ошибок быстро растут, а сеть работает медленно, необходимо немедленно проверить согласование параметров на обоих концах кабеля.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка статуса линка</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Devices → Выберите свитч → Ports</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите на нужный порт для открытия деталей</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте поля Speed и Duplex</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сравните показатели с ожидаемыми</span></div></div>
+
+<h3>Использование CLI для глубокого анализа</h3>
+<p>Веб-интерфейс не всегда отображает полную картину, особенно если порт находится в состоянии нестабильности. Для более глубокой диагностики следует использовать командную строку (CLI) самого устройства или SSH-доступ через контроллер. Подключившись к свитчу UniFi по SSH, можно выполнить команду <code>show interfaces status</code>, которая выдаст сводную таблицу всех портов с их текущим состоянием.</p>
+<p>Более детальную информацию предоставляют команды, специфичные для операционной системы устройства. На свитчах под управлением EdgeSwitch OS или старом AirMAX OS используются команды вида <code>show interfaces switchport</code>. Для современных UniFi Switches, работающих на базе Linux, можно использовать утилиты <code>ethtool</code> (если доступен доступ к shell) или специфичные CLI-команды Ubiquiti. Например, команда <code>mca-cli</code> или прямой вызов системных утилит позволяет увидеть negotiated speed и duplex mode.</p>
+<p>Если автоматическое согласование не сработало, в выводе команд можно увидеть флаги, указывающие на принудительную установку скорости или дуплекса. Важно проверить, не стоит ли на порту ограничение скорости (Rate Limit), которое может имитировать проблемы дуплекса. Также стоит обратить внимание на версию прошивки устройства, так как в старых версиях <em>UniFi Switch Firmware</em> встречались баги, приводящие к неверному определению линка.</p>
+
+<pre><code>show interfaces status
+<p>show interfaces counters errors</code></pre></p>
+
+<p>Анализ логов системы также может пролить свет на историю изменения состояния линка. В логах часто фиксируются события «Link Up» и «Link Down» с указанием negotiated speed. Частая переподключение линка (flapping) часто предшествует окончательному падению линка в неверный режим. Логи можно выгрузить через интерфейс контроллера в разделе <code>Settings → System → Advanced → Device Logs</code> или посмотреть в реальном времени через SSH.</p>
+
+<h2 id="ручная-настройка-параметров-интерфейса-на-edgerouter-и-unifi">Ручная настройка параметров интерфейса на EdgeRouter и UniFi</h2>
+
+<p>В ситуациях, когда автоматическое согласование не справляется, требуется ручная фиксация параметров. На роутерах серии EdgeRouter (EdgeMax OS) настройка производится через интерфейс <code>CLI</code>. Необходимо перейти в режим конфигурации и выбрать соответствующий интерфейс. Команда <code>set interfaces ethernet ethX speed auto</code> или фиксация значения <code>100</code> / <code>1000</code> позволяет управлять скоростью, а параметр <code>duplex</code> задает режим работы.</p>
+<p>Для оборудования UniFi настройка обычно производится через графический интерфейс контроллера, что упрощает массовое управление. В свойствах порта свитча можно найти выпадающее меню <code>Speed & Duplex</code>. По умолчанию там стоит <code>Auto</code>. Изменение этого значения на <code>100 Full</code> или <code>1000 Full</code> принудительно переключает порт в заданный режим. Важно: изменение этих настроек вызовет кратковременный разрыв соединения на порту.</p>
+<p>Если вы настраиваете линк между двумя свитчами Ubiquiti, убедитесь, что настройки на обоих концах идентичны. Идеальным вариантом является оставление режима <code>Auto</code> на обоих устройствах. Принудительная установка (<strong>Hardcoding</strong>) параметров допускается только тогда, когда подключенное устройство не поддерживает автосогласование или работает некорректно в автоматическом режиме.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение настроек дуплекса на порту, к которому подключен критически важный сервер или uplink-канал, приведет к разрыву соединения. Выполняйте изменения в окно технического обслуживания.</p></aside>
+
+<h3>Особенности настройки на разных платформах</h3>
+<p>Платформа EdgeMax (EdgeRouter, EdgeSwitch) требует более глубокого понимания синтаксиса команд. Здесь настройки применяются к интерфейсу напрямую. Например, для установки 1 Гбит/с Full Duplex на порту eth1 используется последовательность команд в режиме конфигурации. После внесения изменений необходимо сохранить конфигурацию командой <code>save</code> и применить изменения.</p>
+<p>В экосистеме UniFi, особенно при использовании контроллера версии 8.x, интерфейс может скрывать расширенные настройки портов по умолчанию. Необходимо активировать профиль порта или использовать кастомные профили для разблокировки опций скорости и дуплекса. Также стоит помнить, что некоторые модели, такие как <em>UniFi Flex</em> или точки доступа, могут не иметь опции ручного изменения дуплекса на своих LAN-портах, полагаясь исключительно на автонастройки.</p>
+
+<ol>
+<li>Зайдите в интерфейс контроллера UniFi или подключитесь по SSH к EdgeRouter.</li>
+<li>Найдите раздел управления портами (Ports) или интерфейсами (Interfaces).</li>
+<li>Выберите целевой порт и найдите настройку «Speed & Duplex» или «Link Speed».</li>
+<li>Измените значение с «Auto» на требуемое (например, «1000 Full»).</li>
+<li>Сохраните изменения и дождитесь переподключения линка.</li>
+</ol>
+
+<table>
+<thead>
+<tr>
+<th>Устройство</th>
+<th>Метод настройки</th>
+<th>Команда / Путь</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EdgeRouter</td>
+<td>CLI</td>
+<td>set interfaces ethernet eth0 duplex full</td>
+</tr>
+<tr>
+<td>UniFi Switch</td>
+<td>Web UI</td>
+<td>Devices → Switch → Ports → Speed & Duplex</td>
+</tr>
+<tr>
+<td>UniFi AP</td>
+<td>Web UI / CLI</td>
+<td>Ограничено, зависит от модели</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Несмотря на кажущуюся простоту, настройка дуплекса сопряжена с рядом распространенных ошибок, которые могут усугубить ситуацию. Чаще всего администраторы забывают проверить настройки на противоположном конце кабеля. Установка полного дуплекса на свитче Ubiquiti при оставлении режима Auto на сервере приведет к тому, что сервер перейдет в полудуплекс, и сеть «ляжет».</p>
+<p>Еще одной частой ошибкой является игнирование качества кабельной инфраструктуры. Попытка форсировать гигабитный режим (1000 Full) на кабеле категории 5, который физически не может обеспечить такую скорость или имеет поврежденные жилы, приведет к постоянным переподключениям и падению линка до 100 Мбит. В таких случаях проблема не в настройках софта, а в физическом уровне.</p>
+<p>Также стоит упомянуть ошибку использования устаревших драйверов сетевых карт на конечных устройствах. Даже если свитч Ubiquiti настроен верно, сетевая карта компьютера с buggy-драйвером может некорректно проходить процедуру автосогласования, навязывая неверный дуплекс. Обновление драйверов NIC (Network Interface Card) часто решает проблему без вмешательства в настройки сети.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте кабель-тестер перед принудительной установкой скорости. Если кабель не поддерживает 4 пары проводов, гигабитный режим работать не будет, независимо от настроек дуплекса.</p></aside>
+
+<ol>
+<li><strong>Односторонняя фиксация параметров</strong> — настройка Full Duplex только на свитче при Auto на клиенте приводит к Duplex Mismatch. Решение: фиксировать параметры на обоих концах или вернуть Auto везде.</li>
+<li><strong>Игнорирование физических ограничений</strong> — попытка выставить 1 Гбит на поврежденном кабеле. Решение: замена кабеля или снижение скорости до 100 Мбит.</li>
+<li><strong>Несоответствие драйверов</strong> — сетевая карта клиента некорректно согласовывает линк. Решение: обновление драйверов NIC или принудительная настройка на стороне клиента.</li>
+<li><strong>Забытая конфигурация</strong> — после замены оборудования настройки дуплекса остались от старого свитча. Решение: аудит конфигурации после любых изменений в инфраструктуре.</li>
+</ol>
+
+<p>В заключение, правильная настройка дуплекса — это баланс между автоматизацией и ручным контролем. В большинстве случаев доверие алгоритмам автосогласования оборудования Ubiquiti является лучшим выбором. Однако при возникновении проблем со стабильностью и скоростью, понимание принципов работы дуплекса позволяет быстро локализовать и устранить неисправность, обеспечивая надежную работу сети.</p>
+<p>Регулярный мониторинг состояния портов и анализ счетчиков ошибок помогают предотвращать критические ситуации до того, как они повлияют на бизнес-процессы. Грамотное управление параметрами Ethernet-интерфейсов является базовым, но фундаментальным аспектом профессионального администрирования сетей Ubiquiti.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к стабильной сети — идентичные настройки дуплекса на обоих концах соединения. Используйте Auto по умолчанию и переходите на ручную настройку только при диагностированных проблемах совместимости.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-pri-poiske-yandeks-kartinok-otklyuchit-umnuyu-kameru.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить умную камеру в Яндекс Картинках</span>
+                <span class="pb-related-desc">Подробная инструкция по деактивации функции визуального поиска. Настройки браузера, мобильного прило</span>
+            </a><a href="/articles/k/ka/kak-postavit-getkontakt-po-umolchaniyu-na-ajfone.html" class="pb-related-card">
+                <span class="pb-related-title">Как поставить GetContact по умолчанию на iPhone: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по настройке GetContact как основного определителя номера на iOS. Решения проблем с Ca</span>
+            </a><a href="/articles/c/ca/carrier-services-sboj-nichego-ne-pomogaet.html" class="pb-related-card">
+                <span class="pb-related-title">Carrier Services сбой: полное руководство по устранению</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки «Carrier Services сбой» на Android. Методы очистки, сброса</span>
+            </a><a href="/articles/d/de/dexp-43fcs1-wi-fi-display-sink-soft.html" class="pb-related-card">
+                <span class="pb-related-title">DEXP 43FCS1: Wi-Fi Display Sink Soft и настройка</span>
+                <span class="pb-related-desc">Инструкция по подключению DEXP 43FCS1 как Wi-Fi Display Sink. Настройка Miracast, AirPlay и устранен</span>
+            </a><a href="/articles/p/po/pochemu-kfs-trebuet-tbank-v-prilozhenii.html" class="pb-related-card">
+                <span class="pb-related-title">Почему КФС требует Т-Банк: причины и решение</span>
+                <span class="pb-related-desc">Технический анализ причин требования карты Т-Банка в приложении КФС. Разбор ошибок оплаты, настройки</span>
+            </a><a href="/articles/v/v-/v-prilozhenii-psb-ne-otkryvaetsya-lichnyj-kabinet.html" class="pb-related-card">
+                <span class="pb-related-title">Не открывается Личный кабинет ПСБ: решения ошибок</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если в приложении ПСБ не открывается Личный кабинет. Решения для A</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Home Assistant Android TV Remote: полная настройка — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по настройке интеграции Android TV в Home Assistant. Управление, автоматизация и решение проблем с подключением ADB.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/ho/home-assistant-android-tv-remote.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Home Assistant Android TV Remote: полная настройка">
+    <meta property="og:description" content="Инструкция по настройке интеграции Android TV в Home Assistant. Управление, автоматизация и решение проблем с подключением ADB.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Home Assistant Android TV Remote: полная настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-окружения-и-получение-прав-доступа-adb">Подготовка окружения и получение прав доступа ADB</a></li><li><a href="#процесс-установки-и-конфигурирования-интеграции">Процесс установки и конфигурирования интеграции</a></li><li><a href="#тонкая-настройка-через-yaml-и-adb-key">Тонкая настройка через YAML и ADB Key</a></li><li><a href="#создание-автоматизаций-и-сценариев-управления">Создание автоматизаций и сценариев управления</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#заключение-и-перспективы-использования">Заключение и перспективы использования</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/x/xi/xiaomi-tv-stick-4k-ne-stavyatsya-prilozheniya.html">Xiaomi TV Stick 4K: Решение проблем с установкой приложений</a></li><li><a href="/articles/k/ka/kak-podklyuchit-k-kompyuteru-televizor-haier.html">Как подключить телевизор Haier к компьютеру: HDMI, Wi-Fi, DLNA</a></li><li><a href="/articles/k/ka/kak-podklyuchit-samsung-a-51-k-kompyuteru-cherez-usb.html">Как подключить Samsung A51 к компьютеру через USB: полная инструкция</a></li><li><a href="/articles/k/ka/kak-posmotret-kolichestvo-kontaktov-v-xiaomi.html">Как узнать количество контактов на Xiaomi: полные методы подсчета</a></li><li><a href="/articles/i/iv/ivi-esli-li-kanaly-dlya-vzroslykh.html">Каналы для взрослых на Иви: настройка, родительский контроль и безопасность</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка Home Assistant Android TV Remote для управления</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-окружения-и-получение-прав-доступа-adb">Подготовка окружения и получение прав доступа ADB</a></li><li><a href="#процесс-установки-и-конфигурирования-интеграции">Процесс установки и конфигурирования интеграции</a></li><li><a href="#тонкая-настройка-через-yaml-и-adb-key">Тонкая настройка через YAML и ADB Key</a></li><li><a href="#создание-автоматизаций-и-сценариев-управления">Создание автоматизаций и сценариев управления</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#заключение-и-перспективы-использования">Заключение и перспективы использования</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда пульт от телевизора теряется в недрах дивана именно в момент начала фильма, или необходимость вручную переключать источник сигнала каждый вечер перед запуском сценария «Кино», знакома многим владельцам умного дома.</p>
+<p>Интеграция Android TV в Home Assistant позволяет полностью автоматизировать взаимодействие с мультимедийной техникой, превращая обычный телевизор в часть единой экосистемы, управляемой голосом или по расписанию.</p>
+<p>Данное руководство детально описывает процесс подключения, настройки прав доступа и создания сложных сценариев автоматизации для устройств на базе Android TV, включая приставки Nvidia Shield, Sony Bravia и Xiaomi Mi Box.</p>
+
+<h2 id="подготовка-окружения-и-получение-прав-доступа-adb">Подготовка окружения и получение прав доступа ADB</h2>
+<p>Для успешной интеграции необходимо, чтобы устройство на базе Android и сервер Home Assistant находились в одной локальной сети, а на телевизоре была активирована отладка по USB.</p>
+<p>Процесс начинается с перехода в скрытое меню разработчика, которое по умолчанию скрыто от обычного пользователя для обеспечения безопасности системы.</p>
+<p>На практике путь активации может отличаться в зависимости от производителя оболочки и версии операционной системы, установленной на устройстве.</p>
+
+<h3>Активация режима разработчика на разных прошивках</h3>
+<p>В большинстве случаев требуется найти пункт «О телевизоре» или «О устройстве» в системных настройках и семь раз быстро нажать на поле «Номер сборки».</p>
+<p>После появления уведомления о том, что вы стали разработчиком, в главном меню настроек появится новый раздел, часто называемый «Для разработчиков».</p>
+<p>Внутри этого раздела необходимо найти переключатель «Отладка по USB» и активировать его, подтвердив предупреждение системы о рисках безопасности.</p>
+<p>Важно отметить, что на некоторых устройствах, таких как <em>Chromecast with Google TV</em>, меню может быть скрыто глубже или требовать подключения физического пульта для навигации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях телевизоров Sony и Philips пункт «Отладка по USB» может называться «ADB Debugging» или требовать дополнительного подтверждения через всплывающее окно на экране ТВ.</p></aside>
+
+<p>После активации отладки устройство становится видимым для внешних подключений, однако для работы интеграции требуется также разрешить доступ конкретному клиенту.</p>
+<p>При первом подключении Home Assistant к телевизору на экране появится запрос на разрешение отладки, который необходимо подтвердить в течение 30 секунд.</p>
+
+<h2 id="процесс-установки-и-конфигурирования-интеграции">Процесс установки и конфигурирования интеграции</h2>
+<p>Встроенная интеграция Android TV в Home Assistant использует протокол ADB для передачи команд, что обеспечивает низкую задержку и высокий уровень контроля.</p>
+<p>Установка компонента происходит через интерфейс пользователя, где требуется указать IP-адрес устройства и порт подключения.</p>
+<p>Стандартным портом для отладки является 5555, однако в некоторых конфигурациях сети или на специфических прошивках он может быть изменен.</p>
+
+<h3>Добавление устройства через интерфейс UI</h3>
+<p>Перейдите в раздел <code>Настройки → Устройства и службы</code> и нажмите кнопку «Добавить интеграцию».</p>
+<p>В поиске введите «Android TV» и выберите соответствующий компонент из списка предложенных.</p>
+<p>Система предложит ввести IP-адрес вашего устройства; если автоматическое сканирование не дало результатов, адрес вводится вручную.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Добавление интеграции Android TV</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Устройства и службы → Добавить интеграцию</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите и выберите «Android TV»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите IP-адрес устройства (например, 192.168.1.50)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Подтвердите подключение на экране телевизора</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Нажмите «Готово» для завершения</span></div></div>
+
+<p>После ввода данных система попытается установить соединение, и на экране телевизора появится запрос на авторизацию RSA-ключа.</p>
+<p>Необходимо использовать пульт для выбора пункта «Всегда разрешать с этого компьютера» и подтвердить действие, иначе соединение будет разрываться после перезагрузки.</p>
+<p>В случае успеха устройство появится в списке доступных, и для него будут созданы стандартные entities для управления медиа и питанием.</p>
+
+<h2 id="тонкая-настройка-через-yaml-и-adb-key">Тонкая настройка через YAML и ADB Key</h2>
+<p>Для продвинутых сценариев использования, таких как запуск конкретных приложений или эмуляция нажатий кнопок, не доступных в стандартном интерфейсе, требуется конфигурация через YAML.</p>
+<p>Использование YAML-конфигурации позволяет задать уникальные команды для каждого действия и привязать их к конкретным кнопкам пульта Home Assistant или виртуальным контроллерам.</p>
+<p>Ключевым моментом здесь является генерация и правильная установка пары ключей ADB, которые будут использоваться сервером для аутентификации.</p>
+
+<h3>Генерация и установка ключей безопасности</h3>
+<p>Если стандартный метод подключения не работает или требуется более стабильное соединение без постоянного подтверждения, следует сгенерировать ключи вручную.</p>
+<p>Это можно сделать через терминал сервера Home Assistant (например, через SSH Add-on) или на внешнем компьютере, если используется Core версия.</p>
+<p>Команда генерации создает два файла: приватный ключ и публичный ключ, который необходимо передать на устройство.</p>
+
+<pre><code>adb keygen /config/adbkey</code></pre>
+
+<p>Полученный публичный ключ <code>adbkey.pub</code> необходимо скопировать на Android TV в директорию <code>/data/misc/adb/adb_keys</code>.</p>
+<p>Для копирования можно использовать команду <code>adb push</code> с предварительно подключенного компьютера или воспользоваться файловым менеджером с root-доступом на самом телевизоре.</p>
+<p>После размещения ключа в конфигурационном файле <code>configuration.yaml</code> прописывается путь к файлу ключа для интеграции.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение / Описание</th>
+<th>Обязательный</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>platform</code></td>
+<td>androidtv</td>
+<td>Да</td>
+</tr>
+<tr>
+<td><code>host</code></td>
+<td>IP-адрес устройства (например, 192.168.1.10)</td>
+<td>Да</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td>Имя устройства в системе</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td><code>adb_key</code></td>
+<td>Путь к файлу приватного ключа</td>
+<td>Нет</td>
+</tr>
+</tbody>
+</table>
+
+<p>Пример конфигурации в <code>configuration.yaml</code> выглядит следующим образом, где указываются все необходимые параметры для стабильной работы.</p>
+
+<pre><code>androidtv:
+<p>- platform: androidtv</p>
+<p>host: 192.168.1.55</p>
+<p>name: Living Room TV</p>
+<p>adb_key: /config/adbkey</code></pre></p>
+
+<p>После внесения изменений в файл конфигурации необходимо перезагрузить сервер Home Assistant для применения новых настроек.</p>
+<p>Проверьте логи системы на предмет ошибок подключения, если устройство не переходит в статус «Доступно».</p>
+
+<h2 id="создание-автоматизаций-и-сценариев-управления">Создание автоматизаций и сценариев управления</h2>
+<p>Интеграция открывает широкие возможности для автоматизации, позволяя управлять телевизором на основе событий в доме, таких как заход солнца или изменение статуса датчиков движения.</p>
+<p>Можно создавать сценарии, которые не просто включают устройство, но и запускают конкретные приложения, например, YouTube или Netflix, при выполнении определенных условий.</p>
+<p>Использование сервисов медиаплеера позволяет регулировать громкость, переключать треки и управлять воспроизведением через голосовые ассистенты.</p>
+
+<h3>Примеры полезных сценариев для медиацентра</h3>
+<p>Один из популярных сценариев — автоматическое включение телевизора и запуск стримингового сервиса при активации режима «Кино».</p>
+<p>Другой вариант — автоматическое выключение телевизора, если датчик присутствия не фиксирует активность в комнате в течение 15 минут.</p>
+<p>Также можно настроить отправку уведомлений на смартфон при запуске определенных приложений детьми, например, YouTube Kids.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте сервис <code>androidtv.adb_command</code> для эмуляции нажатий кнопок, которые не имеют прямого аналога в стандартных сервисах медиаплеера, например, кнопка «Домой» или «Назад».</p></aside>
+
+<p>Для реализации сложных логических цепочек можно комбинировать состояния устройства с временными триггерами и условиями наличия людей дома.</p>
+<p>Важно учитывать задержки при отправке команд, поэтому в сценариях стоит добавлять небольшие паузы между включением питания и запуском приложения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сервис</th>
+<th>Описание действия</th>
+<th>Пример использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>media_player.turn_on</code></td>
+<td>Включение устройства</td>
+<td>Запуск сценария «Вечер»</td>
+</tr>
+<tr>
+<td><code>media_player.play_media</code></td>
+<td>Запуск приложения или URL</td>
+<td>Открытие YouTube</td>
+</tr>
+<tr>
+<td><code>androidtv.adb_command</code></td>
+<td>Системная команда ADB</td>
+<td>Эмуляция кнопки HOME</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование этих сервисов в автоматизациях позволяет создать по-настоящему умную среду, где техника реагирует на потребности пользователя без лишнего вмешательства.</p>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+<p>В процессе эксплуатации могут возникать ситуации, когда соединение обрывается, команды не выполняются или устройство становится недоступным.</p>
+<p>Чаще всего проблемы связаны с изменением IP-адреса устройства, блокировкой антивирусом или настройками энергосбережения роутера.</p>
+<p>Систематический подход к диагностике позволяет быстро выявить и устранить причину сбоя, вернув полную управляемость системой.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Частая перезагрузка роутера или использование динамического IP без резервирования может привести к потере связи с телевизором. Закрепите IP-адрес за устройством в настройках DHCP.</p></aside>
+
+<p>Ниже приведен список наиболее распространенных ошибок и способы их устранения, основанные на опыте сообщества пользователей.</p>
+
+<ol>
+<li><strong>Устройство недоступно (Unavailable)</strong> — чаще всего это означает, что IP-адрес телевизора изменился или он перешел в глубокий режим сна; проверьте настройки статического IP и отключите быстрое запуск на ТВ.</li>
+<li><strong>Ошибка авторизации ADB</strong> — возникает, если были сброшены настройки отладки на телевизоре или изменились ключи; необходимо заново подтвердить соединение на экране ТВ или перегенерировать ключи.</li>
+<li><strong>Команды выполняются с большой задержкой</strong> — может быть вызвано перегрузкой сети или слабым сигналом Wi-Fi; рекомендуется использовать проводное Ethernet-подключение для стабильности.</li>
+<li><strong>Не запускаются приложения</strong> — пакетное имя приложения указано неверно; используйте ADB-команду <code>adb shell pm list packages</code> для поиска правильного имени пакета.</li>
+</ol>
+
+<p>Для глубокой диагностики можно включить логирование отладки для компонента Android TV в файле <code>configuration.yaml</code>.</p>
+
+<pre><code>logger:
+<p>logs:</p>
+<p>androidtv: debug</p>
+<p>adb_shell: debug</code></pre></p>
+
+<p>Анализ логов позволяет увидеть точный момент разрыва соединения или ошибку в синтаксисе отправляемой команды.</p>
+<p>Если стандартные методы не помогают, стоит проверить версию прошивки Android TV и наличие обновлений для самой интеграции в Home Assistant.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Интеграция Android TV</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над системой</li><li>✅ Запуск любых приложений</li><li>✅ Работа без облачных сервисов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует настройки ADB</li><li>❌ Возможны разрывы связи по Wi-Fi</li><li>❌ Сложнее в первоначальной настройке</li></ul></div>
+</div></div>
+
+<h2 id="заключение-и-перспективы-использования">Заключение и перспективы использования</h2>
+<p>Интеграция Android TV в Home Assistant представляет собой мощный инструмент для создания комплексных систем умного дома, выходящий далеко за рамки простого включения и выключения.</p>
+<p>Гибкость настройки через ADB позволяет реализовать практически любые сценарии взаимодействия, делая мультимедийную систему неотъемлемой частью автоматизированного жилища.</p>
+<p>Правильная первоначальная конфигурация и понимание принципов работы протокола обеспечивают стабильную и надежную работу системы на протяжении длительного времени.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Настройка Android TV в Home Assistant через ADB дает полный контроль над медиацентром, позволяя создавать сложные автоматизации и интегрировать телевизор в единую экосистему умного дома.</p></aside>
+
+<p>Освоив базовые принципы работы с этой интеграцией, пользователь получает возможность управлять контентом и устройствами голосом, через геолокацию или в связке с другими умными гаджетами.</p>
+<p>Технология продолжает развиваться, и с каждым обновлением Home Assistant появляются новые возможности для взаимодействия с Android-устройствами.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/x/xi/xiaomi-tv-stick-4k-ne-stavyatsya-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Xiaomi TV Stick 4K: Решение проблем с установкой приложений</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок установки APK на Xiaomi TV Stick 4K. Сброс кэша, смена рег</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-k-kompyuteru-televizor-haier.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить телевизор Haier к компьютеру: HDMI, Wi-Fi, DLNA</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению ТВ Haier к ПК. Настройка HDMI, Miracast, DLNA. Решение проблем с</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-samsung-a-51-k-kompyuteru-cherez-usb.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Samsung A51 к компьютеру через USB: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по подключению Samsung Galaxy A51 к ПК. Настройка USB-режимов, драйверов, реше</span>
+            </a><a href="/articles/k/ka/kak-posmotret-kolichestvo-kontaktov-v-xiaomi.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать количество контактов на Xiaomi: полные методы подсчета</span>
+                <span class="pb-related-desc">Подробная инструкция: как посмотреть точное число контактов в Xiaomi. Методы через телефонную книгу,</span>
+            </a><a href="/articles/i/iv/ivi-esli-li-kanaly-dlya-vzroslykh.html" class="pb-related-card">
+                <span class="pb-related-title">Каналы для взрослых на Иви: настройка, родительский контроль и безопасность</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке возрастного контента на Иви. Как включить или заблокировать каналы</span>
+            </a><a href="/articles/k/ka/kak-izmenit-region-v-televizore-lg.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить регион на телевизоре LG: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по смене региона на LG Smart TV. Сброс настроек, прошивка и обход блокировок дл</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

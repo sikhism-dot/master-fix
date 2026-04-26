@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Arduino Uno: подключение 4 двигателей постоянного тока и код — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по управлению 4 двигателями через Arduino Uno. Схемы подключения, драйверы L298N, выбор драйверов и готовый программный код.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/ar/arduino-uno-podklyuchenie-4-dvigatelya-kod.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Arduino Uno: подключение 4 двигателей постоянного тока и код">
+    <meta property="og:description" content="Подробная инструкция по управлению 4 двигателями через Arduino Uno. Схемы подключения, драйверы L298N, выбор драйверов и готовый программный код.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Arduino Uno: подключение 4 двигателей постоянного тока и код</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#выбор-драйверов-для-управления-четырьмя-моторами">Выбор драйверов для управления четырьмя моторами</a></li><li><a href="#схема-электрического-подключения-компонентов">Схема электрического подключения компонентов</a></li><li><a href="#написание-кода-для-arduino-ide">Написание кода для Arduino IDE</a></li><li><a href="#настройка-скорости-и-направление-вращения">Настройка скорости и направление вращения</a></li><li><a href="#типичные-ошибки-при-сборке-и-программировании">Типичные ошибки при сборке и программировании</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/lo/locationem2-chto-eto-za-programma.html">Locationem2: что это за программа и как её удалить</a></li><li><a href="/articles/d/do/dom-ru-no-av.html">Домен ру без антивируса: технический анализ рисков и защита</a></li><li><a href="/articles/s/sh/sharp-lc-22le240ru-otklyuchenie-rezhima-demo.html">Sharp LC-22LE240RU: как отключить режим демо</a></li><li><a href="/articles/h/hi/hiwatch-pro-chasy-instruktsiya-po-primeneniyu-na-russkom.html">HiWatch Pro: Полная инструкция по настройке и применению</a></li><li><a href="/articles/k/ka/kak-otskanigovat-dokument-na-kompyuter-s-printera-epson-l3100.html">Как сканировать с Epson L3100: полная инструкция для Windows</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Управление 4 двигателями через Arduino Uno: схемы и программный код</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-драйверов-для-управления-четырьмя-моторами">Выбор драйверов для управления четырьмя моторами</a></li><li><a href="#схема-электрического-подключения-компонентов">Схема электрического подключения компонентов</a></li><li><a href="#написание-кода-для-arduino-ide">Написание кода для Arduino IDE</a></li><li><a href="#настройка-скорости-и-направление-вращения">Настройка скорости и направление вращения</a></li><li><a href="#типичные-ошибки-при-сборке-и-программировании">Типичные ошибки при сборке и программировании</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка подключить четыре двигателя постоянного тока напрямую к контактам Arduino Uno неизбежно приводит к перегреву контроллера или полному выходу его из строя из-за превышения токовой нагрузки.</p>
+<p>Проблема усугубляется тем, что стандартные цифровые пины микроконтроллера способны выдавать ток не более 40 мА, тогда как даже маломощные моторы требуют сотни миллиампер для запуска.</p>
+<p>Для реализации проекта с четырьмя моторами, будь то робот-платформа или автоматизированная модель, необходимо использовать промежуточные усилители мощности, известные как драйверы двигателей.</p>
+<p>Без правильного распределения ресурсов памяти и портов ввода-вывода система столкнется с нестабильной работой, пропуском шагов или хаотичным вращением валов при одновременной активации всех механизмов.</p>
+<p>Данная инструкция детально описывает процесс выбора аппаратной части, построения электрической цепи и написания кода для надежного управления четырьмя двигателями.</p>
+
+<h2 id="выбор-драйверов-для-управления-четырьмя-моторами">Выбор драйверов для управления четырьмя моторами</h2>
+<p>Использование одного драйвера на четыре двигателя является наиболее распространенной ошибкой, так как популярные модули вроде <em>L298N</em> или <em>L293D</em> имеют ограничение по количеству каналов.</p>
+<p>Модуль <em>L298N</em> поддерживает управление только двумя двигателями, что заставляет искать либо два таких модуля, либо специализированные платы расширения (Shields), designed specifically for Arduino.</p>
+<p>Альтернативой может стать использование четырех отдельных драйверов <em>L293D</em>, однако это значительно усложнит монтаж и увеличит занимаемое пространство на макетной плате.</p>
+<p>Наиболее эффективным решением для компактных проектов является применение мотор-шилда, который устанавливается непосредственно на плату контроллера и обеспечивает необходимые токи.</p>
+
+<h3>Сравнение модульных решений и шилдов</h3>
+<p>При выборе между сборной конструкцией из модулей и готовым шилдом стоит учитывать удобство монтажа и надежность контактов в условиях вибрации.</p>
+<p>Сборка из двух модулей <em>L298N</em> требует организации внешнего питания и правильного соединения земляных контактов всех компонентов для избежания помех.</p>
+<p>Мотор-шилды, такие как <em>Adafruit Motor Shield</em> или <em>DFRobot Motor Shield</em>, уже имеют распаянную схему управления и часто поддерживают управление через библиотеки, упрощающие код.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип решения</th>
+<th>Количество каналов</th>
+<th>Сложность монтажа</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2 x L298N</td>
+<td>4 (2+2)</td>
+<td>Высокая (много проводов)</td>
+</tr>
+<tr>
+<td>Motor Shield v2</td>
+<td>4</td>
+<td>Низкая (установка сверху)</td>
+</tr>
+<tr>
+<td>4 x L293D</td>
+<td>4</td>
+<td>Очень высокая</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При использовании нескольких драйверов обязательно соедините контакты GND всех модулей и Arduino в одну общую точку.</p></aside>
+
+<h2 id="схема-электрического-подключения-компонентов">Схема электрического подключения компонентов</h2>
+<p>Подключение начинается с организации системы питания, так как Arduino Uno не может запитать четыре двигателя от своего порта USB или встроенного стабилизатора.</p>
+<p>Необходимо использовать внешний источник питания, напряжение которого соответствует номиналу двигателей, обычно это от 6В до 12В для стандартных моделей.</p>
+<p>Важно соблюдать полярность при подключении батарейного отсека к драйверам, так как обратное включение мгновенно выведет электронику из строя.</p>
+<p>Сигнальные провода управления подключаются к цифровым пинам Arduino, причем для регулировки скорости желательно выбирать пины с поддержкой ШИМ (PWM).</p>
+<p>На плате Uno такими пинами являются 3, 5, 6, 9, 10 и 11, что дает достаточный запас для управления четырьмя моторами с регулировкой оборотов.</p>
+
+<h3>Распределение пинов для 4 двигателей</h3>
+<p>Для управления четырьмя двигателями требуется 8 управляющих сигналов (по два на каждый мотор: направление и ШИМ, если используется упрощенная логика) или 12 сигналов для полного контроля.</p>
+<p>В стандартной конфигурации с двумя драйверами <em>L298N</em> используется 8 цифровых пинов: 4 для направления (IN1, IN2, IN3, IN4) и 4 для скорости (ENA, ENB).</p>
+<p>Если используется шилд, распиновка определяется производителем, но логика остается прежней: каждый мотор получает пару пинов для направления и один для скорости.</p>
+<p>Рекомендуется избегать использования пинов 0 и 1, так как они зарезервированы для последовательного обмена данными и могут конфликтовать при загрузке скетча.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подключение питания</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите плюс батареи к VIN драйвера</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите минус батареи к GND драйвера</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Соедините GND драйвера с GND Arduino</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Подключите управляющие провода к цифровым пинам</span></div></div>
+
+<h2 id="написание-кода-для-arduino-ide">Написание кода для Arduino IDE</h2>
+<p>Программная часть проекта требует объявления всех управляющих пинов в начале скетча и настройки их режима работы в функции setup.</p>
+<p>Для упрощения управления четырьмя двигателями целесообразно использовать массивы или структуры, хотя для начала подойдет прямое объявление переменных.</p>
+<p>В теле программы <code>loop()</code> реализуется логика движения, где последовательно или параллельно задаются состояния для каждого мотора.</p>
+<p>Использование функции <code>analogWrite()</code> позволяет плавно изменять скорость вращения, подавая на-enable пины сигнал с скважностью от 0 до 255.</p>
+<p>Для предотвращения бросков тока при резком старте всех четырех двигателей рекомендуется программно добавлять небольшую задержку или плавный разгон.</p>
+
+<h3>Структура скетча и функции управления</h3>
+<p>Код лучше разбивать на отдельные функции, например, <code>moveForward()</code>, <code>turnLeft()</code>, <code>stopMotors()</code>, что сделает программу читаемой и удобной для отладки.</p>
+<p>В функции <code>setup()</code> необходимо задать режим <code>OUTPUT</code> для всех восьми (или более) пинов, задействованных в управлении моторами.</p>
+<p>Логика работы драйвера <em>L298N</em> проста: высокий уровень на одном входе и низкий на другом вращают мотор в одну сторону, смена уровней меняет направление.</p>
+<p>Если оба входа установить в низкий уровень или оба в высокий (в зависимости от модели драйвера), двигатель перейдет в режим торможения или свободного выбега.</p>
+
+<pre><code>
+<p>void setup() {</p>
+<p>pinMode(in1, OUTPUT);</p>
+<p>pinMode(in2, OUTPUT);</p>
+<p>pinMode(in3, OUTPUT);</p>
+<p>pinMode(in4, OUTPUT);</p>
+<p>pinMode(in5, OUTPUT);</p>
+<p>pinMode(in6, OUTPUT);</p>
+<p>pinMode(in7, OUTPUT);</p>
+<p>pinMode(in8, OUTPUT);</p>
+<p>pinMode(enA, OUTPUT);</p>
+<p>pinMode(enB, OUTPUT);</p>
+<p>pinMode(enC, OUTPUT);</p>
+<p>pinMode(enD, OUTPUT);</p>
+<p>}</p>
+</code></pre>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте макросы или const переменные для номеров пинов, чтобы легко менять конфигурацию без правки основного кода.</p></aside>
+
+<h2 id="настройка-скорости-и-направление-вращения">Настройка скорости и направление вращения</h2>
+<p>Регулировка скорости осуществляется посредством широтно-импульсной модуляции, где значение аргумента функции <code>analogWrite</code> варьируется от 0 до 255.</p>
+<p>Значение 0 означает полную остановку, а 255 — максимальную скорость, однако из-за механических особенностей моторы могут не стартовать при малых значениях.</p>
+<p>Минимальное рабочее значение ШИМ зависит от нагрузки на валу и напряжения питания, часто оно составляет около 40-60 единиц.</p>
+<p>Для реализации поворотов робота необходимо изменять направление вращения двигателей на одной из сторон платформы, создавая дифференциал тяги.</p>
+<p>Плавность изменения скорости достигается циклическим увеличением или уменьшением значения ШИМ с небольшой задержкой между шагами.</p>
+
+<h3>Алгоритмы плавного старта и торможения</h3>
+<p>Резкий старт четырех двигателей одновременно может вызвать просадку напряжения в сети питания, что приведет к перезагрузке микроконтроллера.</p>
+<p>Во избежание этого в коде реализуется цикл, который постепенно увеличивает значение ШИМ от минимального порога до целевого значения.</p>
+<p>Аналогично происходит и остановка: вместо мгновенного сброса скорости в ноль, значение уменьшается шагами до полной остановки валов.</p>
+<p>Такой подход не только бережет аккумулятор и механику, но и продлевает срок службы драйверов, снижая тепловую нагрузку.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Диапазон значений</th>
+<th>Влияние</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ШИМ (PWM)</td>
+<td>0 - 255</td>
+<td>Скорость вращения</td>
+</tr>
+<tr>
+<td>Напряжение</td>
+<td>6В - 12В</td>
+<td>Максимальная мощность</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Длительная работа двигателей на низких оборотах под нагрузкой может привести к перегреву драйвера из-за неполного открытия ключей.</p></aside>
+
+<h2 id="типичные-ошибки-при-сборке-и-программировании">Типичные ошибки при сборке и программировании</h2>
+<p>В процессе создания системы управления четырьмя моторами новички часто сталкиваются с рядом повторяющихся проблем, связанных с электрикой и логикой кода.</p>
+<p>Одной из самых частых причин неработоспособности является отсутствие общей земли между Arduino, драйверами и источником питания двигателей.</p>
+<p>Без соединения GND управляющие сигналы не имеют опорного уровня, и драйверы не воспринимают команды от микроконтроллера.</p>
+<p>Другой распространенной ошибкой является попытка запитать мощные моторы от разъема 5V на плате Arduino, что гарантированно ведет к сгоранию дорожек или самого контроллера.</p>
+<p>В программном коде ошибки часто кроются в неправильном выборе пинов, когда используются порты, зарезервированные системными функциями или уже занятые другими модулями.</p>
+
+<ol>
+<li><strong>Отсутствие общей земли</strong> — сигналы управления не передаются, необходимо соединить все контакты GND в одну цепь.</li>
+<li><strong>Питание от Arduino</strong> — попытка запитать моторы от платы приведет к перегрузке, используйте внешний источник для двигателей.</li>
+<li><strong>Неверная последовательность в коде</strong> — изменение направления без предварительной остановки или паузы вызывает короткие замыкания внутри драйвера.</li>
+<li><strong>Игнорирование нагрева</strong> — работа драйверов без радиаторов охлаждения при токах выше 1А приведет к тепловому отключению или поломке.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Упрощение кода|Надежность соединения|Безопасность</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Сложность отладки</li><li>✅ Необходимость внешнего питания</li><li>✅ Габариты конструкции</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<h2 id="резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</h2>
+<p>Успешное подключение четырех двигателей к Arduino Uno требует тщательного планирования схемы питания и выбора подходящих драйверов, способных выдержать суммарный ток нагрузки.</p>
+<p>Использование мотор-шилдов предпочтительнее для стационарных проектов, тогда как модульная сборка на базе <em>L298N</em> дает больше гибкости в размещении компонентов.</p>
+<p>Качественный код с функциями плавного разгона и корректной обработкой состояний значительно повышает надежность работы роботизированной платформы.</p>
+<p>Соблюдение правил электробезопасности и проверка соединений перед подачей полного напряжения позволят избежать повреждения дорогостоящего оборудования.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильное распределение питания и использование драйверов позволяют Arduino Uno эффективно управлять четырьмя двигателями.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/lo/locationem2-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Locationem2: что это за программа и как её удалить</span>
+                <span class="pb-related-desc">Locationem2 — что это за процесс на Android? Полный анализ службы, причины высокого расхода батареи </span>
+            </a><a href="/articles/d/do/dom-ru-no-av.html" class="pb-related-card">
+                <span class="pb-related-title">Домен ру без антивируса: технический анализ рисков и защита</span>
+                <span class="pb-related-desc">Полный разбор угроз при посещении доменов.ru без антивируса. Анализ фишинга, скриптов и методы защит</span>
+            </a><a href="/articles/s/sh/sharp-lc-22le240ru-otklyuchenie-rezhima-demo.html" class="pb-related-card">
+                <span class="pb-related-title">Sharp LC-22LE240RU: как отключить режим демо</span>
+                <span class="pb-related-desc">Полная инструкция по отключению демонстрационного режима на телевизоре Sharp LC-22LE240RU. Сброс нас</span>
+            </a><a href="/articles/h/hi/hiwatch-pro-chasy-instruktsiya-po-primeneniyu-na-russkom.html" class="pb-related-card">
+                <span class="pb-related-title">HiWatch Pro: Полная инструкция по настройке и применению</span>
+                <span class="pb-related-desc">Подробная инструкция для HiWatch Pro. Настройка, синхронизация, устранение ошибок подключения и руко</span>
+            </a><a href="/articles/k/ka/kak-otskanigovat-dokument-na-kompyuter-s-printera-epson-l3100.html" class="pb-related-card">
+                <span class="pb-related-title">Как сканировать с Epson L3100: полная инструкция для Windows</span>
+                <span class="pb-related-desc">Подробный гид по настройке сканирования Epson L3100. Установка драйверов, работа через Epson Scan 2,</span>
+            </a><a href="/articles/h/ha/harmony-os-5-0-kak-ustanovit.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить HarmonyOS 5.0: инструкция, совместимость и методы</span>
+                <span class="pb-related-desc">Полная инструкция по установке HarmonyOS 5.0 на Huawei и Honor. Способы обновления через My Huawei, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

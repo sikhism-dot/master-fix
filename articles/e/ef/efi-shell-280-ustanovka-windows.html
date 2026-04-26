@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Установка Windows через EFI Shell 2.80: полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по запуску установщика Windows 10/11 из EFI Shell 2.80. Решение ошибок загрузки, навигация по разделам и правильный запуск bootx64.efi.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/e/ef/efi-shell-280-ustanovka-windows.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Установка Windows через EFI Shell 2.80: полное руководство">
+    <meta property="og:description" content="Инструкция по запуску установщика Windows 10/11 из EFI Shell 2.80. Решение ошибок загрузки, навигация по разделам и правильный запуск bootx64.efi.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Установка Windows через EFI Shell 2.80: полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</a></li><li><a href="#навигация-по-файловой-системе-efi-shell">Навигация по файловой системе EFI Shell</a></li><li><a href="#запуск-установщика-windows-вручную">Запуск установщика Windows вручную</a></li><li><a href="#работа-с-разделами-диска-и-типичные-ошибки">Работа с разделами диска и типичные ошибки</a></li><li><a href="#фиксация-порядка-загрузки-после-установки">Фиксация порядка загрузки после установки</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/p/pc/pcg-61511v-kak-uluchshit.html">Как улучшить Sony VAIO PCG-61511V: Апгрейд и оптимизация</a></li><li><a href="/articles/k/ka/kak-izmenit-tsvet-papki-v-windows-10.html">Как изменить цвет папки в Windows 10: подробная инструкция</a></li><li><a href="/articles/t/tw/tweak-no-defender-windows-10-chto-znachit.html">Tweak no defender Windows 10: отключение защиты и риски</a></li><li><a href="/articles/k/ka/kak-pisat-stilusom-na-noutbuke-lenovo.html">Как писать стилусом на ноутбуке Lenovo: Полная инструкция</a></li><li><a href="/articles/a/ac/acer-aspire-n19h1-kharakteristiki.html">Acer Aspire N19H1 характеристики и полные спецификации ноутбука</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Windows через EFI Shell 2.80: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</a></li><li><a href="#навигация-по-файловой-системе-efi-shell">Навигация по файловой системе EFI Shell</a></li><li><a href="#запуск-установщика-windows-вручную">Запуск установщика Windows вручную</a></li><li><a href="#работа-с-разделами-диска-и-типичные-ошибки">Работа с разделами диска и типичные ошибки</a></li><li><a href="#фиксация-порядка-загрузки-после-установки">Фиксация порядка загрузки после установки</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда компьютер после включения вместо привычного логотипа операционной системы или меню выбора загрузочного устройства выводит черный экран с текстовым интерфейсом EFI Shell, часто застает пользователя врасплох. Это происходит, когда BIOS/UEFI не может найти действующую операционную систему на подключенных накопителях или когда приоритет загрузки сбит в сторону встроенной оболочки.</p>
+<p>Вместо паники стоит воспринимать появление <em>EFI Shell 2.80</em> как возможность прямого доступа к файловой системе микропрограммы и ручного запуска необходимых исполняемых файлов. Именно здесь, в этой минималистичной среде, можно запустить установщик Windows, если стандартные механизмы загрузки по каким-то причинам игнорируют USB-накопитель.</p>
+<p>Данный метод особенно актуален для серверного оборудования, старых материнских плат или специфических конфигураций, где автоматическое определение загрузчика <em>bootx64.efi</em> работает некорректно. Ниже представлен детальный алгоритм действий, позволяющий превратить экран с командной строкой в точку входа для чистой установки операционной системы.</p>
+
+<h2 id="подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</h2>
+<p>Прежде чем переходить к манипуляциям в командной строке, необходимо убедиться, что сам USB-накопитель подготовлен корректно для работы в среде UEFI. Стандартная запись образа через простое копирование файлов часто оказывается недостаточной, так как требуетсяная структура разделов.</p>
+<p>Идеальным решением является использование утилиты <em>Rufus</em>, которая позволяет гибко настроить схему разделов. При записи образа Windows 10 или 11 необходимо выбрать схему раздела <code>GPT</code> и целевую систему <code>UEFI (non CSM)</code>. Это гарантирует, что загрузочный сектор будет распознан современной прошивкой.</p>
+<p>Если флешка уже создана, но компьютер все равно попадает в оболочку, следует проверить настройки BIOS. В разделе <code>Boot</code> или <code>Startup</code> нужно найти параметр <code>Secure Boot</code>. Для установочных флешек стороннего производства его иногда требуется перевести в состояние <code>Disabled</code> или <code>Other OS</code>, хотя оригинальные образы Microsoft обычно работают и с включенной защитой.</p>
+<p>Также критически важно отключить режим совместимости <code>CSM</code> (Compatibility Support Module), если он активирован. Работа в режиме Legacy/CSM может конфликтовать с чистой средой EFI, вызывая невозможность увидеть загрузчик на флешке в автоматическом списке.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение настроек Secure Boot и CSM может привести к невозможности загрузки ранее установленных операционных систем. После установки Windows настройки можно вернуть в исходное состояние.</p></aside>
+
+<p>После внесения изменений в BIOS необходимо сохранить настройки, обычно это делается клавишей <code>F10</code>, и перезагрузить систему. Если автоматическая загрузка с USB все равно не происходит, система снова упадет в интерфейс EFI Shell, что и является отправной точкой для ручной установки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подготовка к установке</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запишите образ Windows в режиме GPT/UEFI</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Отключите Secure Boot в BIOS</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выключите режим CSM/Legacy</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните настройки и вставьте флешку</span></div></div>
+
+<h2 id="навигация-по-файловой-системе-efi-shell">Навигация по файловой системе EFI Shell</h2>
+<p>Попав в интерфейс <em>Shell 2.80</em>, пользователь видит командную строку, ожидающую ввода. Первым делом необходимо понять, какие файловые системы (разделы) видит текущая среда. Для этого используется команда <code>map</code>, которая выводит список всех доступных устройств и разделов.</p>
+<p>В выведенном списке устройства обозначаются буквами, за которыми следует двоеточие, например, <code>fs0:</code>, <code>fs1:</code>, <code>blk0:</code>. Буквы <code>fs</code> указывают на файловые системы, которые можно смонтировать ировать. Обычно установочная флешка определяется как <code>fs0</code> или <code>fs1</code>, но это зависит от количества подключенных дисков.</p>
+<p>Для перехода на нужный раздел вводится соответствующая команда, например <code>fs0:</code>. После ввода и нажатия Enter приглашение командной строки изменится, указывая на то, что вы находитесь внутри этого раздела. Далее следует проверить содержимое, введя команду <code>ls</code> или просто <code>dir</code>.</p>
+<p>Если на экране отображаются папки <code>EFI</code>, <code>boot</code>, <code>sources</code> и файл <code>setup.exe</code>, значит, вы попали на установочную флешку. Если же видны системные файлы другого диска или список пуст, необходимо вернуться назад командой <code>map -r</code> (пересканировать) или перейти на другой раздел, например <code>fs1:</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команда map -r полезна, если вы подключили флешку уже после входа в EFI Shell. Она принудительно обновляет список доступных устройств без перезагрузки.</p></aside>
+
+<p>Навигация по папкам осуществляется стандартными командами: <code>cd имя_папки</code> для входа и <code>cd..</code> для возврата на уровень выше. Путь к загрузчику Windows почти всегда лежит через директорию <code>EFI</code>, поэтому знание структуры каталогов является ключевым навыком.</p>
+
+<h2 id="запуск-установщика-windows-вручную">Запуск установщика Windows вручную</h2>
+<p>После того как вы оказались в корне загрузочной флешки, можно приступать к непосредственному запуску инсталлятора. В среде UEFI исполняемые файлы имеют расширение <code>.efi</code>. Стандартный путь к загрузчику Windows выглядит как <code>EFI\Boot\bootx64.efi</code>.</p>
+<p>Для запуска достаточно ввести полный путь к файлу. Если вы уже находитесь в корне флешки (например, <code>fs0:\</code>), команда будет выглядеть следующим образом:</p>
+<pre><code>\EFI\Boot\bootx64.efi</code></pre>
+<p>В некоторых случаях, особенно на серверных платформах <em>Intel</em> или специализированных материнских платах, загрузчик может называться иначе, например <code>shellx64.efi</code> (это сама оболочка) или иметь префикс вендора. Однако для стандартной установки Windows искомый файл всегда находится в папке <code>Boot</code> внутри <code>EFI</code>.</p>
+<p>Если при вводе команды появляется сообщение об ошибке или система просто возвращает курсор на новую строку, возможно, файл поврежден или выбран не тот раздел. В этом случае стоит проверить целостность образа на другом ПК или пересоздать загрузочную флешку.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Запуск инсталлятора</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите map для поиска флешки</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите на раздел fsX:</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите \EFI\Boot\bootx64.efi</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь появления логотипа Windows</span></div></div>
+
+<p>После успешного выполнения команды экран погаснет, и через несколько секунд должен появиться логотип Windows и начаться процесс загрузки установщика. С этого момента управление переходит к графическому интерфейсу установки, где можно форматировать диски и выбирать разделы.</p>
+
+<h2 id="работа-с-разделами-диска-и-типичные-ошибки">Работа с разделами диска и типичные ошибки</h2>
+<p>Одной из частых причин, по которой пользователи оказываются в EFI Shell — это отсутствие загрузочной записи на жестком диске или повреждение таблицы разделов. Перед установкой Windows имеет смысл проверить состояние дисков прямо из оболочки.</p>
+<p>Команда <code>devmap</code> показывает все устройства хранения, а <code>diskinfo</code> предоставляет детальную информацию о выбранном диске. Это позволяет убедиться, что целевой накопитель физически исправен и определяется контроллером.</p>
+<p>Если планируется полная очистка диска, можно использовать утилиты вроде <code>diskpart</code>, но в EFI Shell 2.80 чаще используются команды <code>format</code> или сторонние утилиты. Однако безопаснее и правильнее выполнять разметку уже внутри установщика Windows или используя команду <code>clean</code> в diskpart после запуска setup.</p>
+<p>Часто встречается ситуация, когда после установки система снова выбрасывает в EFI Shell. Это означает, что загрузчик Windows не был записан в EFI-раздел или BIOS потерял путь к нему. В таком случае помогает повторный запуск <code>bootx64.efi</code> с флешки и выбор пункта «Восстановление системы».</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы установки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Прямой запуск из Shell</li><li>✅ Высокая совместимость</li><li>✅ Контроль процесса</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует знания команд</li><li>❌ Риск ошибки в пути</li><li>❌ Нет графического интерфейса выбора</li></ul></div>
+</div></div>
+
+<h3>Типичные ошибки при установке</h3>
+<ol>
+ <li><strong>Command not found</strong> — возникает при попытке запустить файл без указания расширения или при нахождении не в той директории. Необходимо указывать полный путь, начиная с обратного слеша, например <code>\EFI\Boot\bootx64.efi</code>.</li>
+ <li><strong>Unsupported</strong> или <strong>Access Denied</strong> — часто свидетельствует о включенном Secure Boot, который блокирует запуск неподписанных или модифицированных загрузчиков. Требуется временное отключение защиты в BIOS.</li>
+ <li><strong>Device not found</strong> — система не видит флешку. Проверьте подключение USB-порта (лучше использовать порты USB 2.0 или задние порты материнской платы) и убедитесь, что флешка отформатирована в FAT32.</li>
+ <li><strong>Cyclic boot loop</strong> — компьютер бесконечно перезагружается или возвращается в Shell после установки. Это указывает на то, что в BIOS в приоритете загрузки стоит EFI Shell, а не Windows Boot Manager. Нужно вручную добавить или переместить «Windows Boot Manager» на первое место в Boot Priority.</li>
+</ol>
+
+<p>Важно понимать, что EFI Shell — это мощный инструмент диагностики. Если после установки Windows система стабильно загружается, но при сбоях снова попадает в Shell, значит, проблема кроется в порядке загрузки (Boot Order), а не в самой операционной системе.</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Параметр</th>
+ <th>Значение для Windows 10/11</th>
+ <th>Значение для Legacy</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Схема разделов</td>
+ <td>GPT</td>
+ <td>MBR</td>
+ </tr>
+ <tr>
+ <td>Файловая система</td>
+ <td>FAT32 (для EFI раздела)</td>
+ <td>NTFS</td>
+ </tr>
+ <tr>
+ <td>Загрузочный файл</td>
+ <td>bootx64.efi</td>
+ <td>bootmgr</td>
+ </tr>
+ </tbody>
+</table>
+
+<h2 id="фиксация-порядка-загрузки-после-установки">Фиксация порядка загрузки после установки</h2>
+<p>После успешной установки Windows и первой загрузки важно убедиться, что система больше не будет нуждаться в ручном вмешательстве. Для этого следует войти в настройки BIOS/UEFI и найти раздел <code>Boot Option Priorities</code>.</p>
+<p>В списке приоритетов на первом месте должен стоять <code>Windows Boot Manager</code>. Если там указан путь к файлу <code>shell.efi</code> или просто <code>EFI Shell</code>, систему необходимо переместить вниз списка, а Windows поднять наверх.</p>
+<p>В некоторых случаях полезно использовать команду <code>bcfg boot add</code> прямо из EFI Shell, чтобы прописать путь к загрузчику Windows в энергонезависимую память материнской платы, но для большинства пользователей достаточно изменить приоритеты в графическом меню BIOS.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте порт USB 2.0 (черный) для подключения флешки, если возникают проблемы с определением накопителя в EFI Shell. Порты USB 3.0 (синие) могут требовать драйверов, которые еще не загружены.</p></aside>
+
+<p>Если компьютер оснащен RAID-контроллером, убедитесь, что драйверы интегрированы в образ Windows или загружены в процессе установки, иначе диск не будет виден ни в Shell, ни в установщике.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Установка через EFI Shell 2.80 позволяет обойти проблемы с автоматическим определением загрузчика и успешно инсталлировать Windows на сложных конфигурациях.</p></aside>
+
+<p>Завершая процесс, стоит проверить обновления BIOS. Производители материнских плат часто выпускают прошивки, улучшающие совместимость с новыми накопителями и стандартами UEFI, что может предотвратить подобные ситуации в будущем.</p>
+<p>Грамотное использование командной строки EFI Shell дает полный контроль над процессом загрузки, позволяя реанимировать систему даже в случаях, когда стандартные методы бессильны. Главное — внимательность при вводе путей и понимание структуры разделов.</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Команда</th>
+ <th>Описание</th>
+ <th>Пример</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>map</td>
+ <td>Отображение всех устройств</td>
+ <td>map -r</td>
+ </tr>
+ <tr>
+ <td>cd</td>
+ <td>Смена директории</td>
+ <td>cd EFI</td>
+ </tr>
+ <tr>
+ <td>ls / dir</td>
+ <td>Список файлов</td>
+ <td>ls -l</td>
+ </tr>
+ <tr>
+ <td>cls</td>
+ <td>Очистка экрана</td>
+ <td>cls</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Владение этими базовыми навыками превращает страшный черный экран в полезный инструмент администрирования. Правильная подготовка носителя и внимательное следование путям к файлам гарантируют успешный результат.</p>
+<p>Технология UEFI и оболочка EFI Shell являются стандартом де-факто для современного оборудования, и умение работать с ними повышает общую техническую грамотность пользователя.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/p/pc/pcg-61511v-kak-uluchshit.html" class="pb-related-card">
+                <span class="pb-related-title">Как улучшить Sony VAIO PCG-61511V: Апгрейд и оптимизация</span>
+                <span class="pb-related-desc">Техническая инструкция по ускорению ноутбука Sony VAIO PCG-61511V. Замена SSD, увеличение RAM, чистк</span>
+            </a><a href="/articles/k/ka/kak-izmenit-tsvet-papki-v-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить цвет папки в Windows 10: подробная инструкция</span>
+                <span class="pb-related-desc">Узнайте, как изменить цвет папки в Windows 10 с помощью сторонних утилит, настройки ярлыков или реда</span>
+            </a><a href="/articles/t/tw/tweak-no-defender-windows-10-chto-znachit.html" class="pb-related-card">
+                <span class="pb-related-title">Tweak no defender Windows 10: отключение защиты и риски</span>
+                <span class="pb-related-desc">Что означает tweak no defender в Windows 10? Полный разбор методов отключения антивируса, реестра и </span>
+            </a><a href="/articles/k/ka/kak-pisat-stilusom-na-noutbuke-lenovo.html" class="pb-related-card">
+                <span class="pb-related-title">Как писать стилусом на ноутбуке Lenovo: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке пера на ноутбуках Lenovo. Проверка совместимости, калибровка, дра</span>
+            </a><a href="/articles/a/ac/acer-aspire-n19h1-kharakteristiki.html" class="pb-related-card">
+                <span class="pb-related-title">Acer Aspire N19H1 характеристики и полные спецификации ноутбука</span>
+                <span class="pb-related-desc">Детальные характеристики Acer Aspire N19H1: процессор, память, экран, порты. Полный разбор конфигура</span>
+            </a><a href="/articles/k/ka/kak-obnovit-bios-na-noutbuke-dell-inspiron-n5110-dlya-podderzhki-vindovs-10.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление BIOS Dell Inspiron N5110 для Windows 10: Инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по обновлению BIOS на Dell Inspiron N5110 для Windows 10. Устранение ошибок, вы</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

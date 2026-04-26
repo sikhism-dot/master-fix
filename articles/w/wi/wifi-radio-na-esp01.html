@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>WiFi радио на ESP-01: пошаговая сборка интернет-приемника — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по созданию WiFi радио на базе ESP-01. Прошивка, схема подключения, настройка потоков и устранение типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/wifi-radio-na-esp01.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="WiFi радио на ESP-01: пошаговая сборка интернет-приемника">
+    <meta property="og:description" content="Подробная инструкция по созданию WiFi радио на базе ESP-01. Прошивка, схема подключения, настройка потоков и устранение типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">WiFi радио на ESP-01: пошаговая сборка интернет-приемника</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-аппаратной-части-и-схемотехника">Подготовка аппаратной части и схемотехника</a></li><li><a href="#программная-среда-и-установка-прошивки">Программная среда и установка прошивки</a></li><li><a href="#конфигурация-потоков-и-управление-воспроизведением">Конфигурация потоков и управление воспроизведением</a></li><li><a href="#оптимизация-и-устранение-неисправностей">Оптимизация и устранение неисправностей</a></li><li><a href="#типичные-ошибки-при-сборке-и-эксплуатации">Типичные ошибки при сборке и эксплуатации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/v-/v-kakoj-posledovatelnosti-tsvetnye-provoda-raspolozhit-dlya-interneta.html">Порядок цветных проводов для интернета: схемы T568A и T568B</a></li><li><a href="/articles/k/ka/kak-otklyuchit-garantiya-plyus-ot-rostelekom-v-lichnom-kabinete.html">Как отключить Гарантия Плюс Ростелеком: инструкция</a></li><li><a href="/articles/k/ka/kak-razdat-internet-s-blackview-bv7100.html">Как раздать интернет с Blackview BV7100: подробная инструкция</a></li><li><a href="/articles/a/al/alisa-lajt-2-sama-otklyuchaetsya-ot-interneta.html">Почему Алиса Лайт отключается от Wi-Fi: причины и решения</a></li><li><a href="/articles/w/wi/wink-ip-ne-opredelen-rostelekom-chto-delat.html">Wink IP не определен Ростелекомом: полное руководство</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Создание WiFi радио на базе модуля ESP-01</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-аппаратной-части-и-схемотехника">Подготовка аппаратной части и схемотехника</a></li><li><a href="#программная-среда-и-установка-прошивки">Программная среда и установка прошивки</a></li><li><a href="#конфигурация-потоков-и-управление-воспроизведением">Конфигурация потоков и управление воспроизведением</a></li><li><a href="#оптимизация-и-устранение-неисправностей">Оптимизация и устранение неисправностей</a></li><li><a href="#типичные-ошибки-при-сборке-и-эксплуатации">Типичные ошибки при сборке и эксплуатации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда требуется фоновое прослушивание новостей или музыки без использования смартфона или компьютера, возникает довольно часто, особенно на рабочем месте или в мастерской. Стандартные решения часто требуют постоянного взаимодействия с экраном или имеют сложную систему управления, что отвлекает от основного процесса. В то же время, наличие компактного устройства, которое самостоятельно подключается к сети и воспроизводит аудиопоток, решает проблему информационного вакуума.</p>
+<p>Использование микроконтроллера ESP-01 для этих целей представляет собой оптимальный баланс между стоимостью, габаритами и функциональностью. Этот модуль обладает встроенным Wi-Fi адаптером, достаточным объемом памяти для размещения прошивки и минимальным количеством выводов для управления внешними периферийными устройствами. Реализация проекта требует внимательного отношения к схемотехнике, так как стандартные переходники для программирования часто не обеспечивают стабильную работу при воспроизведении звука.</p>
+<p>Основной сложностью является организация передачи аудиоданных в реальном времени через последовательный порт UART с учетом ограничений пропускной способности чипа. Высокая скорость передачи данных необходима для декодирования MP3 или AAC потоков без задержек и артефактов. В данном руководстве рассматривается методика создания полноценного приемника с использованием внешнего декодера или программной эмуляции, обеспечивающей высокое качество звучания.</p>
+
+<h2 id="подготовка-аппаратной-части-и-схемотехника">Подготовка аппаратной части и схемотехника</h2>
+
+<p>Первым этапом реализации проекта является обеспечение стабильного питания модуля, так как при работе Wi-Fi модуль потребляет ток до 300 мА в пиковых режимах. Стандартные USB-UART переходники, часто используемые для первичной прошивки, не способны выдать такой ток, что приводит к постоянным перезагрузкам и невозможности подключения к сети. Для стабильной работы требуется внешний источник питания напряжением 3.3 В с запасом по току не менее 500 мА.</p>
+<p>Схема подключения должна учитывать назначение каждого вывода модуля ESP-01, так как не все GPIO порты доступны для использования после загрузки системы. В частности, выводы GPIO0 и GPIO2 имеют специфические требования: GPIO0 должен быть заземлен только в момент старта для входа в режим программирования, а GPIO2 не должен быть подтянут к земле в рабочем режиме. Нарушение этих условий приведет к тому, что устройство не сможет загрузить операционную систему или перейти в режим точки доступа.</p>
+
+<h3>Организация питания и интерфейсов</h3>
+<p>Для подключения аудиовыхода чаще всего используется интерфейс I2S или эмуляция UART для передачи данных на внешний ЦАП, однако в простейших вариантах применяется программный синтез звука через ШИМ или прямой вывод на динамик через усилитель. Если выбрана схема с внешним декодером, важно обеспечить согласование логических уровней, хотя ESP-01 работает на 3.3 В, что совместимо с большинством современных аудио-чипов. Критически важно соединить землю источника питания, модуля и аудио-устройства в единую точку, чтобы избежать фона и наводок.</p>
+<p>В конфигурации выводов для управления внешними устройствами часто задействуют GPIO0 и GPIO2, но их использование ограничено. Более гибким вариантом является использование GPIO0 для управления реле или индикатором, если в момент старта он не заземлен, однако надежнее использовать схемы с триггерами или внешними расширителями портов. Для передачи аудиоданных высокой скорости стандартный UART на скорости 115200 бод может быть недостаточен, поэтому требуется поднятие скорости до 921600 бод и выше.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование нестабильного источника питания 3.3 В приведет к постоянным сбросам модуля при попытке подключения к Wi-Fi сети. Убедитесь, что блок питания выдерживает пиковые нагрузки.</p></aside>
+
+<p>Ниже приведена таблица совместимости выводов для различных задач управления:</p>
+<table>
+<thead>
+<tr>
+<th>Вывод ESP-01</th>
+<th>Назначение</th>
+<th>Ограничения при старте</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GPIO 0</td>
+<td>Управление / Вход прошивки</td>
+<td>Земля = Режим прошивки</td>
+</tr>
+<tr>
+<td>GPIO 2</td>
+<td>Управление / LED</td>
+<td>Не должен быть заземлен</td>
+</tr>
+<tr>
+<td>GPIO 3 (RX)</td>
+<td>Прием данных UART</td>
+<td>Используется для отладки</td>
+</tr>
+</tbody>
+</table>
+
+<p>Физическое соединение компонентов должно быть выполнено максимально короткими проводами, чтобы минимизировать помехи. Длинные провода могут работать как антенна и вносить искажения в цифровой сигнал, что особенно критично для высокоскоростной передачи аудиоданных. Рекомендуется использовать пайку непосредственно к контактным площадкам или качественные штыревые разъемы.</p>
+
+<h2 id="программная-среда-и-установка-прошивки">Программная среда и установка прошивки</h2>
+
+<p>Для превращения модуля в интернет-радио необходимо загрузить специализированную прошивку, поддерживающую декодирование потокового аудио. Наиболее распространенным и функциональным решением является использование платформы <em>ESP-Open-Radio</em> или аналогичных проектов на базе <em>ESP8266_RTOS_SDK</em>. Эти программные комплексы содержат готовые библиотеки для работы с Wi-Fi, декодирования MP3/AAC и управления веб-интерфейсом.</p>
+<p>Процесс прошивки требует перевода модуля в режим загрузчика. Для этого необходимо замкнуть GPIO0 на землю перед подачей питания или нажатием кнопки Reset. После этого в системе появится соответствующее COM-устройство, готовое к приему бинарного кода. Важно использовать актуальные версии инструментов для прошивки, такие как <code>esptool.py</code>, чтобы избежать ошибок верификации памяти.</p>
+
+<h3>Настройка инструментов разработчика</h3>
+<p>Установка необходимого программного обеспечения начинается с загрузки Python и добавления пути к нему в переменные среды операционной системы. Далее через пакетный менеджер pip устанавливается утилита <code>esptool</code>, которая является стандартом де-факто для работы с чипами ESP8266. Команда для установки выглядит как <code>pip install esptool</code>, после чего становится доступной работа с портом из командной строки.</p>
+<p>Для записи прошивки используется команда с указанием адреса начала записи в памяти flash. Обычно прошивка записывается по адресу <code>0x00000</code>. Скорость передачи при прошивке можно установить максимальную, поддерживаемую конвертером, например 921600 бод, что значительно ускорит процесс. Пример команды для записи выглядит следующим образом:</p>
+
+<pre><code>esptool.py --port COM3 --baud 921600 write_flash --flash_size=detect 0x00000 firmware.bin</code></pre>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс прошивки ESP-01</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Замкнуть GPIO0 на GND</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подать питание 3.3В</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запустить команду esptool.py</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Разомкнуть GPIO0 и перезагрузить</span></div></div>
+
+<p>После успешной записи модуль необходимо перезагрузить, убрав перемычку с GPIO0. При первом включении устройство перейдет в режим точки доступа (AP), создав сеть с названием вроде <em>ESP-Radio</em>. Подключившись к ней со смартфона или ноутбука, можно перейти по адресу <code>192.168.4.1</code> и в веб-интерфейсе настроить подключение к домашней сети Wi-Fi. После настройки модуль сохранит данные и при следующем включении автоматически подключится к роутеру.</p>
+
+<h2 id="конфигурация-потоков-и-управление-воспроизведением">Конфигурация потоков и управление воспроизведением</h2>
+
+<p>Основная функциональность устройства раскрывается через веб-интерфейс, который позволяет управлять списком радиостанций. Пользовательский интерфейс обычно содержит поля для ввода названия станции, URL-адреса потока и логотипа. Важно использовать прямые ссылки на аудиопотоки, заканчивающиеся на расширения вроде <code>.mp3</code>, <code>.aac</code> или <code>.pls</code>, так как ссылки на HTML-страницы радио работать не будут.</p>
+<p>Поиск актуальных URL-адресов может занять время, так как радиостанции часто меняют адреса потоков или требуют авторизации. Существуют специализированные базы данных потокового радио, где можно найти прямые ссылки. Для обеспечения стабильности воспроизведения рекомендуется выбирать потоки с битрейтом не выше 128 кбит/с, так как более высокие значения могут вызывать буферизацию на нестабильном соединении.</p>
+
+<h3>Работа с плейлистами и форматами</h3>
+<p>Система поддерживает создание списков воспроизведения, что позволяет организовать тематические каналы. В настройках можно задать интервал опроса NTP-сервера для синхронизации времени, что важно для отображения метаданных и работы будильника, если такая функция предусмотрена прошивкой. Интерфейс также позволяет настраивать параметры сети, включая статический IP-адрес, что упрощает доступ к устройству в локальной сети.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для потоков формата.pls необходимо, чтобы прошивка умела парсить этот формат, или же следует извлекать прямой URL (File1=...) из содержимого файла и вставлять его напрямую.</p></aside>
+
+<p>Таблица ниже демонстрирует влияние битрейта на требования к сети:</p>
+<table>
+<thead>
+<tr>
+<th>Битрейт потока</th>
+<th>Требуемая скорость</th>
+<th>Стабильность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64 кбит/с</td>
+<td>мин. 80 кбит/с</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>128 кбит/с</td>
+<td>мин. 160 кбит/с</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>320 кбит/с</td>
+<td>мин. 400 кбит/с</td>
+<td>Низкая (для ESP-01)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Управление громкостью и переключением станций может быть реализовано через веб-интерфейс или подключенные физические кнопки, если это предусмотрено конфигурацией GPIO в прошивке. Некоторые версии ПО позволяют использовать инфракрасные пульты для дистанционного управления, что делает использование устройства более комфортным.</p>
+
+<h2 id="оптимизация-и-устранение-неисправностей">Оптимизация и устранение неисправностей</h2>
+
+<p>В процессе эксплуатации могут возникнуть ситуации, когда звук прерывается или устройство теряет связь с Wi-Fi. Чаще всего это связано с недостаточной мощностью сигнала или перегревом модуля. ESP-01 при активной работе может нагреваться, поэтому при установке в закрытый корпус следует предусмотреть вентиляцию или теплоотвод. Также стоит проверить антенну: штатная печатная антенна на плате чувствительна к близости металлических объектов.</p>
+<p>Если наблюдаются искажения звука (треск, заикания), это указывает на переполнение буфера или нехватку вычислительной мощности для декодирования в реальном времени. В таких случаях помогает снижение битрейта потока или оптимизация кода, если используется самописная прошивка. Для стандартных сборок рекомендуется выбирать менее требовательные кодеки.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества ESP-01</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Низкая стоимость:Компактность:Низкое энергопотребление</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Ограниченный объем памяти:Мало GPIO портов:Сложность пайки без навыков</li></ul></div>
+</div></div>
+
+<h3>Диагностика сетевых проблем</h3>
+<p>При проблемах с подключением к роутеру следует проверить настройки безопасности беспроводной сети. Модуль ESP8266 может некорректно работать с некоторыми режимами шифрования или стандартами Wi-Fi 6 (802.11ax) в режиме только AX. Оптимальным является использование смешанного режима b/g/n и шифрования WPA2-PSK (AES). Канал вещания также имеет значение: использование каналов 1, 6 или 11 снижает вероятность интерференции.</p>
+<p>Логирование процесса загрузки через UART-порт позволяет выявить программные ошибки. Подключившись к порту отладки со скоростью 115200 бод, можно наблюдать за процессом инициализации Wi-Fi и получения IP-адреса. Сообщения вида <code>WiFi disconnected</code> или <code>assoc fail</code> укажут на проблему с паролем или сигналом.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для улучшения приема сигнала можно припаять внешний провод длиной 31 мм (четверть волны для 2.4 ГГц) к точке антенны на плате, если штатный трасс неэффективен в месте установки.</p></aside>
+
+<h2 id="типичные-ошибки-при-сборке-и-эксплуатации">Типичные ошибки при сборке и эксплуатации</h2>
+
+<ol>
+<li><strong>Использование USB-UART переходника для питания</strong> — большинство дешевых переходников выдают не более 100-200 мА, что вызывает перезагрузку ESP-01 в момент включения Wi-Fi; требуется внешний блок питания 3.3В/500мА+.</li>
+<li><strong>Неверный режим Flash</strong> — при прошивке часто выбирают неверный режим работы SPI Flash (QIO вместо DIO или наоборот), что приводит к тому, что устройство прошивается, но не запускает код; следует пробовать разные настройки в меню flasher.</li>
+<li><strong>Отсутствие заземления</strong> — если земля источника аудио, модуля и питания не соединены, возникает сильный гул и наводки; необходима общая земляная шина.</li>
+<li><strong>Неверный URL потока</strong> — вставка ссылки на сайт радиостанции вместо прямой ссылки на аудио-поток; адрес должен вести непосредственно на файл потока, а не на HTML-страницу плеера.</li>
+</ol>
+
+<p>Реализация WiFi радио на базе ESP-01 является отличным проектом для знакомства с возможностями IoT и систем. Несмотря на малые размеры и стоимость, модуль способен выполнять сложные задачи по декодированию звука и сетевому взаимодействию. Правильная подготовка аппаратной части и выбор качественных потоков обеспечивают стабильную работу устройства в режиме 24/7.</p>
+<p>Полученное устройство может стать основой для умного дома, информационного табло или просто стильным гаджетом на столе. Дальнейшее развитие проекта может включать добавление дисплея для отображения названия треков, поддержку голосового управления или интеграцию с системами умного дома через MQTT.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>ESP-01 является доступной платформой для создания WiFi-радио, требующей внимательной настройки питания и выбора прямых URL-адресов потоков для стабильной работы.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/v-/v-kakoj-posledovatelnosti-tsvetnye-provoda-raspolozhit-dlya-interneta.html" class="pb-related-card">
+                <span class="pb-related-title">Порядок цветных проводов для интернета: схемы T568A и T568B</span>
+                <span class="pb-related-desc">Подробная инструкция по цветовой распиновке витой пары. Стандарты T568A и T568B для обжима кабеля ин</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-garantiya-plyus-ot-rostelekom-v-lichnom-kabinete.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Гарантия Плюс Ростелеком: инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению услуги Гарантия Плюс в личном кабинете Ростелеком. Разбор методов</span>
+            </a><a href="/articles/k/ka/kak-razdat-internet-s-blackview-bv7100.html" class="pb-related-card">
+                <span class="pb-related-title">Как раздать интернет с Blackview BV7100: подробная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по настройке точки доступа на Blackview BV7100. Настройка Wi-Fi, USB и Bluetoo</span>
+            </a><a href="/articles/a/al/alisa-lajt-2-sama-otklyuchaetsya-ot-interneta.html" class="pb-related-card">
+                <span class="pb-related-title">Почему Алиса Лайт отключается от Wi-Fi: причины и решения</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению разрывов соединения умной колонки Яндекс Станция Лайт. Настройка </span>
+            </a><a href="/articles/w/wi/wink-ip-ne-opredelen-rostelekom-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Wink IP не определен Ростелекомом: полное руководство</span>
+                <span class="pb-related-desc">Устранение ошибки IP-адреса в приложении Wink. Проверка DNS, настройка роутера, сброс сети и диагнос</span>
+            </a><a href="/articles/t/tr/transpeed-6k-pokazyvae-boot.html" class="pb-related-card">
+                <span class="pb-related-title">Transpeed 6K застрял на Boot: причины и решение</span>
+                <span class="pb-related-desc">Приставка Transpeed 6K висит на загрузке? Подробная инструкция по устранению зависания на логотипе, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

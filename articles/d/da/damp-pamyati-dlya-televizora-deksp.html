@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Дамп памяти телевизора DEXP: Инструкция по извлечению прошивки — Мастер Фикс</title>
+    <meta name="description" content="Как сделать дамп памяти телевизора DEXP через UART и ADB. Подробное руководство по восстановлению прошивки, чтению NAND и работе с загрузчиком.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/da/damp-pamyati-dlya-televizora-deksp.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Дамп памяти телевизора DEXP: Инструкция по извлечению прошивки">
+    <meta property="og:description" content="Как сделать дамп памяти телевизора DEXP через UART и ADB. Подробное руководство по восстановлению прошивки, чтению NAND и работе с загрузчиком.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Дамп памяти телевизора DEXP: Инструкция по извлечению прошивки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-аппаратного-обеспечения-и-среды">Подготовка аппаратного обеспечения и среды</a></li><li><a href="#организация-подключения-через-uart-консоль">Организация подключения через UART консоль</a></li><li><a href="#извлечение-дампа-памяти-через-adb-и-shell">Извлечение дампа памяти через ADB и Shell</a></li><li><a href="#анализ-полученного-дампа-и-восстановление">Анализ полученного дампа и восстановление</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/o/ok/oktutv-kod.html">Ok.ru/tv код: как подключить ТВ через активационный код</a></li><li><a href="/articles/k/ka/kak-skachat-i-ustanovit-vokino-na-televizor.html">Как установить Wink на телевизор: инструкция 2026</a></li><li><a href="/articles/k/ka/kak-perezagruzit-novuyu-pristavku-k-televizoru-wink.html">Как перезагрузить Wink приставку: полная инструкция</a></li><li><a href="/articles/h/hu/huawei-health-dlya-samsung-vosstanovlenie-dostupa-k-akkaunta.html">Huawei Health на Samsung: восстановление аккаунта и доступ</a></li><li><a href="/articles/k/ka/kak-obnovit-lg-s-webos-4-na-5.html">Обновление LG WebOS 4 до 5: полная инструкция и совместимость</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Создание дампа памяти телевизора DEXP: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-аппаратного-обеспечения-и-среды">Подготовка аппаратного обеспечения и среды</a></li><li><a href="#организация-подключения-через-uart-консоль">Организация подключения через UART консоль</a></li><li><a href="#извлечение-дампа-памяти-через-adb-и-shell">Извлечение дампа памяти через ADB и Shell</a></li><li><a href="#анализ-полученного-дампа-и-восстановление">Анализ полученного дампа и восстановление</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body"><p>Ситуация, когда современный телевизор DEXP после неудачного обновления или скачка напряжения перестает реагировать на пульт и кнопки корпуса, является классическим примером программного сбоя. Экран может оставаться черным, гореть логотипом производителя или бесконечно циклически перезагружаться, что указывает на критическое повреждение системных разделов.</p>
+<p>В таких случаях стандартные методы восстановления через USB-накопитель часто оказываются бесполезными, так как загрузчик не может инициализировать процесс записи из-за поврежденной файловой системы или некорректных заголовков разделов.</p>
+<p>Единственным надежным способом вернуть устройство к жизни становится прямое взаимодействие с внутренней памятью, что требует создания полной копии, или дампа, существующего содержимого чипа NAND или eMMC для последующего анализа или замены.</p>
+
+<h2 id="подготовка-аппаратного-обеспечения-и-среды">Подготовка аппаратного обеспечения и среды</h2>
+<p>Для проведения работ по дампингу памяти необходимо подготовить специализированный набор инструментов, так как программные методы через штатный интерфейс Android TV в большинстве случаев неработоспособны при «кирпичевании» устройства.</p>
+<p>Основным инструментом станет USB-TTL адаптер (конвертер UART), который позволит организовать последовательный обмен данными между компьютером и системной платой телевизора, обеспечивая доступ к консоли отладки.</p>
+<p>Также потребуется качественный USB-кабель типа «папа-папа» (Type-A to Type-A), набор тонких проводов для пайки или коннекторы с зажимами, и, возможно, USB-хаб с внешним питанием для обеспечения стабильного напряжения в линии 5В.</p>
+<p>На стороне компьютера необходимо установить терминальную программу, например <em>PuTTY</em>, <em>SecureCRT</em> или <em>Putty</em>, а также драйверы для чипа конвертера, чаще всего это <em>CP2102</em> или <em>CH340</em>.</p>
+<p>Важно убедиться, что используемый компьютер имеет исправные USB-порты, способные выдавать достаточный ток, так как нестабильное питание может привести к сбоям при чтении памяти и повреждению дампа.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Не подключайте кабель 5В от адаптера UART к плате телевизора, если не уверены в полярности и уровне напряжения. Используйте только линии TX, RX и GND во избежание сгорания процессора.</p></aside>
+
+<h3>Совместимость оборудования и поиски контактов</h3>
+<p>Поиск контактной группы UART на материнской плате — первый физический шаг, который требует внимательного осмотра текстолита в районе процессора.</p>
+<p>Обычно контакты маркированы надписями TX, RX, GND и VCC, однако на платах DEXP маркировка может отсутствовать, что потребует использования мультиметра для поиска земли.</p>
+<p>Земляной контакт (GND) определяется прозвонкой на металлические экранирующие кожухи или минусовые контакты крупных электролитических конденсаторов, где мультиметр покажет ноль Ом.</p>
+<p>После нахождения земли необходимо найти контакты передачи данных: TX (передающий) и RX (принимающий), которые при подаче питания покажут логическую единицу (около 3.3В) относительно земли.</p>
+<p>Для подключения лучше всего использовать пайку тонких проводов непосредственно к контактным площадкам, так как прижимные коннекторы могут отойти в критический момент записи или чтения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для DEXP</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Напряжение логики</td>
+<td>3.3 В</td>
+<td>Подключение 5В может сжечь процессор</td>
+</tr>
+<tr>
+<td>Скорость (Baud Rate)</td>
+<td>115200</td>
+<td>Стандарт для большинства SoC</td>
+</tr>
+<tr>
+<td>Биты данных</td>
+<td>8</td>
+<td>Стандартная конфигурация</td>
+</tr>
+<tr>
+<td>Стоповые биты</td>
+<td>1</td>
+<td>Стандартная конфигурация</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях DEXP с процессорами Realtek или MediaTek может встречаться скорость 57600 или 9600 бод, что требует перебора параметров в терминале.</p></aside>
+
+<h2 id="организация-подключения-через-uart-консоль">Организация подключения через UART консоль</h2>
+<p>После физического подключения проводов к плате телевизора и USB-порту компьютера следует запустить терминальную программу и настроить параметры соединения согласно спецификации процессора.</p>
+<p>В окне терминала необходимо выбрать соответствующий COM-порт, который определился в диспетчере устройств после подключения адаптера, и выставить скорость 115200 бод.</p>
+<p>Параметры контроля четности (Parity) устанавливаются в None, управление потоком (Flow Control) также отключается (None), что является стандартом для отладочных консолей Linux/Android.</p>
+<p>Теперь нужно подать питание на телевизор, вставив вилку в розетку, и внимательно следить за появлением текста в окне терминала.</p>
+<p>Если подключение выполнено верно, в логе начнут появляться строки загрузчика, системные сообщения и, возможно, запрос на прерывание загрузки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка терминала</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите адаптер UART к ПК</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите PuTTY и выберите COM-порт</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите скорость 115200, Data bits 8, Stop bits 1, Parity None</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Open для старта сессии</span></div></div>
+
+<h3>Прерывание загрузки и вход в режим отладки</h3>
+<p>Критически важным моментом является своевременное прерывание стандартного процесса загрузки операционной системы для получения доступа к командной строке загрузчика (Bootloader).</p>
+<p>В логе загрузки обычно появляется сообщение вроде «Hit any key to stop autoboot», после чего у пользователя есть несколько секунд для нажатия клавиши на клавиатуре, подключенной к терминалу.</p>
+<p>Если нажать клавишу (часто это <code>Enter</code>, <code>Esc</code> или комбинация <code>Ctrl+C</code>) вовремя, процесс загрузки остановится, и на экране появится приглашение командной строки, например <code>U-Boot#</code> или <code>android@aml #</code>).</p>
+<p>В этом режиме доступны низкоуровневые команды для работы с памятью, что позволяет инициировать чтение данных из чипа и передачу их на компьютер.</p>
+<p>Для телевизоров DEXP на базе процессоров Amlogic часто требуется выполнение команды <code>setenv bootargs</code> для изменения параметров загрузки перед дампом.</p>
+
+<p>Если автоматическое прерывание не срабатывает, можно попробовать удерживать определенную кнопку на пульте или корпусе при включении, хотя метод через терминал является наиболее универсальным.</p>
+<p>В некоторых случаях, особенно на новых версиях прошивок, доступ к консоли может быть заблокирован производителем, что потребует использования специальных эксплойтов или аппаратных методов.</p>
+
+<h2 id="извлечение-дампа-памяти-через-adb-и-shell">Извлечение дампа памяти через ADB и Shell</h2>
+<p>Если телевизор DEXP включается до стадии загрузки Android, но работает нестабильно, или если есть доступ к режиму Recovery, можно попытаться сделать дамп через отладку по сети (ADB).</p>
+<p>Для этого телевизор подключают к той же локальной сети, что и компьютер, или соединяют напрямую кабелем USB-Type A, после чего проверяют соединение командой <code>adb devices</code>.</p>
+<p>При успешном подключении открывается оболочка командной строки Android, где необходимо получить права суперпользователя, выполнив команду <code>su</code>, если это позволяет текущая конфигурация безопасности.</p>
+<p>Основная задача — определить разделы памяти, которые содержат критические данные: загрузчик, kernel, recovery и саму систему, используя команду <code>cat /proc/mtd</code> или <code>ls /dev/block/mmcblk*</code>.</p>
+<p>После идентификации нужного раздела, например <code>mmcblk0p10</code>, выполняется команда копирования содержимого в файл на внутреннем накопителе или сразу передача на ПК.</p>
+
+<pre><code>adb shell"cat /dev/block/mmcblk0p10" > boot.img
+<p>adb shell"cat /dev/block/mmcblk0p12" > system.img</code></pre></p>
+
+<p>Такой метод позволяет сохранить важные разделы без разборки корпуса, если устройство хотя бы частично функционально.</p>
+<p>Однако, если система поврежденано, этот способ не сработает, и придется возвращаться к методу UART или использовать режим загрузки MaskROM.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду dd с параметром bs=1M для ускорения процесса копирования больших разделов, если позволяет версия busybox на устройстве.</p></aside>
+
+<h3>Работа с разделами NAND и eMMC</h3>
+<p>Структура памяти в телевизорах DEXP может различаться в зависимости от используемого накопителя: это может быть NAND Flash или eMMC.</p>
+<p>NAND память требует особого подхода из-за наличия битых блоков (bad blocks), которые контроллер памяти обычно скрывает, но при прямом чтении они могут исказить данные.</p>
+<p>eMMC память ведет себя как обычное блочное устройство, и ее дампы, как правило, являются побитовой копией без необходимости коррекции ECC на уровне пользователя.</p>
+<p>При чтении NAND через U-Boot часто используются команды типа <code>nand read</code> с указанием адреса в RAM, размера и номера блока.</p>
+<p>Важно правильно рассчитать размер читаемой области, чтобы не выйти за границы раздела и не считать лишние данные, которые могут быть зарезервированы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Раздел</th>
+<th>Типичный размер</th>
+<th>Важность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootloader (UBOOT)</td>
+<td>1-4 МБ</td>
+<td>Критично (без него ТВ не включится)</td>
+</tr>
+<tr>
+<td>Kernel</td>
+<td>10-30 МБ</td>
+<td>Критично (ядро ОС)</td>
+</tr>
+<tr>
+<td>System</td>
+<td>500 МБ - 2 ГБ</td>
+<td>Высокая (содержит ОС)</td>
+</tr>
+<tr>
+<td>Userdata</td>
+<td>Остальное</td>
+<td>Низкая (настройки пользователя)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="анализ-полученного-дампа-и-восстановление">Анализ полученного дампа и восстановление</h2>
+<p>После успешного получения файла дампа его необходимо проанализировать на предмет целостности и наличия необходимых заголовков.</p>
+<p>Для анализа используются специализированные утилиты, такие как <em>Binwalk</em> или <em>Hex-редакторы</em> (HxD, WinHex), которые позволяют просмотреть структуру файла.</p>
+<p>В начале файла дампа загрузчика должны присутствовать сигнатуры, характерные для процессора (например, <em>Amlogic</em>, <em>Realtek</em>, <em>MediaTek</em>).</p>
+<p>Если дамп предназначен для восстановления другого телевизора той же модели, его можно записать обратно, используя обратную команду в терминале или программатор.</p>
+<p>Часто бывает, что родной дамп содержит ошибки, поэтому его используют как основу для модификации или берут только специфические калибровочные данные.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование родного дампа</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Сохранение уникальных калибровочных данных панели</li><li>✅ Восстановление MAC-адреса Wi-Fi</li><li>✅ Работа родных драйверов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск сохранения программных ошибок</li><li>❌ Возможное наличие битых секторов</li><li>❌ Большой объем данных для передачи</li></ul></div>
+</div></div>
+
+<h3>Запись восстановленного образа</h3>
+<p>Процесс записи дампа обратно в память телевизора является наиболее рискованным этапом, требующим максимальной концентрации и стабильного питания.</p>
+<p>Команды записи аналогичны командам чтения, но используют ключевые слова <code>write</code> или <code>program</code>, например <code>nmw</code> (nand multi-write) для процессоров Realtek.</p>
+<p>Перед записью часто требуется стереть целевые блоки памяти командой <code>erase</code>, чтобы избежать конфликтов при программировании.</p>
+<p>После завершения записи необходимо выполнить команду сброса или просто выключить и включить телевизор, чтобы проверить результат.</p>
+<p>Если телевизор запустился, но наблюдаются артефакты изображения, возможно, были повреждены разделы, отвечающие за настройки панели (Panel Data).</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе работы с дампами памяти телевизоров DEXP пользователи часто сталкиваются с рядом повторяющихся проблем, знание которых помогает сэкономить время.</p>
+<p>Ниже приведены наиболее распространенные ошибки и способы их корректного решения.</p>
+
+<ol>
+<li><strong>Нестабильный сигнал в терминале (мусор в строке)</strong> — чаще всего вызвано плохим контактом проводов, отсутствием общей земли или слишком длинными проводами; следует укоротить соединения и надежно припаять контакты.</li>
+<li><strong>Ошибка «Read Error» или тайм-аут при чтении</strong> — возникает при попытке прочитать защищенные разделы или при неисправности самого чипа памяти; попробуйте изменить скорость UART или проверить питание платы.</li>
+<li><strong>Телевизор не видит USB-флешку для записи</strong> — проблема в файловой системе накопителя; используйте форматирование в FAT32 с размером кластера 4096 байт и структурой MBR.</li>
+<li><strong>После прошивки пропал звук или Wi-Fi</strong> — при записи полного дампа с другого устройства могли затереться уникальные калибровочные данные; необходимо найти и восстановить разделы <code>factory</code> или <code>parm</code> из резервной копии.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное создание и запись дампа памяти позволяет восстановить телевизор DEXP даже при серьезных программных сбоях, сохраняя уникальные параметры устройства.</p></aside>
+
+<h2 id="заключительное-резюме">Заключительное резюме</h2>
+<p>Процедура создания дампа памяти для телевизора DEXP является сложным техническим действием, требующим понимания архитектуры систем и навыков работы с паяльным оборудованием.</p>
+<p>Правильное выполнение всех этапов, от поиска UART контактов до анализа бинарных файлов, позволяет не только восстановить работоспособность устройства, но и глубже понять принципы его функционирования.</p>
+<p>Всегда следует помнить о рисках и перед началом любых манипуляций с памятью стараться найти заводскую прошивку для конкретной модели платы, чтобы иметь возможность откатиться в случае неудачи.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/o/ok/oktutv-kod.html" class="pb-related-card">
+                <span class="pb-related-title">Ok.ru/tv код: как подключить ТВ через активационный код</span>
+                <span class="pb-related-desc">Подробная инструкция по вводу кода ok.ru/tv. Решение ошибок подключения, настройка Smart TV, Samsung</span>
+            </a><a href="/articles/k/ka/kak-skachat-i-ustanovit-vokino-na-televizor.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить Wink на телевизор: инструкция 2026</span>
+                <span class="pb-related-desc">Подробное руководство по установке приложения Wink на Smart TV. Настройка Samsung, LG, Android TV и </span>
+            </a><a href="/articles/k/ka/kak-perezagruzit-novuyu-pristavku-k-televizoru-wink.html" class="pb-related-card">
+                <span class="pb-related-title">Как перезагрузить Wink приставку: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по перезагрузке ТВ-приставки Wink. Методы через меню, пульт и кнопки сброса. Р</span>
+            </a><a href="/articles/h/hu/huawei-health-dlya-samsung-vosstanovlenie-dostupa-k-akkaunta.html" class="pb-related-card">
+                <span class="pb-related-title">Huawei Health на Samsung: восстановление аккаунта и доступ</span>
+                <span class="pb-related-desc">Инструкция по восстановлению доступа к аккаунту Huawei Health на Samsung. Решения проблем с входом, </span>
+            </a><a href="/articles/k/ka/kak-obnovit-lg-s-webos-4-na-5.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление LG WebOS 4 до 5: полная инструкция и совместимость</span>
+                <span class="pb-related-desc">Подробный технический гид по обновлению LG WebOS 4 до версии 5. Проверка совместимости, методы устан</span>
+            </a><a href="/articles/k/ka/kak-sbrosit-do-zavodskikh-nastroek-printer-samsung-ml1615.html" class="pb-related-card">
+                <span class="pb-related-title">Сброс Samsung ML-1615: заводские настройки и драйверы</span>
+                <span class="pb-related-desc">Инструкция по сбросу принтера Samsung ML-1615. Сброс счетчика тонера, переустановка драйверов и устр</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

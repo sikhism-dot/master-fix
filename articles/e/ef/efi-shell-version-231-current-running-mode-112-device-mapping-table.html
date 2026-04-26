@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>EFI Shell 2.31 и Device Mapping Table: полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Как расшифровать EFI Shell 2.31 и Device Mapping Table. Разбор режимов 1.1.2, навигация по файловой системе и устранение ошибок загрузки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/e/ef/efi-shell-version-231-current-running-mode-112-device-mapping-table.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="EFI Shell 2.31 и Device Mapping Table: полное руководство">
+    <meta property="og:description" content="Как расшифровать EFI Shell 2.31 и Device Mapping Table. Разбор режимов 1.1.2, навигация по файловой системе и устранение ошибок загрузки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/igry-geyming/">Игры и Гейминг</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">EFI Shell 2.31 и Device Mapping Table: полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#декодирование-версии-и-режима-работы-оболочки">Декодирование версии и режима работы оболочки</a></li><li><a href="#анализ-таблицы-device-mapping-table">Анализ таблицы Device Mapping Table</a></li><li><a href="#навигация-и-работа-с-файловой-системой">Навигация и работа с файловой системой</a></li><li><a href="#запуск-операционной-системы-вручную">Запуск операционной системы вручную</a></li><li><a href="#диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</a></li><li><a href="#таблица-основных-команд-efi-shell">Таблица основных команд EFI Shell</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-igrat-s-druzyami-po-seti-po-toka-boka.html">Как играть в Ток Бока по сети: инструкция для Android и iOS</a></li><li><a href="/articles/k/ka/kak-uznat-model-xiomu-mi-lite-noytbock133.html">Как узнать модель Xiaomi Mi Notebook 13.3: Полная инструкция</a></li><li><a href="/articles/2/24/24117rn760-podderzhivaet-dp-alt-mode.html">24117rn760 и DisplayPort Alt Mode: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-podat-na-samodelnuyu-antennu-napryazhenie-5-volt.html">Подача 5В на самодельную антенну: схемы и питание</a></li><li><a href="/articles/r/ra/ramdump-modem-chto-eto-takoe.html">Ramdump Modem: что это, причины появления и способы устранения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>EFI Shell 2.31: Режимы, Device Mapping Table и навигация</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#декодирование-версии-и-режима-работы-оболочки">Декодирование версии и режима работы оболочки</a></li><li><a href="#анализ-таблицы-device-mapping-table">Анализ таблицы Device Mapping Table</a></li><li><a href="#навигация-и-работа-с-файловой-системой">Навигация и работа с файловой системой</a></li><li><a href="#запуск-операционной-системы-вручную">Запуск операционной системы вручную</a></li><li><a href="#диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</a></li><li><a href="#таблица-основных-команд-efi-shell">Таблица основных команд EFI Shell</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Экран <strong>UEFI Shell</strong> часто вызывает панику у пользователей, которые ожидают увидеть привычный графический интерфейс операционной системы. Вместо этого они видят текст вроде "efi shell version 2.31 current running mode 1.1.2 device mapping table". Это сообщение не является критической ошибкой, а указывает на то, что компьютер остановился на этапе предзагрузочной среды UEFI. Понимание структуры этого интерфейса — ключ к решению проблем с загрузкой или ручной установке системы. В текущей версии спецификации <em>UEFI 2.31</em> оболочка предоставляет мощные инструменты для диагностики аппаратного обеспечения и управления дисками.</p>
+
+<p>Строка состояния, отображающая <strong>Device Mapping Table</strong>, содержит критически важную информацию о том, как firmware видит подключенные накопители. Цифры версии и режима работы указывают на уровень совместимости и доступный набор команд. Если система не нашла загрузочный сектор на основных дисках, она автоматически переходит в этот режим ожидания команд. В данном руководстве мы детально разберем, что означают эти коды, как перемещаться по файловой системе и как принудительно запустить загрузчик Windows или Linux.</p>
+
+<h2 id="декодирование-версии-и-режима-работы-оболочки">Декодирование версии и режима работы оболочки</h2>
+<p>Первое, что бросается в глаза при входе в консоль, — это строка идентификации. Версия <strong>2.31</strong> соответствует спецификации UEFI, выпущенной Unified EFI Forum. Это стандартный и актуальный протокол, используемый в большинстве современных материнских плат. Цифры не означают версию прошивки BIOS, а именно стандарт, которому следует сама командная строка. Понимание этого различия важно, так как команды могут отличаться от legacy-режимов.</p>
+
+<p>Параметр "current running mode 1.1.2" указывает на уровень совместимости с предыдущими версиями спецификации. Режим <strong>1.1.2</strong> обеспечивает поддержку широкого спектра старых скриптов и утилит, которые могли быть написаны для ранних реализаций EFI. Это гарантирует, что системные администраторы могут использовать проверенные временем методы диагностики даже на новом оборудовании.</p>
+
+<p>Важно отметить, что наличие этой строки подтверждает успешную инициализацию <strong>UEFI firmware</strong>. Компьютер прошел POST-проверку, опросил оборудование и теперь ждет инструкций. Если бы критические аппаратные компоненты (процессор, память) были неисправны, вы бы не увидели даже этого текста. Следовательно, проблема носит программный характер или связана с настройкой приоритетов загрузки.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не пытайтесь хаотично вводить команды из интернета без понимания их функции. В среде EFI Shell некоторые команды могут изменить конфигурацию NVRAM или порядок загрузки, что потребует сброса BIOS для восстановления.</p>
+</blockquote>
+
+<p>Для навигации по доступным командам в любой момент можно воспользоваться встроенной справкой. Просто введите <code>help</code> или <code>?</code> и нажмите Enter. Система выведет список всех доступных директив, разделенных по категориям. Это первый шаг, который должен сделать пользователь, оказавшись в неизвестной среде.</p>
+
+<h2 id="анализ-таблицы-device-mapping-table">Анализ таблицы Device Mapping Table</h2>
+<p>Самая важная часть экрана — это <strong>Device Mapping Table</strong>. Именно здесь отображается список всех устройств, которые UEFI распознал как потенциальные носители данных. Каждая строка таблицы соответствует определенному логическому устройству. Понимание этой таблицы необходимо для locating загрузочных файлов.</p>
+
+<p>Обычно устройства обозначаются буквенно-цифровыми кодами, такими как <code>FS0:</code>, <code>FS1:</code>, <code>BLK0:</code>. Префикс <strong>FS</strong> (File System) означает, что на устройстве обнаружена файловая система, понятная оболочке (обычно FAT32). Префикс <strong>BLK</strong> (Block Device) указывает на блочное устройство, которое может не иметь файловой системы или быть частью RAID-массива.</p>
+
+<pre><code>Device Mapping Table
+<p>FS0  : Alias(s) : PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/NVMe(0x1,0x0)</p>
+<p>FS1  : Alias(s) : PciRoot(0x0)/Pci(0x1C,0x4)/Pci(0x0,0x0)/USB(0x0,0x0)</p>
+<p>BLK0 : Alias(s) : PciRoot(0x0)/Pci(0x1,0x0)/Pci(0x0,0x0)/NVMe(0x1,0x0)</code></pre></p>
+
+<p>В приведенном выше примере видно, что <code>FS0</code> — это NVMe накопитель, а <code>FS1</code> — USB-устройство. Путь в скобках описывает физическое расположение устройства на шине. Зная это, вы можете понять, какой диск является системным, а какой — внешним носителем. Если нужного префикса FS нет, значит, раздел не отформатирован в FAT32 или поврежден.</p>
+
+<details class="pb-accordion"><summary>Почему некоторые диски не отображаются как FS?</summary><div class="pb-accordion-body"><p>Диски с файловой системой NTFS или exFAT по умолчанию могут не отображаться как FS в базовой оболочке UEFI. Для работы с ними требуются дополнительные драйверы или использование специализированных загрузчиков, таких как rEFInd или GRUB, которые имеют встроенные драйверы файловых систем.</p></div></details>
+
+<p>Чтобы перейти на конкретный диск, используйте команду смены устройства. Например, ввод <code>FS0:</code> изменит текущую рабочую директорию на корень этого раздела. После этого командная строка изменится, показывая, что вы теперь работаете внутри файловой системы первого диска.</p>
+
+<h2 id="навигация-и-работа-с-файловой-системой">Навигация и работа с файловой системой</h2>
+<p>После перехода на нужный том (например, <code>FS0:</code>), перед вами открывается структура каталогов. Команды навигации здесь аналогичны классическому MS-DOS или Linux. Для просмотра содержимого текущей директории используется команда <code>ls</code> или <code>dir</code>. Это позволяет убедиться, что вы находитесь на правильном разделе.</p>
+
+<p>Ключевой задачей часто является поиск загрузчика операционной системы. Для Windows это обычно файл <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>. Для Linux дистрибутивов пути могут варьироваться, но часто находятся в папке <code>\EFI\ubuntu\</code> или <code>\EFI\fedora\</code>. Использование команды <code>cd</code> позволяет перемещаться между папками.</p>
+
+<ul>
+<li>📂 <strong>ls</strong> — вывод списка файлов и папок в текущем каталоге.</li>
+<li>🔄 <strong>cd [путь]</strong> — переход в указанную директорию (например, <code>cd EFI</code>).</li>
+<li>🔙 <strong>cd ..</strong> — возврат в родительскую директорию на уровень выше.</li>
+<li>🔍 <strong>map -r</strong> — принудительное пересканирование устройств (полезно, если вы подключили USB после входа в Shell).</li>
+</ul>
+
+<p>Если вы не видите нужных файлов, возможно, скрытые разделы не смонтированы или используется другая файловая система. В таком случае стоит проверить другие устройства из <strong>Device Mapping Table</strong>. Иногда системный раздел EFI скрыт от глаз пользователя в обычной ОС, но здесь он доступен напрямую.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду "vol" после перехода на устройство (например, FS0:), чтобы увидеть метку тома. Это поможет идентифицировать диск "System" или "Windows" среди множества разделов FS0, FS1 и т.д.</p></aside>
+
+<p>Ошибки при вводе путей — частое явление. Помните, что в EFI Shell регистр букв обычно не важен, но структура путей должна быть точной. Используйте автодополнение клавишей <code>Tab</code>, если оно поддерживается вашей версией прошивки, чтобы избежать опечаток в именах файлов.</p>
+
+<h2 id="запуск-операционной-системы-вручную">Запуск операционной системы вручную</h2>
+<p>Основная цель попадания в EFI Shell для большинства пользователей — вручную запустить операционную систему, когда автоматическая загрузка не работает. Этот метод позволяет обойти поврежденный BCD (Boot Configuration Data) или неверные настройки приоритета в BIOS. Процесс требует точности в определении пути к исполняемому файлу.</p>
+
+<p>Предположим, вы определили, что система находится на <code>FS0</code>. Вам нужно перейти в директорию EFI и найти соответствующий загрузчик. Команда запуска выглядит как прямое указание пути к файлу с расширением <em>.efi</em>. Это действие инициирует передачу управления операционной системе.</p>
+
+<pre><code>FS0:\> cd \EFI\Microsoft\Boot
+<p>FS0:\EFI\Microsoft\Boot> bootmgfw.efi</code></pre></p>
+
+<p>Если путь указан верно, экран погаснет, и начнется стандартная процедура загрузки Windows. Если же система вернет ошибку "File not found" или "Access denied", значит, файл поврежден или вы находитесь не на том разделе. В случае Linux команды будут выглядеть аналогично, но имя файла может быть <code>grubx64.efi</code> или <code>shimx64.efi</code>.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Если ручной запуск <code>bootmgfw.efi</code> прошел успешно и Windows загрузилась, это не значит, что проблема решена навсегда. При следующей перезагрузке компьютер может снова попасть в EFI Shell. Необходимо восстановить запись в NVRAM.</p>
+</blockquote>
+
+<p>Для закрепления результата можно использовать команду <code>bcfg boot add</code> или аналогичные утилиты внутри самой Windows (например, <code>bcdboot</code>). Однако, если вам нужно просто срочно получить доступ к данным, ручного запуска через Shell вполне достаточно для одного сеанса работы.</p>
+
+<h2 id="диагностика-и-устранение-неполадок">Диагностика и устранение неполадок</h2>
+<p>EFI Shell — это не только способ запуска ОС, но и мощный диагностический инструмент. Если компьютер постоянно попадает сюда, значит, он не может найти загрузочную запись. Команды оболочки позволяют проверить целостность файлов и статус устройств. Например, команда <code>devices</code> выводит подробный список всех подключенных драйверов и устройств.</p>
+
+<p>Частой причиной проблемы является сбой порядка загрузки в BIOS/UEFI. Возможно, диск с системой был удален из приоритетного списка. В некоторых реализациях Shell можно изменить порядок загрузки командой <code>bcfg boot dump</code> для просмотра и <code>bcfg boot rm</code> для удаления неверных записей. Однако это требует осторожности.</p>
+
+<div class="pb-poll" id="poll-7be8a8a6"><div class="pb-poll-question">📊 Как вы чаще всего решаете проблему с загрузкой ОС?</div><div class="pb-poll-option" data-poll="7be8a8a6" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Переустанавливаю Windows</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7be8a8a6" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Ищу файлы вручную в Shell</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7be8a8a6" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Сбрасываю BIOS до заводских</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7be8a8a6" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Вызываю мастера</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<p>Также стоит проверить состояние самого накопителя. Команды вроде <code>fscheck</code> (если доступна в вашей версии) могут помочь найти ошибки файловой системы. Если диск не определяется в таблице маппинга вовсе, проблема может быть физической: отошел кабель SATA, неисправен порт или сам SSD/HDD вышел из строя.</p>
+
+<h2 id="таблица-основных-команд-efi-shell">Таблица основных команд EFI Shell</h2>
+<p>Для эффективной работы необходимо знать базовый набор команд. Ниже приведена таблица с наиболее часто используемыми директивами, которые помогут вам ориентироваться в среде <strong>UEFI Shell version 2.31</strong>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Описание функции</th>
+<th>Пример использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>map</code></td>
+<td>Отображает таблицу устройств (Device Mapping Table)</td>
+<td><code>map -r</code> (обновить список)</td>
+</tr>
+<tr>
+<td><code>cd</code></td>
+<td>Смена текущей директории</td>
+<td><code>cd \EFI\Boot</code></td>
+</tr>
+<tr>
+<td><code>ls</code></td>
+<td>Список файлов в текущей папке</td>
+<td><code>ls</code> или <code>dir</code></td>
+</tr>
+<tr>
+<td><code>cls</code></td>
+<td>Очистка экрана от предыдущего вывода</td>
+<td><code>cls</code></td>
+</tr>
+<tr>
+<td><code>exit</code></td>
+<td>Выход из оболочки и попытка перезагрузки</td>
+<td><code>exit</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование этих команд позволяет полностью контролировать процесс предзагрузки. Знание синтаксиса <code>map</code> и навигации дает преимущество перед стандартными средствами восстановления, которые могут быть недоступны при повреждении загрузчика.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Команда "exit" в EFI Shell не всегда перезагружает компьютер сразу. Иногда она просто возвращает вас в меню BIOS Setup, откуда нужно выбрать "Save & Exit" или "Boot Override".</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Почему компьютер сам заходит в EFI Shell при включении?</summary>
+<p>Это происходит, когда UEFI firmware не может найти ни одного загрузочного устройства с действительной записью. Причины: сбит порядок загрузки в BIOS, поврежден загрузчик Windows/Linux, отключен жесткий диск или обновлен BIOS, сбросивший настройки.</p>
+</details>
+
+<details>
+<summary>Можно ли удалить EFI Shell или отключить его?</summary>
+<p>EFI Shell является частью прошивки материнской платы. Удалить её нельзя, но можно убрать из приоритета загрузки. Зайдите в BIOS Setup, найдите раздел Boot Priority и переместите "Windows Boot Manager" или ваш диск на первое место, убрав "UEFI Shell" вниз списка.</p>
+</details>
+
+<details>
+<summary>Что делать, если команда map не показывает мой жесткий диск?</summary>
+<p>Попробуйте выполнить <code>map -r</code> для принудительного пересканирования. Если диск все равно не появился, проверьте физическое подключение кабелей. Также возможно, что диск отформатирован в GPT, но BIOS находится в режиме Legacy (CSM), или наоборот — требуется переключение режима работы SATA в настройках BIOS.</p>
+</details>
+
+<details>
+<summary>Безопасно ли использовать EFI Shell для обычного пользователя?</summary>
+<p>Базовая навигация и запуск файлов безопасны. Однако изменение настроек NVRAM или форматирование разделов может привести к потере данных. Если вы не уверены в своих действиях, лучше ограничиться проверкой наличия файлов или вызвать специалиста.</p>
+</details>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка перед выходом из Shell</h4><label class="check-item"><input type="checkbox"><span>Убедиться в сохранности данных</span></label><label class="check-item"><input type="checkbox"><span>Запомнить путь к загрузчику</span></label><label class="check-item"><input type="checkbox"><span>Проверить дату и время в BIOS</span></label><label class="check-item"><input type="checkbox"><span>Убедиться в надежности подключения кабелей</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>В заключение, сообщение "efi shell version 2.31 current running mode 1.1.2 device mapping table" — это дверь в низкоуровневое управление вашим компьютером. Хотя интерфейс может показаться пугающим, он предоставляет прямую связь с железом, минуя возможные ошибки операционной системы. Владение навыками работы в этой среде позволяет спасти данные и восстановить работоспособность системы даже в критических ситуациях.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-igrat-s-druzyami-po-seti-po-toka-boka.html" class="pb-related-card">
+                <span class="pb-related-title">Как играть в Ток Бока по сети: инструкция для Android и iOS</span>
+                <span class="pb-related-desc">Подробное руководство по настройке локальной сети и онлайн-режимов в Tok Boka. Решение проблем с под</span>
+            </a><a href="/articles/k/ka/kak-uznat-model-xiomu-mi-lite-noytbock133.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать модель Xiaomi Mi Notebook 13.3: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по определению точной модели ноутбука Xiaomi Mi Notebook 13.3. Методы через BI</span>
+            </a><a href="/articles/2/24/24117rn760-podderzhivaet-dp-alt-mode.html" class="pb-related-card">
+                <span class="pb-related-title">24117rn760 и DisplayPort Alt Mode: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный разбор поддержки DisplayPort Alt Mode в устройстве 24117rn760. Настройка вывода видео, сов</span>
+            </a><a href="/articles/k/ka/kak-podat-na-samodelnuyu-antennu-napryazhenie-5-volt.html" class="pb-related-card">
+                <span class="pb-related-title">Подача 5В на самодельную антенну: схемы и питание</span>
+                <span class="pb-related-desc">Техническое руководство по организации питания активных антенн. Схемы Bias-T, USB, PoE. Риски и мето</span>
+            </a><a href="/articles/r/ra/ramdump-modem-chto-eto-takoe.html" class="pb-related-card">
+                <span class="pb-related-title">Ramdump Modem: что это, причины появления и способы устранения</span>
+                <span class="pb-related-desc">Подробный разбор ошибки ramdump modem. Причины сброса памяти модема, методы диагностики, анализ лого</span>
+            </a><a href="/articles/r/ra/ramdump-modem-chto-za-fajl.html" class="pb-related-card">
+                <span class="pb-related-title">Файл ramdump modem: что это, как удалить и стоит ли?</span>
+                <span class="pb-related-desc">Подробный разбор файла ramdump modem. Узнайте, зачем он нужен, можно ли удалять на Android, причины </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

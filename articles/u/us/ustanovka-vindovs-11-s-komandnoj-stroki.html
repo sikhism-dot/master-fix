@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Установка Windows 11 с командной строки: полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Пошаговая установка Windows 11 через cmd. Обход TPM 2.0 и Secure Boot, разметка дисков GPT/MBR, создание загрузчика и решение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/u/us/ustanovka-vindovs-11-s-komandnoj-stroki.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Установка Windows 11 с командной строки: полная инструкция">
+    <meta property="og:description" content="Пошаговая установка Windows 11 через cmd. Обход TPM 2.0 и Secure Boot, разметка дисков GPT/MBR, создание загрузчика и решение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/prilozheniya-servisy/">Приложения и Сервисы</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Установка Windows 11 с командной строки: полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочной-среды-и-проверка-требований">Подготовка загрузочной среды и проверка требований</a></li><li><a href="#разметка-дискового-пространства-через-diskpart">Разметка дискового пространства через Diskpart</a></li><li><a href="#копирование-файлов-и-обход-ограничений-tpm">Копирование файлов и обход ограничений TPM</a></li><li><a href="#создание-загрузчика-и-финализация-установки">Создание загрузчика и финализация установки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/w/wo/wolf-launcher-na-ty-pristavku.html">Wolf Launcher на ТВ приставку: полная инструкция по установке и настройке</a></li><li><a href="/articles/k/ka/kak-vystavit-datu-i-vremya-na-pristavke-mts.html">Как выставить дату и время на приставке МТС: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-televizionnuyu-pristavku-k-portativnomu-dvd-supra.html">Как подключить ТВ-приставку к DVD Supra: полная инструкция</a></li><li><a href="/articles/k/ka/kak-pereslat-svoj-akkaunt-v-telegramme.html">Как передать аккаунт Telegram: полное руководство по смене владельца</a></li><li><a href="/articles/k/ka/kak-sdelat-sbros-nastroek-pristavki-bilajn-cisco.html">Сброс настроек приставки Beeline Cisco: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Профессиональная установка Windows 11 с командной строки</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочной-среды-и-проверка-требований">Подготовка загрузочной среды и проверка требований</a></li><li><a href="#разметка-дискового-пространства-через-diskpart">Разметка дискового пространства через Diskpart</a></li><li><a href="#копирование-файлов-и-обход-ограничений-tpm">Копирование файлов и обход ограничений TPM</a></li><li><a href="#создание-загрузчика-и-финализация-установки">Создание загрузчика и финализация установки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда графический интерфейс установщика Windows отказывается работать или блокирует инсталляцию на неподдерживаемом оборудовании, знакома многим системным администраторам и продвинутым пользователям. Часто стандартный установщик выдает ошибку о несоответствии требованиям TPM 2.0 или Secure Boot, даже если аппаратная платформа способна обеспечить стабильную работу операционной системы. В таких случаях единственным надежным инструментом остается командная строка, позволяющая выполнить чистую установку, минуя графические ограничения и проверки совместимости.</p>
+
+<p>Использование консоли cmd в среде восстановления Windows PE дает полный контроль над дисковой подсистемой, позволяя создать идеальную структуру разделов без скрытых мусорных файлов от предыдущих систем. Этот метод особенно актуален при развертывании системы на серверах, специализированных рабочих станциях или старых компьютерах, которые формально не поддерживаются Microsoft, но обладают достаточной вычислительной мощностью. Понимание принципов работы с diskpart и bcdboot позволяет решать 99% проблем с загрузкой, которые возникают при автоматической инсталляции.</p>
+
+<p>Для начала работы потребуется загрузочный носитель с образом <em>Windows 11</em>, который можно создать стандартными средствами или через сторонние утилиты. Важно понимать, что все данные на целевом диске будут безвозвратно удалены, поэтому предварительное резервное копирование критически важных файлов является обязательным этапом подготовки. После загрузки с флешки и выбора языка необходимо нажать комбинацию <code>Shift + F10</code> для вызова окна командной строки, которое станет основным инструментом в процессе установки.</p>
+
+<h2 id="подготовка-загрузочной-среды-и-проверка-требований">Подготовка загрузочной среды и проверка требований</h2>
+
+<p>Прежде чем приступать к разметке диска, необходимо убедиться в целостности установочных файлов и доступности целевого накопителя в среде предзагрузки. Часто пользователи сталкиваются с ситуацией, когда диск не отображается в списке доступных для установки, что может быть связано с отсутствием драйверов контроллера или неправильным режимом работы SATA в BIOS. В окне командной строки первым делом следует выполнить команду <code>diskpart</code> для входа в утилиту управления дисками и проверить список физических устройств.</p>
+
+<p>Если целевой диск отсутствует в выводе команды <code>list disk</code>, может потребоваться переключение режима работы контроллера в BIOS с <em>RAID</em> на <em>AHCI</em> или загрузка драйверов с помощью команды <code>dism</code>. Для современных систем с интерфейсом <em>NVMe</em> драйверы обычно встроены в образ <em>Windows 11</em>, однако на корпоративном оборудовании могут потребоваться дополнительные файлы от производителя. Убедившись в видимости диска, можно переходить к его полной очистке и подготовке структуры разделов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых ноутбуках бизнес-класса доступ к диску может быть заблокирован функцией Intel RST, требующей отдельного драйвера для отображения накопителя в установщике.</p></aside>
+
+<p>Ключевым моментом является выбор правильной таблицы разделов: для компьютеров с UEFI обязательна разметка <em>GPT</em>, тогда как для legacy BIOS подходит <em>MBR</em>. Windows 11 официально требует UEFI, поэтому в большинстве случаев работа будет вест именно с GPT-дисками. Неправильный выбор типа разметки приведет к невозможности создания загрузочного раздела EFI и, как следствие, к ошибке запуска системы после копирования файлов.</p>
+
+<h3>Сценарий для UEFI систем (GPT)</h3>
+
+<p>В современных компьютерах, выпущенных после 2013 года, используется интерфейс UEFI, который требует наличия специального скрытого раздела FAT32 для загрузки. Создание такой структуры вручную позволяет избежать ошибок, когда установщик пытается создать разделы на свободном месте, конфликтуя с существующими данными. Процесс начинается с выбора диска командой <code>select disk N</code>, где N — номер вашего накопителя, после чего выполняется полная очистка командой <code>clean</code>.</p>
+
+<p>Далее следует конвертация таблицы разделов в формат <em>GPT</em> командой <code>convert gpt</code>. Это действие делает диск совместимым с требованиями безопасности <em>Secure Boot</em>, которые предъявляет Windows 11. После конвертации создается раздел EFI размером около 100-500 Мб, который будет содержать загрузчики, и основной раздел для файлов операционной системы. Важно не пропустить этап форматирования в файловую систему <em>FAT32</em> для загрузочного раздела, так как UEFI не умеет читать <em>NTFS</em> на этапе старта.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание разделов GPT</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите diskpart</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите диск select disk 0</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Очистите clean</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Конвертируйте convert gpt</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Создайте раздел EFI create partition efi size=100</span></div></div>
+
+<h3>Сценарий для Legacy BIOS (MBR)</h3>
+
+<p>Хотя Windows 11 официально не поддерживает установку на BIOS с разметкой MBR, технически это возможно при использовании модифицированных образов или обходе проверок. В этом случае диск конвертируется командой <code>convert mbr</code>, а загрузочный сектор создается в начале диска. Основной раздел размечается как <code>primary</code> и форматируется в <em>NTFS</em>. Такой метод подходит только для тестовых сред или старого оборудования, где невозможна эмуляция UEFI.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>UEFI (GPT)</th>
+<th>Legacy BIOS (MBR)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Таблица разделов</td>
+<td>GPT</td>
+<td>MBR</td>
+</tr>
+<tr>
+<td>Файловая система EFI</td>
+<td>FAT32</td>
+<td>Не требуется</td>
+</tr>
+<tr>
+<td>Поддержка Windows 11</td>
+<td>Официальная</td>
+<td>Требует обхода</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="разметка-дискового-пространства-через-diskpart">Разметка дискового пространства через Diskpart</h2>
+
+<p>Утилита <code>diskpart</code> является мощнейшим инструментом, который позволяет управлять дисками на уровне байтов, игнорируя логические ограничения графических оболочек. При работе с ней важно соблюдать последовательность команд, так как любая ошибка в нумерации диска может привести крованию не того накопителя, например, внешнего жесткого диска с данными. После входа в утилиту рекомендуется всегда перепроверять список дисков командой <code>list disk</code> перед выполнением деструктивных операций.</p>
+
+<p>Для создания стандартной структуры разделов Windows 11 на GPT-диске необходимо создать EFI-раздел размером не менее 100 Мб. На практике часто выделяют 260-500 Мб, чтобы иметь запас места для размещения загрузчиков других операционных систем или инструментов восстановления. Команда <code>create partition efi size=260</code> создаст необходимый объем, который автоматически получит метку FAT32 при форматировании.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Команда clean удаляет всю структуру разделов без возможности восстановления. Убедитесь, что выбран правильный номер диска, особенно если подключено несколько накопителей.</p></aside>
+
+<p>После создания загрузочного раздела создается основной раздел, занимающий все оставшееся пространство. Для этого используется команда <code>create partition primary</code> без указания размера. Затем оба раздела форматируются: EFI в <em>FAT32</em> с меткой"System", а основной в <em>NTFS</em> с меткой"Windows". Форматирование основного раздела можно выполнить с сжатием, хотя для SSD это не критично, команда выглядит как <code>format fs=ntfs label="Windows" quick</code>.</p>
+
+<p>Важным этапом является присвоение букв дискам, так как в среде восстановления буквы могут отличаться от тех, что будут в установленной системе. Загрузочному EFI-разделу нужно присвоить букву, например, <code>S</code>, командой <code>assign letter=S</code>. Основному разделу присваивается буква <code>C</code> командой <code>assign letter=C</code>. Это необходимо для корректного указания путей при копировании файлов и создании загрузочных записей.</p>
+
+<h3>Создание раздела восстановления</h3>
+
+<p>Хотя система может работать и без отдельного раздела восстановления, наличие зарезервированного места для инструментов <em>WinRE</em> является хорошим тоном при установке. Для этого после создания основного раздела можно сжать его или создать новый раздел в конце диска объемом около 500-800 Мб. Этот раздел помечается как <code>type id=de94bba4-06d1-4d40-a16a-bfd50179d6ac</code>, что идентифицирует его как раздел восстановления.</p>
+
+<p>Создание такого раздела позволяет в будущем использовать функцию «Вернуть компьютер в исходное состояние» без необходимости наличия установочной флешки. Команды для создания идентичны созданию основного раздела, но в конце добавляется установка скрытого атрибута <code>set id="de94bba4-06d1-4d40-a16a-bfd50179d6ac"</code> и скрытие буквы диска командой <code>remove letter</code>. Это защищает раздел от случайного удаления пользователем в работающей системе.</p>
+
+<table>
+<thead>
+<tr>
+<th>Раздел</th>
+<th>Размер</th>
+<th>Файловая система</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EFI System</td>
+<td>100-500 Мб</td>
+<td>FAT32</td>
+<td>Загрузчик UEFI</td>
+</tr>
+<tr>
+<td>MSR</td>
+<td>16 Мб</td>
+<td>Нет</td>
+<td>Зарезервировано системой</td>
+</tr>
+<tr>
+<td>Primary</td>
+<td>Остальное</td>
+<td>NTFS</td>
+<td>Файлы ОС</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="копирование-файлов-и-обход-ограничений-tpm">Копирование файлов и обход ограничений TPM</h2>
+
+<p>После успешной разметки диска наступает этап копирования файлов операционной системы с установочного носителя на подготовленный раздел. Для этого используется утилита <code>xcopy</code> или более современная <code>robocopy</code>, которая лучше обрабатывает длинные пути и атрибуты файлов. Команда должна копировать все файлы, включая скрытые и системные, с сохранением структуры папок. Источником выступает DVD-привод или USB-флешка (обычно буква D или E), а назначением — буква C, которую мы присвоили основному разделу.</p>
+
+<p>Одной из главных причин использования командной строки при установке Windows 11 является возможность обхода проверок TPM 2.0 и Secure Boot. Если вы используете оригинальный образ, установщик может заблокировать процесс. Чтобы избежать этого, можно модифицировать реестр в среде установки перед запуском копирования файлов. Это позволяет установить Windows 11 на любой компьютер, соответствующий минимальным требованиям по процессору и памяти.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Копирование файлов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите robocopy D:\ C:\ /e /copyall</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Дождитесь завершения (100%)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте наличие папок на диске C:</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перейдите к созданию загрузчика</span></div></div>
+
+<p>Для обхода проверок необходимо открыть редактор реестра командой <code>regedit</code> и перейти в ветку <code>HKEY_LOCAL_MACHINE\SYSTEM\Setup</code>. Там создается новый раздел <code>LabConfig</code>, внутри которого создаются DWORD-параметры: <code>BypassTPMCheck</code>, <code>BypassSecureBootCheck</code> и <code>BypassRAMCheck</code>, каждому из которых присваивается значение <code>1</code>. После внесения этих изменений ограничения снимаются до перезагрузки.</p>
+
+<h3>Использование команды DISM для развертывания</h3>
+
+<p>Более профессиональным методом, чем простое копирование файлов, является использование утилиты <code>dism</code> (Deployment Image Servicing and Management). Этот инструмент позволяет развернуть сжатый образ системы <code>install.wim</code> или <code>install.esd</code> непосредственно на диск, что гарантирует целостность всех системных файлов. Сначала нужно найти путь к образу, выполнив команду <code>dir D:\sources\install.wim</code> (или <code>install.esd</code>), чтобы убедиться в наличии файла.</p>
+
+<p>Затем выполняется команда развертывания: <pre><code>dism /apply-image /imagefile:D:\sources\install.wim /index:1 /applydir:C:\</code></pre>. Параметр <code>/index:1</code> указывает на версию системы (например, Home или Pro), если в образе их несколько, номера можно посмотреть командой <code>dism /get-wiminfo /wimfile:D:\sources\install.wim</code>. Этот метод предпочтителен, так как он корректно применяет права доступа и системные атрибуты.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Файл install.esd имеет лучшую степень сжатия, но процесс его развертывания через DISM может занимать больше времени, чем работа с uncompressed WIM.</p></aside>
+
+<h3>Настройка реестра для игнорирования требований</h3>
+
+<p>Помимо создания ключей в <code>LabConfig</code>, существует метод изменения глобальных требований через реестр. В ветке <code>HKEY_LOCAL_MACHINE\SYSTEM\Setup\MoSetup</code> можно создать параметр <code>AllowUpgradesWithUnsupportedTPMOrCPU</code> со значением <code>1</code>. Это особенно полезно, если вы планируете не чистую установку, а обновление, но в контексте чистой установки через cmd это служит дополнительной гарантией.</p>
+
+<p> Microsoft оставляет за собой право не выпускать патчи для таких конфигураций, хотя на текущий момент обновления приходят штатно. Пользователь должен осознавать риски потенциальной нестабильности работы драйверов на старом железе.</p>
+
+<h2 id="создание-загрузчика-и-финализация-установки">Создание загрузчика и финализация установки</h2>
+
+<p>После того как файлы операционной системы скопированы или развернуты на диск, необходимо создать загрузочные записи, чтобы компьютер знал, откуда начинать загрузку при включении. Для этого используется утилита <code>bcdboot</code>. Она копирует необходимые файлы загрузки на EFI-раздел и создает конфигурацию хранилища данных загрузки (BCD). Без этого шага система выдаст ошибку «No bootable device» или «Operating System not found».</p>
+
+<p>Команда для создания загрузчика выглядит следующим образом: <pre><code>bcdboot C:\Windows /s S: /f UEFI</code></pre>. Здесь <code>C:\Windows</code> — путь к скопированным файлам системы, <code>/s S:</code> указывает букву EFI-раздела, которому мы ранее присвоили метку S, а <code>/f UEFI</code> specifies тип прошивки. При успешном выполнении утилита сообщит: «Boot files created successfully».</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Метод BCDBoot</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Корректное создание всех записей UEFI</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Автоматическое определение языка загрузки</li></ul></div>
+</div></div>
+
+<p>Если установка производилась в режиме Legacy BIOS, команда будет отличаться: <code>bcdboot C:\Windows /s C: /f BIOS</code>. В этом случае загрузочные файлы записываются в активный первичный раздел. Однако для Windows 11 этот сценарий является исключительным и требует модификации образа, так как официально система требует UEFI.</p>
+
+<h3>Проверка загрузочных записей</h3>
+
+<p>После создания загрузчика полезно проверить его корректность с помощью утилиты <code>bootrec</code>. Команда <code>bootrec /scanos</code> просканирует диски на наличие установленных систем Windows, а <code>bootrec /rebuildbcd</code> предложит добавить найденные системы в меню загрузки. Хотя <code>bcdboot</code> обычно справляется идеально, использование <code>bootrec</code> помогает диагностировать проблемы, если система не стартует с первого раза.</p>
+
+<p>Также стоит проверить содержимое EFI-раздела, перейдя на него командой <code>S:</code> и выполнив <code>dir</code>. Там должны присутствовать папки <code>EFI</code>, внутри которой находятся подпапки <code>Boot</code> и <code>Microsoft</code>. Наличие файла <code>bootmgfw.efi</code> является индикатором того, что загрузчик Windows 11 успешно размещен и готов к работе.</p>
+
+<h3>Завершение работы и первый запуск</h3>
+
+<p>Когда все шаги выполнены, можно закрыть окно командной строки и продолжить установку через графический интерфейс, если вы прерывали его, или просто перезагрузить компьютер. При использовании метода полного копирования через cmd, после перезагрузки начнется этап первоначальной настройки (OOBE), где потребуется выбрать регион, язык и создать учетную запись. На этом этапе установка считается технически завершенной.</p>
+
+<p>Рекомендуется сразу после первого рабочего стола удалить букву диска с EFI-раздела, чтобы скрыть его от пользователя в «Моем компьютере». Это делается командой <code>diskpart</code> -> <code>select volume S</code> -> <code>remove letter=S</code>. Это предотвратит случайное повреждение загрузочных файлов неопытным пользователем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>После установки сразу проверьте журнал событий на наличие ошибок драйверов, так как установка с командной строки не всегда автоматически подтягивает все специфические драйверы чипсета.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе установки с использованием командной строки пользователи часто сталкиваются с типовыми проблемами, связанными с путями к файлам или правами доступа. Понимание причин этих ошибок позволяет быстро их исправить без потери данных. Большинство проблем решается внимательной проверкой букв дисков и синтаксиса команд.</p>
+
+<ol>
+<li><strong>Ошибка «Путь не найден» при копировании</strong> — возникает, когда буквы дисков в среде восстановления отличаются от ожидаемых. Для решения используйте команду <code>diskpart</code> и <code>list volume</code>, чтобы точно определить, какая буква присвоена установочной флешке, а какая — целевому диску, и скорректируйте команды копирования.</li>
+<li><strong>Система не загружается после установки (черный экран)</strong> — чаще всего это означает, что загрузчик создан на неправильном разделе или в неверном формате. Убедитесь, что EFI-раздел отформатирован в FAT32, имеет флаг системы, и команда <code>bcdboot</code> указывала именно на него параметром <code>/s</code>.</li>
+<li><strong>Ошибка «Windows cannot be installed to this disk»</strong> — возникает при попытке установить UEFI-систему на MBR-диск или наоборот. Решение: полностью очистить диск командой <code>clean</code> и конвертировать в нужный формат (<code>convert gpt</code> для Windows 11) перед созданием разделов.</li>
+<li><strong>Недостаточно места на разделе</strong> — если при развертывании образа через DISM возникает ошибка нехватки места, проверьте, не зарезервировано ли пространство под раздел восстановления или MSR. Убедитесь, что основной раздел NTFS имеет размер не менее 20-25 Гб для базовой установки.</li>
+</ol>
+
+<p>Отдельного внимания заслуживает ошибка, связанная с файловой системой EFI. Если раздел отформатирован в NTFS вместо FAT32, UEFI-биос просто не увидит загрузчик. Всегда проверяйте тип файловой системы командой <code>format fs=fat32</code> при создании загрузочного раздела. Также важно, чтобы размер кластера оставался по умолчанию, изменение этого параметра может привести к некорректной работе загрузчика.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Установка Windows 11 через командную строку дает полный контроль над процессом, позволяя обходить аппаратные ограничения и создавать оптимальную структуру разделов.</p></aside>
+
+<p>В заключение следует отметить, что ручная установка через командную строку является наиболее надежным способом развертывания операционной системы в сложных условиях. Она позволяет избежать автоматических ошибок установщика, создать чистую файловую структуру без мусора и гарантировать загрузку системы даже на нестандартном оборудовании. Владение этими навыками является базовым требованием для любого IT-специалиста.</p>
+
+<p>После успешной установки и первого входа в систему рекомендуется сразу же создать точку восстановления и проверить обновления драйверов. Чистая установка с нуля обеспечивает максимальную производительность и стабильность работы Windows 11, исключая конфликты конфигураций, накопленные за время жизни предыдущей ОС. Регулярное обслуживание и мониторинг состояния диска помогут сохранить быстродействие системы на высоком уровне.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/w/wo/wolf-launcher-na-ty-pristavku.html" class="pb-related-card">
+                <span class="pb-related-title">Wolf Launcher на ТВ приставку: полная инструкция по установке и настройке</span>
+                <span class="pb-related-desc">Подробный гайд по установке Wolf Launcher на Android TV и Mi Box. Настройка автозапуска, скрытие ста</span>
+            </a><a href="/articles/k/ka/kak-vystavit-datu-i-vremya-na-pristavke-mts.html" class="pb-related-card">
+                <span class="pb-related-title">Как выставить дату и время на приставке МТС: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке времени на ТВ-приставках МТС. Решение проблем со сбросом даты, раб</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-televizionnuyu-pristavku-k-portativnomu-dvd-supra.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить ТВ-приставку к DVD Supra: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по подключению цифровой приставки к портативному DVD Supra через HDMI, AV или R</span>
+            </a><a href="/articles/k/ka/kak-pereslat-svoj-akkaunt-v-telegramme.html" class="pb-related-card">
+                <span class="pb-related-title">Как передать аккаунт Telegram: полное руководство по смене владельца</span>
+                <span class="pb-related-desc">Техническая инструкция по передаче прав владения каналом или ботом Telegram. Анализ сценариев, риски</span>
+            </a><a href="/articles/k/ka/kak-sdelat-sbros-nastroek-pristavki-bilajn-cisco.html" class="pb-related-card">
+                <span class="pb-related-title">Сброс настроек приставки Beeline Cisco: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по сбросу приставки Beeline Cisco к заводским параметрам. Методы через меню, пульт и </span>
+            </a><a href="/articles/r/rj/rj11-raspinovka-dlya-garnitury-na-aux.html" class="pb-related-card">
+                <span class="pb-related-title">Распиновка RJ11 для гарнитуры: схемы и адаптеры для AUX</span>
+                <span class="pb-related-desc">Техническая инструкция по распиновке RJ11 для гарнитур. Схемы подключения, адаптеры, цветовая кодиро</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

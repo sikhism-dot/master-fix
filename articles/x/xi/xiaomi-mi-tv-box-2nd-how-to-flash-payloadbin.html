@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Прошивка Xiaomi Mi Box 2nd: установка payload.bin через ADB — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по восстановлению Xiaomi Mi Box 2nd Gen. Установка payload.bin, разблокировка загрузчика и решение ошибок через Fastboot.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/x/xi/xiaomi-mi-tv-box-2nd-how-to-flash-payloadbin.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Прошивка Xiaomi Mi Box 2nd: установка payload.bin через ADB">
+    <meta property="og:description" content="Техническое руководство по восстановлению Xiaomi Mi Box 2nd Gen. Установка payload.bin, разблокировка загрузчика и решение ошибок через Fastboot.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Прошивка Xiaomi Mi Box 2nd: установка payload.bin через ADB</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-программного-окружения-и-драйверов">Подготовка программного окружения и драйверов</a></li><li><a href="#вход-в-режим-fastboot-и-диагностика-подключения">Вход в режим Fastboot и диагностика подключения</a></li><li><a href="#технология-прошивки-через-payloadbin">Технология прошивки через payload.bin</a></li><li><a href="#выполнение-прошивки-и-завершение-установки">Выполнение прошивки и завершение установки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otlichit-poddelnuyu-zaryadku-ot-samsung.html">Как отличить поддельную зарядку Samsung: полная инструкция</a></li><li><a href="/articles/t/ts/tsifrovaya-pristavka-rexant-k-televizoru-boot.html">Rexant приставка зависла на boot: решение проблемы</a></li><li><a href="/articles/k/ka/kak-ustanovit-prilozhenie-zala-na-televizor-tcl.html">Как установить приложение Zala на телевизор TCL: полная инструкция</a></li><li><a href="/articles/k/ka/kak-ubrat-demorolik-pryavlyayushchijsya-na-ekrane-televizora-hisense.html">Как отключить демо-режим на телевизоре Hisense: полная инструкция</a></li><li><a href="/articles/g/gd/gde-na-pulte-lg-knopka-home-bac.html">Где кнопка Home на пульте LG: поиск и альтернативы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление Xiaomi Mi Box 2nd Gen: установка payload.bin</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-программного-окружения-и-драйверов">Подготовка программного окружения и драйверов</a></li><li><a href="#вход-в-режим-fastboot-и-диагностика-подключения">Вход в режим Fastboot и диагностика подключения</a></li><li><a href="#технология-прошивки-через-payloadbin">Технология прошивки через payload.bin</a></li><li><a href="#выполнение-прошивки-и-завершение-установки">Выполнение прошивки и завершение установки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто сталкиваются с ситуацией, когда умная приставка Xiaomi Mi Box 2nd Gen перестает загружать операционную систему, зависает на логотипе Android или уходит в бесконечный цикл перезагрузки. Это происходит после неудачного обновления, прерванной загрузки или попыток модификации системных файлов. Стандартные методы восстановления через меню настроек оказываются недоступны, так как интерфейс системы полностью не функционирует.</p>
+<p>Единственным рабочим решением в таких случаях становится принудительная перепрошивка устройства с использованием файла образа <em>payload.bin</em>, содержащего полные данные системного раздела. Данный процесс требует подключения к компьютеру, установки специализированных драйверов и использования консольных улит для передачи данных напрямую в память устройства. Важно понимать, что вмешательство в загрузочные сектора несет риски, поэтому все действия необходимо выполнять точно по алгоритму.</p>
+<p>Перед началом процедуры необходимо убедиться в наличии оригинального кабеля USB-A to USB-A (или USB-A to Micro-USB, в зависимости от модификации порта), так как стандартные кабели для зарядки телефонов часто не поддерживают передачу данных. Также потребуется ПК под управлением Windows, Linux или macOS с доступом в интернет для загрузки актуальных версий прошивок, соответствующих конкретной аппаратной ревизии приставки.</p>
+
+<h2 id="подготовка-программного-окружения-и-драйверов">Подготовка программного окружения и драйверов</h2>
+<p>Фундаментом успешного восстановления является корректно настроенное программное окружение на персональном компьютере. Без установленных системных библиотек Android Debug Bridge (ADB) и Fastboot взаимодействие с приставкой на низком уровне невозможно. Эти инструменты предоставляют командный интерфейс для отправки инструкций загрузчику устройства.</p>
+<p>В операционной среде Windows критически важным этапом является установка драйверов Google USB Driver или универсальных драйверов ADB Interface. Если устройство определяется как «Неизвестное устройство» в диспетчере устройств, прошивка не начнется. Для автоматической установки можно использовать минималистичные пакеты драйверов, которые распознают вендорный ID Xiaomi.</p>
+<p>Скачивание самого файла <em>payload.bin</em> должно производиться только из проверенных источников, таких как официальные репозитории или форумы XDA Developers. Файл прошивки должен строго соответствовать модели устройства: <em>MDZ-22-AB</em> (международная версия) или <em>MDZ-22-AA</em> (китайская версия). Использование несовместимого образа приведет к кирпичу устройства.</p>
+<p>Для удобства работы все необходимые исполняемые файлы (<code>adb.exe</code>, <code>fastboot.exe</code>) и файл прошивки <code>payload.bin</code> рекомендуется поместить в одну корневую папку, например, <code>C:\adb_tools\</code>. Это избавит от необходимости прописывать полные пути к файлам при вводе команд в терминале.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для Windows 10 и 11 часто требуется отключить проверку подписи драйверов перед установкой, если система блокирует установку unsigned-драйверов ADB.</p></aside>
+
+<h3>Проверка совместимости версий Android</h3>
+<p>При выборе файла прошивки следует обращать внимание на версию Android, которая была установлена ранее. Понижение версии (downgrade) может быть заблокировано анти-откатным механизмом (Anti-Rollback), встроенным в загрузчик. Если попытаться установить более старую версию, процесс прервется на этапе проверки контрольных сумм.</p>
+<p>Актуальные прошивки для <em>Xiaomi Mi Box S 2nd Gen</em> базируются на Android TV 11 и Android TV 12. Файлы <em>payload.bin</em> для этих версий имеют разную структуру разделов. Перед загрузкой файла стоит сверить хэш-сумму (MD5 или SHA256) с указанной на сайте разработчика, чтобы исключить повреждение архива при скачивании.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Требование</th>
+<th>Примечание</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ОС Компьютера</td>
+<td>Windows 7/10/11, Linux, macOS</td>
+<td>Windows предпочтительнее для драйверов</td>
+</tr>
+<tr>
+<td>Кабель</td>
+<td>USB 2.0 Data Cable</td>
+<td>Длина не более 1 метра</td>
+</tr>
+<tr>
+<td>Порт USB</td>
+<td>USB 2.0 / 3.0</td>
+<td>Избегать USB-хабов без питания</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="вход-в-режим-fastboot-и-диагностика-подключения">Вход в режим Fastboot и диагностика подключения</h2>
+<p>Переход приставки в режим ожидания прошивки (Fastboot mode) осуществляется аппаратным или программным методом. На модели <em>Xiaomi Mi Box 2nd Gen</em> наиболее надежным способом является использование комбинации кнопок на пульте или физическое замыкание контактов, если программный доступ заблокирован. Обычно требуется удерживать кнопку «Назад» и «ОК» одновременно при подключении кабеля питания.</p>
+<p>Если программный вход через команду <code>adb reboot bootloader</code> невозможен из-за зависания системы, применяется метод «слепого» подключения. Сначала кабель USB-A to USB-A подключается к компьютеру, затем, удерживая кнопки на пульте (или кнопку сброса внутри корпуса, если есть доступ), подключается питание или второй конец кабеля к приставке.</p>
+<p>Индикацией успешного перехода служит изменение цвета светодиода на приставке (если он меняет цвет) или появление нового устройства в диспетчере устройств Windows. В списке оборудования оно может отображаться как <em>Android Bootloader Interface</em> или <em>QDLoader 9008</em> (в зависимости от чипсета и стадии загрузки).</p>
+<p>Для подтверждения связи необходимо открыть командную строку (CMD) или PowerShell в папке с инструментами и ввести команду проверки. Если в ответ выводится серийный номер устройства и статус <code>fastboot</code>, значит, коммуникация установлена корректно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Вход в Fastboot</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите USB-кабель к ПК</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Зажмите кнопки «Назад» + «ОК» на пульте</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключите питание/USB к приставке</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь звука подключения устройства в Windows</span></div></div>
+
+<h3>Решение проблем с определением устройства</h3>
+<p>В случаях, когда компьютер издает звук подключения, но устройство не отображается в списке Fastboot, проблема кроется в драйверах. Необходимо вручную обновить драйвер через диспетчер устройств, указав путь к папке <code>android_winusb.inf</code> из состава SDK Platform Tools.</p>
+<p>Иногда порт USB на компьютере не выдает достаточного напряжения для инициации загрузки. В такой ситуации стоит попробовать переключить кабель в порты, расположенные непосредственно на материнской плате (сзади системного блока), минуя передние панели или хабы.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Не отключайте кабель питания или USB во время процесса прошивки. Прерывание записи данных в разделы памяти может сделать устройство непригодным для использования.</p></aside>
+
+<h2 id="технология-прошивки-через-payloadbin">Технология прошивки через payload.bin</h2>
+<p>Файл <em>payload.bin</em> представляет собой контейнер, внутри которого запакованы образы всех необходимых разделов: загрузчика (<em>bootloader</em>), ядра (<em>kernel</em>), системного раздела (<em>system</em>), вендорных библиотек (<em>vendor</em>) и восстановления (<em>recovery</em>). Механизм обновления Android, встроенный в загрузчик, умеет самостоятельно распаковывать этот архив и записывать данные в соответствующие ячейки памяти eMMC.</p>
+<p>Для реализации процесса прошивки используется специальная утилита <code>payload_dumper</code> или встроенная функция Fastboot, если она поддерживает команду <code>update_engine</code>. Однако, на устройствах Xiaomi чаще применяется прямой метод передачи через Fastboot, если загрузчик разблокирован, или через специализированный скрипт, эмулирующий OTA-обновление.</p>
+<p>Сам процесс заключается в передаче бинарного потока данных по протоколу Fastboot. Скорость записи зависит от пропускной способности USB-порта и скорости работы контроллера памяти приставки. В среднем прошивка занимает от 3 до 10 минут, в течение которых индикатор прогресса будет отображаться в терминале.</p>
+<p>Важно отметить, что стандартная команда <code>fastboot flash</code> не работает напрямую с файлами <em>payload.bin</em>. Требуется либо предварительное извлечение образов (что сложно и требует много места), либо использование команды <code>fastboot update</code> или специализированного скрипта <code>flash_all.bat</code>, который содержит логику обработки данного формата.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Риски</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fastboot update</td>
+<td>Низкая</td>
+<td>Требует разблокированного загрузчика</td>
+</tr>
+<tr>
+<td>Payload Dumper + Flash</td>
+<td>Высокая</td>
+<td>Риск ошибки при извлечении разделов</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Использование утилиты Payload Dumper</h3>
+<p>Если прямая прошивка невозможна, применяется метод дампа. Утилита <code>payload_dumper</code> распаковывает <em>payload.bin</em> в набор файлов <code>.img</code>. После этого каждый образ прошивается отдельной командой, например: <code>fastboot flash system system.img</code>.</p>
+<p>Этот метод требует внимательности, так как порядок прошивки разделов имеет значение. Сначала всегда обновляется загрузчик и бутлоадер, затем системные разделы, и в конце — раздел с пользовательскими данными, если требуется полный сброс.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Прямая прошивка payload</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Автоматизация процесса</li><li>✅ Меньше действий пользователя</li><li>✅ Сохранение структуры разделов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует специфических скриптов</li><li>❌ Не работает на заблокированных загрузчиках</li><li>❌ Сложнее отладить ошибку</li></ul></div>
+</div></div>
+
+<h2 id="выполнение-прошивки-и-завершение-установки">Выполнение прошивки и завершение установки</h2>
+<p>Непосредственный запуск процесса восстановления начинается с проверки статуса устройства. Убедившись, что приставка находится в режиме Fastboot и видна системе, можно переходить к выполнению команд. Для автоматизации часто используются готовые скрипты, но ручное выполнение дает больше контроля.</p>
+<p>Первым шагом является очистка старых данных, чтобы избежать конфликтов файловых систем. Команда <code>fastboot erase userdata</code> полностью очищает пользовательский раздел. Это действие необратимо удаляет все установленные приложения и настройки.</p>
+<p>Далее следует основная команда обновления. В зависимости от используемого инструмента, это может быть запуск бат-файла <code>flash_all.bat</code> (для Windows) или shell-скрипта <code>flash_all.sh</code> (для Linux/Mac). Скрипт сам определит наличие файла <em>payload.bin</em> в папке и начнет процедуру.</p>
+<p>В процессе выполнения в окне терминала будут появляться сообщения о прогрессе передачи данных: <code>sending 'system'..</code>, <code>writing 'system'..</code>. Прерывание этого процесса категорически запрещено. После завершения всех операций устройство автоматически перезагрузится.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Запуск прошивки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте CMD в папке с инструментами</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду проверки: fastboot devices</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запустите скрипт: fastboot update payload.bin</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь сообщения «Finished»</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Перезагрузите устройство</span></div></div>
+
+<h3>Первичная загрузка и настройка</h3>
+<p>После успешной прошивки первая загрузка системы занимает значительно больше времени, чем обычно — до 5-7 минут. В это время происходит оптимизация приложений и создание новых системных файлов. Экран может гаснуть или мигать, что является нормальным поведением.</p>
+<p>Если после перезагрузки снова появляется логотип Fastboot или цикл перезагрузки, возможно, прошивка прошла некорректно или был выбран неверный файл <em>payload.bin</em>. В этом случае процедуру необходимо повторить, предварительно выполнив команду <code>fastboot reboot-bootloader</code>.</p>
+<p>При успешной загрузке пользователь увидит приветственный экран выбора языка. Это свидетельствует о том, что системный раздел <code>system</code> и раздел восстановления <code>recovery</code> работают корректно. Далее следует стандартная процедура настройки Wi-Fi и аккаунта Google.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>После первой загрузки рекомендуется сразу проверить раздел «О системе» и убедиться, что версия прошивки соответствует загруженному файлу payload.bin.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе восстановления устройств Xiaomi Mi Box 2nd Gen пользователи часто сталкиваются с типовыми проблемами, связанными с драйверами, кабелями или некорректными файлами прошивки. Понимание причин этих ошибок позволяет быстро локализовать неисправность и устранить её без повторной загрузки всего пакета данных.</p>
+<p>Ниже приведен список наиболее частых сценариев сбоев и алгоритмы действий для их исправления. Каждая ошибка имеет четкие симптомы, по которым можно идентифицировать проблему.</p>
+
+<ol>
+<li><strong>Ошибка «Waiting for device»:</strong> — компьютер не видит приставку в режиме Fastboot. Решение: проверьте кабель (используйте только качественный USB 2.0), попробуйте другой USB-порт, переустановите драйверы ADB/Fastboot, убедитесь, что устройство действительно перешло в режим загрузчика (горящий индикатор).</li>
+<li><strong>Ошибка «Invalid sparse file format» или «Failed to flash»:</strong> — файл прошивки поврежден или несовместим с текущей версией загрузчика. Решение: перепроверьте хэш-сумму файла <em>payload.bin</em>, скачайте прошивку заново, убедитесь, что модель устройства (AA/AB) совпадает с файлом.</li>
+<li><strong>Ошибка «Anti-rollback check failed»:</strong> — попытка установить более старую версию Android, чем разрешено аппаратным обеспечением. Решение: найдите и используйте файл прошивки с более высоким или равным индексом безопасности (Security Patch Level), чем установленный ранее.</li>
+<li><strong>Устройство уходит в бесконечный ребут после прошивки:</strong> — возможно, раздел userdata не был очищен или поврежден при записи. Решение: выполните команду <code>fastboot erase userdata</code> и <code>fastboot erase cache</code>, затем повторите попытку прошивки или выполните <code>fastboot reboot</code>.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех прошивки Xiaomi Mi Box 2nd Gen зависит от качества кабеля, правильности драйверов и соответствия версии payload.bin модели устройства.</p></aside>
+
+<h2 id="заключительное-резюме">Заключительное резюме</h2>
+<p>Процесс установки <em>payload.bin</em> на Xiaomi Mi Box 2nd Gen является мощным инструментом восстановления, позволяющим вернуть к жизни устройство с программными сбоями. Соблюдение последовательности действий, от подготовки драйверов до финальной перезагрузки, минимизирует риски и обеспечивает стабильную работу системы в будущем.</p>
+<p> Регулярное создание резервных копий важных данных и осторожность при установке стороннего ПО помогут избежать необходимости повторного проведения данной процедуры.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otlichit-poddelnuyu-zaryadku-ot-samsung.html" class="pb-related-card">
+                <span class="pb-related-title">Как отличить поддельную зарядку Samsung: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по выявлению контрафактных адаптеров Samsung. Проверка шрифтов, веса, швов и тесты на</span>
+            </a><a href="/articles/t/ts/tsifrovaya-pristavka-rexant-k-televizoru-boot.html" class="pb-related-card">
+                <span class="pb-related-title">Rexant приставка зависла на boot: решение проблемы</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению зависания ТВ-приставки Rexant на загрузочном экране. Методы сброс</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-prilozhenie-zala-na-televizor-tcl.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить приложение Zala на телевизор TCL: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке Zala TV на TCL. Настройка через USB, AirPlay, DLNA и HDMI. Решени</span>
+            </a><a href="/articles/k/ka/kak-ubrat-demorolik-pryavlyayushchijsya-na-ekrane-televizora-hisense.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить демо-режим на телевизоре Hisense: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по устранению рекламного ролика на экранах Hisense. Сброс настроек, обновление</span>
+            </a><a href="/articles/g/gd/gde-na-pulte-lg-knopka-home-bac.html" class="pb-related-card">
+                <span class="pb-related-title">Где кнопка Home на пульте LG: поиск и альтернативы</span>
+                <span class="pb-related-desc">Узнайте, где находится кнопка Home на пульте LG, почему она может отсутствовать и как запустить Smar</span>
+            </a><a href="/articles/z/zh/zhdi-rezka-na-android-tv.html" class="pb-related-card">
+                <span class="pb-related-title">Жди-резка на Android TV: настройка буфера и ускорение</span>
+                <span class="pb-related-desc">Подробное руководство по оптимизации буфера воспроизведения на Android TV. Настройка жди-резки, устр</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

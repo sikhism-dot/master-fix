@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Симулятор пыток: Создание кастомного ПО для нагрузочного тестирования — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по разработке симулятора стресс-тестов. Архитектура, генерация нагрузки, мониторинг ресурсов и анализ стабильности систем.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/c/cu/custom-torture-simulator.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Симулятор пыток: Создание кастомного ПО для нагрузочного тестирования">
+    <meta property="og:description" content="Техническое руководство по разработке симулятора стресс-тестов. Архитектура, генерация нагрузки, мониторинг ресурсов и анализ стабильности систем.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Симулятор пыток: Создание кастомного ПО для нагрузочного тестирования</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-системы-генерации-нагрузки">Архитектура системы генерации нагрузки</a></li><li><a href="#реализация-сценариев-стресс-тестирования">Реализация сценариев стресс-тестирования</a></li><li><a href="#мониторинг-и-сбор-метрик-в-реальном-времени">Мониторинг и сбор метрик в реальном времени</a></li><li><a href="#анализ-результатов-и-выявление-аномалий">Анализ результатов и выявление аномалий</a></li><li><a href="#оптимизация-и-масштабирование-тестов">Оптимизация и масштабирование тестов</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-dobavit-tovar-v-yandeks-poiskovik.html">Как добавить товар в Яндекс Поисковик: инструкция для бизнеса</a></li><li><a href="/articles/k/ka/kak-iz-antennogo-usilitelya-sdelat-passivnyj.html">Как сделать антенный усилитель пассивным: инструкция</a></li><li><a href="/articles/k/ka/kak-skachivat-v-torrente-v-avtonomnom-rezhime.html">Как скачивать торренты в автономном режиме: полное руководство</a></li><li><a href="/articles/k/ka/kak-vstavit-sim-v-orro-a-5x.html">Как вставить SIM-карту в OPPO A5x: полная инструкция</a></li><li><a href="/articles/a/aj/ajfon-ne-vidit-obd-2-cherez-blyutuz.html">iPhone не видит OBD2 по Bluetooth: Полное руководство</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка кастомного симулятора стресс-тестов для проверки стабильности</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-системы-генерации-нагрузки">Архитектура системы генерации нагрузки</a></li><li><a href="#реализация-сценариев-стресс-тестирования">Реализация сценариев стресс-тестирования</a></li><li><a href="#мониторинг-и-сбор-метрик-в-реальном-времени">Мониторинг и сбор метрик в реальном времени</a></li><li><a href="#анализ-результатов-и-выявление-аномалий">Анализ результатов и выявление аномалий</a></li><li><a href="#оптимизация-и-масштабирование-тестов">Оптимизация и масштабирование тестов</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуации, когда серверное оборудование или программный комплекс отказывают в самый неподходящий момент под пиковой нагрузкой, знакомы многим системным администраторам. Часто стандартные инструменты мониторинга не способны воспроизвести специфические сценарии отказа, которые возникают только при одновременном выполнении тысяч операций ввода-вывода или при переполнении буферов памяти.</p>
+<p>Для выявления таких скрытых дефектов требуется создание специализированного программного обеспечения, способного искусственно создавать экстремальные условия работы системы. Такой «симулятор пыток» позволяет довести аппаратные и программные ресурсы до предела, чтобы гарантировать отказоустойчивость продакшн-среды до начала реальной эксплуатации.</p>
+<p>Разработка собственного инструмента дает гибкость, недоступную в готовых коробочных решениях, позволяя эмулировать именно те паттерны поведения, которые характерны для конкретного бизнеса. В этом руководстве рассматриваются архитектурные принципы, методы реализации и стратегии анализа результатов при создании кастомных инструментов стресс-тестирования.</p>
+
+<h2 id="архитектура-системы-генерации-нагрузки">Архитектура системы генерации нагрузки</h2>
+<p>Проектирование симулятора начинается с определения архитектуры, которая должна быть максимально легковесной, чтобы потребляемые ею ресурсы не искажали результаты тестирования целевой системы. Основное требование — минимизация накладных расходов самого тестировщика, чтобы узким местом становился именно тестируемый объект, а не генератор нагрузки.</p>
+<p>Если у вас есть возможность распределить генерацию запросов по нескольким узлам, это позволит избежать (bottleneck) на стороне клиента. В распределенной архитектуре центральный узел-контроллер координирует работу агентов, собирает метрики и инициирует остановку тестов при достижении критических пороговых значений.</p>
+<p>Важным аспектом является выбор языка программирования и библиотек для реализации низкоуровневого доступа к ресурсам. Для работы с памятью и процессами часто используются <em>C++</em> или <em>Rust</em>, в то время как для сетевых взаимодействий эффективны <em>Go</em> или <em>Python</em> с асинхронными библиотеками.</p>
+<p>Ключевым компонентом архитектуры становится модуль конфигурации, позволяющий описывать сценарии нагрузки без перекомпиляции кода. Это может быть YAML или JSON файл, где задаются параметры таймаутов, размеры пакетов и целевые показатели утилизации.</p>
+
+<h3>Модульная структура компонентов</h3>
+<p>Разделение логики на независимые модули упрощает поддержку и расширение функционала. Базовая структура обычно включает генератор событий, исполнительный движок и сборщик метрик.</p>
+<p>Генератор событий отвечает за создание потока задач согласно заданному распределению (например, распределение Пуассона для имитации реального трафика). Исполнительный движок непосредственно взаимодействует с операционной системой, вызывая системные прерывания или отправляя сетевые пакеты.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте пулы потоков (thread pools) для управления concurrency, чтобы избежать чрезмерного потребления памяти на создание новых потоков для каждой задачи.</p></aside>
+
+<h2 id="реализация-сценариев-стресс-тестирования">Реализация сценариев стресс-тестирования</h2>
+<p>На практике эффективный симулятор должен покрывать различные аспекты работы системы: процессорное время, оперативную память, дисковый ввод-вывод и сетевую подсистему. Каждый из этих доменов требует специфического подхода к реализации алгоритмов нагрузки.</p>
+<p>Для тестирования процессора применяются циклы вычислений с плавающей запятой или сложные математические операции, которые загружают все доступные ядра. Важно обеспечить масштабируемость нагрузки, чтобы она линейно зависела от количества доступных логических процессоров.</p>
+<p>Тестирование памяти предполагает аллокацию больших блоков данных и их активное использование для предотвращения оптимизации компилятором. Необходимо предусмотреть сценарии фрагментации кучи и работы с виртуальной памятью.</p>
+
+<h3>Алгоритмы нагрузки на CPU и RAM</h3>
+<p>Для создания нагрузки на CPU часто используется метод «бесконечного цикла» с вычислениями. Однако простой цикл может быть оптимизирован процессором, поэтому следует использовать псевдослучайные числа или сложные тригонометрические функции.</p>
+<p>В случае с оперативной памятью критически важно не просто выделить память, но и записывать в нее данные, чтобы задействовать кэш-линии. Алгоритм может выглядеть как последовательная запись и чтение случайных байтов в выделенном буфере.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Реализация CPU Stress</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Инициализация потоков по количеству ядер</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запуск вычислительного цикла в каждом потоке</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Контроль флага остановки через shared variable</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Грейсфул-shutdown потоков</span></div></div>
+
+<h3>Сценарии дискового I/O и сети</h3>
+<p>Дисковая подсистема тестируется путем создания, записи, чтения и удаления файлов различных размеров. Особое внимание уделяется сценариям случайной записи (random write), которые наиболее тяжелы для HDD и SSD.</p>
+<p>Сетевое тестирование включает отправку пакетов различных размеров (от минимальных до MTU) и проверку реакции системы на переполнение очередей входящих соединений. Эмуляция сетевых задержек и потерь пакетов также является важной частью стресс-теста.</p>
+<p>Для реализации сетевой нагрузки часто используются сырые сокеты (raw sockets), позволяющие формировать заголовки пакетов вручную. Это дает полный контроль над содержимым трафика.</p>
+
+<h2 id="мониторинг-и-сбор-метрик-в-реальном-времени">Мониторинг и сбор метрик в реальном времени</h2>
+<p>Эффективность симулятора пыток напрямую зависит от качества обратной связи. Без точных данных о состоянии системы во время теста невозможно определить, достигнут ли желаемый уровень нагрузки и как система на него реагирует.</p>
+<p>Сбор метрик должен осуществляться с минимальным интервалом опроса, чтобы не пропустить кратковременные всплески (spikes). Однако слишком частый опрос сам по себе может создать дополнительную нагрузку, поэтому необходимо найти баланс.</p>
+<p>Используйте системные интерфейсы, такие как <code>/proc</code> в Linux или <em>Performance Counters</em> в Windows, для получения низкоуровневой статистики. Эти данные включают контекстные переключения, прерывания, операции page fault и использование кэша.</p>
+
+<h3>Интеграция с системными счетчиками</h3>
+<p>Для Linux-систем стандартным подходом является чтение файлов из псевдофайловой системы. Например, утилизация CPU считывается из <code>/proc/stat</code>, а использование памяти из <code>/proc/meminfo</code>.</p>
+<p>В Windows оптимально использовать библиотеку <em>PDH (Performance Data Helper)</em> или WMI, хотя последний может быть избыточно тяжелым для высокочастотного мониторинга. Прямой вызов API обеспечивает наилучшую производительность.</p>
+<table>
+<thead>
+<tr>
+<th>Метрика</th>
+<th>Источник (Linux)</th>
+<th>Источник (Windows)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU Usage</td>
+<td><code>/proc/stat</code></td>
+<td><code>\\Processor(_Total)\\% Processor Time</code></td>
+</tr>
+<tr>
+<td>Memory Free</td>
+<td><code>/proc/meminfo</code></td>
+<td><code>\\Memory\\Available MBytes</code></td>
+</tr>
+<tr>
+<td>Disk I/O</td>
+<td><code>/proc/diskstats</code></td>
+<td><code>\\PhysicalDisk(_Total)\\Disk Transfers/sec</code></td>
+</tr>
+</tbody>
+</table>
+
+<h3>Визуализация и логирование</h3>
+<p>Собранные данные должны немедленно записываться в лог-файл в формате, удобном для последующего анализа (CSV, JSON Lines). Одновременная запись в консоль может замедлить процесс, поэтому буферизация вывода обязательна.</p>
+<p>Для оперативного контроля можно реализовать простой текстовый интерфейс (TUI) или отправку метрик в системы мониторинга вроде <em>Prometheus</em> через Pushgateway. Это позволяет строить графики в реальном времени в <em>Grafana</em>.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте временные метки с наносекундной точностью для корреляции событий нагрузки и ответов системы, это поможет выявить причинно-следственные связи при анализе лагов.</p></aside>
+
+<h2 id="анализ-результатов-и-выявление-аномалий">Анализ результатов и выявление аномалий</h2>
+<p>После проведения серии тестов наступает этап анализа, который часто важнее самого процесса генерации нагрузки. Цель анализа — не просто констатировать факт отказа, а понять его природу и воспроизводимость.</p>
+<p>Следует искать корреляцию между уровнем нагрузки и деградацией производительности. Например, увеличение времени отклика может начаться задолго до полного отказа системы, что указывает на истощение ресурсов очередей.</p>
+<p>Важно (различать) ошибки, вызванные самим симулятором (баги в коде теста), и ошибки целевой системы. Для этого проводятся контрольные запуски с низкой нагрузкой и постепенным ее увеличением.</p>
+
+<h3>Интерпретация логов и дампов</h3>
+<p>Анализ системных логов (<code>dmesg</code>, <code>Event Viewer</code>) позволяет выявить сообщения об ошибках оборудования, такие как коррекция ошибок ECC в памяти или ошибки секторов диска.</p>
+<p>Если система зависает полностью, единственным источником информации остаются дампы памяти (core dumps) или аппаратные логи (IPMI, iDRAC). Анализ дампа требует наличия символьной информации (debug symbols) для бинарных файлов.</p>
+<ol>
+<li>Локализуйте момент времени, когда система перестала отвечать.</li>
+<li>Извлеките стек вызовов (stack trace) для всех потоков в момент сбоя.</li>
+<li>Определите ресурс, который находился в состоянии блокировки (lock contention).</li>
+<li>Сопоставьте действия симулятора в этот момент с состоянием системы.</li>
+</ol>
+
+<h3>Типичные ошибки при разработке симулятора</h3>
+<ol>
+<li><strong>Игнорирование тепловых характеристик</strong> — тестирование без контроля температуры может привести к троттлингу процессора, что исказит результаты; всегда мониторьте температуру компонентов.</li>
+<li><strong>Неучтенное влияние ОС</strong> — операционная система может кэшировать данные или агрегировать запросы, скрывая реальную нагрузку на диск; используйте флаги прямой записи (O_DIRECT).</li>
+<li><strong>Однородность нагрузки</strong> — использование одинаковых паттернов доступа не выявляет проблем, связанных с фрагментацией или специфическими алгоритмами распределителя; внедряйте рандомизацию.</li>
+<li><strong>Отсутствие_baseline_</strong> — запуск теста без предварительного замера производительности в спокойном состоянии не позволяет оценить степень деградации; всегда проводите бенчмаркинг до стресс-теста.</li>
+</ol>
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Продолжительный стресс-тест может привести к физическому износу SSD-дисков или перегреву компонентов. Проводите тесты только на тестовом оборудовании или с соблюдением строгих лимитов времени.</p></aside>
+
+<h2 id="оптимизация-и-масштабирование-тестов">Оптимизация и масштабирование тестов</h2>
+<p>По мере роста сложности тестируемых систем симулятор также должен эволюционировать. Оптимизация кода генератора нагрузки позволяет создавать более интенсивные сценарии на том же (hardware).</p>
+<p>Масштабирование часто требует перехода от вертикального масштабирования (более мощный сервер генератора) к горизонтальному (кластер генераторов). Координа</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-dobavit-tovar-v-yandeks-poiskovik.html" class="pb-related-card">
+                <span class="pb-related-title">Как добавить товар в Яндекс Поисковик: инструкция для бизнеса</span>
+                <span class="pb-related-desc">Подробное руководство по подключению интернет-магазина к Яндекс Поиску. Настройка YML, работа с Янде</span>
+            </a><a href="/articles/k/ka/kak-iz-antennogo-usilitelya-sdelat-passivnyj.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать антенный усилитель пассивным: инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по переделке активной антенны в пассивную. Схемы, методы отключения питания и с</span>
+            </a><a href="/articles/k/ka/kak-skachivat-v-torrente-v-avtonomnom-rezhime.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачивать торренты в автономном режиме: полное руководство</span>
+                <span class="pb-related-desc">Инструкция по настройке удаленной загрузки торрентов без ПК. Настройка роутеров, NAS и облачных серв</span>
+            </a><a href="/articles/k/ka/kak-vstavit-sim-v-orro-a-5x.html" class="pb-related-card">
+                <span class="pb-related-title">Как вставить SIM-карту в OPPO A5x: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке SIM-карты в OPPO A5x. Описание лотка, поддержка двух карт и Micro</span>
+            </a><a href="/articles/a/aj/ajfon-ne-vidit-obd-2-cherez-blyutuz.html" class="pb-related-card">
+                <span class="pb-related-title">iPhone не видит OBD2 по Bluetooth: Полное руководство</span>
+                <span class="pb-related-desc">Решение проблем подключения iPhone к OBD2 адаптеру. Настройка Bluetooth, проверка совместимости ELM3</span>
+            </a><a href="/articles/g/gd/gde-vsajfone-linejka.html" class="pb-related-card">
+                <span class="pb-related-title">Где линейка на iPhone: поиск и использование инструмента</span>
+                <span class="pb-related-desc">Подробное руководство по использованию встроенной линейки в iPhone. Где найти, как включить и настро</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

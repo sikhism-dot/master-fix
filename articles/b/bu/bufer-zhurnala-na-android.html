@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Буфер журнала на Андроид: как очистить и настроить — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по работе с буфером журнала на Android. Очистка памяти, отладка ADB, управление логами и оптимизация системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bu/bufer-zhurnala-na-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Буфер журнала на Андроид: как очистить и настроить">
+    <meta property="og:description" content="Полная инструкция по работе с буфером журнала на Android. Очистка памяти, отладка ADB, управление логами и оптимизация системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Буфер журнала на Андроид: как очистить и настроить</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-логирования-в-операционной-системе-android">Архитектура логирования в операционной системе Android</a></li><li><a href="#методы-очистки-буфера-обмена-и-системных-логов">Методы очистки буфера обмена и системных логов</a></li><li><a href="#настройка-размеров-буфера-и-параметров-отладки">Настройка размеров буфера и параметров отладки</a></li><li><a href="#анализ-содержимого-и-фильтрация-данных">Анализ содержимого и фильтрация данных</a></li><li><a href="#типичные-ошибки-при-работе-с-логами">Типичные ошибки при работе с логами</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/x/xi/xiaomi-13-pro-type-c-s-dp-mode.html">Xiaomi 13 Pro Type-C: Включение DP Mode и вывод видео</a></li><li><a href="/articles/k/ka/kak-vklyuchit-shagomer-na-telefone-v-29-vivo.html">Как включить шагомер на Vivo: Инструкция для 29 версий Funtouch OS</a></li><li><a href="/articles/k/ka/kak-uznat-skolko-kontaktov-na-redmi.html">Как узнать сколько контактов на Redmi: точный подсчет</a></li><li><a href="/articles/h/ho/honor-magicbook-nastroit-print-screen.html">Honor MagicBook: как настроить Print Screen и скриншоты</a></li><li><a href="/articles/p/po/pochemu-kogda-vstavlyayu-batareyu-v-knopochnyj-telefon-on-vibriruet-kak-ne-normalnyj.html">Вибрация кнопочного телефона при установке батареи: причины и ремонт</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Управление буфером журнала на Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-логирования-в-операционной-системе-android">Архитектура логирования в операционной системе Android</a></li><li><a href="#методы-очистки-буфера-обмена-и-системных-логов">Методы очистки буфера обмена и системных логов</a></li><li><a href="#настройка-размеров-буфера-и-параметров-отладки">Настройка размеров буфера и параметров отладки</a></li><li><a href="#анализ-содержимого-и-фильтрация-данных">Анализ содержимого и фильтрация данных</a></li><li><a href="#типичные-ошибки-при-работе-с-логами">Типичные ошибки при работе с логами</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапное замедление работы смартфона, появление сообщений о нехватке памяти или странные сбои в приложениях часто становятся сигналом к поиску скрытых проблем в системе. Пользователь замечает, что устройство начинает работать медленнее, а в логах ошибок появляются предупреждения о переполнении системных буферов, что требует немедленного вмешательства.</p>
+<p>На практике ситуация может развиваться так: вы пытаетесь запустить ресурсоемкое приложение, а оно вылетает через несколько секунд, оставляя после себя лишь запись в системном журнале. Именно в этот момент становится актуальным вопрос о том, что представляет собой буфер журнала на Андроид и как правильно с ним взаимодействовать для восстановления стабильности.</p>
+<p>Разберем технические аспекты работы этой подсистемы, методы ручного и автоматического управления логами, а также инструменты для глубокой диагностики, которые позволяют выявить корень проблемы.</p>
+
+<h2 id="архитектура-логирования-в-операционной-системе-android">Архитектура логирования в операционной системе Android</h2>
+<p>Основой сбора диагностической информации в мобильной операционной системе является служба <strong>Android Logcat</strong>, которая непрерывно записывает события ядра и пользовательских приложений. Этот механизм представляет собой кольцевой буфер, где новые записи автоматически перезаписывают самые старые, если не установлено иное ограничение.</p>
+<p>Если у вас возникла необходимость проанализировать работу конкретного сервиса, важно понимать, что система разделяет потоки данных на несколько независимых каналов, каждый из которых отвечает за свой тип событий. Разделение позволяет разработчикам и администраторам фильтровать шум и сосредотачиваться только на релевантных данных, игнорируя фоновые процессы.</p>
+<p>Допустим, приложение зависает при загрузке интерфейса; в этом случае основной интерес представляет поток событий пользовательского уровня, тогда как для анализа проблем с драйвером Wi-Fi потребуются записи ядра. Понимание этой структуры критически важно для эффективной отладки.</p>
+
+<h3>Основные типы буферов и их назначение</h3>
+<p>В стандартной конфигурации ADB (Android Debug Bridge) доступно несколько предопределенных буферов, каждый из которых имеет свой идентификатор и назначение. Основной буфер <code>main</code> содержит логи большинства приложений, запущенных пользователем, и является наиболее объемным.</p>
+<p>Буфер <code>system</code> зарезервирован для сообщений системных компонентов и служб операционной системы, таких как WindowManager или ActivityManager. Для низкоуровневой диагностики оборудования и драйверов используется буфер <code>radio</code>, который хранит информацию о состоянии модема и сетевых соединениях.</p>
+<p>Отдельного внимания заслуживает буфер <code>crash</code>, в который автоматически попадают отчеты о сбоях приложений сразу после их возникновения. Это позволяет быстро retrieve информацию об упавшем процессе, даже если основное приложение уже закрыто системой.</p>
+
+<table>
+<thead>
+<tr>
+<th>Идентификатор буфера</th>
+<th>Назначение</th>
+<th>Уровень доступа</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>main</code></td>
+<td>Логи пользовательских приложений</td>
+<td>Требует отладки</td>
+</tr>
+<tr>
+<td><code>system</code></td>
+<td>Системные службы и демоны</td>
+<td>Root или ADB</td>
+</tr>
+<tr>
+<td><code>radio</code></td>
+<td>Сетевой стек и модем</td>
+<td>Только Root/ADB</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах разных производителей набор доступных буферов может отличаться в зависимости от версии прошивки и кастомизации интерфейса.</p></aside>
+
+<h2 id="методы-очистки-буфера-обмена-и-системных-логов">Методы очистки буфера обмена и системных логов</h2>
+<p>Очистка буфера журнала часто требуется не только для освобождения места, но и для сброса состояния зависших сервисов, которые перестали корректно записывать новые события. Стандартный интерфейс операционной системы редко предоставляет прямую кнопку для этой операции, поэтому приходится использовать встроенные инструменты разработчика.</p>
+<p>Если у вас есть доступ к компьютеру, наиболее эффективным способом является использование командной строки ADB. Это позволяет выполнить очистку всех буферов одновременно одной командой, что гарантирует полное обновление состояния логгера.</p>
+<p>На практике также можно воспользоваться сторонними приложениями-терминалами, установленными непосредственно на смартфоне, однако для их работы потребуются права суперпользователя (Root). Без этих прав доступ к системным функциям очистки будет ограничен.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Очистка через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство по USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду adb logcat -c</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте статус командой adb logcat</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь, что вывод пуст</span></div></div>
+
+<h3>Использование командной строки и терминала</h3>
+<p>Для выполнения операций по очистке необходимо сформировать правильную команду, которая отправит сигнал службе логирования. Базовый синтаксис предполагает использование утилиты <code>logcat</code> с флагом <code>-c</code>, что означает "clear" (очистить).</p>
+<p>Выполните следующую команду в терминале эмулятора или через ADB shell:</p>
+<pre><code>adb logcat -c</code></pre>
+<p>Если требуется очистить только конкретный буфер, например, радио-модуль, команда модифицируется добавлением параметра <code>-b</code>. Это позволяет точечно воздействовать на систему, не затраг-ивая логи других процессов, что может быть полезно при отладке сетевых проблем.</p>
+<p>Команда для выборочной очистки выглядит следующим образом:</p>
+<pre><code>adb logcat -b radio -c</code></pre>
+<p>Стоит помнить, что после выполнения этой команды вся предыдущая история событий будет утрачена без возможности восстановления, поэтому перед очисткой критически важных данных рекомендуется сделать их резервную копию в текстовый файл.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Очистка буфера <code>crash</code> может удалить отчеты об ошибках, необходимые техподдержке для анализа причин сбоя приложения.</p></aside>
+
+<h2 id="настройка-размеров-буфера-и-параметров-отладки">Настройка размеров буфера и параметров отладки</h2>
+<p>По умолчанию операционная система выделяет фиксированный объем оперативной памяти под хранение логов, но этот параметр можно изменять для нужд глубокой диагностики. Увеличение размера буфера позволяет сохранить более длинную историю событий перед их перезаписью, что полезно при анализе редко возникающих ошибок.</p>
+<p>Изменение параметров осуществляется через скрытое меню «Для разработчиков», которое активируется_multiple_разовым нажатием на номер сборки в разделе «О телефоне». После активации в меню появляется пункт «Размер буфера журнала».</p>
+<p>На практике доступны варианты от 64 КБ до 16 МБ, где выбор зависит от конкретной задачи: для обычной отладки приложений достаточно минимальных значений, тогда как анализ работы драйверов требует максимальных лимитов.</p>
+
+<h3>Управление через меню разработчика</h3>
+<p>Перейдите в раздел <code>Настройки → Система → Для разработчиков</code> и найдите пункт, отвечающий за логирование. В зависимости от версии <em>Android</em> (10, 11, 12 и выше), название может варьироваться, но функционал остается схожим.</p>
+<p>Выберите подходящее значение из выпадающего списка. Обратите внимание, что установка слишком большого значения (например, 16 МБ) на устройствах с малым объемом оперативной памяти может негативно сказаться на производительности системы в целом.</p>
+<p>После изменения параметра система может потребовать перезагрузки для применения новых настроек. Это стандартное поведение, обеспечивающее корректное перераспределение ресурсов памяти.</p>
+
+<table>
+<thead>
+<tr>
+<th>Размер буфера</th>
+<th>Рекомендуемое использование</th>
+<th>Влияние на RAM</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>64K / 256K</td>
+<td>Ежедневное использование</td>
+<td>Минимальное</td>
+</tr>
+<tr>
+<td>1M / 4M</td>
+<td>Отладка приложений</td>
+<td>Умеренное</td>
+</tr>
+<tr>
+<td>16M</td>
+<td>Глубокий анализ ядра</td>
+<td>Высокое</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для постоянной записи логов в файл используйте перенаправление вывода: <code>adb logcat > log.txt</code>, чтобы сохранить историю событий на компьютере.</p></aside>
+
+<h2 id="анализ-содержимого-и-фильтрация-данных">Анализ содержимого и фильтрация данных</h2>
+<p>Просто открыть журнал недостаточно; ключевым навыком является умение фильтровать миллионы строк текста для нахождения нужной информации. В потоке данных одновременно работают десятки процессов, и без фильтрации найти причину ошибки практически невозможно.</p>
+<p>Используйте параметр <code>-s</code> (silent) для включения тихого режима, когда отображаются только сообщения с указанных тегов. Это позволяет изолировать логи конкретного приложения, зная его тег или имя процесса.</p>
+<p>Допустим, нужно отследить работу сервиса Google Play; команда будет выглядеть как <code>adb logcat -s GooglePlayServices</code>. Это мгновенно отсекает весь посторонний шум и оставляет только релевантные строки.</p>
+
+<h3>Уровни приоритета сообщений</h3>
+<p>Каждое сообщение в журнале имеет уровень серьезности, который помогает классифицировать события. Система использует стандартную градацию от <code>V</code> (Verbose) до <code>F</code> (Fatal), позволяя настраивать детализацию вывода.</p>
+<p>Для поиска критических ошибок достаточно отфильтровать уровни <code>E</code> (Error) и <code>F</code> (Fatal), игнорируя информационные сообщения. Это значительно ускоряет поиск неисправностей в сложных системах.</p>
+<p>Пример команды для вывода только ошибок:</p>
+<pre><code>adb logcat *:E</code></pre>
+<p>Такой подход позволяет быстро оценить состояние системы: если в этом режиме поток строк непрерывен, значит, в системе наблюдается критический сбой, требующий немедленного внимания.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Режимы логирования</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полная информация о системе</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность отследить редкие баки</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-при-работе-с-логами">Типичные ошибки при работе с логами</h2>
+<p>Работа с системными журналами требует внимательности, так как неверные действия могут привести к потере важной диагностической информации или нестабильной работе устройства.</p>
+<ol>
+<li><strong>Очистка буфера до сохранения лога</strong> — частая ошибка, когда пользователь сбрасывает журнал, не успев скопировать отчет об ошибке, что делает невозможным дальнейший анализ причин сбоя.</li>
+<li><strong>Игнорирование временных меток</strong> — при анализе длинных логов часто упускается синхронизация времени, из-за чего события располагаются в неверном порядке, и причинно-следственная связь теряется.</li>
+<li><strong>Постоянная запись в фоновом режиме</strong> — оставление включенным подробного логирования (<code>logcat</code> в цикле) без контроля размера файла может привести к переполнению раздела памяти и отказу системы.</li>
+<li><strong>Неверная интерпретация тегов</code></strong> — попытка фильтровать по имени приложения, в то время как процесс использует системный тег или работает под другим именем (например, <em>chrome</em> вместо <em>browser</em>).</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотное управление буфером журнала позволяет эффективно диагностировать сбои и оптимизировать работу Android-устройства.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+<p>Буфер журнала на Андроид представляет собой мощный инструмент диагностики, который при правильном использовании позволяет выявлять скрытые проблемы системы и приложений. Понимание структуры буферов, умение очищать их и фильтровать вывод данных является необходимым навыком для любого продвинутого пользователя или разработчика.</p>
+<p>Регулярный мониторинг логов и настройка оптимального размера буфера помогают поддерживать устройство в стабильном состоянии, предотвращая накопление ошибок и конфликтов программных компонентов. Использование команд ADB и знание уровней приоритета сообщений значительно ускоряет процесс поиска неисправностей.</p>
+<p>Внедрение описанных практик в routine обслуживания устройства обеспечивает высокий уровень контроля над операционной системой и позволяет быстро реагировать на любые программные аномалии.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/x/xi/xiaomi-13-pro-type-c-s-dp-mode.html" class="pb-related-card">
+                <span class="pb-related-title">Xiaomi 13 Pro Type-C: Включение DP Mode и вывод видео</span>
+                <span class="pb-related-desc">Полная инструкция по активации DisplayPort Alt Mode на Xiaomi 13 Pro. Настройка проводного и беспров</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-shagomer-na-telefone-v-29-vivo.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить шагомер на Vivo: Инструкция для 29 версий Funtouch OS</span>
+                <span class="pb-related-desc">Полное руководство по активации шагомера на Vivo. Настройка Funtouch OS, запуск приложения Здоровье,</span>
+            </a><a href="/articles/k/ka/kak-uznat-skolko-kontaktov-na-redmi.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать сколько контактов на Redmi: точный подсчет</span>
+                <span class="pb-related-desc">Подробная инструкция, как узнать количество контактов на Redmi. Методы подсчета через настройки, Goo</span>
+            </a><a href="/articles/h/ho/honor-magicbook-nastroit-print-screen.html" class="pb-related-card">
+                <span class="pb-related-title">Honor MagicBook: как настроить Print Screen и скриншоты</span>
+                <span class="pb-related-desc">Полная инструкция по настройке скриншотов на Honor MagicBook. Комбинации клавиш, настройки Magic-Lin</span>
+            </a><a href="/articles/p/po/pochemu-kogda-vstavlyayu-batareyu-v-knopochnyj-telefon-on-vibriruet-kak-ne-normalnyj.html" class="pb-related-card">
+                <span class="pb-related-title">Вибрация кнопочного телефона при установке батареи: причины и ремонт</span>
+                <span class="pb-related-desc">Детальная инструкция по устранению сильной вибрации кнопочного телефона. Причины, диагностика платы,</span>
+            </a><a href="/articles/a/au/audiopleer-na-android-samyj-gromkij.html" class="pb-related-card">
+                <span class="pb-related-title">Самый громкий аудиоплеер на Андроид: ТОП-10 и настройка звука</span>
+                <span class="pb-related-desc">Ищете самый громкий аудиоплеер на Андроид? Обзор лучших приложений для усиления звука, эквалайзеров </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Взлом Bluetooth-колонки: анализ уязвимостей и защита — Мастер Фикс</title>
+    <meta name="description" content="Технический разбор методов атаки на Bluetooth-устройства, анализ протоколов безопасности и способы защиты от несанкционированного доступа.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-vzlomat-bluetooth-kolonku.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Взлом Bluetooth-колонки: анализ уязвимостей и защита">
+    <meta property="og:description" content="Технический разбор методов атаки на Bluetooth-устройства, анализ протоколов безопасности и способы защиты от несанкционированного доступа.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Взлом Bluetooth-колонки: анализ уязвимостей и защита</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-и-архитектура-уязвимостей-bluetooth">Принципы работы и архитектура уязвимостей Bluetooth</a></li><li><a href="#инструментарий-для-аудита-безопасности-беспроводных-сетей">Инструментарий для аудита безопасности беспроводных сетей</a></li><li><a href="#методология-тестирования-на-проникновение">Методология тестирования на проникновение</a></li><li><a href="#практические-аспекты-защиты-и-предотвращение-вторжений">Практические аспекты защиты и предотвращение вторжений</a></li><li><a href="#типичные-ошибки-при-анализе-и-эксплуатации">Типичные ошибки при анализе и эксплуатации</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/j/jb/jbl-go-3-skachat-drajver.html">JBL Go 3: драйвер не нужен — как подключить и настроить</a></li><li><a href="/articles/f/fo/fork-player-kak-v-poiske-propisat-tire.html">Fork Player: как прописать тире в поиске и настроить плеер</a></li><li><a href="/articles/w/wa/wave-200-tws-jbl-ustranenie-shumopodavleniem.html">JBL Wave 200TWS: устранение проблем с шумоподавлением</a></li><li><a href="/articles/a/au/audio-input-dlya-chego-nuzhen.html">Audio Input: что это, зачем нужен и как подключить</a></li><li><a href="/articles/v/vi/video-s-ajfona-tormozyat-na-kompyutere.html">Видео с iPhone тормозит на ПК: причины и решения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Анализ уязвимостей Bluetooth-колонок и методы защиты</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-и-архитектура-уязвимостей-bluetooth">Принципы работы и архитектура уязвимостей Bluetooth</a></li><li><a href="#инструментарий-для-аудита-безопасности-беспроводных-сетей">Инструментарий для аудита безопасности беспроводных сетей</a></li><li><a href="#методология-тестирования-на-проникновение">Методология тестирования на проникновение</a></li><li><a href="#практические-аспекты-защиты-и-предотвращение-вторжений">Практические аспекты защиты и предотвращение вторжений</a></li><li><a href="#типичные-ошибки-при-анализе-и-эксплуатации">Типичные ошибки при анализе и эксплуатации</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда посторонний человек подключается к вашей портативной акустике без разрешения, вызывает закономерное беспокойство и ставит под угрозу конфиденциальность передаваемого аудиопотока.</p>
+<p>Владельцы умных устройств часто сталкиваются с необходимостью проверить устойчивость своих гаджетов к внешним воздействиям, чтобы исключить возможность перехвата управления или прослушивания.</p>
+<p>Понимание механизмов работы беспроводных протоколов позволяет не только диагностировать проблемы соединения, но и выстраивать эффективную стратегию защиты периметра личной сети.</p>
+
+<h2 id="принципы-работы-и-архитектура-уязвимостей-bluetooth">Принципы работы и архитектура уязвимостей Bluetooth</h2>
+<p>Технология беспроводной связи ближнего радиуса действия базируется на сложной системе протоколов обмена данными, которые теоретически должны обеспечивать шифрование трафика.</p>
+<p>Однако реализация этих протоколов в firmware различных производителей часто содержит логические ошибки или использует устаревшие алгоритмы шифрования, что создает потенциальные векторы атаки.</p>
+<p>Основной механизм защиты строится на процедуре спаривания (pairing), во время которой устройства обмениваются ключами доступа для последующей авторизации.</p>
+<p>Если процесс обмена ключами не использует стойкие алгоритмы или допускает перебор PIN-кодов, устройство становится уязвимым для несанкционированного подключения.</p>
+
+<h3>Протоколы сопряжения и риски</h3>
+<p>Существует несколько режимов безопасности, определяющих, как именно устройство реагирует на запросы подключения извне.</p>
+<p>В режиме <em>Non-discoverable</em> устройство скрывает свой MAC-адрес, но при активном сканировании спектра может быть обнаружено специализированным ПО.</p>
+<p>Режим <em>Just Works</em>, часто используемый в бюджетных моделях колонок, вообще не требует ввода пароля, полагаясь на физическую близость устройств, что является критической уязвимостью.</p>
+<p>Более современные реализации поддерживают <em>Secure Simple Pairing</em>, но и они могут быть подвержены атакам типа Man-in-the-Middle при неправильной настройке.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Многие пользователи не меняют заводские PIN-коды (часто 0000 или 1234), что делает процедуру вз трона тривиальной для злоумышленника.</p></aside>
+
+<p>Анализ трафика показывает, что даже зашифрованные пакеты данных иногда можно дешифровать, если известен начальный ключ или использован слабый алгоритм генерации случайных чисел.</p>
+<p>Исследователи безопасности регулярно находят уязвимости в стеке Bluetooth, такие как <strong>BlueBorne</strong> или <strong>KNOB</strong>, которые позволяют обходить механизмы авторизации.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип уязвимости</th>
+<th>Описание риска</th>
+<th>Уровень опасности</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weak PIN Code</td>
+<td>Возможность подбора пароля методом brute-force</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td>Unencrypted Link</td>
+<td>Перехват аудиопотока без шифрования</td>
+<td>Критический</td>
+</tr>
+<tr>
+<td>Firmware Bug</td>
+<td>Удаленное выполнение кода через переполнение буфера</td>
+<td>Критический</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="инструментарий-для-аудита-безопасности-беспроводных-сетей">Инструментарий для аудита безопасности беспроводных сетей</h2>
+<p>Для проведения легитимного тестирования на проникновение (Pentest) используется специализированный программный и аппаратный комплекс.</p>
+<p>Основой такого набора является операционная система <em>Kali Linux</em>, которая содержит предустановленный набор утилит для работы с Bluetooth-стеком.</p>
+<p>Стандартные адаптеры ноутбуков часто имеют ограниченный функционал и не поддерживают режим мониторинга, необходимый для глубокого анализа.</p>
+<p>Профессионалы используют внешние USB-адаптеры на чипах <em>CSR</em> или специализированные устройства вроде <em>Ubertooth One</em> и <em>Flipper Zero</em>.</p>
+
+<h3>Программные средства анализа</h3>
+<p>Утилита <code>hcitool</code> является базовым инструментом для сканирования эфира и получения списка видимых устройств в радиусе действия.</p>
+<p>Для более глубокого взаимодействия применяется <code>bluetoothctl</code>, позволяющий управлять состоянием адаптера и инициировать процессы сопряжения.</p>
+<p>Специализированный фреймворк <em>Bettercap</em> предоставляет модули для автоматического сканирования и выявления уязвимых конфигураций в реальном времени.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовое сканирование сети</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Включите адаптер командой hciconfig hci0 up</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите сканирование hcitool scan</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Получите список устройств bluetoothctl scan on</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проанализируйте MAC-адреса</span></div></div>
+
+<p>При работе с <code>gatttool</code> можно взаимодействовать с профилями устройств, проверяя доступность сервисов, которые не должны быть открыты для публичного доступа.</p>
+<p>Логирование процессов позволяет сохранить пакетную информацию для последующего оффлайн-анализа и поиска аномалий в протоколе обмена.</p>
+
+<h2 id="методология-тестирования-на-проникновение">Методология тестирования на проникновение</h2>
+<p>Процесс проверки безопасности начинается с этапа разведки, целью которого является идентификация целевого устройства и сбор информации о его конфигурации.</p>
+<p>После обнаружения устройства производится попытка установления соединения различными методами, включая стандартное спаривание и попытки обхода авторизации.</p>
+<p>Если стандартные методы не работают, применяется анализ уязвимостей конкретных версий прошивок и поиск известных эксплойтов.</p>
+<p>Важным этапом является попытка внедрения вредоносного кода или изменение настроек устройства для получения постоянного доступа.</p>
+
+<h3>Атаки на процесс сопряжения</h3>
+<p>Одной из распространенных техник является атака <strong>Bluejacking</strong>, которая заключается в отправке нежелательных сообщений или контактов.</p>
+<p>Более серьезной угрозой является <strong>Bluesnarfing</strong>, позволяющий получить доступ к файловой системе и контактам, если устройство некорректно настроено.</p>
+<p>Метод <em>Downgrade Attack</em> заставляет устройства использовать менее защищенный протокол шифрования, что облегчает перехват ключей.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Проведение атак на устройства, не принадлежащие вам, или без письменного разрешения владельца запрещено законодательством РФ и международными нормами.</p></aside>
+
+<p>Существуют также атаки на доступность (<em>Denial of Service</em>), которые приводят к зависанию модуля Bluetooth и требуют перезагрузки устройства.</p>
+<p>Реализация таких атак часто требует точного знания таймингов и структуры пакетов конкретного производителя.</p>
+
+<ul>
+<li>Сканирование диапазонов частот для поиска скрытых устройств</li>
+<li>Сниффинг трафика для анализа рукопожатия</li>
+<li>Попытка подбора PIN-кода через перебор</li>
+<li>Эксплуатация переполнения буфера в стеке протоколов</li>
+</ul>
+
+<p>Успешность атаки напрямую зависит от версии Bluetooth, поддерживаемой колонкой, и наличия установленных патчей безопасности.</p>
+
+<h2 id="практические-аспекты-защиты-и-предотвращение-вторжений">Практические аспекты защиты и предотвращение вторжений</h2>
+<p>Знание методов атаки позволяет сформулировать эффективные меры защиты, которые минимизируют риски несанкционированного доступа.</p>
+<p>Первым шагом всегда должно быть обновление прошивки устройства до последней версии, предоставленной производителем.</p>
+<p>Необходимо отключать видимость устройства, когда не планируется подключение новых гаджетов, переводя его в скрытый режим.</p>
+<p>Использование сложных, уникальных PIN-кодов вместо стандартных заводских комбинаций значительно усложняет жизнь злоумышленникам.</p>
+
+<h3>Настройка безопасного окружения</h3>
+<p>В корпоративных сетях следует использовать сегментацию, отделяя IoT-устройства от основной инфраструктуры с конфиденциальными данными.</p>
+<p>Регулярный аудит подключенных устройств помогает выявить посторонние подключения на ранней стадии.</p>
+<p>Отключение неиспользуемых функций Bluetooth на смартфонах и планшетах снижает площадь потенциальной атаки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При покупке б/у Bluetooth-колонки всегда выполняйте полный сброс (Hard Reset) до заводских настроек, чтобы удалить старые ключи сопряжения.</p></aside>
+
+<p>Пользователям стоит избегать подключения к устройствам с именами, содержащими подозрительные символы или указывающими на уязвимые модели.</p>
+<p>Включение двухфакторной аутентификации в сопутствующих приложениях управления добавляет дополнительный уровень защиты.</p>
+
+<ol>
+<li>Проверьте список сопряженных устройств в настройках Bluetooth</li>
+<li>Удалите все неизвестные или старые устройства из списка</li>
+<li>Измените имя устройства на уникальное, не содержащее информации о модели</li>
+<li>Отключите автоматическое подключение к известным сетям</li>
+</ol>
+
+<p>Соблюдение этих простых правил гигиены цифровой безопасности позволяет сохранить контроль над своими устройствами.</p>
+
+<h2 id="типичные-ошибки-при-анализе-и-эксплуатации">Типичные ошибки при анализе и эксплуатации</h2>
+<p>В процессе изучения работы Bluetooth-протоколов новички часто допускают ряд ошибок, которые могут привести к нестабильной работе оборудования или ложным выводам.</p>
+<p>Понимание этих ошибок помогает избежать проблем и делает процесс обучения более эффективным и безопасным.</p>
+
+<ol>
+<li><strong>Использование встроенного адаптера ноутбука</strong> — встроенные модули часто не поддерживают необходимые режимы инжекции и мониторинга, что приводит к ошибке «Operation not permitted»; следует использовать внешние специализированные адаптеры.</li>
+<li><strong>Игнорирование обновлений прошивки</strong> — тестирование устаревшей версии ПО не дает актуальной картины безопасности, так как известные уязвимости могут быть уже закрыты производителем.</li>
+<li><strong>Попытка подключения к чужим устройствам</strong> — это не только неэтично, но и оставляет цифровые следы, которые могут быть использованы для идентификации нарушителя; тестировать нужно только свое оборудование.</li>
+<li><strong>Неверная интерпретация логов</strong> — отсутствие опыта приводит к тому, что нормальный служебный трафик принимается за атаку; требуется глубокое знание спецификаций протокола.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Легальный аудит безопасности</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Понимание рисков</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Неконтролируемый взлом:Юридическая ответственность</li><li>❌ Потеря гарантии</li><li>❌ Риск поломки устройства</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Анализ уязвимостей Bluetooth-колонок демонстрирует, что безопасность беспроводных устройств напрямую зависит от сознательности пользователя и своевременности обновлений.</p>
+<p>Хотя теоретические возможности для перехвата управления существуют, применение современных методов шифрования и правильная настройка сводят эти риски к минимуму.</p>
+<p>Использование специализированного инструментария должно осуществляться исключительно в образовательных целях и в пределах изолированной лабораторной среды.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Безопасность Bluetooth-устройств требует комплексного подхода, включающего обновление ПО, использование сложных паролей и отключение видимости в публичных местах.</p></aside>
+
+<p>Постоянное развитие технологий защиты идет в ногу с методами атак, поэтому поддержание актуальности знаний и программного обеспечения остается ключевым фактором защиты.</p>
+
+<table>
+<thead>
+<tr>
+<th>Действие</th>
+<th>Частота</th>
+<th>Влияние на безопасность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Обновление firmware</td>
+<td>Раз в 3-6 месяцев</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Смена PIN-кода</td>
+<td>При покупке/сбросе</td>
+<td>Среднее</td>
+</tr>
+<tr>
+<td>Аудит подключений</td>
+<td>Ежемесячно</td>
+<td>Среднее</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/j/jb/jbl-go-3-skachat-drajver.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Go 3: драйвер не нужен — как подключить и настроить</span>
+                <span class="pb-related-desc">Нужен ли драйвер для JBL Go 3? Узнайте, как правильно подключить колонку к Windows, Android и iOS бе</span>
+            </a><a href="/articles/f/fo/fork-player-kak-v-poiske-propisat-tire.html" class="pb-related-card">
+                <span class="pb-related-title">Fork Player: как прописать тире в поиске и настроить плеер</span>
+                <span class="pb-related-desc">Подробная инструкция: как в Fork Player ввести тире в поиске, настроить пульт, устранить ошибки ввод</span>
+            </a><a href="/articles/w/wa/wave-200-tws-jbl-ustranenie-shumopodavleniem.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Wave 200TWS: устранение проблем с шумоподавлением</span>
+                <span class="pb-related-desc">Полная инструкция по настройке ANC в наушниках JBL Wave 200TWS. Устранение постороннего шума, сброс,</span>
+            </a><a href="/articles/a/au/audio-input-dlya-chego-nuzhen.html" class="pb-related-card">
+                <span class="pb-related-title">Audio Input: что это, зачем нужен и как подключить</span>
+                <span class="pb-related-desc">Полный гид по аудио входу: разъемы, кабели, настройка ПК и устранение проблем. Узнайте, как правильн</span>
+            </a><a href="/articles/v/vi/video-s-ajfona-tormozyat-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Видео с iPhone тормозит на ПК: причины и решения</span>
+                <span class="pb-related-desc">Почему видео с Айфона лагает на компьютере? Полное руководство по настройке HEVC, H.264, кодеков и э</span>
+            </a><a href="/articles/d/dl/dlya-zony-s-filmami-est-storonnij-videopleer.html" class="pb-related-card">
+                <span class="pb-related-title">Сторонний видеоплеер в зоне фильмов: Настройка и запуск</span>
+                <span class="pb-related-desc">Как запустить сторонний видеоплеер в зоне фильмов на Android TV. Инструкция по установке, настройке </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

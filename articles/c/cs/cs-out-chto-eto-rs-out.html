@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>cs-out и rs-out: Разница, назначение и настройка портов UART — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический разбор сигналов cs-out и rs-out. Настройка управления потоком, диагностика ошибок в UART и таблицы соответствия.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/c/cs/cs-out-chto-eto-rs-out.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="cs-out и rs-out: Разница, назначение и настройка портов UART">
+    <meta property="og:description" content="Подробный технический разбор сигналов cs-out и rs-out. Настройка управления потоком, диагностика ошибок в UART и таблицы соответствия.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">cs-out и rs-out: Разница, назначение и настройка портов UART</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#фундаментальные-различия-сигналов-управления-потоком">Фундаментальные различия сигналов управления потоком</a></li><li><a href="#конфигурация-портов-в-операционных-системах">Конфигурация портов в операционных системах</a></li><li><a href="#аппаратная-реализация-и-схемотехника">Аппаратная реализация и схемотехника</a></li><li><a href="#диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</a></li><li><a href="#сценарии-использования-в-промышленных-протоколах">Сценарии использования в промышленных протоколах</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vliyaet-udalenie-provodnika.html">Влияние удаления проводника: последствия для системы</a></li><li><a href="/articles/g/gl/glo-vydaet-oshibku-vibrirovaet.html">Гло вибрирует и выдает ошибку: устранение сбоя</a></li><li><a href="/articles/1/16/16-yanvarya-perestal-rabotat-bluelink.html">Bluelink не работает 16 января: причины и решение</a></li><li><a href="/articles/a/ad/adresa-tinstaller.html">Адреса tinstaller: настройка, порты и решение ошибок</a></li><li><a href="/articles/u/un/undress-game.html">Undress Game: Анализ рисков, вредоносного ПО и защиты</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ сигналов cs-out и rs-out в интерфейсах связи</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#фундаментальные-различия-сигналов-управления-потоком">Фундаментальные различия сигналов управления потоком</a></li><li><a href="#конфигурация-портов-в-операционных-системах">Конфигурация портов в операционных системах</a></li><li><a href="#аппаратная-реализация-и-схемотехника">Аппаратная реализация и схемотехника</a></li><li><a href="#диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</a></li><li><a href="#сценарии-использования-в-промышленных-протоколах">Сценарии использования в промышленных протоколах</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При подключении промышленного оборудования или отладке микроконтроллеров часто возникает ситуация, когда передача данных идет только в одну сторону или обрывается после нескольких байт.</p>
+<p>В логах терминала появляются сообщения о переполнении буфера (overrun error), а устройство-получатель просто игнорирует входящий поток, несмотря на физическую исправность кабелей.</p>
+<p>Подобные симптомы почти всегда указывают на проблемы с программным или аппаратным управлением потоком, где ключевую роль играют сигналы готовности приемника и передатчика, известные в технической документации как rs-out и cs-out.</p>
+
+<h2 id="фундаментальные-различия-сигналов-управления-потоком">Фундаментальные различия сигналов управления потоком</h2>
+<p>Понимание логики работы последовательного интерфейса невозможно без четкого разграничения ролей участников обмена данными. Сигнал <em>rs-out</em> (Receiver Signal Out или Ready to Send Out) является индикатором состояния приемного буфера конкретного устройства. Когда микроконтроллер или модем выдает этот сигнал, он сообщает внешнему миру, что его буфер приема пуст и готов к загрузке новыми данными. Игнорирование этого состояния приводит к потере пакетов информации.</p>
+<p>В свою очередь, <em>cs-out</em> (Clear to Send Out или Carrier Signal Out) часто путают с аналогичным входным сигналом, однако в контексте выходных линий это статус, который устройство транслирует партнеру. Если <em>rs-out</em> говорит «я готов принять», то активный <em>cs-out</em> (в зависимости от реализации протокола) может означать «линия свободна» или «несущая частота обнаружена». В современных реализациях UART без модемного управления эти линии часто эмулируются программно.</p>
+<p>На практике различие кроется в направлении вектора управления. <strong>Аппаратное управление потоком</strong> требует наличия минимум двух дополнительных линий помимо земли и, что увеличивает надежность, но усложняет разводку платы. Программное управление (XON/XOFF) использует сами данные, что создает задержки и не подходит для бинарных протоколов, где байты 0x11 и 0x13 могут быть частью полезной нагрузки.</p>
+
+<h3>Логические уровни и временные диаграммы</h3>
+<p>Физический уровень сигналов определяется стандартом передачи, будь то классический <em>RS-232</em> или современный <em>TTL UART</em>. В стандарте RS-232 логический ноль (активное состояние для большинства управляющих сигналов) соответствует напряжению от +3В до +15В, а логическая единица — от -3В до -15В. Для TTL-уровней, характерных для микроконтроллеров, активным состоянием часто является высокий логический уровень (+3.3В или +5В).</p>
+<p>Временная диаграмма показывает, что сигнал готовности должен стабилизироваться раньше, чем начнется передача первого бита данных. Задержка между изменением состояния линии управления и началом передачи данных называется временем установления. Если устройство-отправитель начинает передачу раньше, чем партнер поднимет флаг готовности, первый байт будет утерян.</p>
+
+<p>Сравнение основных характеристик сигналов представлено в таблице ниже:</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>rs-out (Ready Status)</th>
+<th>cs-out (Clear Status)</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Основная функция</td>
+<td>Индикация готовности буфера приема</td>
+<td>Индикация готовности линии передачи</td>
+</tr>
+<tr>
+<td>Направление</td>
+<td>От приемника к передатчику</td>
+<td>От передатчика к приемнику (или модему)</td>
+</tr>
+<tr>
+<td>Критичность</td>
+<td>Высокая (защита от переполнения)</td>
+<td>Средняя (зависит от протокола)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В современных USB-to-UTL адаптерах эти сигналы часто выведены на отдельные пины GPIO, которые необходимо конфигурировать через драйвер.</p></aside>
+
+<h2 id="конфигурация-портов-в-операционных-системах">Конфигурация портов в операционных системах</h2>
+<p>Настройка управления потоком в операционной системе требует точного указания параметров порта, так как по умолчанию многие драйверы игнорируют аппаратные линии. В среде <em>Linux</em> управление осуществляется через утилиту <code>stty</code> или программные библиотеки. Команда для проверки текущего состояния выглядит как <code>stty -F /dev/ttyUSB0 -a</code>, где в выводе можно увидеть флаги <code>crtscts</code> (аппаратное) или <code>ixon/ixoff</code> (программное).</p>
+<p>Если требуется принудительно включить аппаратный контроль, необходимо использовать соответствующие флаги. Ошибочная настройка, например, включение аппаратного контроля на устройстве, где линии не разведены, приведет к полной остановке передачи, так как драйвер будет бесконечно ждать сигнала готовности, который физически не придет.</p>
+<p>В операционных системах семейства <em>Windows</em> настройка производится через API функции <code>SetCommState</code>, заполняя структуру <code>DCB</code>. Поле <code>fOutxCtsFlow</code> отвечает за контроль линии CTS, а <code>fRtsControl</code> управляет поведением линии RTS. </p>
+
+<h3>Настройка через терминальные эмуляторы</h3>
+<p>При использовании программ вроде <em>PuTTY</em>, <em>Tera Term</em> или <em>SecureCRT</em>, пользователь должен вручную выбрать метод управления потоком в настройках соединения. Обычно доступны опции: None, XON/XOFF, Hardware (RTS/CTS). Выбор опции Hardware заставляет программу отслеживать состояние пинов COM-порта перед отправкой каждого байта.</p>
+<p>Для диагностики состояния линий в реальном времени можно использовать специализированные утилиты мониторинга портов, которые отображают уровень напряжения на управляющих пинах в виде светодиодных индикаторов. Это позволяет визуально убедиться, поднимает ли устройство сигнал готовности при переполнении буфера.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка PuTTY для Hardware Flow Control</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте категорию Connection → Serial</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">В поле Flow control выберите RTS/CTS</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Вернитесь в раздел Session и нажмите Open</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте передачу данных</span></div></div>
+
+<h2 id="аппаратная-реализация-и-схемотехника">Аппаратная реализация и схемотехника</h2>
+<p>При проектировании печатных плат или сборке переходников необходимо учитывать электрические характеристики линий управления. Сигналы <em>rs-out</em> и <em>cs-out</em> в интерфейсе RS-232 имеют низкую нагрузочную способность по току, но высокий импеданс. При подключении к TTL-логике микроконтроллера обязательно использование преобразователей уровней, таких как <em>MAX232</em> или <em>SP3232</em>.</p>
+<p>Частой проблемой является отсутствие подтягивающих резисторов на линиях управления. Если линия «висит в воздухе», на ней могут наводиться помехи, которые будут восприниматься контроллером как хаотичные сигналы готовности, вызывая рваный характер передачи данных. Для TTL-уровней рекомендуется использовать резисторы 10 кОм для подтяжки к земле или питанию в зависимости от активной фазы сигнала.</p>
+<p>В системах с гальванической развязкой линии управления также должны быть изолированы. Использование оптопар для сигналов RTS/CTS добавляет задержку распространения сигнала, что необходимо учитывать при высоких скоростях передачи (выше 115200 бод). На высоких скоростях фронты сигналов могут «размазываться», что приведет к нарушению таймингов.</p>
+
+<h3>Проблемы совместимости уровней напряжения</h3>
+<p>Многие современные одноплатные компьютеры, такие как <em>Raspberry Pi</em> или <em>BeagleBone</em>, имеют 3.3В логику, в то время как промышленное оборудование работает на 5В или 12В. Прямое подключение линий управления без согласования может привести к повреждению GPIO портов. Для защиты цепей управления потоком часто используют простые диодные ограничители или транзисторные ключи.</p>
+<p>Особое внимание стоит уделить питанию преобразователей. Если преобразователь уровней питается от USB, а целевое устройство от внешнего источника, необходимо соединить земли (GND) обоих устройств, иначе управление потоком работать не будет из-за отсутствия общей точки отсчета потенциалов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Подача напряжения 5В на вход GPIO, рассчитанный на 3.3В, гарантированно выведет порт из строя. Используйте уровневые конвертеры.</p></aside>
+
+<h2 id="диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</h2>
+<p>Процесс поиска неисправностей в каналах управления потоком начинается с проверки физической целостности соединений. Используя мультиметр или осциллограф, необходимо убедиться, что при изменении состояния буфера меняется напряжение на соответствующем пине. Отсутствие реакции может указывать на сгоревший порт или программную блокировку.</p>
+<p>Если физический уровень в норме, но данные не идут, следует проверить логику работы драйвера. В Linux можно использовать утилиту <code>cat</code> для вывода данных и одновременно мониторить состояние линий через <code>modemstatus</code> (если доступно) или специализированные скрипты на Python с библиотекой <code>pyserial</code>. Скрипт может периодически опрашивать состояние CTS/DSR и выводить лог изменений.</p>
+<p>Частым случаем является «залипание» линии. Программный сброс порта (закрытие и повторное открытие устройства) часто помогает вернуть линии в исходное состояние. В промышленных контроллерах иногда требуется цикл выключения питания для сброса логики UART.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение методов управления потоком</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Надежность передачи данных 99.9%</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Поддержка бинарных протоколов</li></ul></div>
+</div></div>
+
+<h2 id="сценарии-использования-в-промышленных-протоколах">Сценарии использования в промышленных протоколах</h2>
+<p>В протоколах типа <em>Modbus RTU</em> управление потоком критически важно, так как мастер опрашивает множество устройств на одной шине. Хотя сам Modbus часто работает в режиме «полу-дуплекс» (RS-485), преобразователи RS-232/485 используют сигналы RTS/CTS для автоматического переключения направления передачи (TX/RX). Здесь сигнал <em>rs-out</em> (RTS) используется для включения передатчика на шине.</p>
+<p>В телеметрии и GPS-трекерах управление потоком позволяет буферизовать большие пакеты данных (например, альманах спутников) без потерь, когда процессор занят обработкой прерываний. Без аппаратного контроля в таких сценариях наблюдается потеря до 30% пакетов при пиковых нагрузках.</p>
+
+<p>Таблица совместимости методов управления для различных устройств:</p>
+<table>
+<thead>
+<tr>
+<th>Устройство</th>
+<th>Поддержка Hardware</th>
+<th>Особенности</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arduino (AVR)</td>
+<td>Да (через библиотеки)</td>
+<td>Требует ручного назначения пинов</td>
+</tr>
+<tr>
+<td>ESP32</td>
+<td>Да (аппаратный UART)</td>
+<td>Гибкая настройка через menuconfig</td>
+</tr>
+<tr>
+<td>PC (Windows)</td>
+<td>Да (стандарт COM)</td>
+<td>Зависит от чипа USB-адаптера</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильная настройка cs-out и rs-out является обязательным условием стабильной связи в системах с высокой нагрузкой на канал передачи данных.</p></aside>
+
+<h2 id="типичные-ошибки">Типичные ошибки</h2>
+<ol>
+<li><strong>Игнорирование соединения земель (GND).</strong> — Сигналы управления передаются относительно общего провода; без соединения GND уровни напряжения «плавают», и оборудование не понимает друг друга, даже если подключены верно.</li>
+<li><strong>Путаница между DTE и DCE.</strong> — Компьютер (DTE) и модем (DCE) имеют зеркальное назначение пинов; прямое соединение RTS-RTS и CTS-CTS не заработает, необходима перекрестная коммутация или нуль-модемный кабель.</li>
+<li><strong>Использование программных задержек вместо флагов.</strong> — Попытка заменить аппаратный поток паузами в коде (delay) приводит к нестабильной работе при изменении скорости процессора или загрузке системы.</li>
+<li><strong>Неверная настройка драйвера.</strong> — Включение аппаратного контроля в ПО при физическом отсутствии проводов RTS/CTS приводит к вечному ожиданию сигнала готовности и остановке передачи.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки работы линий управления без осциллографа можно замкнуть RTS и CTS на адаптере: если эхо-тест проходит, значит драйвер и порт исправны.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Сигналы <em>cs-out</em> и <em>rs-out</em> представляют собой фундаментальный механизм синхронизации в последовательных интерфейсах, предотвращающий потерю данных при переполнении буферов. Их корректная настройка требует согласования не только программных параметров (скорость, биты, стоп-биты), но и физической</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vliyaet-udalenie-provodnika.html" class="pb-related-card">
+                <span class="pb-related-title">Влияние удаления проводника: последствия для системы</span>
+                <span class="pb-related-desc">Что будет, если удалить проводника Windows? Последствия отключения explorer.exe, риски сбоя интерфей</span>
+            </a><a href="/articles/g/gl/glo-vydaet-oshibku-vibrirovaet.html" class="pb-related-card">
+                <span class="pb-related-title">Гло вибрирует и выдает ошибку: устранение сбоя</span>
+                <span class="pb-related-desc">Почему Гло вибрирует и выдает ошибку? Подробный разбор причин, диагностика модуля вибрации, программ</span>
+            </a><a href="/articles/1/16/16-yanvarya-perestal-rabotat-bluelink.html" class="pb-related-card">
+                <span class="pb-related-title">Bluelink не работает 16 января: причины и решение</span>
+                <span class="pb-related-desc">Сбои сервиса Bluelink 16 января. Полный гид по устранению ошибок подключения, обновлению ПО и сбросу</span>
+            </a><a href="/articles/a/ad/adresa-tinstaller.html" class="pb-related-card">
+                <span class="pb-related-title">Адреса tinstaller: настройка, порты и решение ошибок</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке адресов tinstaller, портов и путей. Решение проблем с подключением</span>
+            </a><a href="/articles/u/un/undress-game.html" class="pb-related-card">
+                <span class="pb-related-title">Undress Game: Анализ рисков, вредоносного ПО и защиты</span>
+                <span class="pb-related-desc">Технический разбор Undress Game: угрозы безопасности, анализ APK-файлов, методы защиты устройств и у</span>
+            </a><a href="/articles/p/ps/ps2251-70-25-utilita.html" class="pb-related-card">
+                <span class="pb-related-title">PS2251-70: Утилита для прошивки и восстановления USB-флешек</span>
+                <span class="pb-related-desc">Подробная инструкция по использованию утилиты MPALL для контроллера PS2251-70. Восстановление флешек</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>SCX8123 Hard Reset: Полный сброс и настройка модуля — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по выполнению SCX8123 hard reset. Методы восстановления, распиновка GPIO, работа с AT-командами и устранение ошибок подключения.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/sc/scx8123-hard-reset.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SCX8123 Hard Reset: Полный сброс и настройка модуля">
+    <meta property="og:description" content="Инструкция по выполнению SCX8123 hard reset. Методы восстановления, распиновка GPIO, работа с AT-командами и устранение ошибок подключения.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/bezopasnost-dostup/">Безопасность и Доступ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">SCX8123 Hard Reset: Полный сброс и настройка модуля</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-рабочего-места-и-необходимого-оборудования">Подготовка рабочего места и необходимого оборудования</a></li><li><a href="#аппаратный-сброс-через-контакты-reset-и-power">Аппаратный сброс через контакты RESET и POWER</a></li><li><a href="#использование-at-команд-для-принудительной-перезагрузки">Использование AT-команд для принудительной перезагрузки</a></li><li><a href="#диагностика-через-uart-и-анализ-логов-загрузки">Диагностика через UART и анализ логов загрузки</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/w/wv/wv-key-checker-eto-chto.html">WV Key Checker: что это, зачем нужен и как проверить уровень DRM</a></li><li><a href="/articles/x/xt/xtreme-codes.html">XTREME CODES: Инструкция по настройке IPTV на Android и ТВ</a></li><li><a href="/articles/x/xt/xtream-codes-plejlist-chto.html">Xtream Codes плейлист: настройка, форматы и запуск</a></li><li><a href="/articles/v/v-/v-menyu-recovery-esli-ochistit-kesh.html">Очистка кэша в Recovery: Подробная инструкция и риски</a></li><li><a href="/articles/c/cl/cl-plus-key-fail-philips-chto-eto.html">CL Plus Key Fail Philips: Причины, коды ошибок и способы устранения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>SCX8123 Hard Reset: Полное руководство по сбросу</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-рабочего-места-и-необходимого-оборудования">Подготовка рабочего места и необходимого оборудования</a></li><li><a href="#аппаратный-сброс-через-контакты-reset-и-power">Аппаратный сброс через контакты RESET и POWER</a></li><li><a href="#использование-at-команд-для-принудительной-перезагрузки">Использование AT-команд для принудительной перезагрузки</a></li><li><a href="#диагностика-через-uart-и-анализ-логов-загрузки">Диагностика через UART и анализ логов загрузки</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапная потеря связи с сетью или невозможность обновить прошивку на модуле SCX8123 часто застает инженера врасплох, особенно когда штатные методы перезагрузки перестают реагировать. Устройство может зависнуть в цикле загрузки, игнорировать команды терминала или отображать некорректные данные о состоянии сети, что делает дальнейшую эксплуатацию невозможной без вмешательства в низкоуровневую конфигурацию.</p>
+<p>Ситуация усугубляется тем, что стандартный программный сброс через AT-команды в таких случаях часто не проходит, так как файловая система модуля может быть повреждена или заблокирована процессом зависания. В этот момент единственным надежным способом вернуть оборудование к жизни остается выполнение процедуры принудительного аппаратного сброса, известной как hard reset, которая затрагивает физические контакты и регистры памяти.</p>
+<p>Выполнение данной операции требует точного соблюдения последовательности действий и понимания электрических параметров интерфейсов, так как некорректное подключение может привести к необратимому повреждению портов ввода-вывода. Ниже представлен детальный алгоритм действий, охватывающий подготовку оборудования, физическое подключение, программную часть и диагностику возможных ошибок.</p>
+
+<h2 id="подготовка-рабочего-места-и-необходимого-оборудования">Подготовка рабочего места и необходимого оборудования</h2>
+
+<p>Перед началом любых манипуляций с аппаратной частью критически важно обеспечить стабильное электропитание, так как скачки напряжения в момент сброса могут привести к порче flash-памяти. Для работы потребуется источник питания с током не менее 2А и напряжением, строго соответствующим спецификации модуля, обычно это диапазон от 3.3В до 5В в зависимости от конкретной ревизии платы.</p>
+<p>Для организации консольного доступа необходим USB-UART преобразователь, поддерживающий рабочие напряжения 1.8В или 3.3В, поскольку прямое подключение к портам компьютера через RS-232 без согласования уровней гарантированно выведет чип из строя. <strong>Проверка уровней логических сигналов</strong> является обязательным этапом, который нельзя игнорировать даже при работе с проверенным оборудованием.</p>
+<p>Также понадобятся тонкие монтажные провода или pogo-пины для временного соединения с тестовыми площадками на плате, если разъемы не распаяны производителем. Использование пинцета для замыкания контактов возможно, но менее надежно и требует твердой руки, чтобы не повредить соседние элементы.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Кратковременное замыкание контактов RESET и GND под напряжением может вызвать искрение. Всегда проверяйте надежность соединения перед подачей питания.</p></aside>
+
+<p>В качестве программного обеспечения для терминального доступа рекомендуется использовать <em>PuTTY</em>, <em>Tera Term</em> или <em>Screen</em> в Linux, настроенные на скорость 115200 бод, что является стандартом де-факто для отладочных консолей Quectel. Перед подключением кабеля стоит убедиться, что драйверы конвертера установлены корректно и операционная система видит виртуальный COM-порт.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Требования</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Источник питания</td>
+<td>3.3В - 5В, >2А</td>
+<td>Стабильность важнее мощности</td>
+</tr>
+<tr>
+<td>UART адаптер</td>
+<td>3.3В TTL, 115200 бод</td>
+<td>Не использовать RS-232</td>
+</tr>
+<tr>
+<td>Провода</td>
+<td>Монтажные, тонкие</td>
+<td>Минимальная длина</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="аппаратный-сброс-через-контакты-reset-и-power">Аппаратный сброс через контакты RESET и POWER</h2>
+
+<p>Физический метод сброса является наиболее эффективным способом реанимировать модуль, который не реагирует на программные запросы. На плате модуля SCX8123 обычно присутствуют контактные площадки, подписанные как <code>RESET</code>, <code>PWRKEY</code> или <code>KEY</code>, а также обязательный контакт заземления <code>GND</code>.</p>
+<p>Процедура начинается с подачи питания на модуль, после чего необходимо дождаться завершения начальной стадии загрузки, если она вообще происходит. Если светодиодный индикатор горит постоянно или не горит вовсе, это сигнал к немедленному применению механического воздействия на контакты управления.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Аппаратный сброс</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подайте питание на модуль</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите контакты RESET и GND</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Замкните их пинцетом на 2-3 секунды</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Отпустите и дождитесь перезагрузки</span></div></div>
+
+<p>Замыкание контакта <code>RESET</code> на землю (<code>GND</code>) инициирует сигнал сброса, который принудительно останавливает процессор и запускает процедуру бутлоадера заново. Удерживать замыкание следует не более 3 секунд, так как более длительное воздействие может перевести устройство в режим прошивки или вызвать циклическую перезагрузку без инициализации модема.</p>
+<p>В некоторых случаях, особенно при глубоком зависании радиомодуля, простого сброса процессора недостаточно, и требуется эмуляция (long press) кнопки включения. Для этого используется контакт <code>PWRKEY</code>, который замыкается на землю на период от 1 до 3 секунд, что эквивалентно физической кнопки на корпусе устройства.</p>
+<p>Если модуль оснащен разъемом для антенны, перед проведением работ ее необходимо подключить или заменить на эквивалент нагрузки, чтобы избежать повреждения выходных каскадов передатчика при попытке регистрации в сети сразу после сброса. <strong>Работа без антенны</strong> на высоких мощностях может привести к перегреву и выходу из строя RF-части.</p>
+
+<h3>Специфика для различных ревизий плат</h3>
+<p>На ранних версиях плат контакты для сброса могли быть выведены на отдельный разъем, в то время как в новых ревизиях они часто доступны только через тестовые точки диаметром менее 1 мм. Владельцам устройств с запаянными корпусами может потребоваться частичная разборка для доступа к печатной плате.</p>
+<p>Стоит учитывать, что на некоторых OEM-модификациях логика работы линии <code>PWRKEY</code> инвертирована или требует подачи определенного напряжения, а не просто замыкания на землю. В таких случаях замыкание может не дать эффекта, и потребуется использование резистивного делителя.</p>
+
+<h2 id="использование-at-команд-для-принудительной-перезагрузки">Использование AT-команд для принудительной перезагрузки</h2>
+
+<p>Если модуль частично функционирует и отвечает на команды в терминале, наиболее безопасным методом является использование специализированных AT-команд для программной инициации сброса. Базовая команда <code>AT+CFUN=1,1</code> выполняет полный сброс функциональности, что эквивалентно выключению и включению питания.</p>
+<p>Для более глубокого сброса, затрагивающего настройки профиля, применяется команда <code>AT+QCFG</code> в сочетании с параметрами перезагрузки, однако синтаксис может отличаться в зависимости от версии прошивки <em>Quectel</em>. Ввод команд должен производиться строго в формате ASCII с переводом строки (CR+LF).</p>
+
+<pre><code>AT+CFUN=1,1
+<p>OK</p>
+</code></pre>
+
+<p>В ситуациях, когда стандартные команды блокируются, можно попробовать отправить команду сброса через порт отладки, используя утилиту <em>QFlash</em> или аналогичный софт от производителя, который имеет приоритет над обычным AT-портом. Этот метод позволяет перезагрузить модуль даже при частичной блокировке основного процессора.</p>
+<p>После успешной отправки команды терминал потеряет связь с устройством, и через 10-20 секунд в логе должны появиться начальные строки загрузчика. Если вместо этого наблюдается поток нечитаемых символов, возможно, выбрана неверная скорость baud rate или нарушена целостность файловой системы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команда AT+CFUN=4 переводит модуль в режим минимальной функциональности, что полезно для диагностики, но не является полным сбросом.</p></aside>
+
+<p>Для автоматизации процесса восстановления можно использовать скрипт, который отправляет последовательность команд с задержками. Это особенно актуально при массовом обслуживании парка устройств, где ручной ввод команд неэффективен.</p>
+
+<ul>
+<li>Проверьте доступность порта командой ls /dev/ttyUSB* (Linux) или диспетчером устройств (Windows).</li>
+<li>Откройте терминал с правильными параметрами скорости и битности.</li>
+<li>Введите AT и убедитесь в получении ответа OK.</li>
+<li>Отправьте команду сброса и мониторьте процесс загрузки.</li>
+</ul>
+
+<h2 id="диагностика-через-uart-и-анализ-логов-загрузки">Диагностика через UART и анализ логов загрузки</h2>
+
+<p>Подключение к отладочному UART порту (обычно это TX/RX линии, перекрестно соединенные с адаптером) дает доступ к низкоуровневым логам загрузчика, что является ключевым этапом диагностики. В отличие от AT-порта, через отладочный UART передается информация о прохождении этапов POST, инициализации памяти и запуске операционной системы.</p>
+<p>При включении питания или после выполнения hard reset в окне терминала должен отобразиться поток текста, начинающийся с идентификации процессора и версии bootrom. Отсутствие любого вывода при гарантированно рабочем подключении свидетельствует о критической аппаратной неисправности или полном"кирпичевании" загрузчика.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом в логе</th>
+<th>Вероятная причина</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Нет вывода</td>
+<td>Нет питания или поврежден UART</td>
+<td>Проверить напряжения</td>
+</tr>
+<tr>
+<td>Китайские иероглифы</td>
+<td>Неверная кодировка или скорость</td>
+<td>Сменить кодировку на UTF-8/GB2312</td>
+</tr>
+<tr>
+<td>Cyclic Reboot</td>
+<td>Ошибка ПО или короткое замыкание</td>
+<td>Перепрошивка или проверка платы</td>
+</tr>
+</tbody>
+</table>
+
+<p>Часто встречается ситуация, когда лог обрывается на этапе инициализации файловой системы или модуля связи. Это может указывать на то, что hard reset прошел успешно, но программное обеспечение модуля повреждено и требует перепрошивки через специальные утилиты, такие как <em>Quectel_QFlash</em>.</p>
+<p>Анализ кодов ошибок в логах позволяет точно определить, на каком этапе происходит сбой. Например, ошибки, связанные с <code>MMC</code> или <code>NAND</code>, говорят о проблемах с памятью, тогда как ошибки <code>PMIC</code> указывают на неисправность цепи питания.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Анализ логов UART — единственный способ точно определить причину сбоя, если модуль не запускается после аппаратного сброса.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе выполнения hard reset пользователи часто сталкиваются с повторяющимися проблемами, которые легко решаются при знании специфики оборудования. Ниже приведен перечень наиболее распространенных ошибок и алгоритмы их исправления.</p>
+
+<ol>
+<li><strong>Отсутствие реакции на замыкание контактов</strong> — чаще всего вызвано неправильным выбором контактов (перепутаны RESET и GND) или недостаточным временем удержания. Необходимо проверить схему платы и увеличить время замыкания до 3-5 секунд.</li>
+<li><strong>Появление символов «кракозябр» в терминале</strong> — возникает из-за неверно выбранной скорости обмена (Baud Rate) или кодировки. Стоит проверить документацию на конкретную модель и переключить кодировку терминала на <em>UTF-8</em> или <em>CP866</em>.</li>
+<li><strong>Циклическая перезагрузка после сброса</strong> — указывает на то, что аппаратный сброс прошел, но программная часть модуля повреждена. Требуется полная перепрошивка устройства через режим Download.</li>
+<li><strong>Сгоревший USB-UART адаптер</strong> — результат подачи высокого напряжения (5В или 12В) на линии данных модуля, работающего от 1.8В или 3.3В. Необходимо использовать только согласованные по напряжениям конвертеры.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Восстановление через UART</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Доступ к полным логам</li><li>✅ Возможность перепрошивки</li><li>✅ Детальная диагностика</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требуется спец. оборудование</li><li>❌ Риск повреждения портов</li><li>❌ Сложнее для новичков</li></ul></div>
+</div></div>
+
+<p>Соблюдение техники безопасности и внимательное изучение технической документации перед началом работ минимизирует риски. Hard reset — это мощный инструмент, который при грамотном использовании возвращает устройство к заводскому состоянию, очищая программные ошибки и сбрасывая конфигурацию.</p>
+<p>После успешного выполнения процедуры рекомендуется сразу же проверить версию прошивки и при необходимости обновить ее до актуальной, чтобы исключить повторение проблем, вызванных известными багами ПО. Регулярное обслуживание и мониторинг состояния модулей продлевают срок их службы.</p>
+<p>В заключение, SCX8123 hard reset является стандартной процедурой обслуживания, не требующей сложного оборудования, но demanding точности исполнения. Понимание физических принципов работы контактов и логических уровней позволяет эффективно управлять парком IoT-устройств и быстро восстанавливать их работоспособность в полевых условиях.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/w/wv/wv-key-checker-eto-chto.html" class="pb-related-card">
+                <span class="pb-related-title">WV Key Checker: что это, зачем нужен и как проверить уровень DRM</span>
+                <span class="pb-related-desc">Подробный разбор WV Key Checker: назначение, уровни безопасности Widevine L1 и L3, проверка сертифик</span>
+            </a><a href="/articles/x/xt/xtreme-codes.html" class="pb-related-card">
+                <span class="pb-related-title">XTREME CODES: Инструкция по настройке IPTV на Android и ТВ</span>
+                <span class="pb-related-desc">Подробное руководство по активации кодов Xtream Codes, настройке плееров и устранению ошибок подключ</span>
+            </a><a href="/articles/x/xt/xtream-codes-plejlist-chto.html" class="pb-related-card">
+                <span class="pb-related-title">Xtream Codes плейлист: настройка, форматы и запуск</span>
+                <span class="pb-related-desc">Полное руководство по работе с плейлистами Xtream Codes API. Настройка IPTV, разбор форматов M3U и M</span>
+            </a><a href="/articles/v/v-/v-menyu-recovery-esli-ochistit-kesh.html" class="pb-related-card">
+                <span class="pb-related-title">Очистка кэша в Recovery: Подробная инструкция и риски</span>
+                <span class="pb-related-desc">Как очистить кэш в меню Recovery Mode на Android. Подробный разбор Wipe Cache Partition, отличие от </span>
+            </a><a href="/articles/c/cl/cl-plus-key-fail-philips-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">CL Plus Key Fail Philips: Причины, коды ошибок и способы устранения</span>
+                <span class="pb-related-desc">Технический разбор ошибки CL Plus Key Fail на телевизорах Philips. Причины сбоя ключей шифрования, к</span>
+            </a><a href="/articles/v/ve/vendor-co-product-code.html" class="pb-related-card">
+                <span class="pb-related-title">Код продукта поставщика: назначение, структура и ошибки</span>
+                <span class="pb-related-desc">Полное руководство по vendor co product code: идентификация, форматы, типичные ошибки интеграции и м</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

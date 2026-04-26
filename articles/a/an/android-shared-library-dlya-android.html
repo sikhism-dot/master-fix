@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Android Shared Library: создание и использование .so файлов — Мастер Фикс</title>
+    <meta name="description" content="Полный гид по Android Shared Library. Разбираем JNI, NDK, загрузку .so библиотек и устранение ошибок UnsatisfiedLinkError в приложениях.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/an/android-shared-library-dlya-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Android Shared Library: создание и использование .so файлов">
+    <meta property="og:description" content="Полный гид по Android Shared Library. Разбираем JNI, NDK, загрузку .so библиотек и устранение ошибок UnsatisfiedLinkError в приложениях.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Android Shared Library: создание и использование .so файлов</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-нативных-библиотек-в-android">Архитектура нативных библиотек в Android</a></li><li><a href="#настройка-окружения-и-ndk">Настройка окружения и NDK</a></li><li><a href="#процесс-компиляции-и-линковки">Процесс компиляции и линковки</a></li><li><a href="#интеграция-через-jni-и-загрузка-библиотек">Интеграция через JNI и загрузка библиотек</a></li><li><a href="#отладка-и-обработка-ошибок">Отладка и обработка ошибок</a></li><li><a href="#оптимизация-и-безопасность">Оптимизация и безопасность</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/an/android-prilozhenie-soobshchenie-s-nastrojkami-chto-eto.html">Сообщение с настройками на Android: что это и как убрать</a></li><li><a href="/articles/a/a-/a-kak-udalit-reptikulis-s-telefona-forum.html">Как удалить рептикулис с телефона: инструкция</a></li><li><a href="/articles/h/ho/honor-magicbook-x14-fri-h56-wifi-driver.html">Драйвер WiFi Honor MagicBook X14 FRI-H56: установка и сброс</a></li><li><a href="/articles/k/ka/kak-na-knopochnyj-telefon-postavit-oboi-na-ekrane.html">Как поставить обои на кнопочный телефон: полная инструкция</a></li><li><a href="/articles/k/ka/kak-vyjti-iz-prilozheniya-alfa-bank-v-androide.html">Как выйти из приложения Альфа-Банк на Android: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Android Shared Library: полное руководство по нативным .so файлам</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-нативных-библиотек-в-android">Архитектура нативных библиотек в Android</a></li><li><a href="#настройка-окружения-и-ndk">Настройка окружения и NDK</a></li><li><a href="#процесс-компиляции-и-линковки">Процесс компиляции и линковки</a></li><li><a href="#интеграция-через-jni-и-загрузка-библиотек">Интеграция через JNI и загрузка библиотек</a></li><li><a href="#отладка-и-обработка-ошибок">Отладка и обработка ошибок</a></li><li><a href="#оптимизация-и-безопасность">Оптимизация и безопасность</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Современная экосистема <em>Android</em> строится не только на коде <em>Java</em> или <em>Kotlin</em>, но и на мощи низкоуровневых библиотек, написанных на C и C++. Когда разработчику требуется максимальная производительность, работа с существующим нативным кодом или защита интеллектуальной собственности, на сцену выходит <strong>Android Shared Library</strong>. Эти динамически компонуемые библиотеки, известные как <code>.so</code> файлы, позволяют выполнять критически важные вычисления непосредственно на процессоре устройства, минуя накладные расходы виртуальной машины <em>Dalvik</em> или <em>ART</em>.</p>
+
+<p>Использование нативного кода открывает двери в мир высокопроизводительной графики, сложных алгоритмов шифрования и обработки звука в реальном времени. Однако интеграция таких библиотек в проект <em>Android</em> требует понимания архитектуры <strong>JNI</strong> (Java Native Interface) и инструментов <strong>NDK</strong> (Native Development Kit). Ошибки на этом уровне часто приводят к нестабильности приложения или полному крашу процесса, поэтому подход к внедрению должен быть взвешенным и профессиональным.</p>
+
+<p>В этой статье мы детально разберем процесс создания, компиляции и подключения <strong>shared library</strong> в ваш проект. Вы узнаете о жизненном цикле загрузки нативных модулей, особенностях линковки и методах отладки, которые сэкономят вам часы поиска причин возникновения фатальных ошибок. Погружение в мир нативной разработки позволит вам создавать приложения нового уровня.</p>
+
+<h2 id="архитектура-нативных-библиотек-в-android">Архитектура нативных библиотек в Android</h2>
+<p>Фундаментом взаимодействия между управляемым кодом <em>Android</em> и нативными библиотеками является интерфейс <strong>JNI</strong>. Именно он выступает мостом, позволяющим вызывать функции C/C++ из <em>Java</em>-классов и наоборот. Библиотека <code>libandroid.so</code> и другие системные модули уже содержатся в ОС, но разработчик может создать свою собственную <strong>shared library</strong>, которая будет загружаться динамически в рантайме приложения.</p>
+
+<p>Каждая архитектура процессора требует своей версии бинарного файла. Это означает, что для полноценной поддержки устройств вам придется компилировать код отдельно для <code>armeabi-v7a</code>, <code>arm64-v8a</code>, <code>x86</code> и <code>x86_64</code>. Игнорирование этого правила приведет к тому, что на части устройств приложение просто не запустится, выдав ошибку отсутствия нужного файла.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Попытка загрузить библиотеку, скомпилированную для архитектуры <code>arm64</code>, на устройстве с 32-битным процессором <code>arm</code> вызовет немедленный краш приложения с ошибкой <code>UnsatisfiedLinkError</code>. Всегда проверяйте соответствие ABI.</p>
+</blockquote>
+
+<p>Важно понимать разницу между статической и динамической линковкой. В контексте <strong>Android Shared Library</strong> мы используем динамическую линковку, что позволяет нескольким приложениям использовать одну и ту же библиотеку в памяти (хотя в современных версиях <em>Android</em> изоляция процессов это ограничивает) и обновлять нативный код независимо от основного <code>apk</code> файла.</p>
+
+<div class="pb-poll" id="poll-666286af"><div class="pb-poll-question">📊 С какой целью вы планируете использовать нативные библиотеки?</div><div class="pb-poll-option" data-poll="666286af" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Повышение производительности</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="666286af" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Использование готового C++ кода</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="666286af" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Защита алгоритмов от реверс-инжиниринга</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="666286af" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Работа с специфичным железом</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="настройка-окружения-и-ndk">Настройка окружения и NDK</h2>
+<p>Для начала работы необходимо установить <strong>Android NDK</strong> через <em>SDK Manager</em> в <em>Android Studio</em>. Без этого набора инструментов компиляция нативного кода невозможна. После установки в файле <code>local.properties</code> вашего проекта появится путь к установленному <strong>NDK</strong>, что позволяет системе сборки <em>Gradle</em> находить необходимые компиляторы и заголовочные файлы.</p>
+
+<p>Конфигурация проекта осуществляется в файле <code>build.gradle</code> модуля <code>app</code>. Здесь необходимо указать минимальную версию SDK и пути к исходникам нативного кода. Ключевым элементом является блок <code>externalNativeBuild</code>, который связывает систему сборки <em>Gradle</em> с <code>CMakeLists.txt</code> или <code>Android.mk</code>. Использование <strong>CMake</strong> на сегодняшний день является стандартом индустрии и предпочтительным методом сборки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Настройка нативного модуля</h4><label class="check-item"><input type="checkbox"><span>Установлен Android NDK</span></label><label class="check-item"><input type="checkbox"><span>Создан файл CMakeLists.txt</span></label><label class="check-item"><input type="checkbox"><span>Добавлен externalNativeBuild в gradle</span></label><label class="check-item"><input type="checkbox"><span>Указаны поддерживаемые ABI</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>При настройке <code>CMakeLists.txt</code> вы определяете имя создаваемой библиотеки и список исходных файлов. Например, команда <code>add_library(mylib SHARED src/main/cpp/native-lib.cpp)</code> создаст файл <code>libmylib.so</code>. Важно правильно указать пути к заголовочным файлам и зависимостям, иначе компилятор не сможет найти необходимые определения функций.</p>
+
+<h2 id="процесс-компиляции-и-линковки">Процесс компиляции и линковки</h2>
+<p>Процесс превращения исходного кода C++ в <strong>shared library</strong> для <em>Android</em> включает несколько этапов. Сначала компилятор транслирует код в объектные файлы, затем линковщик объединяет их, разрешая ссылки на внешние функции. В результате получается файл формата <code>ELF</code> (Executable and Linkable Format), который операционная система <em>Linux</em> (основа <em>Android</em>) способна исполнять.</p>
+
+<p>Особое внимание следует уделить зависимостям. Если ваша библиотека использует другие системные библиотеки, такие как <code>liblog</code> для логирования или <code>libm</code> для математических операций, они должны быть явно указаны в файле сборки. Отсутствие ссылки на <code>liblog.so</code> приведет к тому, что функции логирования не будут работать, хотя код скомпилируется успешно.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр сборки</th>
+<th>Описание</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CMAKE_BUILD_TYPE</code></td>
+<td>Тип сборки (отладка или релиз)</td>
+<td><code>RelWithDebInfo</code></td>
+</tr>
+<tr>
+<td><code>ANDROID_ABI</code></td>
+<td>Архитектура целевого процессора</td>
+<td><code>arm64-v8a</code></td>
+</tr>
+<tr>
+<td><code>ANDROID_PLATFORM</code></td>
+<td>Минимальная версия API Android</td>
+<td><code>android-21</code></td>
+</tr>
+<tr>
+<td><code>ANDROID_STL</code></td>
+<td>Стандартная библиотека C++</td>
+<td><code>c++_shared</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Выбор стандартной библиотеки C++ (<strong>STL</strong>) также критичен. Вы можете выбрать статическую линковку (<code>c++_static</code>), что увеличит размер итогового файла, но сделает библиотеку независимой, или динамическую (<code>c++_shared</code>), что потребует наличия соответствующей библиотеки в системе или пакете приложения. Для большинства случаев <mark>динамическая линковка c++_shared является оптимальным выбором</mark>, так как позволяет уменьшать размер APK и обновлять STL независимо от приложения.</p>
+
+<details class="pb-accordion"><summary>Почему важен выбор STL?</summary><div class="pb-accordion-body"><p>Выбор между статической и динамической STL влияет на размер приложения и совместимость. Статическая линковка копирует код STL внутрь вашей .so библиотеки, увеличивая её размер, но гарантируя работу даже на урезанных версиях Android. Динамическая требует наличия libcpp_shared.so, что стандартно для современных устройств, но может вызвать ошибки на очень старых девайсах (API < 16).</p></div></details>
+
+<h2 id="интеграция-через-jni-и-загрузка-библиотек">Интеграция через JNI и загрузка библиотек</h2>
+<p>Чтобы вызвать нативную функцию из <em>Java</em> или <em>Kotlin</em>, необходимо использовать ключевое слово <code>native</code>. Объявление метода выглядит как <code>public native String stringFromJNI();</code>. Загрузка самой библиотеки происходит статически в блоке кода класса через вызов <code>System.loadLibrary("mylib")</code>. Имя передается без префикса <code>lib</code> и расширения <code>.so</code>.</p>
+
+<p>Механизм <strong>JNI</strong> требует строгого соответствия сигнатур функций. Имя функции в C++ должно следовать шаблону <code>Java_com_example_app_ClassName_methodName</code> либо регистрироваться динамически через таблицу методов. Нарушение сигнатуры типов (например, передача <code>int</code> вместо <code>jint</code>) приведет к неопределенному поведению или крашу.</p>
+
+<ul>
+<li>🔹 Используйте макрос <code>JNIEXPORT</code> и <code>JNI JNICALL</code> для экспорта функций, чтобы они были видимы за пределами библиотеки.</li>
+<li>🔹 Всегда проверяйте указатели на <code>NULL</code>, особенно при работе со строками <code>jstring</code>, возвращенными из Java.</li>
+<li>🔹 Не храните ссылки на Java-объекты в глобальных переменных C++ без создания <strong>Global Reference</strong>, иначе сборщик мусора может уничтожить объект.</li>
+</ul>
+
+<p>Существует также возможность динамической загрузки библиотек во время выполнения через <code>System.load("/path/to/lib.so")</code>, однако это требует наличия прав на чтение файла и знание точного пути, что усложняет поддержку на разных устройствах. Стандартный путь через <code>loadLibrary</code> предпочтительнее, так как система сама находит файл в директориях <code>lib</code> внутри <code>apk</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При передаче строк из Java в C++ через JNI, всегда вызывайте ReleaseStringUTFChars после использования, чтобы избежать утечек памяти в нативной куче.</p></aside>
+
+<h2 id="отладка-и-обработка-ошибок">Отладка и обработка ошибок</h2>
+<p>Отладка нативного кода — процесс более сложный, чем отладка <em>Java</em>-кода. Для этого в <em>Android Studio</em> необходимо включить поддержку <strong>Native Debugging</strong> в схеме запуска (Run/Debug Configurations). Это позволит ставить брейкпоинты прямо в коде C++, видеть значения переменных и стек вызовов. Без включенного отладчика приложение просто упает с сообщением о фатальной ошибке.</p>
+
+<p>Наиболее частой проблемой является ошибка <code>java.lang.UnsatisfiedLinkError</code>. Она возникает, если система не может найти библиотеку или функцию с указанным именем. Причины могут быть различны: неправильное имя файла, несоответствие архитектуры, ошибка в имени функции или отсутствие библиотеки в пакете для конкретной архитектуры процессора.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Ошибки сегментации (Segmentation Fault) в нативном коде не ловятся.try-catch блоками в Java. Приложение будет аварийно завершено системой. Используйте логирование через <code>__android_log_print</code> для отслеживания состояния перед критическими участками кода.</p>
+</blockquote>
+
+<p>Для анализа упавших приложений используйте инструмент <code>ndk-stack</code> или встроенный анализатор crash-репортов в консоли Play Store. Он позволяет сопоставить адреса памяти из отчета об ошибке с конкретными строками исходного кода, если у вас есть файл символов (<code>libmylib.so.symbols</code>), сгенерированный при сборке.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Использование санитайзеров (AddressSanitizer) в NDK позволяет автоматически находить утечки памяти и выход за границы массива на этапе тестирования, что критически важно для стабильности нативного кода.</p></aside>
+
+<h2 id="оптимизация-и-безопасность">Оптимизация и безопасность</h2>
+<p>Нативные библиотеки часто используют для защиты логики приложения от реверс-инжиниринга. Хотя код C++ сложнее анализировать, чем байт-код <em>Dalvik</em>, он не является неуязвимым. Для повышения безопасности применяйте обфускацию символов, удаляйте отладочную информацию в релизных сборках и используйте анти-отладочные техники, такие как проверка флага <code>ptrace</code>.</p>
+
+<p>Оптимизация размера <strong>shared library</code> достигается за счет удаления неиспользуемого кода (Linker optimization flags like <code>-Wl,--gc-sections</code>) и использования компактных версий STL. Также стоит избегать дублирования библиотек для разных архитектур, если в этом нет острой необходимости, хотя современные магазины приложений требуют поддержки 64-битных версий.</p>
+
+<ul>
+<li>🚀 Используйте флаги оптимизации компилятора (<code>-O2</code> или <code>-O3</code>) для релизных сборок, чтобы значительно ускорить выполнение вычислений.</li>
+<li>🚀 Минимизируйте количество переходов через границу JNI (JNI overhead), передавая большие массивы данных одним блоком, а не поэлементно.</li>
+<li>🚀 Проверяйте версии API нативных функций, если ваша библиотека зависит от специфичных функций Android, которые появились в новых версиях ОС.</li>
+</ul>
+
+<p>Внедрение <strong>Android Shared Library</strong> — это мощный инструмент в арсенале разработчика, требующий глубокого понимания работы операционной системы. Правильное использование нативного кода дает прирост производительности в разы, но требует дисциплины в управлении памятью и строгого контроля за совместимостью.</p>
+
+<details>
+<summary>Что такое UnsatisfiedLinkError и как его исправить?</summary>
+<p>Эта ошибка означает, что виртуальная машина не смогла найти указанную библиотеку или функцию. Проверьте: 1) Имя библиотеки в System.loadLibrary (без lib и .so). 2) Наличие файла .so в папке lib нужной архитектуры внутри APK. 3) Соответствие сигнатуры функции в C++ и Java (имя, типы аргументов).</p>
+</details>
+
+<details>
+<summary>Можно ли использовать C++ стандартную библиотеку в Android?</summary>
+<p>Да, NDK предоставляет реализацию стандартной библиотеки C++ (libc++, libc++_shared, gnustl). Рекомендуется использовать c++_shared для уменьшения размера APK и совместимости, но убедитесь, что она корректно линкуется в проекте.</p>
+</details>
+
+<details>
+<summary>Как передавать сложные объекты Java в нативный код?</summary>
+<p>Прямая передача сложных объектов невозможна без потери типобезопасности. Обычно передают примитивы или байтовые массивы. Для работы с объектами приходится использовать JNI функции для получения полей (GetFieldID) и вызова методов (CallObjectMethod), что делает код громоздким и медленным.</p>
+</details>
+
+<details>
+<summary>Нужно ли вручную освобождать память в JNI?</summary>
+<p>Да, в отличие от Java, в C++ вы сами управляете памятью. Все выделенные ресурсы (malloc, new) должны быть освобождены. Также важно освобождать ресурсы JNI, такие как строки (ReleaseStringUTFChars) и локальные ссылки, если их количество велико в цикле.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/an/android-prilozhenie-soobshchenie-s-nastrojkami-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Сообщение с настройками на Android: что это и как убрать</span>
+                <span class="pb-related-desc">Подробный разбор системного уведомления «Сообщение с настройками» на Android. Причины появления, инс</span>
+            </a><a href="/articles/a/a-/a-kak-udalit-reptikulis-s-telefona-forum.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить рептикулис с телефона: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по удалению приложения Repeticus с Android. Способы очистки через настройки, б</span>
+            </a><a href="/articles/h/ho/honor-magicbook-x14-fri-h56-wifi-driver.html" class="pb-related-card">
+                <span class="pb-related-title">Драйвер WiFi Honor MagicBook X14 FRI-H56: установка и сброс</span>
+                <span class="pb-related-desc">Полная инструкция по установке драйвера WiFi для Honor MagicBook X14 FRI-H56. Решение проблем с Real</span>
+            </a><a href="/articles/k/ka/kak-na-knopochnyj-telefon-postavit-oboi-na-ekrane.html" class="pb-related-card">
+                <span class="pb-related-title">Как поставить обои на кнопочный телефон: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по установке картинок на экран кнопочного телефона. Настройка меню, разрешение</span>
+            </a><a href="/articles/k/ka/kak-vyjti-iz-prilozheniya-alfa-bank-v-androide.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из приложения Альфа-Банк на Android: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выходу из приложения Альфа-Банк на Android. Разбор методов, сброс данных и </span>
+            </a><a href="/articles/k/ka/kak-uznat-kto-otpisalsya-v-vk-iz-druzej-cherez-telefon-besplatno-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать, кто отписался в ВК: инструкция для Android</span>
+                <span class="pb-related-desc">Подробное руководство по отслеживанию удалений друзей ВКонтакте на Android. Безопасные методы, анали</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

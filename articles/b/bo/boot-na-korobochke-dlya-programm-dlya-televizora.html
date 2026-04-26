@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Загрузка на ТВ-приставке: Настройка Boot, Bootloader и Boot.img — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по настройке загрузки на Android TV Box. Работа с Boot.img, режимом Recovery, загрузчиком и устранение проблем с циклическим включением.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bo/boot-na-korobochke-dlya-programm-dlya-televizora.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Загрузка на ТВ-приставке: Настройка Boot, Bootloader и Boot.img">
+    <meta property="og:description" content="Техническое руководство по настройке загрузки на Android TV Box. Работа с Boot.img, режимом Recovery, загрузчиком и устранение проблем с циклическим включением.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Загрузка на ТВ-приставке: Настройка Boot, Bootloader и Boot.img</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-процесса-загрузки-android-tv">Архитектура процесса загрузки Android TV</a></li><li><a href="#режимы-запуска-и-вход-в-recovery">Режимы запуска и вход в Recovery</a></li><li><a href="#управление-разделами-и-работа-с-bootimg">Управление разделами и работа с Boot.img</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-профилактика-сбоев">Резюме и профилактика сбоев</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/r/re/repair-apps-samsung-chto-eto-znachit-bystryj-otvet-yandeks.html">Repair Apps Samsung: что это значит и как исправить</a></li><li><a href="/articles/e/es/est-li-smart-tv-pristavka-rabotayushchaya-ot-sim-karty-smartfona.html">Смарт ТВ приставка от SIM карты: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-novyj-pult-k-svoemu-tv-gold-star.html">Как подключить новый пульт к телевизору Gold Star: пошаговая инструкция</a></li><li><a href="/articles/l/lc/lcn-v-televizore-chto-takoe.html">LCN в телевизоре: что это, как настроить и исправить ошибки</a></li><li><a href="/articles/k/ka/kak-sbrosit-akkaunt-gugl-na-televizore-beko.html">Как сбросить аккаунт Google на телевизоре Beko: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка Boot на ТВ-приставке: от Bootloader до Boot.img</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-процесса-загрузки-android-tv">Архитектура процесса загрузки Android TV</a></li><li><a href="#режимы-запуска-и-вход-в-recovery">Режимы запуска и вход в Recovery</a></li><li><a href="#управление-разделами-и-работа-с-bootimg">Управление разделами и работа с Boot.img</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-профилактика-сбоев">Резюме и профилактика сбоев</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда после установки новой прошивки или попытки получения root-прав умная приставка перестает включаться, превращаясь в «кирпич», является одной из самых распространенных проблем при модификации Android TV. Вместо привычного интерфейса пользователь видит черный экран, логотип производителя или бесконечный цикл перезагрузки, известный как bootloop. Часто это происходит из-за повреждения или некорректной замены системного раздела, отвечающего за начальную загрузку операционной системы.</p>
+<p>Процесс восстановления или тонкой настройки требует глубокого понимания того, как именно устройство запускается и какие файлы отвечают за этот процесс. Ключевым элементом здесь является не только сама операционная система, но и предзагрузчик, а также образ ядра, который инициирует работу всех служб. Ошибки на этом этапе делают невозможным вход в стандартное меню настроек, требуя применения специализированных методов вмешательства через консольные команды или перепрошивку на низком уровне.</p>
+<p>Понимание архитектуры загрузки позволяет не только вернуть устройство к жизни, но и модифицировать его работу, например, отключив ненужные сервисы или изменив приоритеты запуска. Для успешного выполнения таких операций необходимо четко различать понятия загрузчика и образа загрузки, так как методы работы с ними кардинально отличаются. Далее будет подробно рассмотрен технический аспект работы этих компонентов и алгоритмы действий при возникновении сбоев.</p>
+
+<h2 id="архитектура-процесса-загрузки-android-tv">Архитектура процесса загрузки Android TV</h2>
+
+<p>Запуск любой современной приставки на базе Android начинается задолго до появления логотипа операционной системы. Первым в работу вступает микропрограмма, записанная в постоянную память устройства еще на заводе. Этот компонент проверяет целостность оборудования и определяет, с какого носителя следует считывать следующий этап загрузки. В контексте телевизионных боксов этот этап часто называют просто загрузчиком, хотя технически он состоит из нескольких стадий проверки и инициализации.</p>
+<p>После успешной первичной проверки управление передается основному загрузчику, который уже взаимодействует с разделами флеш-памяти. Именно здесь происходит выбор активного раздела для запуска операционной системы. Если устройство имеет несколько прошивок или разделов восстановления, логика переключения между ними реализуется именно на этом уровне. <strong>Критически важно</strong>, чтобы данные в этом разделе не были повреждены, иначе цепочка запуска прерывается.</p>
+
+<h3>Различия между Bootloader и Boot Image</h3>
+<p>Часто пользователи путают загрузчик (Bootloader) и образ загрузки (Boot Image), хотя это принципиально разные компоненты. Bootloader — это программа, residing в защищенной области памяти, которая инициализирует аппаратное обеспечение. Boot Image (boot.img) — это файл, содержащий ядро Linux и начальный дисковый образ (ramdisk), который непосредственно загружает операционную систему Android.</p>
+<p>В отличие от загрузчика, образ загрузки может быть заменен пользователем при наличии прав суперпользователя или через режим восстановления. Замена boot.img позволяет внедрять патчи, менять параметры ядра или устанавливать кастомные рекавери. Однако, если версия ядра в boot.img не соответствует версии системных модулей, устройство уйдет в бесконечную перезагрузку.</p>
+<p>Структура boot.img включает в себя заголовок, ядро, ramdisk и вторую стадию загрузчика. При модификации прошивок часто требуется пересборка этого образа с внедрением измененных драйверов или патчей безопасности. Несоответствие хэш-сумм или подписей может привести к отказу системы в запуске, так как механизм верификации загрузчика заблокирует выполнение непроверенного кода.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с заблокированным загрузчиком (Locked Bootloader) замена boot.img невозможна без предварительной разблокировки, что часто приводит к полному сбросу данных (Wipe Data).</p></aside>
+
+<p>Взаимосвязь между этими компонентами обеспечивает стабильность работы системы. Если Bootloader исправен, но boot.img поврежден, устройство, как правило, сможет перейти в режим восстановления (Recovery Mode). Если же поврежден сам загрузчик, то восстановление возможно только через аппаратные интерфейсы, такие как UART или USB Burning Tool, требующие разборки корпуса.</p>
+
+<h2 id="режимы-запуска-и-вход-в-recovery">Режимы запуска и вход в Recovery</h2>
+
+<p>Для выполнения технических операций с загрузкой необходимо уметь принудительно переводить устройство в специальные режимы работы. Стандартный запуск через пульт или кнопку питания в таких случаях не подходит, так как система пытается загрузить поврежденный или отсутствующий образ. Существует несколько методов входа в режим восстановления, зависящих от модели приставки и версии аппаратной платформы.</p>
+<p>Наиболее распространенным способом является использование скрытой кнопки сброса (Reset), часто расположенной внутри гнезда AV или отдельно на корпусе. Механика процесса заключается в подаче сигнала на контроллер питания до момента включения основного процессора. Это заставляет систему игнорировать стандартную процедуру загрузки и переходить в режим обслуживания.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Вход в Recovery через кнопку Reset</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Найдите отверстие Reset на корпусе</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Вставьте зубочистку и зажмите кнопку</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Не отпуская кнопку, подключите питание</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь появления меню Recovery</span></div></div>
+
+<h3>Использование клавиатуры и пульта для загрузки</h3>
+<p>Если физическая кнопка недоступна или устройство не реагирует на нее, можно использовать комбинации клавиш на пульте дистанционного управления или подключенной USB-клавиатуре. При включении питания необходимо удерживать определенную кнопку, чтобы прервать нормальный процесс загрузки. Набор комбинаций варьируется от производителя к производителю и часто зависит от чипсета (Amlogic, Rockchip, Allwinner).</p>
+<p>Для приставок на базе процессоров Amlogic часто работает удержание кнопки «OK» или «Меню» на пульте. В случае использования USB-клавиатуры, стандартной клавишей входа в Boot Menu или Recovery является F11, Esc или Delete, хотя это зависит от эмуляции клавиатуры в U-Boot. Если одна комбинация не срабатывает, стоит попробовать другие варианты, так как прошивки могут быть модифицированы сборщиками.</p>
+<p>Важно соблюдать тайминг нажатия. Кнопку нужно зажать до подключения кабеля питания или в первые доли секунды после этого. Если задержать подключение питания слишком долго, процессор уже запустит стандартную загрузку, и вход в специальный режим станет невозможным без перезапуска.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Постоянное удержание кнопки в режиме Recovery может привести к перегреву чипа или случайному сбросу настроек, если будет активирован пункт Wipe Data. Будьте внимательны при навигации.</p></aside>
+
+<h3>Диагностика через ADB и Fastboot</h3>
+<p>Если операционная система частично функционирует или устройство зависает на логотипе, но откликается на отладку, можно использовать программные средства отладки Android. Протокол ADB (Android Debug Bridge) позволяет отправлять команды на перезагрузку в различные режимы без физического контакта с корпусом. Это особенно удобно, если кнопка Reset сломана или труднодоступна.</p>
+<p>Для использования данного метода необходимо, чтобы на приставке было включено «Меню разработчика» и активирована «Отладка по USB». Подключив устройство к компьютеру по сети или кабелем USB-USB, можно отправить команду перезагрузки. Это позволяет перейти в режим fastboot или recovery, где уже можно выполнять операции с разделами.</p>
+<p>Команды вводятся в консоль на компьютере. Например, команда <code>adb reboot bootloader</code> переводит устройство в режим загрузчика, если он поддерживает такой функционал. Однако на многих телевизорах и ТВ-боксах полноценный Fastboot mode заменен на проприетарные режимы загрузки, доступные только через USB-кабель типа Male-Male и специальную утилиту на ПК.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод входа</th>
+<th>Требуемое оборудование</th>
+<th>Вероятность успеха</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Кнопка Reset</td>
+<td>Зубочистка, кабель питания</td>
+<td>Высокая (90%)</td>
+</tr>
+<tr>
+<td>Пульт / Клавиатура</td>
+<td>Пульт ДУ или USB-клавиатура</td>
+<td>Средняя (60%)</td>
+</tr>
+<tr>
+<td>ADB Command</td>
+<td>ПК, настроенная сеть или кабель</td>
+<td>Низкая (требует работающей ОС)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="управление-разделами-и-работа-с-bootimg">Управление разделами и работа с Boot.img</h2>
+
+<p>Работа с образом загрузки требует понимания файловой системы Android. Раздел <code>boot</code> хранит ядро и начальный образ файловой системы. При модификации системы, например, для установки Google Play на китайскую приставку или внедрения Root-прав, часто требуется патчить или полностью заменять этот файл. Ошибки при работе с boot.img являются основной причиной появления логотипа «Android» с последующим выключением.</p>
+<p>Для извлечения и модификации boot.img используются специализированные утилиты на ПК, такие как Android Image Kitchen или Magisk Manager непосредственно на устройстве. Процесс предполагает распаковку образа, замену необходимых файлов (например, init.rc или ядра) и запаковку обратно с сохранением структуры заголовков. Нарушение структуры приводит к тому, что загрузчик не может считать параметры ядра.</p>
+<p>Если устройство уже находится в режиме Recovery с поддержкой установки обновлений (sideload), можно попытаться прошить исправленный boot.img через ADB. Команда <code>adb sideload filename.zip</code> позволяет передать архив с образом на устройство. Однако, если раздел boot заблокирован или поврежден критически, этот метод не сработает, и потребуется использование инструментов для полной перепрошивки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Перед любой операцией с разделами сделайте полный бэкап (Backup) текущего состояния через TWRP Recovery. Это позволит откатиться в случае неудачи.</p></aside>
+
+<h3>Использование консольных команд в Terminal Emulator</h3>
+<p>При наличии доступа к терминалу (через приложение Terminal Emulator или ADB Shell) можно управлять процессами загрузки и проверять состояние разделов. Команды требуют прав суперпользователя (root). Например, команда <code>ls -l /dev/block/bootdevice/by-name/</code> позволяет увидеть список доступных разделов и их обозначения, что полезно для понимания структуры конкретного устройства.</p>
+<p>Для принудительной перезагрузки в режим восстановления можно использовать команду <code>reboot recovery</code>. Если необходимо перезагрузиться в режим загрузчика (если поддерживается), используется <code>reboot bootloader</code>. Эти команды являются более надежным способом перехода между режимами, чем механические кнопки, так как они инициируются программно и гарантированно передают правильный сигнал системе.</p>
+<p> Любая ошибка в синтаксисе конфигурационных файлов ядра может привести к тому, что система перестанет загружаться. Всегда проверяйте синтаксис изменений перед их применением.</p>
+
+<pre><code>su
+<p>reboot recovery</code></pre></p>
+
+<h3>Сравнение методов прошивки Boot</h3>
+<p>Существует два основных подхода к восстановлению загрузочного сектора: через Recovery (обновление) и через режим загрузки (Burning Mode). Первый метод менее рискован для данных пользователя, так как часто позволяет сохранить настройки, но требует работающего Recovery. Второй метод, использующий USB Burning Tool, полностью стирает диск, но гарантирует восстановление даже при серьезном повреждении разделов.</p>
+<p>Метод обновления через Recovery подходит для замены boot.img при установке патчей или обновлений системы. Метод полной прошивки (Burning) необходим, когда повреждена таблица разделов или сам загрузчик. Выбор метода зависит от текущей состояния устройства и целей модификации.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы восстановления</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Сохранение данных пользователя</li><li>✅ Быстрая установка</li><li>✅ Минимальный риск</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Полная очистка данных</li><li>❌ Требуется точная версия прошивки</li><li>❌ Дольше занимает время</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе настройки загрузки пользователи часто сталкиваются с повторяющимися проблемами. Понимание причин этих ошибок позволяет быстрее найти решение и избежать критических повреждений устройства. Большинство проблем связано с невнимательностью при выборе файлов прошивки или нарушении последовательности действий.</p>
+
+<ol>
+<li><strong>Несоответствие версии прошивки</strong> — попытка установить boot.img или полную прошивку от другой модели или ревизии платы. Даже если чипсет одинаковый, различия в распайке памяти или периферии приведут к неработоспособности. Всегда проверяйте точную модель устройства и версию памяти.</li>
+<li><strong>Прерывание процесса записи</strong> — отключение питания или USB-кабеля во время прошивки. Это приводит к повреждению файловой системы и загрузочных записей. Используйте качественные кабели и проверенные порты USB 2.0 (часто порты 3.0 вызывают проблемы со старыми утилитами).</li>
+<li><strong>Игнорирование блокировки загрузчика</strong> — попытка загрузить кастомное рекавери на устройство с Locked Bootloader без предварительной разблокировки. Это вызовет ошибку верификации и цикл перезагрузок. Необходимо сначала выполнить команду разблокировки, если она предусмотрена производителем.</li>
+<li><strong>Неправильный выбор файла DTB</strong> — при пересборке boot.img часто забывают обновить или корректно указать файл Device Tree Blob (dtb). DTB содержит информацию об оборудовании, и его несоответствие ядру приведет к тому, что система не увидит ключевые компоненты (экран, сеть, звук).</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех операции зависит от точного соответствия файлов прошивки аппаратной ревизии устройства и соблюдения технологии записи.</p></aside>
+
+<h2 id="резюме-и-профилактика-сбоев">Резюме и профилактика сбоев</h2>
+
+<p>Настройка и восстановление загрузочных процессов на Android TV приставках — задача, требующая технической грамотности и внимательности. Понимание различий между Bootloader и Boot Image, а также умение пользоваться режимами Recovery и ADB, позволяет решать большинство программных неисправностей. Ключевым фактором успеха является наличие оригинальной прошивки и резервной копии перед началом любых манипуляций.</p>
+<p>Во избежание проблем в будущем рекомендуется избегать установки непроверенных сборок и патчей из ненадежных источников. Регулярное создание бэкапов системы через кастомное рекавери (например, TWRP) позволит в считанные минуты восстановить работоспособность устройства в случае сбоя. Соблюдение этих простых правил обеспечит стабильную работу мультимедийного центра.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/r/re/repair-apps-samsung-chto-eto-znachit-bystryj-otvet-yandeks.html" class="pb-related-card">
+                <span class="pb-related-title">Repair Apps Samsung: что это значит и как исправить</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки Repair Apps на Samsung. Причины сбоя, методы восстановлени</span>
+            </a><a href="/articles/e/es/est-li-smart-tv-pristavka-rabotayushchaya-ot-sim-karty-smartfona.html" class="pb-related-card">
+                <span class="pb-related-title">Смарт ТВ приставка от SIM карты: полная инструкция</span>
+                <span class="pb-related-desc">Как использовать SIM-карту смартфона в ТВ-приставке. Настройка USB-модема, раздача интернета и выбор</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-novyj-pult-k-svoemu-tv-gold-star.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить новый пульт к телевизору Gold Star: пошаговая инструкция</span>
+                <span class="pb-related-desc">Полное руководство по настройке универсального или оригинального пульта для ТВ Gold Star. Коды, инфр</span>
+            </a><a href="/articles/l/lc/lcn-v-televizore-chto-takoe.html" class="pb-related-card">
+                <span class="pb-related-title">LCN в телевизоре: что это, как настроить и исправить ошибки</span>
+                <span class="pb-related-desc">Подробный гид по технологии LCN в телевизорах. Узнайте, как работает автоматическая сортировка канал</span>
+            </a><a href="/articles/k/ka/kak-sbrosit-akkaunt-gugl-na-televizore-beko.html" class="pb-related-card">
+                <span class="pb-related-title">Как сбросить аккаунт Google на телевизоре Beko: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по удалению Google-аккаунта с телевизора Beko. Методы для Android TV, сброс да</span>
+            </a><a href="/articles/s/sm/smart-touch-call-chto-eto-za-programma-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Smart Touch Call на Андроид: что это за программа и как работает</span>
+                <span class="pb-related-desc">Полный разбор функции Smart Touch Call на Android. Как включить, настроить чувствительность, отключи</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

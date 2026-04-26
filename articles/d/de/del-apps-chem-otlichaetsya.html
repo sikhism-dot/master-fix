@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>del apps: отличия команд удаления в ADB — Мастер Фикс</title>
+    <meta name="description" content="Полный разбор команд del apps и pm uninstall. В чем разница, синтаксис, риски и безопасные методы удаления системных приложений через ADB.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/de/del-apps-chem-otlichaetsya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="del apps: отличия команд удаления в ADB">
+    <meta property="og:description" content="Полный разбор команд del apps и pm uninstall. В чем разница, синтаксис, риски и безопасные методы удаления системных приложений через ADB.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">del apps: отличия команд удаления в ADB</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#природа-команды-del-apps-и-системные-аналоги">Природа команды del apps и системные аналоги</a></li><li><a href="#механизм-работы-pm-uninstall-и-флагов-удаления">Механизм работы pm uninstall и флагов удаления</a></li><li><a href="#практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</a></li><li><a href="#типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-zagruzit-na-ivi-serial.html">Как загрузить сериал на Иви: инструкция для ПК и ТВ</a></li><li><a href="/articles/e/ep/epg-teleprogramma-dlya-ott-navigator.html">EPG телепрограмма для OTT Navigator: настройка и источники</a></li><li><a href="/articles/k/ka/kak-snyat-zaglushka-na-razvetliteli-antenny.html">Как снять заглушку на разветвителе антенны: инструкция</a></li><li><a href="/articles/k/ka/kak-nastroit-dostup-k-yandeks-disku-na-webos.html">Яндекс Диск на WebOS: как подключить облако к LG TV</a></li><li><a href="/articles/k/ka/kak-ajfon-kontakty-k-avto-tojota-kamri-55.html">Как подключить iPhone к Toyota Camry 55: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>del apps: отличия команд удаления в ADB</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#природа-команды-del-apps-и-системные-аналоги">Природа команды del apps и системные аналоги</a></li><li><a href="#механизм-работы-pm-uninstall-и-флагов-удаления">Механизм работы pm uninstall и флагов удаления</a></li><li><a href="#практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</a></li><li><a href="#типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>В процессе оптимизации работы Android-устройства часто возникает необходимость удаления предустановленного программного обеспечения, которое невозможно деинсталлировать стандартными средствами интерфейса. Пользователь сталкивается с ситуацией, когда стандартный путь «Настройки → Приложения» блокирует кнопку удаления для системных компонентов.</p>
+<p>При поиске решений в технической документации или на форумах разработчиков можно встретить команду del apps, которая часто фигурирует в скриптах автоматизации или утилитах-оболочках. Однако прямое использование этой команды в командной строке ADB (Android Debug Bridge) вызывает ошибку, так как она не является нативной командой операционной системы Android.</p>
+<p>Понимание различий между псевдонимами команд в сторонних утилитах и реальными системными вызовами пакета manager (pm) критически важно для безопасной модификации прошивки. Ошибочное применение синтаксиса или непонимание архитектуры работы Android Runtime может привести к неработоспособности устройства или потере данных.</p>
+
+<h2 id="природа-команды-del-apps-и-системные-аналоги">Природа команды del apps и системные аналоги</h2>
+<p>Команда del apps не существует в стандартном наборе инструкций оболочки ADB Shell, предоставляемом Google. Это выражение чаще всего встречается в контексте сторонних графических интерфейсов, таких как Universal Android Debloater, или в составе bash-скриптов, где оно выступает алиасом для более сложных конструкций.</p>
+<p>В реальной среде выполнения Android за управление пакетами отвечает утилита <code>pm</code> (package manager). Именно она взаимодействует с PackageManagerService и вносит изменения в базу данных установленных приложений. Попытка ввести del apps в консоль ADB без предварительного определения алиаса приведет к сообщению о том, что команда не найдена.</p>
+<p>Разница между абстрактным «удалением» и технической реализацией заключается в уровнях доступа. Пользовательские приложения удаляются легко, тогда как системные требуют прав рута или использования специальных флагов отладки. Команда del apps в скриптах часто скрывает проверку этих прав и автоматический выбор флага <code>--user 0</code>.</p>
+
+<h3>Сравнение синтаксиса в разных средах</h3>
+<p>В графических утилитах пользователь видит упрощенный интерфейс, где действие «Удалить» транслируется в конкретную команду. В командной строке оператор должен самостоятельно формировать запрос, учитывая регистр и параметры. Например, в среде Termux или эмуляторах терминала синтаксис может отличаться от классического ADB.</p>
+<p>Если в скрипте используется конструкция del apps, она обычно расширяется до вызова <code>pm uninstall</code> с определенными аргументами. Важно понимать, что системная команда чувствительна к полному имени пакета, которое часто отличается от отображаемого названия приложения. </p>
+<p>Для корректной работы необходимо использовать точное имя пакета, например <code>com.android.chrome</code> вместо просто «Chrome». Ошибки в написании имени пакета приведут к отказу выполнения операции, даже если сама команда сформирована верно.</p>
+
+<table>
+<thead>
+<tr>
+<th>Среда выполнения</th>
+<th>Команда</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB Shell (стандарт)</td>
+<td><code>del apps</code></td>
+<td>Не существует</td>
+</tr>
+<tr>
+<td>ADB Shell (стандарт)</td>
+<td><code>pm uninstall</code></td>
+<td>Нативная команда</td>
+</tr>
+<tr>
+<td>Скрипты / Утилиты</td>
+<td><code>del apps</code></td>
+<td>Алиас / Функция</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование нативных команд предпочтительнее, так как оно дает полный контроль над процессом и позволяет видеть детальные логи ошибок в случае сбоя. Скрипты-оболочки могут скрывать важные сообщения об ошибках, затрудняя диагностику проблем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команда del apps часто встречается в документации к кастомным recovery или специфическим модулям Magisk, где она может быть реализована локально внутри среды восстановления.</p></aside>
+
+<h2 id="механизм-работы-pm-uninstall-и-флагов-удаления">Механизм работы pm uninstall и флагов удаления</h2>
+<p>Основной метод удаления приложений в Android базируется на использовании утилиты <code>pm</code>. Эта команда позволяет управлять состоянием пакетов, включая установку, удаление и изменение разрешений. Ключевым аспектом является понимание того, куда именно удаляется приложение.</p>
+<p>При использовании флага <code>--user 0</code> приложение не стирается физически с раздела системы, а скрывается для основного профиля пользователя. Это безопасный метод, позволяющий вернуть приложение в исходное состояние простым сбросом настроек или повторной установкой обновлений.</p>
+<p>Полное удаление системного приложения требует root-доступа и монтирования системного раздела в режиме записи. В стандартном сценарии ADB без прав суперпользователя доступно только удаление «для пользователя». Это означает, что APK-файл остается в разделе <code>/system</code> или <code>/vendor</code>, но система игнорирует его наличие.</p>
+
+<h3>Различия между скрытием и полным удалением</h3>
+<p>Скрытие приложения через <code>pm uninstall --user 0</code> является рекомендуемым методом для большинства сценариев деблоатинга. Оно не нарушает целостность системного раздела и позволяет легко откатить изменения. В отличие от этого, полное удаление требует пересборки образа системы.</p>
+<p>Если использовать команду без указания пользователя, ADB попытается удалить приложение для текущего контекста, что может вызвать ошибку на некоторых версиях Android. Явное указание <code>--user 0</code> гарантирует, что действие затронет основного владельца устройства.</p>
+<p>Физическое удаление файлов из системных разделов может привести к bootloop (циклической перезагрузке), если удаляемый компонент является критически важным для загрузки ОС. Механизм скрытия защищает от этой ошибки, так как файлы остаются на месте.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Полное удаление системных приложений (не через user 0, а физическое стирание файлов) без наличия резервной копии прошивки может привести к полной неработоспособности устройства.</p></aside>
+
+<p>Для выполнения операций необходимо убедиться, что на устройстве включена отладка по USB и компьютеру предоставлены права на доступ. Без этого любой запрос к пакетному менеджеру будет отвергнут системой безопасности.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка доступности pm</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите adb shell в терминале</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите pm list packages</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Система вернет список установленных пакетов</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Если список получен, доступ есть</span></div></div>
+
+<h2 id="практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</h2>
+<p>В реальной практике администрирования Android-устройств оператору часто приходится удалять конкретные наборы приложений для корпоративных устройств или для освобождения ресурсов на старых гаджетах. Сценарии могут варьироваться от удаления рекламы вендора до отключения сервисов Google.</p>
+<p>Для массового удаления удобно использовать скрипты, которые последовательно применяют команду <code>pm uninstall</code> к списку пакетов. Это позволяет стандартизировать процесс настройки парка устройств. Однако каждый пакет должен быть проверен на предмет зависимости от других системных компонентов.</p>
+<p>Допустим, необходимо удалить стандартный браузер и заменить его на кастомный. В этом случае удаление системного браузера безопасно, если он не используется другими приложениями для открытия ссылок по умолчанию. Система автоматически перенаправит запросы на новое приложение.</p>
+
+<h3>Удаление для конкретного пользователя</h3>
+<p>В многопользовательских средах или при использовании профилей «Гость» команда удаления может выполняться с указанием конкретного ID пользователя. Основной пользователь всегда имеет ID 0. Удаление приложения для гостевого профиля освободит место в его виртуальном пространстве, но не затронет основной профиль.</p>
+<p>Синтаксис команды остается неизменным, меняется только аргумент пользователя. Это позволяет гибко настраивать окружение для разных категорий сотрудников в корпоративном секторе без необходимости перепрошивки устройства.</p>
+<p>Если приложение было обновлено через Google Play, его системная версия остается в разделе <code>/system</code>, а обновленная — в <code>/data</code>. Команда <code>pm uninstall --user 0</code> удалит пользовательскую версию и откатит приложение к заводской, если оно не было полностью скрыто.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип приложения</th>
+<th>Метод удаления</th>
+<th>Восстановимость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Пользовательское</td>
+<td><code>pm uninstall</code></td>
+<td>Только переустановка</td>
+</tr>
+<tr>
+<td>Системное (без root)</td>
+<td><code>pm uninstall --user 0</code></td>
+<td>Сброс настроек</td>
+</tr>
+<tr>
+<td>Системное (с root)</td>
+<td>Удаление файла APK</td>
+<td>Перепрошивка</td>
+</tr>
+</tbody>
+</table>
+
+
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду <code>pm list packages -s</code> для вывода только системных приложений. Это поможет избежать случайного удаления пользовательских данных.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</h2>
+<p>В процессе работы с командной строкой ADB пользователи часто сталкиваются с ошибками, которые вызваны невнимательностью к синтаксису или непониманием состояния устройства. Диагностика этих проблем требует анализа выводимых сообщений.</p>
+<p>Одной из частых проблем является попытка удалить приложение, которое уже было удалено или скрыто. Система ответит сообщением о том, что пакет не найден. Это нормальная реакция, указывающая на то, что цель уже достигнута.</p>
+<p>Другая распространенная ошибка — отсутствие префикса <code>adb shell</code> при вводе команд в основной терминал. Команды <code>pm</code> выполняются внутри оболочки Android, поэтому их нужно либо запускать через <code>adb shell pm..</code>, либо предварительно войти в оболочку устройства.</p>
+
+<ol>
+<li><strong>Ошибка «Package not found»</strong> — возникает, если имя пакета указано неверно или приложение уже удалено. Необходимо проверить точное имя через <code>pm list packages</code>.</li>
+<li><strong>Ошибка «Permission denied»</strong> — свидетельствует о недостаточных правах. Убедитесь, что на устройстве включена отладка по USB и вы авторизовали компьютер.</li>
+<li><strong>Ошибка «Failure [DELETE_FAILED_INTERNAL_ERROR]»</strong> — часто возникает при попытке удалить системное приложение без флага <code>--user 0</code> или без root-прав.</li>
+<li><strong>Игнорирование зависимостей</strong> — удаление библиотеки, необходимой для работы другого приложения, приведет к его крашу. Всегда проверяйте зависимости перед удалением.</li>
+</ol>
+
+<p>Для диагностики состояния пакетов полезно использовать фильтры вывода. Например, поиск по части имени помогает найти точный идентификатор пакета, который требуется для удаления.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Точный контроль процесса|Возможность автоматизации|Работа без root (частично)</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Риск ошибки синтаксиса</li><li>✅ Необходимость ПК</li><li>✅ Сложность восстановления при ошибках</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<h2 id="резюме-и-заключение">Резюме и заключение</h2>
+<p>Команда del apps не является стандартной инструкцией Android и представляет собой либо ошибку, либо сокращение, используемое в стороннем ПО. Для управления приложениями необходимо использовать нативную утилиту <code>pm uninstall</code> с соответствующими флагами.</p>
+<p>Безопасность операции обеспечивается использованием флага <code>--user 0</code>, который скрывает приложение для основного пользователя, не удаляя файлы из системного раздела. Это позволяет избежать критических ошибок системы и легко восстановить исходное состояние.</p>
+<p>Грамотное использование инструментов ADB требует внимательности к именам пакетов и понимания архитектуры прав доступа Android. Соблюдение этих правил позволяет эффективно очищать устройство от ненужного ПО без риска повреждения операционной системы.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Используйте pm uninstall --user 0 для безопасного удаления системных приложений без root-прав, избегая несуществующих команд вроде del apps.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-zagruzit-na-ivi-serial.html" class="pb-related-card">
+                <span class="pb-related-title">Как загрузить сериал на Иви: инструкция для ПК и ТВ</span>
+                <span class="pb-related-desc">Подробная инструкция по загрузке сериалов на Иви через браузер, приложение или Smart TV. Решения про</span>
+            </a><a href="/articles/e/ep/epg-teleprogramma-dlya-ott-navigator.html" class="pb-related-card">
+                <span class="pb-related-title">EPG телепрограмма для OTT Navigator: настройка и источники</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению EPG в OTT Navigator. Решение проблем с отображением сетки вещани</span>
+            </a><a href="/articles/k/ka/kak-snyat-zaglushka-na-razvetliteli-antenny.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять заглушку на разветвителе антенны: инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по демонтажу и замене заглушек на антенных разветвителях. Инструменты, метод</span>
+            </a><a href="/articles/k/ka/kak-nastroit-dostup-k-yandeks-disku-na-webos.html" class="pb-related-card">
+                <span class="pb-related-title">Яндекс Диск на WebOS: как подключить облако к LG TV</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке Яндекс Диска на телевизорах LG с WebOS. Решаем проблемы с доступом</span>
+            </a><a href="/articles/k/ka/kak-ajfon-kontakty-k-avto-tojota-kamri-55.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить iPhone к Toyota Camry 55: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по синхронизации контактов iPhone с Toyota Camry 55. Настройка Bluetooth, CarP</span>
+            </a><a href="/articles/t/to/torserv-matrix-webos-homebrew-dostupen-no-ne-rabotaet.html" class="pb-related-card">
+                <span class="pb-related-title">Torserv Matrix на WebOS: почему не работает и как исправить</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок Torserv Matrix на LG WebOS. Настройка прав, обновлений и п</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

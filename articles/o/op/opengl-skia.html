@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Интеграция Skia с OpenGL: Оптимизация 2D графики — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по связке Skia и OpenGL. Настройка контекста, управление буферами, устранение артефактов и ускорение рендеринга в кроссплатформенных приложениях.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/o/op/opengl-skia.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Интеграция Skia с OpenGL: Оптимизация 2D графики">
+    <meta property="og:description" content="Техническое руководство по связке Skia и OpenGL. Настройка контекста, управление буферами, устранение артефактов и ускорение рендеринга в кроссплатформенных приложениях.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Интеграция Skia с OpenGL: Оптимизация 2D графики</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-взаимодействия-skia-и-opengl">Архитектура взаимодействия Skia и OpenGL</a></li><li><a href="#инициализация-графического-контекста-и-поверхности">Инициализация графического контекста и поверхности</a></li><li><a href="#управление-ресурсами-и-цикл-отрисовки">Управление ресурсами и цикл отрисовки</a></li><li><a href="#оптимизация-производительности-и-отладка">Оптимизация производительности и отладка</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/d/di/display-sink-gde-nakhoditsya.html">Display sink где находится: поиск и настройка в Linux и Android</a></li><li><a href="/articles/a/ag/ag072-h7e821-nuzhna-komu-nibud.html">ag072-h7e821: стоит ли искать деталь или это ошибка?</a></li><li><a href="/articles/v/va/vatsap-avtozapolnenie-skanirovanie-teksta.html">Автозаполнение в WhatsApp: сканирование текста и OCR</a></li><li><a href="/articles/k/ka/kak-uznat-nomer-karty-telekarty.html">Как узнать номер карты Телекарты: поиск ID на ТВ и в приложении</a></li><li><a href="/articles/k/ka/kak-sdelat-chtoby-mne-ne-zvonili-s-odnoklassnika.html">Как отключить звонки в Одноклассниках: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Интеграция Skia и OpenGL: Полное руководство по настройке</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-взаимодействия-skia-и-opengl">Архитектура взаимодействия Skia и OpenGL</a></li><li><a href="#инициализация-графического-контекста-и-поверхности">Инициализация графического контекста и поверхности</a></li><li><a href="#управление-ресурсами-и-цикл-отрисовки">Управление ресурсами и цикл отрисовки</a></li><li><a href="#оптимизация-производительности-и-отладка">Оптимизация производительности и отладка</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Разработчики графических интерфейсов часто сталкиваются с ситуацией, когда стандартные средства отрисовки UI не справляются с возросшей сложностью анимаций или объемом векторной графики. Интерфейс начинает подтормаживать при прокрутке списков, а сложные трансформации вызывают заметные задержки кадров, что особенно критично на мобильных устройствах с ограниченными ресурсами.</p>
+<p>Если у вас возникла потребность вывести рендеринг на уровень аппаратного ускорения, связка библиотеки <em>Skia</em> и графического API <em>OpenGL</em> становится наиболее эффективным решением. Такой подход позволяет делегировать вычисления геометрии и растеризацию видеокарте, освобождая главный поток процессора для логики приложения.</p>
+<p>На практике внедрение этой связки требует четкого понимания жизненного цикла графического контекста и правил управления памятью текстур. Неправильная инициализация или потеря контекста при изменении размера окна могут привести к полному исчезновению интерфейса или появлению графических артефактов.</p>
+<p>Допустим, задача стоит создать кроссплатформенное приложение с высокопроизводительным 2D-рендерингом, которое будет одинаково хорошо работать на десктопах и планшетах. В этом случае использование Skia поверх OpenGL обеспечивает необходимый баланс между качеством векторной графики и скоростью выполнения.</p>
+
+<h2 id="архитектура-взаимодействия-skia-и-opengl">Архитектура взаимодействия Skia и OpenGL</h2>
+<p>Взаимодействие между Skia и OpenGL строится на принципе разделения ответственности, где OpenGL управляет низкоуровневым состоянием видеокарты, а Skia выступает в роли высокоуровневого интерфейса для рисования. Библиотека Skia не создает собственное окно или контекст, она полагается на внешний код для предоставления валидного контекста OpenGL ES или Desktop OpenGL.</p>
+<p>Если рассмотреть структуру вызовов, то становится ясно, что Skia транслирует свои команды рисования (линии, кривые Безье, текст) в последовательность вызовов OpenGL, таких как <code>glDrawArrays</code> или <code>glBlendFunc</code>. Это означает, что состояние OpenGL должно быть строго контролируемым, чтобы внешние изменения не конфликтовали с внутренним состоянием движка Skia.</p>
+<p>Ключевым элементом архитектуры является объект <code>GrContext</code> (или <code>GrDirectContext</code> в новых версиях), который кэширует ресурсы GPU и управляет их жизненным циклом. Без правильного управления этим контекстом приложение будет постоянно создавать и уничтожать шейдеры и буферы, что приведет к катастрофическому падению производительности.</p>
+
+<h3>Модели рендеринга: Immediate vs Deferred</h3>
+<p>При настройке графического конвейера важно выбрать подходящую модель рендеринга, так как от этого зависит стратегия управления памятью. В режиме немедленного рендеринга команды выполняются сразу же, что проще для отладки, но менее эффективно для сложных сцен с множеством перекрывающихся элементов.</p>
+<p>Отложенный рендеринг (Deferred Rendering), который часто используется по умолчанию в связке Skia и OpenGL, позволяет движку оптимизировать порядок отрисовки и минимизировать переключения состояний шейдеров. Это особенно важно для устройств с мобильной графикой, где переключение состояний стоит дорого.</p>
+<p>На практике выбор модели зависит от целевой платформы и версии OpenGL. Для <em>OpenGL ES 3.0</em> и выше отложенный рендеринг показывает наилучшие результаты, тогда как на старых десктопных системах с <em>OpenGL 2.1</em> разница может быть менее заметна, но совместимость требует внимательной проверки.</p>
+
+<p>В таблице ниже приведено сравнение основных характеристик двух подходов к организации графического конвейера:</p>
+<table>
+<thead>
+<tr>
+<th>Характеристика</th>
+<th>Немедленный режим</th>
+<th>Отложенный режим</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Использование памяти</td>
+<td>Минимальное</td>
+<td>Высокое (кэширование)</td>
+</tr>
+<tr>
+<td>Производительность CPU</td>
+<td>Выше нагрузка</td>
+<td>Оптимизирована</td>
+</tr>
+<tr>
+<td>Сложность отладки</td>
+<td>Низкая</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильный выбор архитектуры рендеринга определяет стабильность FPS и потребление памяти в приложении.</p></aside>
+
+<h2 id="инициализация-графического-контекста-и-поверхности">Инициализация графического контекста и поверхности</h2>
+<p>Процесс настройки начинается с получения действующего контекста OpenGL через системные библиотеки, такие как GLFW, SDL или нативные API платформы. Только после успешного создания контекста и активации его в потоке можно приступать к инициализации объектов Skia, так как библиотека требует активного контекста для загрузки расширений.</p>
+<p>Следующим шагом является создание интерфейса GPU, который зависит от бэкенда. Для OpenGL это обычно <code>GrGLMakeNativeInterface</code>, который автоматически определяет доступные функции драйвера. После этого создается основной контекст рендеринга Skia, который будет управлять всеми ресурсами.</p>
+<p>Допустим, вы работаете с оконным менеджером, который может менять размер окна в runtime. В этом случае необходимо предусмотреть механизм уведомления Skia об изменении размеров буфера кадра, иначе изображение будет растягиваться или обрезаться некорректно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Инициализация Skia с OpenGL</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Получить нативный интерфейс OpenGL</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создать GrContext</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Создать поверхность рендеринга</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Настроить матрицу проекции</span></div></div>
+
+<h3>Настройка для различных платформ</h3>
+<p>Если целевой платформой является <em>Windows</em> с использованием WGL, то необходимо убедиться, что контекст создан с поддержкой необходимых версий OpenGL. Часто по умолчанию создается контекст совместимости, который может не поддерживать современные функции, требуемые Skia.</p>
+<p>На мобильных платформах под управлением <em>Android</em> или <em>iOS</em> используется OpenGL ES, где критически важно правильно настроить формат буфера цвета и глубину. Ошибка в выборе формата (например, отсутствие альфа-канала) приведет к тому, что прозрачные элементы интерфейса будут отображаться черным цветом.</p>
+<p>В Linux окружении с Wayland или X11 могут возникать проблемы с выбором визуального оформления окна. Здесь стоит использовать утилиты вроде <code>glxinfo</code> для проверки поддерживаемых расширений перед запуском приложения, чтобы избежать падений на этапе инициализации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В версиях Skia выше m80 изменился API создания контекста, теперь рекомендуется использовать GrDirectContext вместо устаревшего GrContext.</p></aside>
+
+<p>Рассмотрим основные параметры, которые необходимо контролировать при создании поверхности рендеринга:</p>
+<ul>
+<li>Формат цвета (RGBA8, RGB565) влияет на качество градиентов и прозрачность.</li>
+<li>Наличие буфера глубины (Stencil) необходимо для отсечения видимых областей и сложной маскировки.</li>
+<li>Количество сэмплов сглаживания (MSAA) определяет качество краев векторной графики.</li>
+</ul>
+
+<h2 id="управление-ресурсами-и-цикл-отрисовки">Управление ресурсами и цикл отрисовки</h2>
+<p>Цикл отрисовки в связке Skia и OpenGL должен быть синхронизирован с вертикальной разверткой монитора для избежания разрывов кадра. Для этого используется механизм <code>SwapBuffers</code>, который меняет передний и задний буферы, и важно вызывать его только после завершения всех команд рисования Skia.</p>
+<p>Если в кадре происходит много изменений, Skia может не успеть завершить запись команд в буфер команд GPU. В таких ситуациях помогает явный вызов функции ожидания завершения рендеринга, хотя это и может снизить общую пропускную способность конвейера.</p>
+<p>Управление текстурами требует особого внимания, так как Skia кэширует загруженные изображения в памяти GPU. При удалении изображения из памяти приложения необходимо явно сообщить об этом контексту Skia, иначе возникнет утечка видеопамяти, которая со временем приведет к краху драйвера.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отсутствие очистки ресурсов GrContext при закрытии приложения или смене темы может привести к утечкам памяти GPU и нестабильной работе системы.</p></aside>
+
+<h3>Работа с буферами и текстурами</h3>
+<p>При загрузке растровых изображений для использования в Skia рекомендуется предварительно конвертировать их в формат, совместимый с GPU, чтобы избежать costly конвертации во время выполнения. Форматы со сжатием блоков (BC/DXT/ETC) поддерживаются не везде и требуют проверки расширений.</p>
+<p>Допустим, необходимо отрисовать текст на лету. Skia создает текстуры для глифов динамически, и если шрифт содержит тысячи символов, атлас текстур может стать слишком большим. В таких случаях помогает ограничение размера кэша шрифтов или использование векторных шрифтов.</p>
+<p>Для анимированных интерфейсов важно минимизировать создание новых объектов Skia в каждом кадре. Переиспользование объектов <code>SkPaint</code>, <code>SkPath</code> и <code>SkFont</code> позволяет значительно снизить нагрузку на аллокатор памяти и ускорить рендеринг.</p>
+
+<pre><code>// Пример цикла отрисовки
+<p>skCanvas->clear(SK_ColorWHITE);</p>
+<p>skCanvas->drawPath(path, paint);</p>
+<p>skCanvas->flush;</p>
+<p>context->submit;</p>
+<p>swapBuffers;</code></pre></p>
+
+<p>Сравнение методов обновления данных в текстурах:</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Скорость</th>
+<th>Гибкость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Полная замена (TexImage)</td>
+<td>Низкая</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Частичное обновление (SubImage)</td>
+<td>Высокая</td>
+<td>Средняя</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте SkSurface::flushAndSubmit вместо отдельного вызова submit, если требуется гарантировать завершение всех операций перед продолжением работы.</p></aside>
+
+<h2 id="оптимизация-производительности-и-отладка">Оптимизация производительности и отладка</h2>
+<p>Даже при правильной настройке могут возникать ситуации, когда приложение потребляет больше ресурсов, чем ожидалось. Первым шагом в оптимизации всегда является профилирование с помощью инструментов вроде <em>RenderDoc</em> или <em>Android Profiler</em>, которые позволяют увидеть реальные вызовы OpenGL и время их выполнения.</p>
+<p>Если анализ показывает, что (узким местом) является CPU, стоит проверить количество вызовов отрисовки и сложность путей. Чрезмерное использование антиалиасинга для мелких деталей или сложных градиентов может быть избыточным и замедлять работу.</p>
+<p>На практике часто встречается проблема, когда Skia перерисовывает области, которые не изменились. Использование слоев (Layers) и их инвалидация только при необходимости позволяет значительно снизить нагрузку на GPU, особенно в статичных интерфейсах с динамическими элементами.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация рендеринга</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Снижение потребления энергии</li><li>✅ Увеличение FPS</li><li>✅ Плавная анимация</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность реализации</li><li>❌ Трудности отладки</li><li>❌ Риск визуальных артефактов</li></ul></div>
+</div></div>
+
+<h3>Типичные проблемы на разных устройствах</h3>
+<p>На устройствах с драйверами <em>Mali</em> или <em>PowerVR</em> могут наблюдаться специфические артефакты при использовании определенных режимов смешивания. Это связано с особенностями реализации тайлового рендеринга (Tile-Based Rendering), где порядок отрисовки прозрачных объектов критически важен.</p>
+<p>Если приложение работает на десктопе с драйверами <em>NVIDIA</em> или <em>AMD</em>, проблемы чаще связаны с синхронизацией и управлением памятью. Драйверы могут агрессивно кэшировать данные, и отсутствие правильной синхронизации приведет к отображению кадров с задержкой.</p>
+<p>Важно тестировать приложение на устройствах с разным соотношением сторон и плотностью пикселей (DPI). Skia масштабирует координаты, но неправильная настройка матрицы проекции может привести к размытию текста или неправильному позиционированию элементов интерфейса.</p>
+
+<ol>
+<li><strong>Отсутствие очистки буфера</strong> — если не вызывать clear в начале кадра, на экране останется содержимое предыдущего кадра, что создаст эффект шлейфа; всегда очищайте буфер или перекрывайте его полностью.</li>
+<li><strong>Неверный порядок смешивания</strong> — прозрачные объекты должны рисоваться от дальних к ближним, иначе цвета смешаются некорректно и фон будет просвечивать неправильно.</li>
+<li><strong>Утечка контекста</strong> — если GrContext не уничтожается при закрытии окна, видеопамять не освобождается, что при перезапуске приложения может вызвать сбой драйвера.</li>
+<li><strong>Игнорирование потерь контекста</strong> — на Android при повороте экрана контекст OpenGL может быть потерян; необходимо уметь восстанавливать ресурсы Skia заново.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте SkDebugf для вывода отладочной информации непосредственно в лог Skia, это помогает отслеживать внутреннюю логику движка без подключения тяжелых профайлеров.</p></aside>
+
+<h2 id="резюме-и-рекомендации">Резюме и рекомендации</h2>
+<p>Интеграция Skia с OpenGL представляет собой мощный инструмент для создания высокопроизводительной 2D-графики, требующий внимательного отношения к деталям реализации. Правильная настройка контекста, управление ресурсами и понимание особенностей целевых платформ позволяют достичь стабильной работы приложения даже на слабых устройствах.</p>
+<p>Соблюдение правил жизненного цикла объектов и регулярное профилирование помогают избегать типичных ошибок, связанных с утечками памяти и артефактами рендеринга. При грамотном подходе связка Skia и OpenGL обеспечивает плавную анимацию и высокую отзывчивость интерфейса.</p>
+<p>В дальнейшем развитие этой технологии будет направлено на еще более глубокую интеграцию с Vulkan и Metal, однако принципы работы с Skia останутся схожими, что делает полученные знания фундаментальными для любого графического разработчика.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/d/di/display-sink-gde-nakhoditsya.html" class="pb-related-card">
+                <span class="pb-related-title">Display sink где находится: поиск и настройка в Linux и Android</span>
+                <span class="pb-related-desc">Где найти Display Sink в Linux и Android. Настройка PipeWire, PulseAudio и Audio HAL. Решение пробле</span>
+            </a><a href="/articles/a/ag/ag072-h7e821-nuzhna-komu-nibud.html" class="pb-related-card">
+                <span class="pb-related-title">ag072-h7e821: стоит ли искать деталь или это ошибка?</span>
+                <span class="pb-related-desc">Разбор кода ag072-h7e821. Является ли это маркировкой компонента или ошибкой системы? Инструкция по </span>
+            </a><a href="/articles/v/va/vatsap-avtozapolnenie-skanirovanie-teksta.html" class="pb-related-card">
+                <span class="pb-related-title">Автозаполнение в WhatsApp: сканирование текста и OCR</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке сканирования текста, OCR и автозаполнения в WhatsApp. Решение проб</span>
+            </a><a href="/articles/k/ka/kak-uznat-nomer-karty-telekarty.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать номер карты Телекарты: поиск ID на ТВ и в приложении</span>
+                <span class="pb-related-desc">Пошаговая инструкция по поиску номера карты (ID) Телекарты. Методы для ресиверов, Smart TV и мобильн</span>
+            </a><a href="/articles/k/ka/kak-sdelat-chtoby-mne-ne-zvonili-s-odnoklassnika.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить звонки в Одноклассниках: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по блокировке входящих звонков в Одноклассниках. Настройки приватности, скрыти</span>
+            </a><a href="/articles/s/se/server-filips-ne-najden-povtorite-popytku-pozzhe-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка Philips TV: сервер не найден — решение проблемы</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки «сервер не найден» на телевизорах Philips Android TV. Наст</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>NUMA BIOS: настройка для Windows и оптимизация производительности — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по конфигурации NUMA в BIOS/UEFI для серверов и рабочих станций. Влияние на Windows Server, разгон памяти и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/n/nu/numa-bios-ustanovka-windows.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NUMA BIOS: настройка для Windows и оптимизация производительности">
+    <meta property="og:description" content="Подробное руководство по конфигурации NUMA в BIOS/UEFI для серверов и рабочих станций. Влияние на Windows Server, разгон памяти и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">NUMA BIOS: настройка для Windows и оптимизация производительности</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-особенности-numa-и-влияние-на-windows">Архитектурные особенности NUMA и влияние на Windows</a></li><li><a href="#настройка-параметров-biosuefi-для-активации-numa">Настройка параметров BIOS/UEFI для активации NUMA</a></li><li><a href="#процесс-установки-windows-с-учетом-топологии-памяти">Процесс установки Windows с учетом топологии памяти</a></li><li><a href="#диагностика-и-верификация-конфигурации-numa">Диагностика и верификация конфигурации NUMA</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-обслуживанию">Резюме и рекомендации по обслуживанию</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/as/asus-vivobook-15-x1504va-bq868-kak-ustanovit-operatsionnuyu-sistemu.html">Установка Windows на ASUS Vivobook 15 X1504VA-BQ868: полная инструкция</a></li><li><a href="/articles/h/ha/hard-drive-not-installed-chto-delat-dell-noutbuk.html">Ошибка Hard Drive Not Installed на Dell: полное руководство</a></li><li><a href="/articles/l/le/lenovo-g570-blyutuz-gde.html">Lenovo G570 Блютуз: Где найти и как включить драйвер</a></li><li><a href="/articles/k/ka/kak-zajti-v-bios-lenovo-legion-5-na-noutbuke.html">Как зайти в БИОС Lenovo Legion 5: все способы и клавиши</a></li><li><a href="/articles/k/ka/kak-udalit-kontinent-ap-4-polnostyu-i-s-reestra.html">Как удалить Континент АП 4 полностью: чистка файлов и реестра</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация NUMA в BIOS при установке Windows Server</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-особенности-numa-и-влияние-на-windows">Архитектурные особенности NUMA и влияние на Windows</a></li><li><a href="#настройка-параметров-biosuefi-для-активации-numa">Настройка параметров BIOS/UEFI для активации NUMA</a></li><li><a href="#процесс-установки-windows-с-учетом-топологии-памяти">Процесс установки Windows с учетом топологии памяти</a></li><li><a href="#диагностика-и-верификация-конфигурации-numa">Диагностика и верификация конфигурации NUMA</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-обслуживанию">Резюме и рекомендации по обслуживанию</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда высокопроизводительный сервер с двумя процессорами демонстрирует парадоксально низкую скорость обработки транзакций или нестабильную работу баз данных, часто ставит системных администраторов в тупик. Вместо ожидаемого линейного роста мощности при добавлении второго процессора наблюдается просадка пропускной способности памяти и скачки задержек (latency). Причиной подобных аномалий в 80% случаев становится игнорирование архитектуры NUMA (Non-Uniform Memory Access) на уровне базовой системы ввода-вывода.</p>
+<p>Операционные системы семейства Windows, особенно серверные версии <em>Windows Server 2019/2022</em> и профессиональные десктопные редакции, критически зависят от корректной карты памяти, предоставляемой firmware материнской платы. Если BIOS не настроен правильно или функция интерливинга памяти отключена, процессор может обращаться к удаленной памяти через медленную шину QPI/UPI, что снижает общую эффективность системы в разы. Понимание принципов работы NUMA необходимо еще до начала инсталляции операционной системы.</p>
+<p>Некорректная конфигурация приводит к тому, что Windows Scheduler распределяет потоки приложений на ядра, не имеющие локального доступа к требуемым блокам памяти. Это вызывает постоянные прерывания и переключения контекста, нагружая процессор лишней работой. В данной инструкции рассматриваются технические аспекты настройки BIOS для обеспечения оптимальной работы NUMA, методы диагностики и решения типичных проблем совместимости оборудования.</p>
+
+<h2 id="архитектурные-особенности-numa-и-влияние-на-windows">Архитектурные особенности NUMA и влияние на Windows</h2>
+
+<p>Архитектура NUMA предполагает, что каждый процессор или группа ядер имеют собственную локальную память, доступ к которой осуществляется с минимальной задержкой. В отличие от архитектуры UMA (Uniform Memory Access), где все процессоры делят единую шину памяти, в NUMA-системах доступ к памяти другого процессора (remote memory) занимает значительно больше времени. Операционная система Windows, начиная с версий <em>Windows Server 2008 R2</em> и <em>Windows 7</em>, обладает встроенным планировщиком, умеющим учитывать топологию NUMA.</p>
+<p>Однако эффективность работы планировщика напрямую зависит от данных ACPI (Advanced Configuration and Power Interface), которые BIOS передает операционной системе при загрузке. Если в BIOS отключена поддержка NUMA или неправильно настроены группы памяти, Windows будет считать всю доступную память единым пулом с одинаковой скоростью доступа. Это приводит к неоптимальному размещению потоков и страниц памяти, что особенно критично для ресурсоемких приложений, таких как <em>Microsoft SQL Server</em>, <em>Oracle Database</em> или виртуальных машин <em>Hyper-V</em>.</p>
+<p>Важно понимать, что включение поддержки NUMA в BIOS не всегда автоматически гарантирует идеальную работу. Существуют сценарии, когда для специфических задач, например, для некоторых видов высокопроизводительных вычислений (HPC) или рендеринга, требуется принудительное включение режима"Interleaving" (перемежение), который игнорирует границы NUMA-узлов для обеспечения равномерной, хотя и более медленной, полосы пропускания. Выбор между строгой локальностью и интерливингом зависит от профиля нагрузки.</p>
+
+<h3>Различия между Server и Client версиями Windows</h3>
+<p>Серверные редакции Windows по умолчанию настроены на максимальную производительность и полное использование возможностей NUMA. Планировщик процессов в <em>Windows Server</em> активно группирует потоки одного процесса в пределах одного NUMA-узла, чтобы минимизироватьсокетные обращения к памяти. В клиентских версиях, таких как <em>Windows 10/11 Pro</em>, алгоритмы могут быть более консервативными, приоритизируя отзывчивость интерфейса и энергосбережение, что иногда требует ручной корректировки через реестр или групповые политики.</p>
+<p>При установке Windows на систему с более чем одним процессором или многоядерными CPU (например, AMD EPYC или Intel Xeon Scalable) операционная система считывает таблицу SRAT (System Resource Affinity Table). Если BIOS не предоставляет корректные данные в этой таблице, Windows может не увидеть второй процессор или некорректно распределить память. В диспетчере задач это отобразится как наличие нескольких сокетов, но метрики памяти могут показывать аномалии в использовании каналов.</p>
+
+<h2 id="настройка-параметров-biosuefi-для-активации-numa">Настройка параметров BIOS/UEFI для активации NUMA</h2>
+
+<p>Процесс конфигурации начинается с входа в интерфейс BIOS/UEFI материнской платы. Для серверных платформ от производителей вроде <em>Supermicro</em>, <em>ASUS Server</em>, <em>Gigabyte</em> или <em>HPE</em> путь к настройкам может отличаться, но логика остается единой. Необходимо найти раздел, отвечающий за конфигурацию процессора и памяти. Обычно он называется <code>Advanced</code>, <code>CPU Configuration</code> или <code>Chipset</code>.</p>
+<p>Ключевым параметром, который необходимо проверить, является <strong>NUMA Nodes Per Socket</strong>. В современных системах по умолчанию часто стоит значение"Auto" или"1", что означает, что каждый физический сокет представляет собой один NUMA-узел. Для процессоров с большим количеством ядер (например, AMD EPYC с архитектурой Zen) может потребоваться изменение этого параметра на"4" или"8", чтобы разделить сокет на несколько логических узлов, соответствующих CCD (Core Complex Dies). Это позволяет операционной системе более гибко управлять ресурсами.</p>
+<p>Другим важным параметром является <code>Node Interleaving</code>. Если этот параметр установлен в <code>Enabled</code>, система игнорирует границы NUMA и работает в режиме UMA, равномерно распределяя адресное пространство памяти по всем каналам. Для большинства серверных задач баз данных и виртуализации этот параметр должен быть установлен в <code>Disabled</code>, чтобы сохранить преимущества локальности памяти. Включение интерливинга имеет смысл только в специфических сценариях, когда приложение не умеет работать с NUMA или требует максимальной полосы пропускания в ущерб задержкам.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На материнских платах Supermicro искомые настройки часто находятся в разделе Advanced → North Bridge → AMD NB или Intel RAS.</p></aside>
+
+<h3>Специфика настроек для платформ Intel и AMD</h3>
+<p>На платформах <em>Intel Xeon</em> (серии Scalable) настройка часто скрыта в глубоких меню чипсета. Параметр может называться <code>Cluster on Die</code> (CoD) или <code>Sub-NUMA Clustering</code> (SNC). Включение SNC делит один физический сокет на два или четыре логических NUMA-узла. Это увеличивает количество доступных для Windows логических процессоров и узлов памяти, что может повысить производительность в многопоточных задачах, но усложняет лицензирование ПО, завязанного на сокеты.</p>
+<p>В экосистеме <em>AMD EPYC</em> архитектура изначально построена на модулях CCX/CCD. В BIOS соответствующих серверов (например, на чипсетах <em>BMC</em> или проприетарных BIOS) существует параметр <code>NPS</code> (Nodes Per Socket). Установка значения NPS=4 или NPS=8 создает соответствующее количество NUMA-узлов внутри одного процессора. Для Windows Server 2022 это стандартная практика, позволяющая эффективно задействовать все каналы памяти DDR4/DDR5.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовая настройка NUMA</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Войдите в BIOS/UEFI при загрузке (клавиша Del или F2)</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел Advanced → CPU Configuration</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите параметр Node Interleaving и установите Disabled</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Найдите NUMA Nodes Per Socket и выберите нужное значение (обычно 1 или Auto)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Сохраните настройки (F10) и перезагрузитесь</span></div></div>
+
+<table>
+<thead>
+<tr>
+<th>Параметр BIOS</th>
+<th>Рекомендуемое значение (Сервер БД)</th>
+<th>Рекомендуемое значение (Рендеринг/HPC)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node Interleaving</td>
+<td>Disabled (NUMA On)</td>
+<td>Enabled (UMA Mode)</td>
+</tr>
+<tr>
+<td>NUMA Nodes Per Socket</td>
+<td>1 (или NPS по кол-ву CCD)</td>
+<td>Auto / 1</td>
+</tr>
+<tr>
+<td>Memory Channel Interleave</td>
+<td>Disabled</td>
+<td>Enabled</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="процесс-установки-windows-с-учетом-топологии-памяти">Процесс установки Windows с учетом топологии памяти</h2>
+
+<p>После настройки BIOS следует этап инсталляции операционной системы. Важно отметить, что сам процесс установки Windows не требует специальных действий для активации NUMA, так как конфигурация считывается на раннем этапе загрузки ядра. Однако, если вы используете специализированные дистрибутивы или модифицированные образы для гиперконвергентных систем, убедитесь, что в образе присутствуют последние драйверы чипсета и контроллера памяти.</p>
+<p>Во время установки, на этапе выбора диска, система уже работает в выбранном режиме доступа к памяти. Если в BIOS был включен интерливинг, установщик будет видеть память как единый блок. Если режим NUMA активен (интерливинг отключен), Windows подготовит файловую систему и системные файлы с учетом будущей топологии. Критически важно не прерывать первый запуск после установки, так как именно в этот момент происходит финальная конфигурация драйверов HAL (Hardware Abstraction Layer).</p>
+<p>Для серверов с большим объемом оперативной памяти (более 512 Гб) рекомендуется отключить ненужные службы и визуальные эффекты сразу после первой загрузки, до начала установки прикладного ПО. Это снизит потребление памяти системными процессами и позволит приложениям занять оптимальные NUMA-узлы. Также стоит проверить, что в BIOS включена поддержка <code>Above 4G Decoding</code>, что необходимо для корректного адресования памяти в 64-битных системах с большим количеством устройств PCIe.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение параметров NUMA в BIOS после установки Windows и развертывания приложений может потребовать пересоздания виртуальных машин или перезапуска кластерных служб для применения изменений.</p></aside>
+
+<h3>Использование загрузочных параметров и реестра</h3>
+<p>В редких случаях, когда BIOS некорректно передает информацию, может потребоваться ручное вмешательство через загрузчик Windows. Использование ключа <code>/numa</code> в параметрах загрузки BCD (Boot Configuration Data) позволяет принудительно указать системе игнорировать или, наоборот, строго следовать топологии. Однако в современных версиях Windows Server это требуется крайне редко и может привести к нестабильности.</p>
+<p>Более актуальным является контроль через реестр. Параметры группы процессоров (Processor Group) могут быть настроены для балансировки нагрузки. Например, для старых приложений, не поддерживающих более 64 потоков, может потребоваться привязка к конкретному NUMA-узлу. Это делается не в BIOS, а через настройки совместимости исполняемого файла или через API приложения, но базис для этого закладывается именно правильной работой BIOS.</p>
+
+<p>Если установка проходит на виртуальную машину (VM), запущенную на гипервизоре (Hyper-V, VMware ESXi), то настройка NUMA производится уже на уровне гипервизора. В этом случае BIOS физической машины должен просто обеспечивать стабильный доступ, а распределение vCPU по физическим ядрам настраивается в политиках виртуальной машины. Гипервизоры обычно сами оптимально размещают память VM в пределах одного NUMA-узла хоста.</p>
+
+<h2 id="диагностика-и-верификация-конфигурации-numa">Диагностика и верификация конфигурации NUMA</h2>
+
+<p>После успешной установки Windows необходимо убедиться, что операционная система корректно распознала топологию памяти и процессоров. Первым инструментом для проверки является встроенная утилита <code>msinfo32</code>. Запустите её через меню <code>Пуск → Выполнить</code> или командой <code>msinfo32</code>. В разделе"Сведения о системе" обратите внимание на строки"Процессоры" и"Ядра". Количество логических процессоров должно соответствовать ожидаемому.</p>
+<p>Более детальную информацию предоставляет утилита командной строки <code>wmic</code> или PowerShell. Команда <code>wmic numanode get Caption, MemoryInMB</code> выведет список всех обнаруженных NUMA-узлов и объем памяти, закрепленной за каждым из них. Если система видит только один узел при наличии двух физических процессоров, значит, в BIOS включен интерливинг или возникла ошибка конфигурации.</p>
+<p>Для глубокого анализа можно использовать утилиту <em>Core Mark</em> или специализированные тесты памяти, такие как <em>AIDA64</em>. Они покажут latency (задержку) доступа к памяти. При правильной настройке NUMA задержка до локальной памяти должна быть минимальной (например, 80-90 нс), а до удаленной — значительно выше (150-200 нс и более). Если задержки везде одинаковые и средние, это признак работы в режиме UMA (интерливинг).</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка через PowerShell</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите PowerShell от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду: Get-PhysicalDisk</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Select-Object FriendlyName, Size (для проверки дисков)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите команду: Get-ComputerInfo</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Select-Object CsNumberOfLogicalProcessors, CsNumberOfProcessors</span></div><div class="pb-step"><span class="pb-step-num">6</span><span class="pb-step-text">Сравните полученные данные с спецификацией оборудования</span></div></div>
+
+<h3>Анализ логов и событий системы</h3>
+<p>Системный журнал Windows (<code>Event Viewer</code>) может содержать предупреждения от источника <em>HAL</em> или <em>Kernel-Processor-Power</em>, указывающие на проблемы с распределением прерываний между NUMA-узлами. Наличие ошибок в разделе <code>Система</code> сразу после загрузки может свидетельствовать о конфликте адресации памяти, особенно если установлена память разных объемов или рангов на разных каналах.</p>
+<p>Также стоит проверить журнал <em>RAS</em> (Reliability, Availability, and Serviceability), если он ведется драйверами chipset. Там могут фиксироваться исправимые ошибки памяти (ECC Correctable Errors), которые, накапливаясь, могут привести к переключению каналов памяти и изменению топологии NUMA на лету, что нежелательно для стабильных серверов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Команда / Путь</th>
+<th>Что проверяем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PowerShell</td>
+<td><code>Get-NumaNodeConnectionMap</code></td>
+<td>Связность между узлами</td>
+</tr>
+<tr>
+<td>WMIC</td>
+<td><code>wmic numanode get *</code></td>
+<td>Полная информация об узлах</td>
+</tr>
+<tr>
+<td>Диспетчер задач</td>
+<td>Вкладка Производительность → CPU</td>
+<td>Графики загрузки по узлам</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки и эксплуатации систем с архитектурой NUMA администраторы часто сталкиваются с рядом повторяющихся проблем. Понимание их природы позволяет быстро восстановить работоспособность сервера. Ниже приведен список наиболее распространенных ошибок, связанных с конфигурацией BIOS и взаимодействием с Windows.</p>
+
+<ol>
+<li><strong>Игнорирование второго процессора системой</strong> — Windows видит только один CPU, хотя физически их два. Причина: в BIOS не включена поддержка Multi-Processor или параметр <code>QPI Link Speed</code> установлен в режим совместимости, блокирующий второй сокет. Решение: Проверить <code>CPU Configuration</code>, убедиться, что все сокеты активны, и сбросить настройки BIOS в дефолт (Load Optimized Defaults).</li>
+<li><strong>Неравномерное распределение памяти (Memory Hole)</strong> — Доступный объем памяти в Windows меньше физического. Причина: В BIOS зарезервировано слишком много адреса для PCI устройств или включен режим совместимости с 32-битными ОС. Решение: Включить опцию <code>Memory Remap Feature</code> или <code>Above 4G Decoding</code> в разделе Chipset/North Bridge.</li>
+<li><strong>Падение производительности SQL Server на 40-50%</strong> — База данных работает медленно несмотря на мощное железо. Причина: Включен <code>Node Interleaving</code> в BIOS, из-за чего исчезает локальность памяти. Решение: Отключить интерливинг в BIOS, перезагрузиться, убедиться, что в <code>msinfo32</code> отображается несколько узлов NUMA.</li>
+<li><strong>Синие экраны смерти (BSOD) с кодом MEMORY_MANAGEMENT</strong> — Система нестабильна под нагрузкой. Причина: Конфликт таймингов памяти при включении NUMA на пределе частот или несовместимые модули RAM в разных каналах. Решение: Снизить частоту памяти в BIOS, обновить прошивку BIOS до последней версии, проверить совместимость модулей памяти в QVL списке производителя.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Режим NUMA (Interleaving Disabled)</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость отклика для локальных запросов</li><li>✅ Эффективное масштабирование на многопроцессорных системах</li><li>✅ Оптимально для баз данных</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложнее в настройке приложений</li><li>❌ Возможны перекосы загрузки если приложение не оптимизировано</li></ul></div>
+</div></div>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При обновлении BIOS на серверах с настроенным NUMA всегда сохраняйте скриншоты текущих настроек. После прошивки параметры часто сбрасываются на заводские, что может включить интерливинг и ухудшить производительность.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-обслуживанию">Резюме и рекомендации по обслуживанию</h2>
+
+<p>Правильная настройка NUMA в BIOS является фундаментом для построения высокопроизводительной инфраструктуры на базе Windows Server. Игнорирование этих настроек превращает дорогое многопроцессорное оборудование в неэффективную систему с узким горлышком в подсистеме памяти. Ключевым правилом остается принцип: для баз данных и виртуализации — отключать интерливинг, для рендеринга и потоковой обработки больших данных — оценивать целесообразность его включения.</p>
+<p>Регулярный аудит конфигурации после обновлений firmware и мониторинг метрик производительности позволяют поддерживать систему в оптимальном состоянии. Использование встроенных средств диагностики Windows и понимание логики работы планировщика процессов дают администратору полный контроль над ресурсами сервера. Помните, что аппаратные возможности раскрываются только при грамотной программной конфигурации.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректная настройка NUMA в BIOS (отключение Node Interleaving) критически важна для производительности Windows Server на многопроцессорных системах, обеспечивая локальный доступ процессоров к памяти.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/as/asus-vivobook-15-x1504va-bq868-kak-ustanovit-operatsionnuyu-sistemu.html" class="pb-related-card">
+                <span class="pb-related-title">Установка Windows на ASUS Vivobook 15 X1504VA-BQ868: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по установке ОС на ноутбук ASUS Vivobook 15 X1504VA-BQ868. Создание загрузочно</span>
+            </a><a href="/articles/h/ha/hard-drive-not-installed-chto-delat-dell-noutbuk.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка Hard Drive Not Installed на Dell: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки Hard Drive Not Installed на ноутбуках Dell. Диагностика BI</span>
+            </a><a href="/articles/l/le/lenovo-g570-blyutuz-gde.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo G570 Блютуз: Где найти и как включить драйвер</span>
+                <span class="pb-related-desc">Подробная инструкция: где находится Bluetooth на Lenovo G570. Включение модуля, установка драйверов,</span>
+            </a><a href="/articles/k/ka/kak-zajti-v-bios-lenovo-legion-5-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как зайти в БИОС Lenovo Legion 5: все способы и клавиши</span>
+                <span class="pb-related-desc">Подробная инструкция: как войти в БИОС на Lenovo Legion 5. Клавиши F2, Fn+F2, Novo Button. Решение п</span>
+            </a><a href="/articles/k/ka/kak-udalit-kontinent-ap-4-polnostyu-i-s-reestra.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Континент АП 4 полностью: чистка файлов и реестра</span>
+                <span class="pb-related-desc">Полная инструкция по удалению Континент АП 4. Очистка реестра, скрытых папок и остаточных файлов для</span>
+            </a><a href="/articles/l/le/lenovo-idea-pad3-ne-vidit-disk-c.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo IdeaPad 3 не видит диск: решение ошибки инициализации</span>
+                <span class="pb-related-desc">Диск не виден на Lenovo IdeaPad 3? Инструкция по устранению сбоя инициализации GPT/MBR, настройке VM</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

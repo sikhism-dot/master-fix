@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как система определяет создателя папки: анализ идентификаторов — Мастер Фикс</title>
+    <meta name="description" content="Технический разбор механизмов идентификации пользователей при создании файлов. Анализ ACL, токенов безопасности и журналов событий.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-kompyuter-ponyal-chto-imenno-ya-sozdal-papku-a-ne-kto-libo-drugoj.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как система определяет создателя папки: анализ идентификаторов">
+    <meta property="og:description" content="Технический разбор механизмов идентификации пользователей при создании файлов. Анализ ACL, токенов безопасности и журналов событий.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как система определяет создателя папки: анализ идентификаторов</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#механизм-идентификации-через-токены-безопасности">Механизм идентификации через токены безопасности</a></li><li><a href="#роль-файловых-систем-в-сохранении-метаданных">Роль файловых систем в сохранении метаданных</a></li><li><a href="#сценарии-делегирования-и-создания-от-имени-других">Сценарии делегирования и создания от имени других</a></li><li><a href="#типичные-ошибки-при-идентификации-создателя">Типичные ошибки при идентификации создателя</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vosstanovit-sms-soobshcheniya-sberbanka.html">Как восстановить СМС Сбербанка: полное руководство</a></li><li><a href="/articles/k/ka/kak-sdelat-raduzhnyj-kursor.html">Радужный курсор: создание и настройка в Windows и CSS</a></li><li><a href="/articles/v/vr/vredno-li-delat-grudnye-ispoliny.html">Вредно ли делать грудные жимы: риски и техника безопасности</a></li><li><a href="/articles/s/so/sony-kdl43w755c-kak-veshat-na-stenu.html">Крепление Sony KDL43W755C на стену: инструкция, размеры VESA</a></li><li><a href="/articles/r/ro/roditelskij-kontrol-mozhno-nastroit-tolko-dlya-akkauntov-s-odnim-profilem.html">Почему родительский контроль не работает с несколькими профилями?</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как операционная система определяет создателя папки</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#механизм-идентификации-через-токены-безопасности">Механизм идентификации через токены безопасности</a></li><li><a href="#роль-файловых-систем-в-сохранении-метаданных">Роль файловых систем в сохранении метаданных</a></li><li><a href="#сценарии-делегирования-и-создания-от-имени-других">Сценарии делегирования и создания от имени других</a></li><li><a href="#типичные-ошибки-при-идентификации-создателя">Типичные ошибки при идентификации создателя</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Представьте ситуацию: в корпоративной сети на общем файловом сервере обнаружена папка с конфиденциальными данными, доступ к которой ограничен. Администратор безопасности должен установить, кто именно инициировал создание этого объекта, чтобы проверить полномочия или выявить утечку информации. На первый взгляд, это тривиальная задача, решаемая одним кликом в свойствах файла, однако за этим действием скрывается сложный каскад системных вызовов, проверок прав и записи метаданных, которые операционная система выполняет за доли секунды.</p>
+<p>Если у вас возникнет необходимость отследить происхождение файла или понять, почему система приписывает права владельца конкретному пользователю, важно разобраться в фундаментальных принципах работы файловых систем. Компьютер не «видит» человека, он оперирует цифровыми идентификаторами, токенами безопасности и таблицами доступа. Механизм привязки создаваемого объекта к учетной записи пользователя является краеугольным камнем современной информационной безопасности и многопользовательских сред.</p>
+<p>На практике процесс создания папки запускает цепочку событий, где каждый этап жестко регламентирован ядром операционной системы. От момента нажатия кнопки «Создать» до появления записи в журнале событий проходит несколько стадий аутентификации и авторизации. Понимание этих процессов необходимо не только системным администраторам, но и разработчикам, работающим с файловыми структурами и правами доступа.</p>
+
+<h2 id="механизм-идентификации-через-токены-безопасности">Механизм идентификации через токены безопасности</h2>
+<p>В основе определения создателя лежит концепция токена безопасности. Когда пользователь входит в систему, операционная система <em>Windows</em> или ядро <em>Linux</em> проводит аутентификацию и генерирует уникальный токен доступа. Этот токен содержит список идентификаторов безопасности (SID в Windows или UID/GID в Linux), которые ассоциированы с текущей сессией. Именно этот токен прикрепляется ко всем процессам, запущенным от имени пользователя.</p>
+<p>Допустим, пользователь запускает Проводник или терминал для создания новой директории. Операционная система не спрашивает имя пользователя каждый раз заново, она проверяет токен процесса, инициировавшего запрос. В момент системного вызова создания объекта (например, <code>CreateDirectory</code> в API Windows или <code>mkdir</code> в POSIX-системах) ядро извлекает идентификатор владельца из токена вызывающего процесса и записывает его в метаданные создаваемого файла.</p>
+<p><strong>Ключевым моментом</strong> является то, что процесс наследует права и идентификаторы создавшего его пользователя. Если бы существовала возможность подмены токена без прав администратора, любой пользователь мог бы создавать файлы от имени других лиц, что привело бы к полному хаосу в системе прав доступа. Поэтому ядро строго следит за целостностью этого процесса.</p>
+<p>В корпоративных доменных средах токены могут содержать дополнительные группы безопасности, полученные от контроллера домена. Это позволяет гибко управлять доступом, но принцип определения владельца остается неизменным: владельцем становится субъект, чей токен безопасности был активен в момент создания объекта.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Токен безопасности создается при входе в систему и действителен до момента завершения сеанса или принудительного отзыва прав администратором.</p></aside>
+
+<h3>Различия в реализации для Windows и Linux</h3>
+<p>Хотя логика едина, техническая реализация различается. В среде <em>Windows NTFS</em> используется сложный механизм ACL (Access Control List), где владелец определяется полем Owner в дескрипторе безопасности. В Unix-подобных системах (<em>Linux, macOS</em>) используется более простая, но эффективная модель, основанная на числовых идентификаторах UID. </p>
+<p>Если у вас есть доступ к командной строке, вы можете наблюдать эти различия. В Linux команда <code>ls -l</code> покажет имя пользователя, соответствующее числовому UID владельца. В Windows аналогичную информацию можно получить через PowerShell, запросив свойства безопасности объекта. Оба подхода гарантируют, что создатель по умолчанию получает полные права на управление объектом.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Windows (NTFS)</th>
+<th>Linux (ext4/xfs)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Идентификатор</td>
+<td>SID (строковый формат)</td>
+<td>UID (числовой формат)</td>
+</tr>
+<tr>
+<td>Механизм хранения</td>
+<td>Дескриптор безопасности (Security Descriptor)</td>
+<td>Inode (структура файла)</td>
+</tr>
+<tr>
+<td>Наследование</td>
+<p>Сложное, через ACE</p>
+<p>Простое, через биты прав</p>
+</tr>
+</tbody>
+</table>
+
+<h2 id="роль-файловых-систем-в-сохранении-метаданных">Роль файловых систем в сохранении метаданных</h2>
+<p>Файловая система выступает в роли хранителя истины о владении объектами. Когда процесс отправляет запрос на создание папки, файловая система выделяет место на диске и формирует структуру данных, описывающую этот объект. В эту структуру, помимо имени и даты, обязательно записывается идентификатор владельца, полученный от ядра ОС.</p>
+<p>На практике это означает, что даже если пользователь переименует свою учетную запись или изменит отображаемое имя, внутренний идентификатор (SID или UID) останется прежним, и система продолжит корректно идентифицировать его как владельца старых файлов. Это обеспечивает стабильность работы системы прав доступа при администрировании учетных записей.</p>
+<p>Важно понимать, что файловая система не проверяет «человеческий» фактор. Если процессу удалось получить токенизированный запрос с правами другого пользователя (например, через уязвимость или ошибку конфигурации), файловая система без колебаний запишет этого пользователя как владельца. <strong>Целостность процесса аутентификации</strong> здесь критична.</p>
+<p>Современные файловые системы также поддерживают расширенные атрибуты, которые могут хранить дополнительную информацию о создателе, включая хэши цифровых подписей или метки времени в высокоточном формате. Это позволяет проводить более глубокий аудит действий пользователей.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прямое редактирование структур файловой системы (например, через hex-редактор) для изменения владельца может привести к повреждению данных и потере доступа к файлам.</p></aside>
+
+<h3>Журналирование и отслеживание изменений</h3>
+<p>Для обеспечения возможности аудита операционные системы ведут журналы событий. В <em>Windows</em> это Event Log, в частности раздел Security. При включенной политике аудита каждое создание объекта записывается в журнал с указанием субъекта, выполнившего действие. В <em>Linux</em> за это отвечают демоны аудита, такие как <code>auditd</code>, которые могут логировать системные вызовы.</p>
+<p>Если у вас включен аудит, вы сможете увидеть не только факт создания, но и полный путь процесса, PID (идентификатор процесса) и время выполнения операции. Это создает надежную цепочку доказательств, связывающую физическое действие пользователя с цифровой записью в системе.</p>
+<p>Журналы защищены от несанкционированного изменения, что делает их надежным источником информации при расследовании инцидентов. Однако стоит помнить, что объем журналов ограничен, и старые записи могут быть перезаписаны новыми, если не настроена централизованная система сбора логов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка владельца в Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте свойства папки</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите на вкладку «Безопасность»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку «Дополнительно»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Изучите поле «Владелец» в верхней части окна</span></div></div>
+
+<h2 id="сценарии-делегирования-и-создания-от-имени-других">Сценарии делегирования и создания от имени других</h2>
+<p>Существуют легитимные сценарии, когда папка создается не напрямую пользователем, а от его имени системными процессами или службами. Например, при работе с терминальным сервером или при использовании механизмов имперсонации в веб-приложениях. В таких случаях система фиксирует как реального пользователя, так и контекст безопасности, в котором работала служба.</p>
+<p>Допустим, веб-сервер <em>IIS</em> или <em>Apache</em> создает временную папку для загрузки файла. Формально владельцем будет учетная запись пула приложений (например, <code>IIS AppPool</code> или <code>www-data</code>), а не конкретный пользователь, загрузивший файл. Для отслеживания конечного пользователя в таких случаях требуется анализ логов самого приложения, а не только файловой системы.</p>
+<p><strong>Империонация</strong> позволяет потоку выполнения временно принимать личность другого пользователя. Это мощный инструмент, который требует осторожного обращения. Если поток успешно имперсонировал пользователя А, то созданные в этот момент файлы будут принадлежать пользователю А, даже если процесс запущен от имени пользователя Б.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В сложных корпоративных средах для отслеживания реального инициатора действия может потребоваться корреляция данных из журналов приложений, веб-серверов и операционной системы.</p></aside>
+
+<h3>Использование служебных учетных записей</h3>
+<p>Часто автоматизированные скрипты и задачи планировщика работают под специальными служебными учетными записями. Файлы, созданные такими скриптами, будут помечены как созданные этой служебной учетной записью. Это нормальное поведение, которое упрощает управление правами, но усложняет идентификацию конкретного человека, инициировавшего запуск скрипта.</p>
+<p>Для решения этой проблемы внедряются практики логирования, где скрипт принудительно записывает имя запускающего пользователя в отдельный текстовый файл или базу данных. Операционная система же честно отражает техническую реальность: файл создан процессом, работающим под конкретным UID/SID.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>Записанный владелец</th>
+<th>Метод выяснения реального пользователя</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Прямое создание</td>
+<td>Пользователь</td>
+<td>Свойства файла / Журнал безопасности</td>
+</tr>
+<tr>
+<td>Веб-загрузка</td>
+<td>Служба (IIS/Apache)</td>
+<p>Логи веб-сервера</p>
+</tr>
+<tr>
+<td>Планировщик задач</td>
+<td>Служебная учетная запись</td>
+<p>История выполнения задач</p>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-при-идентификации-создателя">Типичные ошибки при идентификации создателя</h2>
+<p>При анализе прав доступа и владельцев файлов специалисты часто сталкиваются с заблуждениями, которые могут привести к неверным выводам. Понимание того, как именно система определяет создателя, помогает избежать этих ошибок и правильно интерпретировать данные.</p>
+<ol>
+<li><strong>Путаница между «Создателем» и «Владельцем»</strong> — эти понятия близки, но не всегда идентичны. Владелец может быть изменен администратором, и в этом случае поле «Создатель» (если оно отслеживается отдельно через аудит) и «Владелец» (текущее состояние) будут различаться. Владелец имеет право менять ACL, даже если он не создавал файл.</li>
+<li><strong>Игнорирование наследования прав</strong> — ошибочно полагать, что если пользователь имеет доступ к паке, он ее и создал. Права часто наследуются от родительских директорий. Пользователь мог просто получить доступ к уже существующей структуре.</li>
+<li><strong>Неучет времени жизни токена</strong> — если учетная запись была переименована или удалена и создана заново с тем же именем, но новым SID/UID, система будет считать файлы, созданные «старым» пользователем, принадлежащими неизвестному субъекту (отображая SID вместо имени), если не была проведена миграция прав.</li>
+<li><strong>Ожидание прямой связи с человеком</strong> — система знает только об учетной записи. Если пользователь передал свой пароль коллеге или оставил разблокированный компьютер, система запишет действия под его учетной записью, не различая физическое лицо за клавиатурой.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Точность идентификации</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Объективность данных</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность анализа в распределенных системах:Требует глубоких знаний ОС:Зависимость от настроенного аудита</li></ul></div>
+</div></div>
+
+<h2 id="резюме">Резюме</h2>
+<p>Операционная система определяет создателя папки исключительно на основе токена безопасности процесса, инициировавшего создание объекта. Этот токен, содержащий уникальный идентификатор (SID или UID), присваивается пользователю в момент аутентификации и сопровождает все его действия в системе. Файловая система лишь фиксирует этот идентификатор в метаданных файла, обеспечивая неизменность прав владения.</p>
+<p>Для точного отслеживания действий пользователей необходимо полагаться не только на свойства файлов, но и на журналы аудита, которые фиксируют контекст создания объекта. Понимание различий между техническим владельцем, создателем и реальным пользователем позволяет эффективно управлять безопасностью и проводить расследования инцидентов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Система идентифицирует создателя через цифровой токен безопасности, присвоенный при входе в систему, записывая его идентификатор в метаданные файла.</p></aside>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для детального аудита действий пользователей всегда включайте политику «Аудит создания объектов» в настройках групповой политики или конфигурации auditd.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vosstanovit-sms-soobshcheniya-sberbanka.html" class="pb-related-card">
+                <span class="pb-related-title">Как восстановить СМС Сбербанка: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по восстановлению удаленных СМС от Сбербанка. Методы для Android и iPhone, рабо</span>
+            </a><a href="/articles/k/ka/kak-sdelat-raduzhnyj-kursor.html" class="pb-related-card">
+                <span class="pb-related-title">Радужный курсор: создание и настройка в Windows и CSS</span>
+                <span class="pb-related-desc">Полная инструкция по установке радужного курсора. Создание анимации в CSS, настройка в Windows, устр</span>
+            </a><a href="/articles/v/vr/vredno-li-delat-grudnye-ispoliny.html" class="pb-related-card">
+                <span class="pb-related-title">Вредно ли делать грудные жимы: риски и техника безопасности</span>
+                <span class="pb-related-desc">Подробный анализ влияния жима лежа на здоровье. Риски травм плеч, техника выполнения и противопоказа</span>
+            </a><a href="/articles/s/so/sony-kdl43w755c-kak-veshat-na-stenu.html" class="pb-related-card">
+                <span class="pb-related-title">Крепление Sony KDL43W755C на стену: инструкция, размеры VESA</span>
+                <span class="pb-related-desc">Подробная инструкция по монтажу телевизора Sony KDL43W755C на стену. Размеры VESA 200x200, выбор кро</span>
+            </a><a href="/articles/r/ro/roditelskij-kontrol-mozhno-nastroit-tolko-dlya-akkauntov-s-odnim-profilem.html" class="pb-related-card">
+                <span class="pb-related-title">Почему родительский контроль не работает с несколькими профилями?</span>
+                <span class="pb-related-desc">Техническое руководство по настройке ограничений в однопользовательском режиме. Объяснение причин бл</span>
+            </a><a href="/articles/m/ma/magic-remote-i-l-con-raznitsa.html" class="pb-related-card">
+                <span class="pb-related-title">Magic Remote и L Con: в чем разница и как подключить</span>
+                <span class="pb-related-desc">Подробное сравнение пультов Magic Remote и LG L Con. Различия в интерфейсах, методах подключения Blu</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

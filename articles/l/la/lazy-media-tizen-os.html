@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Lazy Load для Tizen OS: Ускорение загрузки видео и фото — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по настройке Lazy Loading на Tizen TV. Оптимизация рендеринга медиа, работа с IntersectionObserver и решение проблем с буферизацией.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/la/lazy-media-tizen-os.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Lazy Load для Tizen OS: Ускорение загрузки видео и фото">
+    <meta property="og:description" content="Техническое руководство по настройке Lazy Loading на Tizen TV. Оптимизация рендеринга медиа, работа с IntersectionObserver и решение проблем с буферизацией.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Lazy Load для Tizen OS: Ускорение загрузки видео и фото</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#механизм-работы-ленивой-загрузки-в-среде-tizen">Механизм работы ленивой загрузки в среде Tizen</a></li><li><a href="#техническая-реализация-через-intersection-observer-api">Техническая реализация через Intersection Observer API</a></li><li><a href="#особенности-работы-с-видео-контентом-и-hls-потоками">Особенности работы с видео-контентом и HLS потоками</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#резюме-и-рекомендации-по-оптимизации">Резюме и рекомендации по оптимизации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/s/se/selenga-hd950d-kak-podklyuchit.html">Selenga HD950D: подключение к ТВ, настройка сети и DVB-T2</a></li><li><a href="/articles/m/mi/mix-box4-now-kak-podklyuchit.html">Как подключить Mix Box 4: полная инструкция по настройке</a></li><li><a href="/articles/k/ka/kak-iz-sputnikovogo-resivera-sdelat-t-2-pristavku.html">Как сделать Т2 приставку из спутникового ресивера: пошаговая инструкция</a></li><li><a href="/articles/f/fo/forkplayer-pishet-oshibka-podklyucheniya-soedineniya.html">ForkPlayer ошибка подключения: причины и решение</a></li><li><a href="/articles/k/ka/kak-podklyuchit-mi-box-s-k-kompyuteru.html">Как подключить Mi Box S к компьютеру: полное руководство</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация медиа-контента на Tizen OS: Lazy Loading</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#механизм-работы-ленивой-загрузки-в-среде-tizen">Механизм работы ленивой загрузки в среде Tizen</a></li><li><a href="#техническая-реализация-через-intersection-observer-api">Техническая реализация через Intersection Observer API</a></li><li><a href="#особенности-работы-с-видео-контентом-и-hls-потоками">Особенности работы с видео-контентом и HLS потоками</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#резюме-и-рекомендации-по-оптимизации">Резюме и рекомендации по оптимизации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто сталкиваются с ситуацией, когда интерфейс смарт-телевизора становится невосприимчивым при прокрутке каталогов с большим количеством изображений или видео-превью. Вместо плавного перемещения фокуса курсора система начинает подтормаживать, а визуальный контент появляется рывками, создавая ощущение нестабильной работы устройства.</p>
+<p>Основная причина кроется в попытке движка рендеринга обработать и загрузить все медиа-ресурсы страницы одновременно, что приводит к переполнению буфера памяти и блокировке основного потока выполнения JavaScript. Особенно критично это проявляется на моделях с ограниченным объемом оперативной памяти, где одновременная загрузка десятков изображений высокого разрешения вызывает фриз интерфейса.</p>
+<p>Решением проблемы является внедрение стратегии ленивой загрузки (Lazy Loading), которая откладывает загрузку медиа-объектов до момента, когда они реально потребуются для отображения на экране. Это позволяет существенно снизить начальное время загрузки приложения и сделать прокрутку списков плавной, загружая контент по мере продвижения пользователя.</p>
+
+<h2 id="механизм-работы-ленивой-загрузки-в-среде-tizen">Механизм работы ленивой загрузки в среде Tizen</h2>
+
+<p>Принцип работы Lazy Loading базируется на отложенном запросе ресурса к серверу. Вместо того чтобы браузер или WebView движок Tizen сразу инициировал HTTP-запрос по адресу, указанному в атрибуте <code>src</code>, этот адрес помещается в пользовательский атрибут, например <code>data-src</code>, а реальный источник подставляется только при выполнении определенных условий видимости.</p>
+<p>На платформе Tizen, которая базируется на движке Chromium, существует нативная поддержка атрибута <code>loading="lazy"</code> для тегов <code>img</code> и <code>iframe</code>. Однако для полной совместимости со старыми версиями прошивок и для более гибкого управления видео-потоками часто требуется программная реализация через JavaScript API.</p>
+<p><strong>Ключевым элементом</strong> здесь выступает API Intersection Observer, который позволяет асинхронно отслеживать изменения в пересечении целевого элемента с областью видимости родительского элемента или viewport'ом устройства. Это гораздо эффективнее, чем постоянный опрос координат элементов при событии скролла.</p>
+
+<h3>Различия в поддержке движков на разных версиях Tizen</h3>
+<p>Важно учитывать, что экосистема Samsung Tizen неоднородна. Модели 2015-2016 годов (Tizen 2.4) используют движок WebKit с ограниченными возможностями, где нативный <code>loading="lazy"</code> не работает, и требуется полифилл на JavaScript. Начиная с Tizen 3.0 и особенно в версиях 4.0, 5.5 и новее, движок Chromium обеспечивает полную поддержку современных стандартов веб-разработки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Версия Tizen</th>
+<th>Движок рендеринга</th>
+<th>Поддержка loading="lazy"</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2.3 - 2.4</td>
+<td>WebKit (Legacy)</td>
+<td>Отсутствует (нужен JS)</td>
+</tr>
+<tr>
+<td>3.0 - 4.0</td>
+<td>Chromium 53+</td>
+<td>Частичная / Экспериментальная</td>
+</tr>
+<tr>
+<td>5.0 и новее</td>
+<td>Chromium 69+</td>
+<td>Полная нативная поддержка</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если у вас есть доступ к логам устройства через <em>Smart Development Tools</em>, можно отследить количество одновременных сетевых запросов. Без оптимизации их число может достигать сотен, что вызывает троттлинг сети. При правильной реализации Lazy Load количество одновременных соединений стабилизируется на уровне 4-6, что является стандартом для HTTP/1.1 и HTTP/2.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Проверка версии движка доступна через объект navigator.userAgent, где содержится строка AppleWebKit и версия Chrome.</p></aside>
+
+<h2 id="техническая-реализация-через-intersection-observer-api">Техническая реализация через Intersection Observer API</h2>
+
+<p>Для реализации кроссверсионной ленивой загрузки, которая будет работать стабильно на большинстве телевизоров Samsung, целесообразно использовать JavaScript-обсервер. Этот подход позволяет контролировать не только момент появления элемента, но и порог видимости, что важно для предзагрузки контента чуть раньше, чем он появится в кадре.</p>
+<p>Создание экземпляра наблюдателя требует передачи callback-функции, которая будет вызываться при изменении видимости элементов. Внутри этой функции происходит проверка свойства <code>isIntersecting</code>, и если элемент попал в зону видимости, атрибут <code>src</code> заменяется значением из <code>data-src</code>, после чего наблюдение за элементом прекращается.</p>
+
+<pre><code>const observerOptions = {
+<p>root: null,</p>
+<p>rootMargin:'100px',</p>
+<p>threshold: 0.01</p>
+<p>};</p>
+
+<p>const imageObserver = new IntersectionObserver((entries, observer) => {</p>
+<p>entries.forEach(entry => {</p>
+<p>if (entry.isIntersecting) {</p>
+<p>const img = entry.target;</p>
+<p>img.src = img.dataset.src;</p>
+<p>img.removeAttribute('data-src');</p>
+<p>observer.unobserve(img);</p>
+<p>}</p>
+<p>});</p>
+<p>}, observerOptions);</code></pre></p>
+
+<p>На практике такой код размещается в основном скрипте приложения после загрузки DOM-дерева. Важно задать <code>rootMargin</code> со значением в пикселях, чтобы загрузка начиналась заранее, компенсируя возможную задержку декодирования изображения процессором телевизора.</p>
+
+<h3>Настройка пороговых значений для видео и изображений</h3>
+<p>Для статических изображений порог <code>threshold</code> может быть минимальным (0.01), так как их вес относительно мал. Однако для видео-превью или тяжелых анимаций GIF рекомендуется увеличивать отступ <code>rootMargin</code> до 200-300 пикселей, чтобы пользователь не успел увидеть пустой контейнер при быстрой прокрутке.</p>
+<p>Если приложение работает с галереей в горизонтальной ориентации, необходимо убедиться, что <code>root</code> установлен корректно. В некоторых случаях, когда прокрутка реализована внутри конкретного div-контейнера с <code>overflow: scroll</code>, в качестве корня обсервера нужно указать именно этот контейнер, а не окно браузера.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм подключения Lazy Load</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создать HTML структуру с data-src</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Инициализировать IntersectionObserver</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Назначить наблюдение на все элементы</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Реализовать замену атрибутов</span></div></div>
+
+<p><strong>Оптимизация производительности</strong> достигается за счет того, что обсервер работает в отдельном потоке и не блокирует основной цикл событий. Это критически важно для пультов управления, где задержка реакции на нажатие кнопки даже в 100 миллисекунд ощущается пользователем как лаг системы.</p>
+
+<h2 id="особенности-работы-с-видео-контентом-и-hls-потоками">Особенности работы с видео-контентом и HLS потоками</h2>
+
+<p>Работа с видео на Tizen OS имеет свою специфику, особенно когда речь идет о потоковой передаче через HLS (HTTP Live Streaming). В отличие от статических картинок, видео-элемент <code>video</code> потребляет значительно больше ресурсов декодера, и одновременная инициализация даже нескольких плееров может привести к падению приложения или черному экрану.</p>
+<p>Ленивая загрузка для видео подразумевает, что тег <code>video</code> создается в DOM-дереве, но источник (<code>src</code> или тег <code>source</code>) не назначается до тех пор, пока пользователь не сфокусируется на элементе или не приблизит его к области просмотра. Часто используется паттерн, когда видео загружается только после явного действия пользователя (нажатие OK).</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип контента</th>
+<th>Стратегия загрузки</th>
+<th>Триггер активации</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Постеры фильмов</td>
+<td>Intersection Observer</td>
+<td>Появление в viewport</td>
+</tr>
+<tr>
+<td>Автоплей превью</td>
+<td>Focus + Visibility</td>
+<td>Фокус курсора + 50% видимости</td>
+</tr>
+<tr>
+<td>Полноэкранное видео</td>
+<td>Manual / On Demand</td>
+<td>Выбор пользователем</td>
+</tr>
+</tbody>
+</table>
+
+<p>Допустим, вы разрабатываете интерфейс видеотеки. В этом случае нельзя полагаться только на скролл. Необходимо комбинировать наблюдение за видимостью с событиями навигации. Видео должно начинать буферизацию только тогда, когда фокус пульта находится на карточке видео в течение определенного времени (например, 500 мс), что предотвращает лишнюю нагрузку при быстром перемещении по списку.</p>
+<p>Для HLS потоков также стоит учитывать ограничение на количество одновременных декодеров. На большинстве TV чипсетов их не более двух. Поэтому скрипт должен принудительно останавливать (<code>pause</code>) и очищать источник у видео, которые ушли из области видимости или потеряли фокус, освобождая ресурсы для активного контента.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Не устанавливайте атрибут autoplay для всех видео в списке. Это гарантированно приведет к перегрузке сети и декодера на слабых моделях Tizen.</p></aside>
+
+<h3>Управление буферизацией и состоянием плеера</h3>
+<p>При реализации для видео часто возникает проблема рассинхронизации состояния. Если пользователь быстро прокрутил список и вернулся назад, видео может не возобновиться или остаться в состоянии buffering. Необходимо хранить состояние каждого элемента (загружено, воспроизводится, остановлено) в отдельном объекте состояния приложения.</p>
+<p>В коде обработчика событий навигации следует проверять, был ли уже инициализирован источник для текущего элемента. Если источник еще не установлен, его нужно назначить и запустить процесс загрузки. Если видео уже было загружено, но остановлено, достаточно вызвать метод <code>play</code>.</p>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+
+<p>В процессе внедрения оптимизации разработчики часто допускают ряд системных ошибок, которые сводят на нет все преимущества технологии или даже ухудшают ситуацию. Понимание этих нюансов позволяет избежать длительной отладки на реальном устройстве, где доступ к консоли ограничен.</p>
+<p>Одной из распространенных проблем является «мигание» контента. Это происходит, когда скрипт загружается позже, чем рендерится HTML, и пользователь видит пустые блоки до момента выполнения JS. Чтобы избежать этого, можно использовать CSS-классы, скрывающие контент до момента его активации, или применять серверный рендеринг критических изображений (Above the Fold).</p>
+<p>Также стоит упомянуть проблему утечек памяти. Если обсервер не отписывается от элементов после их загрузки (метод <code>unobserve</code>), в памяти остаются ссылки на DOM-узлы, что в долгоживущих приложениях (которые не закрываются неделями) может привести к переполнению памяти и крашу приложения Tizen.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение подходов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Нативный loading="lazy" прост в реализации</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Полифиллы увеличивают размер бандла</li></ul></div>
+</div></div>
+
+<h3>Список распространенных ошибок при внедрении</h3>
+<ol>
+<li><strong>Отсутствие fallback-изображения</strong> — если скрипт ленивой загрузки упадет или будет заблокирован, пользователь увидит пустоту; всегда используйте атрибут <code>src</code> с легким placeholder-изображением (заглушкой) низкого качества.</li>
+<li><strong>Игнорирование событий ошибок</strong> — при загрузке медиа с внешних доменов часто возникают CORS ошибки или битые ссылки; необходимо обрабатывать событие <code>onerror</code> и подставлять дефолтную картинку, иначе интерфейс будет выглядеть сломанным.</li>
+<li><strong>Слишком агрессивная предзагрузка</strong> — установка большого значения <code>rootMargin</code> (более 500px) приводит к тому, что загружается контент, который пользователь, возможно, даже не увидит, расходуя трафик и память впустую.</li>
+<li><strong>Блокировка основного потока</strong> — выполнение тяжелых вычислений внутри callback-функции обсервера; вся логика внутри <code>IntersectionObserver</code> должна быть максимально асинхронной и легкой.</li>
+</ol>
+
+<p>Для отладки на телевизоре используйте режим отладки через USB и Chrome DevTools. В вкладке Network можно фильтровать запросы по типу (Img, Media) и видеть тайминги. Если вы видите длинные очереди запросов (Queued), значит, лимиты браузера исчерпаны, и Lazy Load работает недостаточно эффективно.</p>
+<p>Проверьте также, не дублируются ли запросы. Иногда неправильная логика перерисовки компонентов приводит к тому, что один и тот же элемент получает новый <code>src</code> несколько раз, вызывая повторную загрузку одного и того же файла.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте форматы изображений WebP вместо JPEG/PNG для Tizen 4.0+, они весят на 30% меньше при том же качестве, что ускоряет загрузку.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-оптимизации">Резюме и рекомендации по оптимизации</h2>
+
+<p>Внедрение механизма Lazy Loading является обязательным стандартом для разработки приложений на Tizen OS, обеспечивающим стабильную работу интерфейса на устройствах с различным объемом памяти. Правильное использование Intersection Observer API позволяет сбалансировать нагрузку на сеть и процессор, создавая ощущение отзывчивости системы.</p>
+<p>Ключевым фактором успеха является тестирование на реальных устройствах разных лет выпуска, так как эмуляторы не всегда точно передают специфику работы декодеров и скорость дисковой подсистемы телевизора. Стоит уделять особое внимание обработке ошибок и состоянию сети, чтобы приложение gracefully деградировало при плохом соединении.</p>
+<p>Соблюдение описанных практик позволит создать медиа-приложение, которое будет работать быстро и стабильно на всей линейке смарт-ТВ Samsung, от бюджетных моделей до флагманских панелей с разрешением 8K.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Lazy Loading критически важен для Tizen TV: он предотвращает зависания интерфейса при прокрутке тяжелых списков и снижает потребление памяти, загружая контент только по мере необходимости.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/s/se/selenga-hd950d-kak-podklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">Selenga HD950D: подключение к ТВ, настройка сети и DVB-T2</span>
+                <span class="pb-related-desc">Полная инструкция по подключению приставки Selenga HD950D. Настройка DVB-T2, Wi-Fi адаптеров, обновл</span>
+            </a><a href="/articles/m/mi/mix-box4-now-kak-podklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Mix Box 4: полная инструкция по настройке</span>
+                <span class="pb-related-desc">Пошаговое руководство, как подключить Mix Box 4 Now. Настройка Wi-Fi, установка приложений, решение </span>
+            </a><a href="/articles/k/ka/kak-iz-sputnikovogo-resivera-sdelat-t-2-pristavku.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать Т2 приставку из спутникового ресивера: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробный технический гид по переделке спутникового ресивера в эфирную Т2 приставку. Настройка антен</span>
+            </a><a href="/articles/f/fo/forkplayer-pishet-oshibka-podklyucheniya-soedineniya.html" class="pb-related-card">
+                <span class="pb-related-title">ForkPlayer ошибка подключения: причины и решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки соединения в ForkPlayer. Проверка DNS, настройки роутера, </span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-mi-box-s-k-kompyuteru.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Mi Box S к компьютеру: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по соединению приставки Mi Box S и ПК. Настройка HDMI-карты захвата, ADB-отладк</span>
+            </a><a href="/articles/k/ka/kak-nastroit-vnutrennej-pleer-prilozheniya-zona.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка встроенного плеера Zona: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по настройке кодеков, субтитров и аудио в приложении Zona для Android, iOS и Windows. </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

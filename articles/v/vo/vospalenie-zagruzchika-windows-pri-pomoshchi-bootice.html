@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление загрузчика Windows через Bootice: пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Как восстановить загрузчик Windows с помощью утилиты Bootice. Подробное руководство по MBR и PBR, исправление ошибок BCD и запуск системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vo/vospalenie-zagruzchika-windows-pri-pomoshchi-bootice.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление загрузчика Windows через Bootice: пошаговая инструкция">
+    <meta property="og:description" content="Как восстановить загрузчик Windows с помощью утилиты Bootice. Подробное руководство по MBR и PBR, исправление ошибок BCD и запуск системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление загрузчика Windows через Bootice: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочной-среды-и-запуск-утилиты">Подготовка загрузочной среды и запуск утилиты</a></li><li><a href="#восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</a></li><li><a href="#настройка-partition-boot-record-pbr-и-bcd">Настройка Partition Boot Record (PBR) и BCD</a></li><li><a href="#работа-с-efi-разделом-и-uefi-системами">Работа с EFI-разделом и UEFI-системами</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vk/vklyuchit-podsvetku-klaviatury-na-noutbuke-pakard-bell.html">Подсветка клавиатуры Packard Bell: включение и настройка</a></li><li><a href="/articles/v/vk/vklyuchit-smb-na-windows-7.html">Как включить SMB на Windows 7: полная инструкция</a></li><li><a href="/articles/j/jb/jbl-4-charge-windows-driver.html">JBL Charge 4 и Windows: установка драйверов и настройка</a></li><li><a href="/articles/k/ka/kak-otklyuchit-avtoobnovlenie-bios-na-asus.html">Как отключить автообновление BIOS на ASUS: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-vklyuchit-bios-na-noutbuke-lenovo-310.html">Как войти в BIOS на Lenovo 310: подробная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика Windows с помощью утилиты Bootice</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочной-среды-и-запуск-утилиты">Подготовка загрузочной среды и запуск утилиты</a></li><li><a href="#восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</a></li><li><a href="#настройка-partition-boot-record-pbr-и-bcd">Настройка Partition Boot Record (PBR) и BCD</a></li><li><a href="#работа-с-efi-разделом-и-uefi-системами">Работа с EFI-разделом и UEFI-системами</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда компьютер отказывается запускать операционную систему и выводит на экран сообщения вроде «No bootable device found», «Bootmgr is missing» или «Invalid partition table», знакома многим пользователям. Чаще всего причиной становится повреждение загрузочной записи MBR или сектора PBR, что может произойти после неудачного обновления, сбоя электропитания или действий вирусов. В таких случаях стандартные средства восстановления Windows не всегда справляются, и возникает необходимость использования специализированных инструментов для ручного управления загрузочными секторами.</p>
+<p>Одним из наиболее эффективных и проверенных решений является утилита <em>Bootice</em>, которая позволяет напрямую редактировать Master Boot Record и Partition Boot Record. Этот инструмент часто используется системными администраторами для реанимации системы без полной переустановки, когда поврежден сам механизм инициализации загрузки. Для работы потребуется загрузочная флешка с операционной системой или LiveCD, так как манипуляции с загрузчиком невозможны из-под работающей ОС, которая в данный момент не запускается.</p>
+<p>Перед началом любых операций с низкоуровневыми секторами диска критически важно убедиться в правильности выбора целевого устройства, так как ошибка может привести к полной потере данных на другом подключенном накопителе. <strong>Внимательность на этапе выбора диска</strong> является главным правилом безопасности при работе с утилитой <em>Bootice</em>. Далее будет рассмотрен подробный алгоритм действий по восстановлению штатного загрузчика Windows для различных сценариев.</p>
+
+<h2 id="подготовка-загрузочной-среды-и-запуск-утилиты">Подготовка загрузочной среды и запуск утилиты</h2>
+<p>Если операционная система не загружается, первым шагом становится создание или поиск рабочего загрузочного носителя. В качестве базы можно использовать установочную флешку с <em>Windows 10</em> или <em>Windows 11</em>, либо специализированные сборки на базе <em>WinPE</em>, которые часто содержат набор диагностических инструментов. Необходимо подключить подготовленный USB-накопитель к компьютеру, войти в BIOS или UEFI и выставить приоритет загрузки с флешки.</p>
+<p>После загрузки в среду восстановления или рабочий стол <em>WinPE</em> следует запустить исполняемый файл <code>Bootice.exe</code>. В некоторых сборках программа может быть интегрирована в меню «Пуск» или находиться в папке с системными утилитами. Если используется чистая установочная флешка, файл утилиты нужно заранее скопировать на другой доступный носитель или скачать в среде восстановления, если есть доступ к сети.</p>
+<p>Интерфейс программы минималистичен и состоит из нескольких вкладок, но основная работа ведется на стартовом экране. Сразу после открытия окна пользователь видит список физических дисков, подключенных к системе. Здесь необходимо проявить максимальную осторожность, так как выбор неверного диска приведет к модификации не того накопителя, что сделает невозможной загрузку исправной системы или повредит данные.</p>
+<p>Для идентификации нужного диска стоит ориентироваться на объем памяти и модель устройства, указанные в списке. Если в системе подключено несколько жестких дисков или SSD, рекомендуется временно отключить лишние накопители физически, чтобы исключить человеческий фактор. <strong>Выбор правильного физического диска</strong> — это фундамент успешного восстановления.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Все операции с загрузочными записями несут риск потери данных. Перед началом работы убедитесь, что выбрали именно тот диск, на котором установлена неработающая операционная система.</p></aside>
+
+<p>После выбора целевого устройства в верхней части окна становятся активными кнопки управления. Нас интересует кнопка <code>Process MBR</code>, которая открывает меню управления главной загрузочной записью. Нажатие этой кнопки не вносит изменений, а лишь переходит к следующему этапу, где можно просмотреть текущее состояние или выполнить запись нового кода.</p>
+
+<h2 id="восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</h2>
+<p>Master Boot Record находится в самом начале жесткого диска и содержит код, необходимый для поиска активного раздела и передачи управления загрузчику операционной системы. Повреждение MBR часто приводит к тому, что компьютер просто не видит диск как загрузочный, даже если файлы системы целы. В утилите <em>Bootice</em> процесс восстановления MBR сведен к нескольким кликам, но требует понимания различий между стандартами.</p>
+<p>После перехода в раздел управления MBR пользователю предлагается выбрать тип загрузчика. Для современных систем, использующих разметку GPT и интерфейс UEFI, часто требуется совместимость с legacy-режимами или специфические настройки, однако классический <em>Windows NT 6.x MBR</em> подходит для большинства случаев загрузки Windows 10 и 11 в режиме совместимости или на дисках MBR. Если же диск размечен в стиле GPT, структура загрузчика отличается, но <em>Bootice</em> умеет работать и с ним, устанавливая необходимый код.</p>
+<p>В открывшемся окне необходимо выбрать радиокнопку <code>Windows NT 6.x MBR</code>. Этот вариант является наиболее универсальным для современных версий Windows. После выбора пункта нужно нажать кнопку <code>Install / Upgrade</code>. Программа выдаст предупреждение о том, что текущая запись будет перезаписана, и запросит подтверждение действия.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Восстановление MBR</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите целевой диск в списке</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите кнопку Process MBR</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите Windows NT 6.x MBR</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Install / Upgrade и подтвердите действие</span></div></div>
+
+<p>Система выдаст несколько окон с предупреждениями, которые нужно подтвердить, нажимая <code>OK</code>. После успешной записи кода появится сообщение об успешном завершении операции. На этом этапе восстанавливается только первичный загрузчик, который указывает, с какого раздела начинать загрузку, но сам файл конфигурации загрузки (BCD) пока может оставаться поврежденным.</p>
+<p>Важно отметить, что если диск использует таблицу разделов GPT, то MBR содержит код для совместимости или указатель на EFI-раздел. В некоторых случаях для GPT-дисков в UEFI-системах восстановление MBR через <em>Bootice</em> может не потребоваться, если поврежден только PBR или файлы BCD, но перепрошивка MBR безопасной записью стандартного кода часто помогает устранить ошибки «Invalid partition table».</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип MBR</th>
+<th>Описание</th>
+<th>Применение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Windows NT 5.x MBR</code></td>
+<td>Старый формат загрузчика</td>
+<td>Windows XP, 2003</td>
+</tr>
+<tr>
+<td><code>Windows NT 6.x MBR</code></td>
+<td>Современный формат</td>
+<td>Windows Vista, 7, 8, 10, 11</td>
+</tr>
+<tr>
+<td><code>GRUB4DOS</code></td>
+<td>Загрузчик мультизагрузки</td>
+<td>Linux, LiveCD, мультизагрузка</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="настройка-partition-boot-record-pbr-и-bcd">Настройка Partition Boot Record (PBR) и BCD</h2>
+<p>После успешной записи MBR необходимо переключиться на уровень логических разделов. За это отвечает Partition Boot Record (PBR), который находится в начале каждого активного раздела. Именно PBR содержит код для запуска файла <code>bootmgr</code> (для BIOS) или загрузчика EFI. Переход к управлению PBR осуществляется кнопкой <code>Process PBR</code> в главном окне программы.</p>
+<p>В открывшемся окне следует выбрать системный раздел (обычно это диск C или скрытый зарезервированный раздел объемом 100-500 МБ). Как и в случае с MBR, нужно выбрать тип загрузчика. Для Windows 7 и новее актуален пункт <code>Windows NT 6.x PBR</code>. После выбора нажимается кнопка <code>Install / Upgrade</code>. Это действие восстанавливает код, который ищет и запускает диспетчер загрузки.</p>
+<p>Однако, восстановление кода PBR — это только половина дела. Критически важным элементом является хранилище конфигурации загрузки (BCD). Если оно повреждено, система не узнает, где находятся файлы ядра. В интерфейсе <em>Bootice</em> есть вкладка <code>BCD Edit</code>, которая позволяет управлять этим хранилищем. При переходе в этот раздел программа предложит выбрать файл BCD; по умолчанию выбирается файл на системном разделе.</p>
+<p>В режиме редактирования BCD можно увидеть список загрузочных записей. Если список пуст или содержит некорректные пути, необходимо создать новую запись. Для этого используется кнопка <code>Add</code> (или <code>New</code>), где выбирается тип <code>Windows Boot Manager</code>. Затем в полях <code>Device</code> и <code>Path</code> нужно указать букву системного диска и путь к загрузчику, обычно это <code>\Windows\system32\winload.exe</code> для BIOS или <code>\Windows\system32\winload.efi</code> для UEFI.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Буквы дисков в среде восстановления могут отличаться от тех, что были в работающей системе. Обязательно проверьте содержимое дисков через проводник, чтобы не указать неверную букву для системного раздела.</p></aside>
+
+<p>Для автоматического поиска и восстановления записей в <em>Bootice</em> часто достаточно просто переустановить PBR, так как программа умеет автоматически находить установленные системы. Если автоматическое восстановление не помогло, можно воспользоваться командной строкой и утилитой <code>bcdboot</code>, но <em>Bootice</em> предоставляет более наглядный графический интерфейс для проверки путей.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для BIOS</th>
+<th>Значение для UEFI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Файл загрузчика</td>
+<td><code>winload.exe</code></td>
+<td><code>winload.efi</code></td>
+</tr>
+<tr>
+<td>Разметка диска</td>
+<td>MBR</td>
+<td>GPT (чаще всего)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="работа-с-efi-разделом-и-uefi-системами">Работа с EFI-разделом и UEFI-системами</h2>
+<p>Современные компьютеры, выпущенные в последние 10 лет, используют интерфейс UEFI вместо устаревшего BIOS. В таких системах процесс загрузки отличается: вместо кода в MBR/PBR используется файл <code>bootmgfw.efi</code>, расположенный на специальном скрытом разделе с файловой системой FAT32, который называется EFI System Partition (ESP). Повреждение этого раздела или удаление файлов с него делает загрузку невозможной.</p>
+<p>При работе с UEFI-системами в <em>Bootice</em> нужно быть особенно внимательным. Если диск размечен в стиле GPT, то MBR (точнее, защитная MBR) не содержит исполняемого кода загрузки в привычном понимании, а лишь указывает на таблицу разделов. Основное внимание следует уделить наличию и целостности EFI-раздела. В списке разделов <em>Bootice</em> он обычно имеет файловую систему FAT32 и размер от 100 до 500 МБ.</p>
+<p>Если требуется восстановить загрузчик UEFI, иногда достаточно просто скопировать файл <code>bootmgfw.efi</code> из папки <code>\EFI\Microsoft\Boot\</code> в корень EFI-раздела или переименовать существующий файл, если он поврежден. Однако <em>Bootice</em> в первую очередь служит для управления загрузочными секторами MBR/Legacy. Для полноценной работы UEFI часто требуется использование командной строки.</p>
+<p>Тем не менее, <em>Bootice</em> может помочь проверить, помечен ли EFI-раздел как активный (хотя для GPT это не всегда критично, в отличие от MBR). В некоторых случаях пересоздание загрузочной записи в NVRAM материнской платы через BIOS-setup утилиты материнской платы является более эффективным шагом, чем манипуляции с секторами.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для UEFI-систем критически важно, чтобы EFI-раздел имел файловую систему FAT32. Если раздел отформатирован в NTFS, BIOS/UEFI не сможет считать с него загрузчик.</p></aside>
+
+<p>Если после всех манипуляций с PBR и MBR система на UEFI не загружается, стоит проверить настройки Secure Boot в BIOS. Иногда сброс настроек BIOS в дефолтное состояние (Load Optimized Defaults) решает проблему некорректного обращения к загрузочным файлам.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе восстановления загрузчика пользователи часто сталкиваются с повторяющимися проблемами, которые легко решить, зная их причину. Ниже приведен список наиболее распространенных ошибок и способы их коррекции.</p>
+<ol>
+<li><strong>Ошибка выбора диска</strong> — пользователь записывает MBR на флешку или второй диск с данными. <em>Решение:</em> всегда перепроверяйте объем и модель диска в окне <em>Bootice</em> перед нажатием кнопки записи; если сомневаетесь, отключите лишние диски физически.</li>
+<li><strong>Неверный тип загрузчика</strong> — попытка установить Windows NT 5.x MBR на диск с Windows 10/11. <em>Решение:</em> для всех современных версий Windows (начиная с Vista) необходимо выбирать вариант <code>Windows NT 6.x MBR</code> и соответствующий PBR.</li>
+<li><strong>Отсутствие активного раздела</strong> — после записи MBR система пишет, что активный раздел не найден. <em>Решение:</em> в <em>Bootice</em> или управлении дисками убедитесь, что системный раздел (или раздел зарезервированный системой) помечен флагом <code>Active</code>.</li>
+<li><strong>Ошибка BCD</strong> — загрузчик есть, но он не видит установленную Windows. <em>Решение:</em> используйте вкладку <code>BCD Edit</code> для проверки путей к файлу <code>winload.exe</code> или воспользуйтесь командой <code>bcdboot</code> из командной строки.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Восстановление через Bootice</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость работы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Полный контроль над секторами</li></ul></div>
+</div></div>
+
+<p>Также стоит упомянуть проблему совместимости режимов Legacy и UEFI. Если система была установлена в режиме UEFI, а в BIOS выставлен режим Legacy (CSM), или наоборот, загрузка не начнется, даже если файлы восстановлены идеально. <strong>Режим работы BIOS должен соответствовать</strong> способу установки операционной системы и структуре разделов диска.</p>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+<p>После выполнения всех необходимых операций по восстановлению MBR, PBR и проверки записей BCD, следует закрыть утилиту <em>Bootice</em>. Важно корректно завершить работу среды восстановления, если использовался LiveCD, чтобы избежать повреждения файловой системы при извлечении носителя. Перезагрузите компьютер, не забыв извлечь загрузочную флешку или установочный диск.</p>
+<p>При включении компьютера обратите внимание на процесс загрузки. Если операции прошли успешно, логотип производителя сменится логотипом Windows или сразу начнется загрузка рабочего стола. Если появилось меню выбора операционной системы (даже если система одна), это означает, что загрузчик восстановлен и функционирует.</p>
+<p>В случае если проблема сохранилась, имеет смысл повторить процедуру, уделив особое внимание выбору активного раздела и проверке целостности файлов системы через командную строку. Восстановление загрузчика — это часто первый и необходимый шаг перед более глубокой диагностикой аппаратной части или файловой системы.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное восстановление загрузчика через Bootice требует точного выбора диска и соответствия типа загрузчика (MBR/GPT) версии Windows.</p></aside>
+
+<p>Использование <em>Bootice</em> позволяет быстро реанимировать доступ к данным и операционной системе без трудоемкой переустановки. Понимание различий между MBR и PBR, а также знание особенностей UEFI, дает возможность решать большинство проблем с загрузкой самостоятельно. Регулярное создание точек восстановления и резервных копий важных данных остается лучшей страховкой от подобных сбоев в будущем.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vk/vklyuchit-podsvetku-klaviatury-na-noutbuke-pakard-bell.html" class="pb-related-card">
+                <span class="pb-related-title">Подсветка клавиатуры Packard Bell: включение и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция: как включить подсветку клавиатуры на ноутбуке Packard Bell. Горячие клавиши, д</span>
+            </a><a href="/articles/v/vk/vklyuchit-smb-na-windows-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить SMB на Windows 7: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по включению протокола SMB v1 на Windows 7. Настройка доступа к сетевым папкам,</span>
+            </a><a href="/articles/j/jb/jbl-4-charge-windows-driver.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Charge 4 и Windows: установка драйверов и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению JBL Charge 4 к ПК. Решение проблем с драйверами Bluetooth и USB,</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-avtoobnovlenie-bios-na-asus.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить автообновление BIOS на ASUS: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробный гид по отключению автоматического обновления BIOS на материнских платах ASUS. Настройки UE</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-bios-na-noutbuke-lenovo-310.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS на Lenovo 310: подробная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по входу в BIOS ноутбука Lenovo 310. Разбор клавиш, настройки UEFI, решение пр</span>
+            </a><a href="/articles/k/ka/kak-vojti-v-bios-na-kompyutere-iru-310tlcn.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS на IRU 310tlcn: клавиши и настройки</span>
+                <span class="pb-related-desc">Полная инструкция по входу в BIOS/UEFI на IRU 310tlcn. Горячие клавиши, сброс настроек, загрузка с ф</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

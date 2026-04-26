@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Настройка и прошивка Karadio 8266: Полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по сборке, прошивке и отладке интернет-радио на ESP8266. Разбор ошибок подключения, выбор библиотек и оптимизация буфера.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/karadio-8266.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Настройка и прошивка Karadio 8266: Полное руководство">
+    <meta property="og:description" content="Подробная инструкция по сборке, прошивке и отладке интернет-радио на ESP8266. Разбор ошибок подключения, выбор библиотек и оптимизация буфера.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Настройка и прошивка Karadio 8266: Полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-аппаратного-обеспечения-и-выбор-платформы">Подготовка аппаратного обеспечения и выбор платформы</a></li><li><a href="#процесс-компиляции-и-прошивки-микроконтроллера">Процесс компиляции и прошивки микроконтроллера</a></li><li><a href="#конфигурация-источников-аудио-и-потоков">Конфигурация источников аудио и потоков</a></li><li><a href="#диагностика-неисправностей-и-оптимизация">Диагностика неисправностей и оптимизация</a></li><li><a href="#итоговое-резюме">Итоговое резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/e/ea/eak-uboat-s-teleyona-izlbopzhegin-negptiva.html">Как удалить лишние приложения с телефона: полное руководство</a></li><li><a href="/articles/k/ka/kak-ubrat-rekomendatsii-prilozhenij-khuavej.html">Как отключить рекомендации приложений Huawei: полное руководство</a></li><li><a href="/articles/s/sh/shooting-plus-ne-vidit-dzhojstik.html">Shooting Plus не видит джойстик: решение проблемы</a></li><li><a href="/articles/v/v-/v-lajzi-media-vyletaet-oshibka-vosproizvedeniya-kak-borotsya.html">Ошибка воспроизведения в Lazy Media Deluxe: причины и методы устранения</a></li><li><a href="/articles/k/ka/kak-skopirovat-serdechko-iz-ruk-chtoby-bylo-kak-na-ajfone.html">Как сделать сердечко из рук: полная инструкция для iPhone и Android</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Конфигурация и отладка интернет-радио Karadio на базе ESP8266</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-аппаратного-обеспечения-и-выбор-платформы">Подготовка аппаратного обеспечения и выбор платформы</a></li><li><a href="#процесс-компиляции-и-прошивки-микроконтроллера">Процесс компиляции и прошивки микроконтроллера</a></li><li><a href="#конфигурация-источников-аудио-и-потоков">Конфигурация источников аудио и потоков</a></li><li><a href="#диагностика-неисправностей-и-оптимизация">Диагностика неисправностей и оптимизация</a></li><li><a href="#итоговое-резюме">Итоговое резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда собранный на базе чипа <em>ESP8266</em> медиаплеер отказывается воспроизводить поток или постоянно теряет соединение, знакома многим разработчикам встраиваемых систем. Часто устройство зависает на этапе инициализации Wi-Fi, или аудио сигнал прерывается треском, делая прослушивание невозможным. Вместо ожидаемого стабильного приема радиостанций пользователь получает экран с ошибкой подключения или бесконечный буферизация.</p>
+<p>Проблема кроется не столько в аппаратной части, сколько в тонкой настройке программного обеспечения и параметров буферизации данных. Проект <em>Karadio</em>, являясь популярной открытой платформой, требует точной конфигурации исходного кода под конкретную аппаратную платформу и условия сети. Неправильно выбранный размер буфера или некорректные драйверы DAC-аудиодекодера приводят к рассинхронизации потоков.</p>
+<p>Для решения этих задач требуется системный подход к прошивке микроконтроллера и диагностике сетевых параметров. В данном руководстве рассматриваются методы устранения типичных сбоев, настройка кодеков и оптимизация работы с потоковым аудио. Грамотная конфигурация позволяет превратить дешевый модуль в полноценный сетевой приемник.</p>
+
+<h2 id="подготовка-аппаратного-обеспечения-и-выбор-платформы">Подготовка аппаратного обеспечения и выбор платформы</h2>
+
+<p>Первым шагом является определение типа используемого микроконтроллера и периферийных устройств вывода звука. Модули на базе <em>ESP8266</em>, такие как <em>NodeMCU</em> или <em>Wemos D1 Mini</em>, имеют ограниченное количество GPIO-портов, что диктует выбор интерфейса подключения ЦАП. В зависимости от архитектуры, соединение может осуществляться через I2S, I2C или программную эмуляцию SPI.</p>
+<p>Если используется внешний ЦАП, например <em>PCM5102A</em> или <em>MAX98357A</em>, необходимо строго соблюдать распиновку, указанную в документации к проекту <em>Karadio</em>. Ошибки в подключении линий <code>BCK</code>, <code>WS</code> и <code>DATA</code> приводят к отсутствию звука или появлению цифрового шума. Для встроенных решений, таких как <em>VS1053</em>, требуется отдельное питание и правильная инициализация SPI-шины.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для модулей ESP8266 рекомендуется использовать внешние ЦАП с интерфейсом I2S, так как встроенный PWM-выход имеет низкое качество звука и высокий уровень шумов.</p></aside>
+
+<p>Важно учитывать энергопотребление выбранной связки оборудования. При активной работе Wi-Fi и декодировании аудио ток потребления может кратковременно превышать 300 мА. Нестабильное питание часто проявляется в виде периодических перезагрузок устройства при попытке воспроизведения.</p>
+
+<h3>Совместимость популярных плат и ЦАП</h3>
+
+<p>Различные комбинации микроконтроллеров и аудиокодеков требуют специфических настроек в конфигурационном файле <code>config.h</code>. Например, для плат <em>ESP32</em> доступен более широкий выбор драйверов и поддержка высокого битрейта, тогда как <em>ESP8266</em> ограничен по объему оперативной памяти.</p>
+
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Интерфейс звука</th>
+<th>Поддерживаемые кодеки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP8266 (NodeMCU)</td>
+<td>I2S / PWM</td>
+<td>MP3, AAC (ограниченно)</td>
+</tr>
+<tr>
+<td>ESP32 DevKit</td>
+<td>I2S / DAC</td>
+<td>MP3, AAC, FLAC, OPUS</td>
+</tr>
+<tr>
+<td>ESP8266 + VS1053</td>
+<td>SPI</td>
+<td>MP3, OGG, WMA</td>
+</tr>
+</tbody>
+</table>
+
+<p>При выборе оборудования следует отдавать предпочтение модулям с внешним антенным разъемом, если приемник будет установлен в металлическом корпусе или в зоне слабого сигнала. Внутренние антенны печатных плат часто экранируются окружающими компонентами.</p>
+
+<h2 id="процесс-компиляции-и-прошивки-микроконтроллера">Процесс компиляции и прошивки микроконтроллера</h2>
+
+<p>Процесс установки программного обеспечения начинается с подготовки среды разработки. Наиболее распространенным инструментом является <em>PlatformIO</em> в связке с <em>VS Code</em> или классическая <em>Arduino IDE</em>. Для проекта <em>Karadio</em> требуется клонировать репозиторий с актуальной версией исходного кода, так как старые версии могут содержать ошибки в реализации TCP-стека.</p>
+<p>После загрузки исходников необходимо отредактировать файл конфигурации <code>user_config.h</code>. В этом файле прописываются SSID домашней сети, пароль, а также выбирается тип аудиооборудования. Игнорирование этого этапа приведет к тому, что устройство не сможет подключиться к роутеру или будет пытаться использовать несуществующие пины для вывода звука.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Прошивка устройства</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство по USB и установите драйверы CP2102/CH340</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Загрузите проект в IDE и выберите порт</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку Upload для компиляции и записи</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь сообщения «Done uploading» и перезагрузите плату</span></div></div>
+
+<p>Компиляция проекта может занять несколько минут, так как собираются все необходимые библиотеки для декодирования аудио и работы с сетью. В процессе компиляции важно следить за окном вывода на предмет ошибок зависимостей. Если компилятор сообщает об отсутствии библиотек, их необходимо установить через менеджер пакетов.</p>
+
+<h3>Настройка параметров сети и буферизации</h3>
+
+<p>Ключевым параметром для стабильной работы является размер буфера. В файле конфигурации можно найти директивы, отвечающие за выделение памяти под входящий поток данных. Для сетей с нестабильным соединением увеличение буфера позволяет сглаживать кратковременные потери пакетов.</p>
+<p>Однако чрезмерное увеличение буфера на <em>ESP8266</em> может привести к переполнению стека и краху системы из-за нехватки RAM. Необходимо найти баланс между задержкой старта воспроизведения и устойчивостью потока. Оптимальным значением часто является диапазон от 10 до 20 секунд аудио данных.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При прошивке через OTA (по воздуху) убедитесь, что сигнал Wi-Fi стабилен. Прерывание передачи прошивки может привести к кирпичу устройства, требующему восстановления через UART.</p></aside>
+
+<p>Для отладки сетевых подключений полезно использовать статический IP-адрес. Это упрощает доступ к веб-интерфейсу устройства для управления и мониторинга. Динамическая адресация может привести к ситуации, когда после перезагрузки роутера пульт управления станет недоступен по старому адресу.</p>
+
+<h2 id="конфигурация-источников-аудио-и-потоков">Конфигурация источников аудио и потоков</h2>
+
+<p>Основная функциональность устройства заключается в воспроизведении потоков из интернета. Источником могут служить как классические радиостанции, транслирующие MP3-поток, так и локальные медиа-серверы. Адреса потоков добавляются в файл плейлиста или вводятся через веб-интерфейс.</p>
+<p>Формат URL критически важен для корректного старта воспроизведения. Большинство потоков требует указания протокола <code>http://</code> или <code>https://</code>. При использовании защищенного протокола HTTPS необходимо учитывать, что <em>ESP8266</em> может не иметь актуальных корневых сертификатов, что потребует отключения проверки сертификатов в настройках безопасности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип потока</th>
+<th>Битрейт</th>
+<th>Требования к сети</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MP3 (CBR)</td>
+<td>128 kbps</td>
+<td>Стабильные 200 kbps</td>
+</tr>
+<tr>
+<td>AAC+</td>
+<td>64 kbps</td>
+<td>Стабильные 100 kbps</td>
+</tr>
+<tr>
+<td>FLAC</td>
+<td>700+ kbps</td>
+<td>Только ESP32, LAN</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если поток не воспроизводится, рекомендуется проверить его доступность на компьютере с помощью плеера <em>VLC</em>. Иногда радиостанции меняют адреса потоков или блокируют подключения от неизвестных User-Agent. В коде проекта <em>Karadio</em> можно изменить строку идентификации клиента, чтобы эмулировать популярный браузер или медиаплеер.</p>
+
+<h3>Работа с плейлистами и метаданными</h3>
+
+<p>Устройство способно отображать названия треков и исполнителей, если транслируемый поток содержит метаданные Icecast или Shoutcast. Для этого в конфигурации должна быть активирована поддержка парсинга заголовков. Отображение информации происходит на подключенном дисплее или передается в лог.</p>
+<p>При создании списков воспроизведения стоит учитывать кодировку символов. Кириллические названия станций могут отображаться некорректно, если не установлена правильная кодировка шрифтов в прошивке. Часто требуется перекодирование строк в UTF-8 или использование транслитерации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте короткие URL-адреса или сервисы сокращения ссылок для длинных потоков, если в интерфейсе устройства есть ограничение на количество вводимых символов.</p></aside>
+
+<p>Автоматическое переключение между станциями при потере сигнала реализуется через механизм таймаутов. Если в течение заданного времени не получено новых пакетов, система инициирует переподключение или переход к следующему адресу в списке.</p>
+
+<h2 id="диагностика-неисправностей-и-оптимизация">Диагностика неисправностей и оптимизация</h2>
+
+<p>В процессе эксплуатации могут возникать ситуации, требующие вмешательства. Наиболее частой проблемой является рассинхронизация аудио, когда звук начинает напоминать роботизированный голос или прерывистый шум. Это свидетельствует о переполнении или опустошении буфера.</p>
+<p>Для диагностики используется последовательный порт (Serial). Подключившись к UART с скоростью 115200 бод, можно наблюдать за логами системы в реальном времени. Сообщения об ошибках <code>buffer underrun</code> или <code>stack overflow</code> укажут на конкретную причину сбоя.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Диагностика через Serial</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите USB-TTL адаптер к пинам TX/RX</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте терминал (PuTTY или Serial Monitor)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Перезагрузите устройство</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Анализируйте выводимые строки логов</span></div></div>
+
+<p>Если устройство постоянно перезагружается, стоит проверить питание. Пики потребления тока при включении Wi-Fi могут вызывать просадку напряжения ниже допустимого уровня. Использование качественного блока питания и коротких проводов часто решает проблему.</p>
+
+<h3>Типичные ошибки</h3>
+
+<ol>
+<li><strong>Отсутствие звука при работающем индикаторе</strong> — чаще всего проблема в неправильном выборе пинов в <code>config.h</code> или отсутствии питания на ЦАП; проверьте схему подключения.</li>
+<li><strong>Постоянная буферизация</strong> — слабый сигнал Wi-Fi или слишком маленький размер буфера; попробуйте приблизить роутер или увеличить значение <code>BUFFER_SIZE</code>.</li>
+<li><strong>Неверное время на дисплее</strong> — устройство не может синхронизироваться с NTP-сервером; проверьте настройки часового пояса и доступность порта 123.</li>
+<li><strong>Треск и артефакты в звуке</strong> — наводки от Wi-Fi антенны на аудио тракт; экранируйте провода или используйте ферритовые кольца.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация буфера</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Увеличение стабильности потока</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Снижение свободной памяти</li></ul></div>
+</div></div>
+
+<p>Оптимизация кода также включает отключение неисзуемых функций. Если не используется дисплей, соответствующие драйверы лучше исключить из сборки, чтобы освободить ресурсы процессора для обработки аудио.</p>
+
+<h2 id="итоговое-резюме">Итоговое резюме</h2>
+
+<p>Настройка интернет-радио на базе <em>Karadio</em> и <em>ESP8266</em> представляет собой комплексный процесс, требующий внимания к деталям аппаратной и программной части. Успех проекта зависит от правильного выбора ЦАП, точной конфигурации параметров сети и грамотного управления буфером памяти.</p>
+<p>Использование современных инструментов разработки и методов диагностики позволяет создать надежное устройство, способное работать автономно длительное время. Соблюдение рекомендаций по питанию и кодированию потоков обеспечивает высокое качество звучания и стабильность соединения.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректная настройка размера буфера и выбор совместимого ЦАП являются ключевыми факторами стабильной работы интернет-радио на ESP8266.</p></aside>
+
+<p>Дальнейшее развитие системы может включать интеграцию с умным домом, добавление голосового управления или поддержку новых аудиокодеков. Открытость исходного кода проекта позволяет адаптировать функционал под любые специфические требования пользователя.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Проект Karadio постоянно обновляется, поэтому периодически проверяйте репозиторий на наличие новых версий прошивок и исправлений безопасности.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/e/ea/eak-uboat-s-teleyona-izlbopzhegin-negptiva.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить лишние приложения с телефона: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по очистке памяти смартфона. Удаление системных и пользовательских приложений н</span>
+            </a><a href="/articles/k/ka/kak-ubrat-rekomendatsii-prilozhenij-khuavej.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить рекомендации приложений Huawei: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению рекламы и рекомендаций приложений на смартфонах Huawei. Настройки</span>
+            </a><a href="/articles/s/sh/shooting-plus-ne-vidit-dzhojstik.html" class="pb-related-card">
+                <span class="pb-related-title">Shooting Plus не видит джойстик: решение проблемы</span>
+                <span class="pb-related-desc">Почему Shooting Plus V3 не видит джойстик. Подробное руководство по настройке Bluetooth, прав доступ</span>
+            </a><a href="/articles/v/v-/v-lajzi-media-vyletaet-oshibka-vosproizvedeniya-kak-borotsya.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка воспроизведения в Lazy Media Deluxe: причины и методы устранения</span>
+                <span class="pb-related-desc">Подробный гид по устранению ошибки воспроизведения в Lazy Media Deluxe. Настройка плееров, проверка </span>
+            </a><a href="/articles/k/ka/kak-skopirovat-serdechko-iz-ruk-chtoby-bylo-kak-na-ajfone.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать сердечко из рук: полная инструкция для iPhone и Android</span>
+                <span class="pb-related-desc">Подробный технический гид по созданию фото с сердечком из рук. Настройки камеры, свет, позы и секрет</span>
+            </a><a href="/articles/k/ka/kak-svyazatsya-s-podderzhkoj-melord.html" class="pb-related-card">
+                <span class="pb-related-title">Как связаться с поддержкой Melord: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по обращению в службу поддержки Melord. Проверенные каналы связи, шаблоны за</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

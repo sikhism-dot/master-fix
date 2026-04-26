@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Голосовое управление Wirenboard без интернета: Инструкция — Мастер Фикс</title>
+    <meta name="description" content="Пошаговая настройка локального голосового управления на Wirenboard. Установка Vosk, настройка микрофона и создание сценариев автоматизации в оффлайн-режиме.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-sdelat-golosovoe-upravlenie-wirenboard-bez-interneta.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Голосовое управление Wirenboard без интернета: Инструкция">
+    <meta property="og:description" content="Пошаговая настройка локального голосового управления на Wirenboard. Установка Vosk, настройка микрофона и создание сценариев автоматизации в оффлайн-режиме.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Голосовое управление Wirenboard без интернета: Инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#аппаратная-подготовка-и-выбор-модели-распознавания">Аппаратная подготовка и выбор модели распознавания</a></li><li><a href="#установка-программного-обеспечения-и-зависимостей">Установка программного обеспечения и зависимостей</a></li><li><a href="#интеграция-с-логикой-wirenboard-через-mqtt">Интеграция с логикой Wirenboard через MQTT</a></li><li><a href="#оптимизация-производительности-и-запуск-в-фоне">Оптимизация производительности и запуск в фоне</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/an/analog-tuzemtsev-bez-interneta.html">Аналог Туземцев без интернета: полная инструкция по настройке</a></li><li><a href="/articles/m/mi/miwifi-ne-vidit-ac1200-eu.html">MiWiFi не видит AC1200 EU: решение проблемы подключения</a></li><li><a href="/articles/k/ka/kak-vyjti-iz-alfa-klik-na-planshete-khuavej.html">Как выйти из Альфа-Клик на планшете Huawei: полная инструкция</a></li><li><a href="/articles/k/ka/kak-postavit-znak-interneta-na-klaviature.html">Как поставить значок интернета на клавиатуре: полные инструкции</a></li><li><a href="/articles/k/ka/kak-pomenyat-kursor-blyutuz-myshi-na-planshete.html">Как изменить курсор Bluetooth-мыши на планшете: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Локальное голосовое управление Wirenboard без подключения к интернету</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#аппаратная-подготовка-и-выбор-модели-распознавания">Аппаратная подготовка и выбор модели распознавания</a></li><li><a href="#установка-программного-обеспечения-и-зависимостей">Установка программного обеспечения и зависимостей</a></li><li><a href="#интеграция-с-логикой-wirenboard-через-mqtt">Интеграция с логикой Wirenboard через MQTT</a></li><li><a href="#оптимизация-производительности-и-запуск-в-фоне">Оптимизация производительности и запуск в фоне</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Внедрение систем «умного дома» часто сталкивается с проблемой зависимости от облачных сервисов, особенно когда речь заходит о голосовом управлении. Пользователи контроллеров Wirenboard, стремящиеся к максимальной автономности и безопасности данных, оказываются в ситуации, когда популярные решения вроде Яндекс.Станции или Google Home требуют постоянного подключения к глобальной сети для распознавания речи.</p>
+<p>Отсутствие интернета в серверной, на промышленном объекте или в загородном доме с нестабильным каналом связи делает невозможным использование стандартных облачных ассистентов. В таких случаях требуется реализация полностью локального цикла обработки звука, где распознавание команд и синтез речи происходят исключительно на вычислительных мощностях самого контроллера или сопряженного локального сервера.</p>
+<p>Решение этой задачи базируется на использовании легковесных движков распознавания речи с открытым исходным кодом, таких как Vosk, которые адаптированы для работы на архитектуре ARM, используемой в устройствах Wirenboard. Данный подход позволяет создать отзывчивую систему управления освещением, климатом и безопасностью, которая продолжит функционировать даже при полном обрыве внешнего канала связи.</p>
+
+<h2 id="аппаратная-подготовка-и-выбор-модели-распознавания">Аппаратная подготовка и выбор модели распознавания</h2>
+<p>Первым этапом реализации автономной системы является оценка вычислительных ресурсов контроллера Wirenboard, так как процесс распознавания речи в реальном времени требует значительных затрат процессорного времени. Модели на базе процессоров ARM, такие как <em>WB-MA7</em> или более старые версии <em>WB6</em>, имеют ограничения по производительности, поэтому выбор модели нейросети становится критическим фактором успеха.</p>
+<p>Для устройств с ограниченной оперативной памятью и одноядерными процессорами рекомендуется использовать микро-модели движка <em>Vosk</em>, которые занимают менее 50 МБ дискового пространства и требуют минимального объема RAM для работы. Если же в системе используется более мощный шлюз или выделенный сервер на базе x86, подключенный к Wirenboard по сети, можно задействовать большие модели с повышенной точностью распознавания.</p>
+<p>Важно учитывать, что качество распознавания напрямую зависит от качества входного аудиосигнала, поэтому использование встроенных микрофонов в дешевых USB-гарнитурах может привести к неудовлетворительным результатам. Для промышленных условий предпочтительнее использование внешних USB-звуковых карт с поддержкой шумоподавления или специализированных модулей расширения с аналоговым входом, подключенных к GPIO контроллера.</p>
+
+<h3>Сравнение моделей для ARM-архитектуры</h3>
+<p>Выбор конкретной модели диктуется балансом между точностью распознавания и скоростью отклика системы. Тяжелые модели обеспечивают лучшее понимание контекста и сложных фраз, но могут вносить задержку в 1-2 секунды, что критично для систем управления светом или аварийными ситуациями.</p>
+<table>
+<thead>
+<tr>
+<th>Модель</th>
+<th>Размер</th>
+<th>Требования к CPU</th>
+<th>Точность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>vosk-model-small-ru</code></td>
+<td>~40 МБ</td>
+<td>Низкие (Single Core)</td>
+<td>Базовая</td>
+</tr>
+<tr>
+<td><code>vosk-model-ru-0.22</code></td>
+<td>~1.8 ГБ</td>
+<td>Высокие (Quad Core+)</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Подключение аудиоустройств</h3>
+<p>Подключение микрофона к Wirenboard обычно осуществляется через USB-интерфейс, так как прямое подключение аналоговых микрофонов к GPIO требует дополнительных преобразователей АЦП. После физического подключения необходимо убедиться, что система корректно определила устройство и назначила ему приоритет по умолчанию для захвата звука.</p>
+<p>Проверка доступности микрофона выполняется через стандартные утилиты ALSA, где следует искать устройство с интерфейсом USB Audio. Если микрофон определен, но звук не записывается, может потребоваться ручная настрой уровней усиления через <code>alsamixer</code>, так как некоторые устройства по умолчанию приходят с минимальной громкостью входа.</p>
+
+<h2 id="установка-программного-обеспечения-и-зависимостей">Установка программного обеспечения и зависимостей</h2>
+<p>Базовой операционной системой для контроллеров Wirenboard является Debian-based дистрибутив, что позволяет использовать стандартный пакетный менеджер <code>apt</code> для установки необходимых библиотек. Перед началом установки компонентов голосового управления необходимо обновить репозитории и установить базовый набор инструментов для компиляции и работы с аудио.</p>
+<p>Для работы с Python-скриптами, которые будут выступать связующим звеном между распознаванием речи и логикой Wirenboard, требуется установка пакета <code>python3-pip</code> и инструментов разработки. Также критически важно наличие библиотек для работы с звуком, таких как <code>libasound2</code> и <code>portaudio19-dev</code>, без которых невозможна корректная обработка аудиопотока.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Убедитесь, что на диске контроллера достаточно свободного места. Большие языковые модели могут занимать до 2 ГБ, что критично для встроенной памяти некоторых моделей Wirenboard.</p></aside>
+
+<h3>Установка Python-библиотек</h3>
+<p>Основным инструментом интеграции станет библиотека <em>Vosk</em> для Python, предоставляющая удобный API для потокового распознавания речи. Установка производится через pip, однако для избежания конфликтов системных пакетов рекомендуется использовать виртуальное окружение или устанавливать пакеты в изолированную директорию пользователя.</p>
+<ol>
+<li>Выполните обновление списка пакетов: <code>apt update</code>.</li>
+<li>Установите компилятор и заголовочные файлы: <code>apt install build-essential python3-dev</code>.</li>
+<li>Установите зависимости для аудио: <code>apt install libasound2-dev portaudio19-dev</code>.</li>
+<li>Установите движок распознавания: <code>pip3 install vosk</code>.</li>
+</ol>
+
+<p>Параллельно с движком распознавания необходимо установить библиотеку для взаимодействия с API самого контроллера Wirenboard, обычно это <em>wb-mqtt-serial</em> или прямые HTTP-запросы к <code>wb-rules</code>. Это позволит скрипту не просто «слышать» команды, но и исполнять действия, такие как включение реле или изменение уставок термостатов.</p>
+<p>В некоторых случаях стандартные репозитории Python могут содержать устаревшие версии библиотек, совместимые с версией Debian, установленной на устройстве. Если при установке возникают ошибки совместимости, стоит рассмотреть возможность использования Docker-контейнера с предустановленным окружением, что изолирует зависимости голосового ассистента от основной системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка окружения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Обновите репозитории apt</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите компилятор GCC и заголовочные файлы Python</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите системные аудио-библиотеки</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Смонтируйте файловую систему для записи логов</span></div></div>
+
+<h3>Настройка прав доступа</h3>
+<p>Скрипт голосового управления должен иметь постоянный доступ к аудиоустройству, что требует добавления пользователя, от имени которого запускается сервис, в группу <code>audio</code>. Без этого шага попытки захвата микрофона будут завершаться ошибкой доступа, даже если физически устройство исправно.</p>
+<p>Проверка прав осуществляется командой <code>groups</code>, и если группа audio отсутствует в списке, необходимо выполнить команду добавления и перезагрузить систему или перелогиниться. Также стоит проверить права на файлы конфигурации ALSA, чтобы убедиться, что настройки микрофона сохраняются после перезагрузки.</p>
+
+<h2 id="интеграция-с-логикой-wirenboard-через-mqtt">Интеграция с логикой Wirenboard через MQTT</h2>
+<p>Связующим звеном между распознанной текстовой командой и исполнительными механизмами умного дома в экосистеме Wirenboard выступает протокол MQTT. Скрипт распознавания речи выступает в роли MQTT-клиента, который публикует сообщения в определенные топики, subscribed-ные правилами движка <em>wb-rules</em> или другими контроллерами.</p>
+<p>Архитектура взаимодействия строится так: модуль распознавания слушает микрофон, при detection команды публикует событие в топик <code>/voice/command</code>, а правила Wirenboard реагируют на это событие, запуская сценарии. Такой подход обеспечивает модульность системы и позволяет легко изменять логику реакции без переписывания кода распознавателя.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Топики MQTT в Wirenboard обычно имеют префикс /devices/ или /rules/, в зависимости от конфигурации wb-rules. Убедитесь, что ваш скрипт использует правильную структуру топиков.</p></aside>
+
+<h3>Настройка правил wb-rules</h3>
+<p>Для реакции на голосовые команды в конфигурации <em>wb-rules</em> необходимо создать правило, которое триггерится изменением значения в MQTT-топике, куда скрипт отправляет распознанный текст. Внутри правила прописывается логика: если текст содержит слово «свет», то переключить соответствующее реле.</p>
+<p>Использование регулярных выражений или функций сравнения строк в правилах позволяет гибко обрабатывать вариативность речи. Например, команды «включи свет», «зажги свет» и «нужен свет» могут приводить к одному и тому же действию, если правильно настроить условия в скрипте правил.</p>
+<p>Важно предусмотреть механизм подтверждения выполнения команды, так как в оффлайн-режиме пользователь не получит голосового ответа от облака. Реализовать это можно через синтез речи (TTS) локально или, что проще, через визуальную индикацию — мигание светодиодом или изменение статуса на панели.</p>
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Роль</th>
+<th>Протокол</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vosk Python Script</td>
+<td>Распознавание речи</td>
+<td>Local Audio</td>
+</tr>
+<tr>
+<td>Wirenboard wb-rules</td>
+<td>Исполнение сценариев</td>
+<td>MQTT</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Обработка ошибок связи</h3>
+<p>При работе через MQTT критически важна обработка разрывов соединения, так как скрипт должен уметь переподключаться к брокеру без перезапуска всего процесса распознавания. Библиотеки MQTT для Python, такие как <em>paho-mqtt</em>, предоставляют механизмы автоматического reconnect, которые необходимо активировать в конфигурации клиента.</p>
+<p>В случае потери связи с брокером сообщений, скрипт должен продолжать буферизировать распознанные команды или, в зависимости от стратегии, игнорировать их, чтобы избежать накопления очереди устаревших команд. Логирование таких событий в файл <code>/var/log/voice_control.log</code> поможет в дальнейшем диагностировать проблемы стабильности.</p>
+
+<h2 id="оптимизация-производительности-и-запуск-в-фоне">Оптимизация производительности и запуск в фоне</h2>
+<p>Запуск скрипта голосового управления в фоновом режиме требует создания системного сервиса, который будет гарантировать старт программы после загрузки операционной системы и ее перезапуск в случае сбоев. В Debian-based системах стандартом является использование systemd, который позволяет гибко настраивать зависимости и условия запуска.</p>
+<p>Создание unit-файла для сервиса позволяет прописать ограничения по ресурсам, что особенно важно для Wirenboard, чтобы процесс распознавания речи не «задушил» другие важные процессы, такие как опрос Modbus-регистров. Выделение отдельного процесса и установка приоритета (nice level) помогает сгладить пики нагрузки на CPU.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание сервиса</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создайте файл /etc/systemd/system/voice-assist.service</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите ExecStart с путем к скрипту</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Добавьте Restart=always для автоперезапуска</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Активируйте сервис командой systemctl enable</span></div></div>
+
+<h3>Создание systemd сервиса</h3>
+<p>Файл конфигурации сервиса должен содержать директивы, указывающие на необходимость запуска после инициализации сети и звуковой подсистемы. Это предотвращает ситуации, когда скрипт стартует раньше, чем драйверы микрофона успели загрузиться, что приводит к ошибке инициализации аудиоустройства.</p>
+<pre><code>[Unit]
+<p>Description=Offline Voice Control for Wirenboard</p>
+<p>After=network.target sound.target</p>
+<p>Requires=sound.target</p>
+
+<p>[Service]</p>
+<p>ExecStart=/usr/bin/python3 /root/voice_control/main.py</p>
+<p>Restart=always</p>
+<p>User=root</p>
+<p>Group=root</p>
+
+<p>[Install]</p>
+<p>WantedBy=multi-user.target</code></pre></p>
+<p>После создания файла необходимо выполнить команду <code>systemctl daemon-reload</code> для обновления списка сервисов и запустить созданный сервис командой <code>systemctl start voice-assist</code>. Проверка статуса выполняется через <code>systemctl status voice-assist</code>, где в логах будет виден процесс инициализации модели и ожидания голосовой активности.</p>
+
+<h3>Мониторинг ресурсов</h3>
+<p>Постоянный мониторинг загрузки процессора и потребления памяти обязателен, особенно в первые часы работы системы. Если наблюдается перегрев контроллера или троттлинг частот, возможно, придется снизить частоту дискретизации аудио или перейти на еще более легкую модель нейросети.</p>
+<p>Использование утилит вроде <code>htop</code> или встроенных дашбордов Wirenboard позволяет отслеживать потребление ресурсов в реальном времени. При стабильной работе нагрузка на один ядро может достигать 80-90%, что является нормой для задач распознавания речи на ARM, но требует хорошего охлаждения.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Автономность работы|Полная конфиденциальность данных|Отсутствие задержек сети</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Высокая нагрузка на CPU</li><li>✅ Ограниченный словарный запас</li><li>✅ Сложность настройки</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе настройки локального голосового управления пользователи часто сталкиваются с рядом типовых проблем, связанных с конфигурацией аудио, правами доступа и ресурсами системы. Понимание природы этих ошибок позволяет быстро диагностировать и устранить неисправности без глубокого погружения в исходный код.</p>
+<ol>
+<li><strong>Микрофон не detected —</strong> часто возникает из-за того, что USB-устройство требует больше энергии, чем может предоставить порт Wirenboard. Решение: используйте USB-хаб с собственным питанием или проверьте настройки питания USB в kernel.</li>
+<li><strong>Низкая точность распознавания —</strong> обычно вызвана фоновым шумом или использованием слишком большой модели на слабом процессоре. Решение: настройте порог чувствительности (threshold) в скрипте или используйте направленный микрофон.</li>
+<li><strong>Скрипт падает с ошибкой памяти —</strong> характерно для устройств с 256 МБ RAM и менее при использовании больших моделей. Решение: перейдите на модель <code>small</code> или увеличьте swap-файл на диске.</li>
+<li><strong>Задержка реакции системы —</strong> возникает при высокой загрузке CPU другими процессами Wirenboard. Решение: понизьте частоту опроса Modbus-регистров или вынесите распознавание на отдельный Raspberry Pi.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к успеху — правильный баланс между мощностью модели распознавания и производительностью контроллера, а также грамотная настройка прав доступа к аудио.</</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Организация голосового управления на базе Wirenboard без доступа к интернету является полностью решаемой задачей, требующей тщательного подбора программного обеспечения и оптимизации ресурсов. Использование движка <em>Vosk</em> в связке с MQTT-логикой контроллера позволяет создать надежную, безопасную и быструю систему управления, независимую от внешних серверов.</p>
+<p>Несмотря на повышенные требования к вычислительной мощности локального устройства, современные модели контроллеров справляются с базовыми задачами распознавания команд. Правильная настройка systemd-сервисов и мониторинг ресурсов обеспечат стабильную работу системы в режиме 24/7, делая умный дом действительно автономным.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/an/analog-tuzemtsev-bez-interneta.html" class="pb-related-card">
+                <span class="pb-related-title">Аналог Туземцев без интернета: полная инструкция по настройке</span>
+                <span class="pb-related-desc">Подробный гид по созданию автономной базы знаний. Настройка, обновление и использование аналога Тузе</span>
+            </a><a href="/articles/m/mi/miwifi-ne-vidit-ac1200-eu.html" class="pb-related-card">
+                <span class="pb-related-title">MiWiFi не видит AC1200 EU: решение проблемы подключения</span>
+                <span class="pb-related-desc">Роутер MiWiFi не обнаруживает AC1200 EU? Подробная инструкция по диагностике, смене региона, настрой</span>
+            </a><a href="/articles/k/ka/kak-vyjti-iz-alfa-klik-na-planshete-khuavej.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из Альфа-Клик на планшете Huawei: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство, как завершить сеанс в приложении Альфа-Клик на планшете Huawei. Решение пробл</span>
+            </a><a href="/articles/k/ka/kak-postavit-znak-interneta-na-klaviature.html" class="pb-related-card">
+                <span class="pb-related-title">Как поставить значок интернета на клавиатуре: полные инструкции</span>
+                <span class="pb-related-desc">Подробное руководство по отображению значка интернета на клавиатуре Android, iOS и Windows. Решение </span>
+            </a><a href="/articles/k/ka/kak-pomenyat-kursor-blyutuz-myshi-na-planshete.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить курсор Bluetooth-мыши на планшете: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке формы, цвета и размера курсора для Bluetooth-мыши на Android и iP</span>
+            </a><a href="/articles/k/ke/keenetic-hero-4g-problema-s-modemom.html" class="pb-related-card">
+                <span class="pb-related-title">Keenetic Hero 4G+: решение проблем с USB-модемом</span>
+                <span class="pb-related-desc">Инструкция по настройке и устранению неисправностей USB-модемов 4G на роутере Keenetic Hero. Сброс, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

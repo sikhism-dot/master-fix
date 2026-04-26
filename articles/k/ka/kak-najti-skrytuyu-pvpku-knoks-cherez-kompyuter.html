@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как найти скрытую папку Knox: поиск на ПК и Android — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по обнаружению защищенного хранилища Samsung Knox через компьютер. Анализ файловых систем, работа с ADB и настройка видимости.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-najti-skrytuyu-pvpku-knoks-cherez-kompyuter.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как найти скрытую папку Knox: поиск на ПК и Android">
+    <meta property="og:description" content="Подробная инструкция по обнаружению защищенного хранилища Samsung Knox через компьютер. Анализ файловых систем, работа с ADB и настройка видимости.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как найти скрытую папку Knox: поиск на ПК и Android</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-безопасности-и-принцип-изоляции-данных">Архитектура безопасности и принцип изоляции данных</a></li><li><a href="#анализ-файловой-системы-через-adb-интерфейс">Анализ файловой системы через ADB интерфейс</a></li><li><a href="#поиск-артефактов-в-системных-логах-и-конфигурации">Поиск артефактов в системных логах и конфигурации</a></li><li><a href="#сравнение-методов-доступа-и-совместимость">Сравнение методов доступа и совместимость</a></li><li><a href="#типичные-ошибки-при-попытке-доступа">Типичные ошибки при попытке доступа</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/p/pg/pg-9021s-kak-podklyuchit.html">Как подключить камеру PG-9021S: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-zalu-esli-net-tyulpanov.html">Как подключить залу без тюльпанов: все способы и кабели</a></li><li><a href="/articles/h/hi/hios-zvuk-idet-cherez-verkhnij-dinamik.html">hios звук идет через верхний динамик: решение проблемы</a></li><li><a href="/articles/z/zv/zvonilka-dlya-avtomagnitoly-teyes.html">Звонилка для автомагнитолы Teyes: настройка и устранение ошибок</a></li><li><a href="/articles/k/ka/kak-polzovatsya-dualspace.html">Как пользоваться DualSpace: полная инструкция по клонированию приложений</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Поиск скрытой папки Knox через компьютер: техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-безопасности-и-принцип-изоляции-данных">Архитектура безопасности и принцип изоляции данных</a></li><li><a href="#анализ-файловой-системы-через-adb-интерфейс">Анализ файловой системы через ADB интерфейс</a></li><li><a href="#поиск-артефактов-в-системных-логах-и-конфигурации">Поиск артефактов в системных логах и конфигурации</a></li><li><a href="#сравнение-методов-доступа-и-совместимость">Сравнение методов доступа и совместимость</a></li><li><a href="#типичные-ошибки-при-попытке-доступа">Типичные ошибки при попытке доступа</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто сталкиваются с ситуацией, когда необходимо получить доступ к файлам, сохраненным в защищенном контейнере Samsung Knox, используя компьютер, но стандартные методы подключения по USB не отображают искомые данные.</p>
+<p>Проблема заключается в архитектуре безопасности платформы: изолированное хранилище не монтируется как отдельный съемный диск и не видно в проводнике Windows или macOS при обычном соединении.</p>
+<p>Данное руководство описывает технические способы обнаружения следов работы контейнера, анализа файловой системы и использования отладочных интерфейсов для идентификации скрытых разделов.</p>
+
+<h2 id="архитектура-безопасности-и-принцип-изоляции-данных">Архитектура безопасности и принцип изоляции данных</h2>
+<p>Понимание структуры защищенного хранилища является ключевым фактором для успешного поиска данных, так как система Knox использует аппаратное шифрование и логическое разделение.</p>
+<p>В основе механизма лежит технология <em>Samsung Knox Platform</em>, которая создает виртуальный барьер между личной и рабочей зонами устройства, делая прямое копирование файлов невозможным без авторизации.</p>
+<p>Если у вас возникла необходимость найти следы работы этого модуля, стоит учитывать, что файлы физически находятся на том же накопителе, но имеют иные права доступа и пути каталогов.</p>
+
+<h3>Логическая структура разделов</h3>
+<p>На практике файловая система Android делится на несколько разделов, где защищенные данные хранятся в специальном зашифрованном сегменте, доступ к которому имеет только системный процесс <em>Knox Container</em>.</p>
+<p>При подключении смартфона к компьютеру в режиме передачи файлов (MTP) операционная система хоста видит только общедоступную часть внутренней памяти, игнорируя зарезервированные области.</p>
+<p>Допустим, пользователь пытается найти папку <code>/data/knox</code> через проводник — это действие обречено на провал без получения прав суперпользователя или использования специальных утилит.</p>
+<p><strong>Ключевым моментом</strong> является то, что даже при наличии физического доступа к файлам, они представляют собой зашифрованный набор байтов, нечитаемый стандартными средствами ОС.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с обновленной версией Android 13 и выше доступ к системным разделам через MTP ограничен еще строже, чем в предыдущих версиях.</p></aside>
+
+<p>Стоит проверить спецификации конкретной модели устройства, так как на некоторых корпоративных версиях смартфонов политики безопасности могут полностью блокировать даже попытку enumeration (перечисления) скрытых каталогов.</p>
+<p>Для исследователей и администраторов важно знать, что логические пути могут меняться в зависимости от версии прошивки <em>One UI</em> и установленной версии ядра системы.</p>
+
+<h2 id="анализ-файловой-системы-через-adb-интерфейс">Анализ файловой системы через ADB интерфейс</h2>
+<p>Наиболее эффективным техническим методом обнаружения скрытых структур является использование отладочного моста Android (ADB), который позволяет взаимодействовать с оболочкой устройства на низком уровне.</p>
+<p>Для начала работы необходимо активировать режим разработчика на смартфоне, перейдя в <code>Настройки → О телефоне → Информация о ПО</code> и быстро нажав семь раз на номер сборки.</p>
+<p>После активации в меню появится пункт <code>Параметры разработчика</code>, где требуется включить отладку по USB, что позволит компьютеру отправлять команды на устройство.</p>
+
+<h3>Команды для поиска следов контейнера</h3>
+<p>После подключения устройства и установки драйверов, откройте командную строку на компьютере и введите команду для проверки соединения.</p>
+<pre><code>adb devices</code></pre>
+<p>Если устройство отображается в списке, можно перейти к сканированию файловой системы на предмет наличия специфических маркеров Knox.</p>
+<p>Используйте команду <code>adb shell ls -la /data</code> для просмотра содержимого корневого системного раздела, однако без root-прав доступ будет ограничен.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите Platform Tools на ПК</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Включите отладку по USB на смартфоне</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключите кабель и подтвердите ключ RSA</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите adb devices в терминале</span></div></div>
+
+<p>В некоторых случаях, если на устройстве настроено резервное копирование или синхронизация, следы работы защищенного хранилища могут быть найдены в логах или временных файлах.</p>
+<p>Команда <code>adb shell pm list packages</code> поможет выявить установленные системные компоненты, связанные с безопасностью, такие как <em>com.samsung.knox.securefolder</em>.</p>
+<p><strong>Важно понимать</strong>, что стандартный пользовательский режим ADB не позволяет читать содержимое папки <code>/data/data</code>, где непосредственно хранятся базы данных приложений.</p>
+<p>Тем не менее, наличие установленных пакетов является прямым подтверждением существования защищенной среды на устройстве.</p>
+
+<h2 id="поиск-артефактов-в-системных-логах-и-конфигурации">Поиск артефактов в системных логах и конфигурации</h2>
+<p>Альтернативным способом обнаружения скрытых функций является анализ конфигурационных файлов и журналов событий, которые могут сохранять информацию о работе модулей безопасности.</p>
+<p>Если у вас есть доступ к файлам резервной копии, созданной через <em>Smart Switch</em> или встроенными средствами системы, можно попытаться найти XML-файлы конфигурации.</p>
+<p>В этих файлах часто прописываются пути к защищенным директориям или флаги, указывающие на активность контейнера Knox в момент создания бэкапа.</p>
+
+<h3>Анализ медиа-файлов и метаданных</h3>
+<p>Допустим, пользователь сохранил фотографию из защищенной папки в обычную галерею — в метаданных EXIF могут остаться следы оригинального пути или идентификаторы приложения.</p>
+<p>Используйте специализированный софт для просмотра EXIF данных, чтобы проанализировать файлы, которые предположительно происходили из защищенного источника.</p>
+<p>Хотя сами данные будут зашифрованы, факт их существования и время модификации могут быть важны для аудита или восстановления хронологии событий.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытки принудительно изменить системные файлы конфигурации могут привести к срабатыванию механизма Knox e-Fuse и необратимой блокировке функций безопасности.</p></aside>
+
+<p>На практике системные логи (<code>logcat</code>) могут содержать записи о попытках доступа к защищенным ресурсам, если соответствующие приложения запускались в фоновом режиме.</p>
+<p>Для перехвата логов используйте команду <code>adb logcat | grep knox</code>, которая отфильтрует события, связанные с работой платформы безопасности.</p>
+<p>Это позволяет косвенно подтвердить наличие и активность скрытых разделов без необходимости прямого доступа к файловой системе.</p>
+
+<h2 id="сравнение-методов-доступа-и-совместимость">Сравнение методов доступа и совместимость</h2>
+<p>Выбор метода поиска зависит от целей пользователя, уровня доступа к устройству и версии установленной операционной системы.</p>
+<p>Ниже приведена таблица, демонстрирующая эффективность различных подходов к обнаружению скрытых данных в зависимости от наличия root-прав.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод поиска</th>
+<th>Требуемые права</th>
+<th>Эффективность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Проводник Windows (MTP)</td>
+<td>Нет</td>
+<td>Низкая (видны только общие папки)</td>
+</tr>
+<tr>
+<td>ADB Shell (без root)</td>
+<td>Отладка USB</td>
+<td>Средняя (видны только пакеты и логи)</td>
+</tr>
+<tr>
+<td>ADB Shell (с root)</td>
+<td>Root + Отладка</td>
+<td>Высокая (полный доступ к /data)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Стоит отметить, что на разных моделях смартфонов Samsung реализация может отличаться, особенно в контексте работы с внешними SD-картами.</p>
+<p>Если защищенная папка была перенесена на карту памяти, физически файлы могут находиться в скрытом разделе карты, невидимом для ПК.</p>
+
+<h3>Специфика работы с внешними накопителями</h3>
+<p>При использовании microSD карта шифруется специальным образом, и компьютер видит ее как пустую или неформатированную, если не произведена авторизация через смартфон.</p>
+<p>Попытка прочитать такую карту через кардридер на компьютере без предварительной разблокировки на устройстве не даст результатов.</p>
+<p><strong>Единственным способом</strong> получить данные в этом случае является использование самого смартфона-владельца для экспорта файлов.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Возможность анализа без установки ПО на телефон</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Риск блокировки устройства при неправильных действиях</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Необходимость технических знаний ADB</li></ul></div>
+</div></div>
+
+<p>В таблице ниже представлены основные пути, где теоретически могут находиться данные, и их доступность для внешнего наблюдателя.</p>
+
+<table>
+<thead>
+<tr>
+<th>Путь в системе</th>
+<th>Тип данных</th>
+<th>Доступ с ПК</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/storage/emulated/0</td>
+<td>Общие файлы</td>
+<td>Полный</td>
+</tr>
+<tr>
+<td>/data/knox</td>
+<td>Системные файлы Knox</td>
+<td>Закрыт (требуется root)</td>
+</tr>
+<tr>
+<td>/data/media/0</td>
+<td>Медиа пользователя</td>
+<td>Частичный (через MTP)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-при-попытке-доступа">Типичные ошибки при попытке доступа</h2>
+<p>В процессе поиска скрытых разделов пользователи часто допускают ошибки, которые не только не приводят к результату, но и могут усложнить ситуацию.</p>
+<p>Ниже приведен список наиболее распространенных заблуждений и технических ошибок.</p>
+
+<ol>
+<li><strong>Попытка использования сторонних файловых менеджеров без root</strong> — приложения из магазина Play Market не имеют прав на чтение системных разделов, поэтому они не смогут показать папку Knox, независимо от заявленных функций.</li>
+<li><strong>Игнорирование шифрования при копировании</strong> — если каким-то образом удалось скопировать сырые данные раздела, они останутся нечитаемыми, так как ключи дешифровки хранятся в защищенном чипе устройства (TEE).</li>
+<li><strong>Попытка сброса через Recovery</strong> — некоторые пользователи пытаются получить доступ через меню восстановления, но раздел Knox часто защищен отдельным фюзом, и простой сброс не снимает защиту данных.</li>
+<li><strong>Неверная интерпретация скрытых папок</strong> — точка перед именем папки в Linux/Android скрывает ее от обычного просмотра, но это не имеет отношения к защите Knox, и поиск таких папок не даст доступа к защищенному контенту.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для легального доступа к файлам используйте функцию «Переместить из защищенной папки» внутри самого приложения Secure Folder на экране смартфона.</p></aside>
+
+<p>Понимание этих ограничений позволяет избежать потери времени на заведомо нерабочие методы и сосредоточиться на легитимных способах управления данными.</p>
+<p>Всегда проверяйте статус устройства и уровень доступа перед выполнением любых команд в терминале.</p>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Поиск скрытой папки Knox через компьютер является сложной задачей, обусловленной высоким уровнем безопасности платформы Samsung.</p>
+<p>Прямой доступ к файлам через стандартный проводник невозможен из-за архитектурной изоляции и шифрования данных на уровне файловой системы.</p>
+<p>Использование инструментов ADB позволяет получить лишь косвенную информацию о наличии и состоянии защищенного контейнера, но не дает доступа к содержимому без root-прав.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Прямое чтение файлов Knox с ПК невозможно без root-прав из-за шифрования; единственный легальный способ — экспорт через интерфейс смартфона.</p></aside>
+
+<p>Для большинства пользователей оптимальным решением остается использование штатных средств экспорта внутри операционной системы Android.</p>
+<p>Попытки обхода защиты программными методами на компьютере неэффективны и могут привести к нарушению целостности системы безопасности устройства.</p>
+<p>Технические специалисты могут использовать представленные методы для аудита и диагностики, но должны осознавать риски и ограничения современных мобильных платформ.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/p/pg/pg-9021s-kak-podklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить камеру PG-9021S: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке PTZ-камеры PG-9021S. Подключение Wi-Fi, работа с приложением Tuya</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-zalu-esli-net-tyulpanov.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить залу без тюльпанов: все способы и кабели</span>
+                <span class="pb-related-desc">Нет RCA? Узнайте, как подключить Залу к телевизору через HDMI, USB, Wi-Fi или оптический выход. Полн</span>
+            </a><a href="/articles/h/hi/hios-zvuk-idet-cherez-verkhnij-dinamik.html" class="pb-related-card">
+                <span class="pb-related-title">hios звук идет через верхний динамик: решение проблемы</span>
+                <span class="pb-related-desc">Почему в HiOS звук идет только через верхний динамик? Подробная инструкция по настройке громкости, с</span>
+            </a><a href="/articles/z/zv/zvonilka-dlya-avtomagnitoly-teyes.html" class="pb-related-card">
+                <span class="pb-related-title">Звонилка для автомагнитолы Teyes: настройка и устранение ошибок</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке звонилки на Teyes. Решение проблем с Bluetooth, звуком и синхрониз</span>
+            </a><a href="/articles/k/ka/kak-polzovatsya-dualspace.html" class="pb-related-card">
+                <span class="pb-related-title">Как пользоваться DualSpace: полная инструкция по клонированию приложений</span>
+                <span class="pb-related-desc">Подробное руководство по настройке DualSpace. Как клонировать аккаунты, устранять ошибки входа и нас</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-muviks-ot-tarifa-dom-ru.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Мувикс от Дом.ру: инструкция и альтернативы</span>
+                <span class="pb-related-desc">Подробная инструкция, как отключить подписку Мувикс от Дом.ру. Способы блокировки через ЛК, поддержк</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

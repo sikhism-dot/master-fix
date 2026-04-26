@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Astra Linux Live CD: Chroot восстановление системы — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по восстановлению Astra Linux через chroot с Live CD. Настройка окружения, монтирование разделов и решение проблем с загрузчиком.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/as/astra-linux-live-cd-chroot.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Astra Linux Live CD: Chroot восстановление системы">
+    <meta property="og:description" content="Полная инструкция по восстановлению Astra Linux через chroot с Live CD. Настройка окружения, монтирование разделов и решение проблем с загрузчиком.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/bezopasnost-dostup/">Безопасность и Доступ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Astra Linux Live CD: Chroot восстановление системы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочного-носителя-и-диагностика">Подготовка загрузочного носителя и диагностика</a></li><li><a href="#монтирование-разделов-и-создание-структуры-папок">Монтирование разделов и создание структуры папок</a></li><li><a href="#настройка-окружения-chroot">Настройка окружения Chroot</a></li><li><a href="#восстановление-загрузчика-и-ядра">Восстановление загрузчика и ядра</a></li><li><a href="#решение-проблем-с-правами-доступа-и-конфигурацией">Решение проблем с правами доступа и конфигурацией</a></li><li><a href="#завершение-работы-и-проверка-результата">Завершение работы и проверка результата</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/h/hw/hw-decoder-forse.html">Как включить аппаратный декодер: принудительный запуск hw decoder</a></li><li><a href="/articles/v/vz/vzlom-google-password-nask.html">Восстановление доступа к Google: сброс и защита аккаунта</a></li><li><a href="/articles/p/pi/pishut-peredacha-zakodirovana-ne-viaccess.html">Ошибка Viaccess: решение проблемы кодировки на спутниковых ресиверах</a></li><li><a href="/articles/r/re/recovery-logs-motorola.html">Motorola Recovery Logs: анализ и сброс лога загрузки</a></li><li><a href="/articles/f/fa/factory-reset-kivi.html">Как сделать Factory Reset Kivi: полный сброс настроек</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление Astra Linux через Chroot с Live CD</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочного-носителя-и-диагностика">Подготовка загрузочного носителя и диагностика</a></li><li><a href="#монтирование-разделов-и-создание-структуры-папок">Монтирование разделов и создание структуры папок</a></li><li><a href="#настройка-окружения-chroot">Настройка окружения Chroot</a></li><li><a href="#восстановление-загрузчика-и-ядра">Восстановление загрузчика и ядра</a></li><li><a href="#решение-проблем-с-правами-доступа-и-конфигурацией">Решение проблем с правами доступа и конфигурацией</a></li><li><a href="#завершение-работы-и-проверка-результата">Завершение работы и проверка результата</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Операционная система <em>Astra Linux</em> зарекомендовала себя как надежное решение для защищенных информационных систем, однако даже самые стабильные дистрибутивы могут столкнуться с критическими сбоями загрузки. Повреждение загрузчика <em>GRUB</em>, ошибки в файловой системе или неудачное обновление ядра могут превратить рабочий сервер в неработающую машину. В таких ситуациях стандартные методы восстановления часто оказываются бесполезными, и администратору приходится прибегать к использованию загрузочного носителя.</p>
+
+<p>Использование <strong>Live CD</strong> или <strong>Live USB</strong> позволяет запустить минималистичную версию ОС в оперативной памяти, получив доступ к файловой системе поврежденного диска. Ключевым этапом здесь становится процедура <code>chroot</code> (change root), которая позволяет переключить корневую директорию работающей Live-системы на корневой раздел установленной системы. Это дает возможность выполнять команды, устанавливать пакеты и править конфигурационные файлы так, как если бы система была загружена нормально.</p>
+
+<p>Данная методика требует внимательности, так как работа с низкоуровневыми утилитами несет риски потери данных при ошибочных действиях. <mark>Процесс chroot не восстанавливает физические повреждения диска, он предназначен для логического ремонта файловой системы и настроек загрузки.</mark> Правильное выполнение последовательности действий вернет сервер к жизни без необходимости переустановки всего программного обеспечения и потери данных.</p>
+
+<h2 id="подготовка-загрузочного-носителя-и-диагностика">Подготовка загрузочного носителя и диагностика</h2>
+
+<p>Первым шагом является создание загрузочной флешки или диска с образом <em>Astra Linux</em>. Для этого можно использовать официальный ISO-образ дистрибутива, который содержит режим Live Session. Загрузившись с него, вы попадете в графическую или консольную среду, где необходимо открыть терминал для выполнения дальнейших манипуляций. Убедитесь, что версия Live-образа максимально близка к версии установленной системы, чтобы избежать конфликтов библиотек.</p>
+
+<p>После запуска Live-сессии необходимо идентифицировать структуру дисков. Команда <code>lsblk</code> или <code>fdisk -l</code> покажет список всех подключенных накопителей. Вам нужно найти раздел, где установлена <strong>Astra Linux</strong>, и запомнить его обозначение, например, <code>/dev/sda1</code> или <code>/dev/nvme0n1p2</code>. Также важно определить, есть ли отдельные разделы для <code>/boot</code> или <code>/home</code>, так как их придется монтировать отдельно.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Убедитесь, что вы не перепутали диск с Live-носителем и диск с установленной системой. Работа с неправильным устройством может привести к полной потере данных на целевом разделе.</p>
+</blockquote>
+
+<p>Для диагностики текущего состояния файловой системы перед монтированием рекомендуется запустить проверку утилитой <code>fsck</code>. Это поможет выявить и исправить логические ошибки, которые могли возникнуть в результате внезапного отключения питания. Если файловая система помечена как "dirty", система может отказаться монтировать её в режиме записи без предварительной проверки.</p>
+
+<div class="pb-poll" id="poll-32352925"><div class="pb-poll-question">📊 Какой тип файловой системы используется в вашей системе Astra Linux?</div><div class="pb-poll-option" data-poll="32352925" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">ext4</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="32352925" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">xfs</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="32352925" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">btrfs</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="32352925" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">zfs</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="монтирование-разделов-и-создание-структуры-папок">Монтирование разделов и создание структуры папок</h2>
+
+<p>Основой успешного восстановления является правильное монтирование. Сначала необходимо смонтировать корневой раздел установленной системы в точку монтирования, обычно используемую для таких целей — <code>/mnt</code>. Команда выглядит как <code>mount /dev/sdaX /mnt</code>, где <code>X</code> — номер вашего корневого раздел. Без этого шага доступ к системным файлам будет невозможен.</p>
+
+<p>Если в вашей конфигурации раздел <code>/boot</code> вынесен в отдельный раздел (что часто встречается в системах с шифрованием или сложной разметкой), его необходимо смонтировать внутрь уже примонтированного корня. Путь будет выглядеть как <code>/mnt/boot</code>. Аналогичные действия требуются для разделов <code>/home</code>, <code>/var</code> или других, если они отделены логически. Игнорирование этого шага может привести к тому, что при обновлении ядра новый образ запишется не туда, куда нужно.</p>
+
+<ul>
+<li>📁 Смонтируйте корневой раздел: <code>mount /dev/sda2 /mnt</code></li>
+<li>📁 Смонтируйте boot-раздел (если есть): <code>mount /dev/sda1 /mnt/boot</code></li>
+<li>📁 Смонтируйте домашние каталоги: <code>mount /dev/sda3 /mnt/home</code></li>
+<li>📁 Проверьте список смонтированных устройств через <code>df -h</code></li>
+</ul>
+
+<p>После монтирования основных разделов необходимо подготовить виртуальные файловые системы, которые позволяют запущенным в окружении <code>chroot</code> программам взаимодействовать с ядром Live-системы. Речь идет о псевдо-файловых системах <code>/dev</code>, <code>/proc</code> и <code>/sys</code>. Без них команды внутри <code>chroot</code> не смогут видеть устройства, процессы или системную информацию, что сделает восстановление невозможным.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка монтирования</h4><label class="check-item"><input type="checkbox"><span>Корневой раздел примонтирован в /mnt</span></label><label class="check-item"><input type="checkbox"><span>Раздел /boot примонтирован (если есть)</span></label><label class="check-item"><input type="checkbox"><span>Созданы папки /dev, /proc, /sys внутри /mnt</span></label><label class="check-item"><input type="checkbox"><span>Права доступа позволяют запись</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="настройка-окружения-chroot">Настройка окружения Chroot</h2>
+
+<p>Технически <code>chroot</code> меняет корневую директорию для текущего процесса и его потомков. Однако простого вызова команды недостаточно для полноценной работы. Необходимо скопировать критически важный файл <code>/etc/resolv.conf</code> из Live-системы в смонтированный раздел. Этот файл содержит адреса DNS-серверов, и без него команда <code>apt</code> или <code>yum</code> не сможет resolving доменные имена, что заблокирует возможность скачивания пакетов.</p>
+
+<p>Далее следует смонтировать системные интерфейсы. Для <code>/dev</code> используется команда <code>mount --bind</code>, которая делает доступными устройства хост-системы внутри нового окружения. Для <code>/proc</code> и <code>/sys</code> применяются команды <code>mount -t proc</code> и <code>mount -t sysfs</code> соответственно. Это обеспечивает доступ к информации о процессах и оборудовании, что необходимо для работы скриптов установки и конфигурации.</p>
+
+<pre><code>cp /etc/resolv.conf /mnt/etc/resolv.conf
+<p>mount --bind /dev /mnt/dev</p>
+<p>mount --bind /dev/pts /mnt/dev/pts</p>
+<p>mount -t proc /proc /mnt/proc</p>
+<p>mount -t sysfs /sys /mnt/sys</code></pre></p>
+
+<p>После выполнения всех подготовительных операций можно переходить непосредственно к смене корневого каталога. Команда <code>chroot /mnt /bin/bash</code> запустит новую оболочку Bash, где корнем будет являться ваша поврежденная система. В этот момент вы уже находитесь "внутри" системы и можете выполнять команды от имени суперпользователя <strong>root</strong> без префикса <code>sudo</code>.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Находясь внутри chroot, вы работаете с реальной файловой системой диска. Будьте осторожны при удалении файлов или перезаписи конфигураций, так как изменения применяются немедленно.</p>
+</blockquote>
+
+<h2 id="восстановление-загрузчика-и-ядра">Восстановление загрузчика и ядра</h2>
+
+<p>Находясь в окружении <code>chroot</code>, первым делом стоит проверить целостность установленных пакетов. В <em>Astra Linux</em>, основанной на Debian, это делается через <code>apt</code>. Если проблема была вызвана прерванным обновлением, команда <code>apt --fix-broken install</code> может автоматически исправить зависимости и доустановить необходимые компоненты. Это часто решает проблему, если файлы ядра были повреждены частично.</p>
+
+<p>Если же проблема кроется в загрузчике <strong>GRUB</strong>, его необходимо переустановить. Команда <code>grub-install</code> записывает загрузочные сектора на диск, а <code>update-grub</code> генерирует новый конфигурационный файл, сканируя доступные ядра и операционные системы. Важно указать правильное устройство (диск, а не раздел) при установке, например, <code>/dev/sda</code>, а не <code>/dev/sda1</code>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Описание действия</th>
+<th>Параметры</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>grub-install</code></td>
+<td>Установка загрузчика в MBR/GPT</td>
+<td><code>--target=i386-pc /dev/sda</code></td>
+</tr>
+<tr>
+<td><code>update-grub</code></td>
+<td>Генерация конфига grub.cfg</td>
+<td>Автоматический поиск ядер</td>
+</tr>
+<tr>
+<td><code>update-initramfs</code></td>
+<td>Пересборка образа начальной загрузки</td>
+<td><code>-u -k all</code></td>
+</tr>
+<tr>
+<td><code>apt install linux-image</code></td>
+<td>Переустановка ядра</td>
+<td>Версия ядра</td>
+</tr>
+</tbody>
+</table>
+
+<p>В случаях, когда поврежден сам файл <code>initramfs</code>, система не сможет пройти начальную стадию загрузки. Для исправления ситуации используется утилита <code>update-initramfs -u -k all</code>, которая пересобирает образы для всех установленных ядер. Это действие критически важно после замены оборудования или обновления драйверов дисковых контроллеров.</p>
+
+<details class="pb-accordion"><summary>Что делать, если grub-install возвращает ошибку?</summary><div class="pb-accordion-body"><p>Если команда grub-install завершается ошибкой, проверьте, смонтирован ли раздел /boot/efi (для UEFI систем) и попробуйте выполнить команду с флагом --recheck. Также убедитесь, что пакет grub-efi установлен в системе.</p></div></details>
+
+<h2 id="решение-проблем-с-правами-доступа-и-конфигурацией">Решение проблем с правами доступа и конфигурацией</h2>
+
+<p>Частой причиной неработоспособности системы являются неверные права доступа к критическим файлам. Например, файл <code>/etc/shadow</code> или ключи SSH должны иметь строго определенные атрибуты. Внутри <code>chroot</code> можно проверить и исправить их, используя команды <code>chmod</code> и <code>chown</code>. Ошибки в правах доступа могут блокировать вход пользователей или работу сетевых служб.</p>
+
+<p>Также стоит проверить файл <code>/etc/fstab</code>. В нем прописаны правила монтирования разделов при старте. Если UUID дисков изменились или в синтаксисе допущена ошибка, система зависнет на этапе загрузки. Сравните UUID в этом файле с реальными значениями, полученными через команду <code>blkid</code>. Несоответствие даже одного символа приведет к падению системы в аварийный режим.</p>
+
+<p>Если вы меняли конфигурационные файлы вручную, например, <code>/etc/network/interfaces</code> или настройки брандмауэра, убедитесь, что синтаксис корректен. В <em>Astra Linux</em> используются стандартные механизмы <strong>iptables</strong> или <strong>nftables</strong>, и ошибка в правилах может полностью изолировать сервер от сети сразу после перезагрузки.</p>
+
+<ul>
+<li>🔒 Проверьте права на <code>/etc/shadow</code>: должно быть <code>640</code></li>
+<li>🔒 Убедитесь, что владелец root:root у системных конфигов</li>
+<li>🔒 Проверьте синтаксис <code>/etc/fstab</code> командой <code>mount -a</code></li>
+<li>🔒 Верифицируйте настройки сети перед выходом</li>
+</ul>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Перед редактированием системных файлов внутри chroot создайте их резервные копии с расширением .bak. Это позволит быстро откатить изменения, если правка приведет к новым ошибкам.</p></aside>
+
+<h2 id="завершение-работы-и-проверка-результата">Завершение работы и проверка результата</h2>
+
+<p>После выполнения всех ремонтных операций необходимо корректно выйти из окружения <code>chroot</code>. Для этого введите команду <code>exit</code>. Важно не просто закрыть терминал, а именно завершить сессию <code>chroot</code>, чтобы разблокировать файлы и освободить ресурсы. Затем следует размонтировать все ранее подключенные файловые системы в порядке, обратном их подключению.</p>
+
+<p>Порядок размонтирования важен: сначала размонтируются вложенные точки (<code>/proc</code>, <code>/sys</code>, <code>/dev</code>, <code>/boot</code>), и только в самом конце — корневой раздел <code>/mnt</code>. Использование команды <code>umount</code> без аргументов или в неправильной последовательности может вызвать ошибки "device is busy". Если система сообщает о занятости, проверьте, не запущен ли какой-то процесс в фоновом режиме внутри смонтированного каталога.</p>
+
+<pre><code>umount /mnt/proc
+<p>umount /mnt/sys</p>
+<p>umount /mnt/dev</p>
+<p>umount /mnt/boot</p>
+<p>umount /mnt</code></pre></p>
+
+<p>Финальным этапом является перезагрузка компьютера и извлечение Live-носителя. Если все шаги были выполнены верно, система должна загрузиться с жесткого диска, используя восстановленный загрузчик и ядро. Monitorьте процесс загрузки на наличие ошибок, которые могут указать на оставшиеся проблемы в конфигурации.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не извлекайте Live-флешку до полной перезагрузки системы. Если вы вынете носитель до того, как BIOS/UEFI переключится на жесткий диск, загрузка может прерваться.</p>
+</blockquote>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Успешное восстановление зависит от точного соблюдения порядка монтирования виртуальных файловых систем (/dev, /proc, /sys) перед входом в chroot.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли использовать chroot для восстановления пароля root в Astra Linux?</summary>
+<p>Да, находясь внутри chroot, вы имеете полный доступ к системе. Вы можете использовать команду <code>passwd root</code> для смены пароля суперпользователя. Изменения сразу запишутся в файл <code>/etc/shadow</code> на жестком диске.</p>
+</details>
+
+<details>
+<summary>Что делать, если команда chroot выдает ошибку "no such file or directory"?</summary>
+<p>Эта ошибка часто возникает, если архитектура Live-системы не совпадает с архитектурой установленной системы (например, 32-битная Live против 64-битной системы) или если не скопирован файл <code>/etc/resolv.conf</code> и отсутствуют необходимые библиотеки в Live-окружении.</p>
+</details>
+
+<details>
+<summary>Нужно ли подключать интернет для работы в chroot?</summary>
+<p>Для базовых операций редактирования файлов интернет не нужен. Однако, если требуется переустановить пакеты, обновить ядро или загрузить недостающие драйверы через <code>apt</code>, то копия файла <code>/etc/resolv.conf</code> и наличие сетевого подключения в Live-сессии обязательны.</p>
+</details>
+
+<details>
+<summary>Как восстановить систему, если диск зашифрован LUKS?</summary>
+<p>В этом случае перед монтированием разделов необходимо расшифровать диск. Используйте команду <code>cryptsetup luksOpen /dev/sdaX mycrypt</code>, затем смонтируйте открывшийся устройство-маппер (<code>/dev/mapper/mycrypt</code>) как корневой раздел. Только после этого можно выполнять стандартные процедуры chroot.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/h/hw/hw-decoder-forse.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить аппаратный декодер: принудительный запуск hw decoder</span>
+                <span class="pb-related-desc">Техническое руководство по активации hw decoder force. Настройка аппаратного ускорения, устранение л</span>
+            </a><a href="/articles/v/vz/vzlom-google-password-nask.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление доступа к Google: сброс и защита аккаунта</span>
+                <span class="pb-related-desc">Инструкция по восстановлению пароля Google, настройке 2FA и устранению ошибок входа. Технические мет</span>
+            </a><a href="/articles/p/pi/pishut-peredacha-zakodirovana-ne-viaccess.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка Viaccess: решение проблемы кодировки на спутниковых ресиверах</span>
+                <span class="pb-related-desc">Подробный разбор ошибки Viaccess. Почему ресивер не видит кодировку, как обновить софт, проверить см</span>
+            </a><a href="/articles/r/re/recovery-logs-motorola.html" class="pb-related-card">
+                <span class="pb-related-title">Motorola Recovery Logs: анализ и сброс лога загрузки</span>
+                <span class="pb-related-desc">Техническое руководство по чтению recovery.log на Motorola. Как анализировать ошибки, использовать A</span>
+            </a><a href="/articles/f/fa/factory-reset-kivi.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать Factory Reset Kivi: полный сброс настроек</span>
+                <span class="pb-related-desc">Подробная инструкция по выполнению Factory Reset Kivi. Сброс настроек через меню, Recovery и пультом</span>
+            </a><a href="/articles/o/on/oneodio-studio-wireless-c-y80b-reset.html" class="pb-related-card">
+                <span class="pb-related-title">OneOdio Studio Wireless C Y80B: полный сброс и перезагрузка</span>
+                <span class="pb-related-desc">Инструкция по сбросу наушников OneOdio Studio Wireless C Y80B. Решение проблем с подключением, звуко</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

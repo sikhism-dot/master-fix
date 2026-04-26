@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Настройки трассировки в меню разработчика: что включить — Мастер Фикс</title>
+    <meta name="description" content="Какие пункты трассировки системы отметить в меню разработчика Android для отладки. Полный разбор функций GPU, Surface и View.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/v-/v-menyu-razrabotchika-smartfon-trassirovka-sistemy-kakie-otmetit-galochkoj-kategorii.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Настройки трассировки в меню разработчика: что включить">
+    <meta property="og:description" content="Какие пункты трассировки системы отметить в меню разработчика Android для отладки. Полный разбор функций GPU, Surface и View.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Настройки трассировки в меню разработчика: что включить</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#основы-работы-графического-конвейера-android">Основы работы графического конвейера Android</a></li><li><a href="#анализ-перерисовки-gpu-overdraw">Анализ перерисовки: GPU Overdraw</a></li><li><a href="#визуализация-обновлений-поверхности-и-слоев">Визуализация обновлений поверхности и слоев</a></li><li><a href="#профилирование-рендеринга-и-частота-кадров">Профилирование рендеринга и частота кадров</a></li><li><a href="#трассировка-системных-событий-и-логов">Трассировка системных событий и логов</a></li><li><a href="#практическое-применение-и-чек-лист-настроек">Практическое применение и чек-лист настроек</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/e/es/est-li-predokhranitel-na-televizore-samsung.html">Предохранитель в телевизоре Samsung: где находится и как заменить</a></li><li><a href="/articles/k/ka/kak-ustanovit-iptv-na-android-pristavku-96-maks.html">Установка IPTV на приставку 96 Max: полная инструкция</a></li><li><a href="/articles/k/ka/kak-smotret-yutub-na-televizore-rostelekom.html">Как смотреть YouTube на телевизоре Ростелеком: полная инструкция</a></li><li><a href="/articles/i/il/ilook-tv-iptv-gde-oplatit.html">Ilook TV IPTV: где оплатить подписку и продлить тариф</a></li><li><a href="/articles/k/ka/kak-uvelichit-vnutrennyuyu-pamyat-na-televizore-filips.html">Как увеличить память на телевизоре Philips: полные методы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Трассировка системы в меню разработчика: какие опции включать</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#основы-работы-графического-конвейера-android">Основы работы графического конвейера Android</a></li><li><a href="#анализ-перерисовки-gpu-overdraw">Анализ перерисовки: GPU Overdraw</a></li><li><a href="#визуализация-обновлений-поверхности-и-слоев">Визуализация обновлений поверхности и слоев</a></li><li><a href="#профилирование-рендеринга-и-частота-кадров">Профилирование рендеринга и частота кадров</a></li><li><a href="#трассировка-системных-событий-и-логов">Трассировка системных событий и логов</a></li><li><a href="#практическое-применение-и-чек-лист-настроек">Практическое применение и чек-лист настроек</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Включение режима разработчика на <em>Android</em>-устройствах часто становится необходимым шагом для продвинутых пользователей, желающих глубже понять работу своего гаджета или оптимизировать его производительность. Среди множества скрытых параметров особое место занимает раздел, связанный с аппаратным ускорением и отладкой графического интерфейса. Именно здесь находятся инструменты, позволяющие визуализировать нагрузку на процессор и видеокарту в реальном времени.</p>
+<p>Многие пользователи, попадая в это меню, теряются в обилии технических терминов, таких как <strong>GPU Overdraw</strong> или <strong>Show surface updates</strong>. Неправильная интерпретация этих настроек может привести к ложному впечатлению о «тормозах» системы, хотя на самом деле устройство работает штатно. Разберемся, какие галочки действительно полезны для диагностики, а какие лучше оставить без изменений, чтобы не перегружать интерфейс лишней информацией.</p>
+<p>Цель активации этих функций — не просто ради любопытства увидеть цветные квадраты на экране, а получить конкретные данные о том, как приложения рендерят контент. Это особенно актуально для владельцев смартфонов с высокой частотой обновления экрана или тех, кто сталкивается с необъяснимым нагревом корпуса при выполнении простых задач.</p>
+
+<h2 id="основы-работы-графического-конвейера-android">Основы работы графического конвейера Android</h2>
+<p>Прежде чем менять какие-либо настройки, необходимо понимать базовый принцип отрисовки изображения на экране смартфона. Операционная система <em>Android</em> использует сложный механизм composiciónции окон, где каждый элемент интерфейса — от кнопки до анимации — является отдельным слоем. <strong>Графический процессор</strong> (GPU) обрабатывает эти слои, накладывая их друг на друга с огромной скоростью.</p>
+<p>Когда вы включаете инструменты трассировки, вы фактически заставляете систему рисовать поверх полезного изображения дополнительную диагностическую информацию. Это может быть цветовая кодировка частоты кадров или подсветка областей, которые перерисовываются чаще необходимого. Важно осознавать, что сама по себе активация этих режимов потребляет дополнительные ресурсы батареи.</p>
+<blockquote>⚠️ Внимание: Постоянное включение режимов отладки GPU может привести к ускоренному разряду аккумулятора и незначительному снижению общей производительности интерфейса из-за накладываемых оверлеев.</blockquote>
+<p>Существует несколько ключевых типов трассировки, доступных в меню разработчика. Одни отвечают за обновление поверхностей, другие показывают глубину цвета, а третьи визуализируют загрузку вычислительных ядер. Понимание разницы между <strong>Profile HWUI rendering</strong> и <strong>Show GPU view updates</strong> поможет вам выбрать именно те инструменты, которые нужны для решения вашей конкретной задачи.</p>
+
+<h2 id="анализ-перерисовки-gpu-overdraw">Анализ перерисовки: GPU Overdraw</h2>
+<p>Одной из самых полезных функций для оценки оптимизации интерфейса является режим <strong>Debug GPU Overdraw</strong>. Этот инструмент показывает, сколько раз один и тот же пиксель был отрисован за один кадр. В идеальном сценарии каждый пиксель должен рисоваться только один раз, но на практике часто встречаются ситуации, когда фон перекрывается несколькими полупрозрачными слоями.</p>
+<p>При активации этой опции экран смартфона окрасится в различные цвета, каждый из которых имеет свое значение. Синий цвет указывает на то, что пиксель был нарисован дважды, зеленый — трижды, розовый — четыре раза и более. Красный цвет сигнализирует о критической перерисовке, что часто встречается в poorly оптимизированных приложениях с тяжелыми фонами.</p>
+<details class="pb-accordion"><summary>Почему возникает Overdraw?</summary><div class="pb-accordion-body"><p>Перерисовка часто возникает из-за использования полупрозрачных фонов в списках, наложения декоративных элементов поверх контента или неэффективного использования виджетов в лаунчерах.</p></div></details>
+<p>Использование этого режима позволяет быстро выявить приложения, которые некорректно используют ресурсы графического ускорителя. Если вы видите, что весь экран залит розовым или красным цветом при открытии определенной программы, это прямой сигнал о плохой оптимизации кода разработчиками данного софта.</p>
+<ul>
+<li>🔵 <strong>Синий:</strong> Пиксель отрисован 2 раза (допустимый уровень).</li>
+<li>🟢 <strong>Зеленый:</strong> Пиксель отрисов 3 раза (требует внимания).</li>
+<li>🔴 <strong>Красный:</strong> Пиксель отрисован 4+ раза (критическая нагрузка).</li>
+<li>⚪ <strong>Серый:</strong> Пиксель не отрисовывался или является частью фона без изменений.</li>
+</ul>
+<p>Стоит отметить, что наличие зон перерисовки не всегда означает, что устройство будет работать медленно. Современные чипсеты <em>Snapdragon</em> или <em>MediaTek</em> легко справляются с умеренным овердраем. Однако на бюджетных моделях с слабым GPU красный цвет в этом режиме может коррелировать с заметными микро-фризами при прокрутке ленты.</p>
+
+<h2 id="визуализация-обновлений-поверхности-и-слоев">Визуализация обновлений поверхности и слоев</h2>
+<p>Другой важной категорией настроек являются параметры, отвечающие за отображение границ и обновлений поверхностей. Опция <strong>Show surface updates</strong> заставляет экран мигать каждый раз, когда какая-либо часть интерфейса перерисовывается. Это мощный инструмент для определения того, насколько часто приложение запрашивает обновление экрана без реальной необходимости.</p>
+<p>В то же время, функция <strong>Show layout bounds</strong> отображает границы всех видимых элементов интерфейса. Вы увидите синие и розовые линии, очерчивающие кнопки, текстовые поля и изображения. Это помогает понять, как именно приложение структурирует свое содержимое и где могут скрываться лишние отступы или невидимые блоки, занимающие место.</p>
+<pre><code>adb shell dumpsys SurfaceFlinger --latency</code></pre>
+<p>Использование этих инструментов в связке дает полную картину рендеринга. Например, если при статичном изображении вы видите постоянные мигания (surface updates), значит, приложение выполняет фоновую анимацию или опрос статуса, что впустую расходует энергию.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте режим Show layout bounds при разработке собственных интерфейсов или верстке сайтов, чтобы убедиться в правильности позиционирования элементов на разных разрешениях экрана.</p></aside>
+<p>Особое внимание стоит уделить опции <strong>Force 4x MSAA</strong> (Multisample Anti-Aliasing). Она заставляет GPU сглаживать графику в играх и некоторых приложениях, используя четырехкратную выборку. Хотя это улучшает качество картинки, устраняя «лесенки» на краях объектов, нагрузка на видеоядро возрастает в разы, что приводит к быстрому нагреву.</p>
+
+<h2 id="профилирование-рендеринга-и-частота-кадров">Профилирование рендеринга и частота кадров</h2>
+<p>Для количественной оценки плавности работы интерфейса предназначена функция <strong>Profile HWUI rendering</strong>. При ее включении на экране появляется график в виде столбиков, высота которых показывает время, затраченное на отрисовку одного кадра. Горизонтальная линия на графике обозначает целевое время для достижения желаемой частоты кадров, обычно 16.6 мс для 60 Гц.</p>
+<p>Если столбики графика пересекают эту линию, это означает, что устройство не успевает отрисовать кадр вовремя, и происходит пропуск кадра (frame drop), который визуально воспринимается как рывок или задержка. Анализ формы графика позволяет определить, является ли лаг следствием сложной анимации или тяжелой операции ввода-вывода.</p>
+<table>
+<thead>
+<tr>
+<th>Параметр графика</th>
+<th>Значение</th>
+<th>Влияние на</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Высота столбца < 16мс</td>
+<td>Идеальная работа</td>
+<td>Плавная анимация, 60 FPS</td>
+</tr>
+<tr>
+<td>Высота столбца > 16мс</td>
+<td>Пропуск кадра</td>
+<td>Заметный рывок, микро-фриз</td>
+</tr>
+<tr>
+<td>Постоянный высокий график</td>
+<td>Перегрузка GPU/CPU</td>
+<p>td>Сильное подтормаживание интерфейса</td></p>
+</tr>
+<tr>
+<td>Редкие пики</td>
+<td>Всплески нагрузки</td>
+<td>Единичные задержки при касании</td>
+</tr>
+</tbody>
+</table>
+<p>Интерпретация данных графика требует понимания того, что кратковременные скачки выше линии допустимы и часто незаметны глазу. Проблемой является только систематическое превышение порога или очень высокие пики, длящиеся более нескольких кадров подряд. В таких случаях имеет смысл закрыть фоновые приложения или снизить качество графики в играх.</p>
+<div class="pb-poll" id="poll-02709b3b"><div class="pb-poll-question">📊 Как часто вы пользуетесь меню разработчика?</div><div class="pb-poll-option" data-poll="02709b3b" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Ежедневно для отладки</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="02709b3b" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Редко, только для USB-отладки</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="02709b3b" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Никогда не включаю</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="02709b3b" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Только для проверки FPS в играх</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="трассировка-системных-событий-и-логов">Трассировка системных событий и логов</h2>
+<p>Помимо графической составляющей, меню разработчика позволяет включать трассировку системных событий, которые не видны на экране, но фиксируются в логах. Это особенно полезно для разработчиков, отлаживающих работу драйверов или системных сервисов. Опции вроде <strong>Strict mode</strong> могут визуально подсвечивать операции, выполняемые в главном потоке, что является плохой практикой программирования.</p>
+<p>Для обычного пользователя наиболее интересным может оказаться возможность ведения логов через <strong>adb logcat</strong>, активность которого также регулируется скрытыми настройками. Запись логов позволяет восстановить хронологию событий, предшествовавших сбою приложения или неожиданной перезагрузке устройства.</p>
+<blockquote>⚠️ Внимание: Включение подробного логирования всех системных событий может быстро заполнить внутреннюю память устройства, поэтому следите за свободным пространством.</blockquote>
+<p>Существует также возможность симуляции различных сценариев работы сети или местоположения, что используется тестировщиками. Например, можно искусственно создать ситуацию плохого соединения или «заморозить» координаты GPS. Эти функции находятся в том же разделе и могут быть ошибочно активированы, что приведет к странному поведению навигационных карт или мессенджеров.</p>
+
+<h2 id="практическое-применение-и-чек-лист-настроек">Практическое применение и чек-лист настроек</h2>
+<p>Итак, какие именно галочки стоит отметить, если вы хотите провести диагностику своего смартфона? Не стоит включать все сразу, так как это превратит экран в кашу из цветных линий и мигающих блоков. Выберите только те инструменты, которые соответствуют вашей текущей цели: проверка игр, анализ лагов интерфейса или поиск «прожорливых» приложений.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Оптимальный набор для быстрой диагностики</h4><label class="check-item"><input type="checkbox"><span>Включить Profile HWUI rendering</span></label><label class="check-item"><input type="checkbox"><span>Активировать Debug GPU Overdraw</span></label><label class="check-item"><input type="checkbox"><span>Проверить Show layout bounds</span></label><label class="check-item"><input type="checkbox"><span>Оставить Force 4x MSAA выключенным</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+<p>Для повседневного использования, если вы не занимаетесь разработкой, все эти функции должны быть отключены. Они не ускоряют работу смартфона, а лишь предоставляют инструменты для наблюдения. После завершения анализа обязательно верните все значения в состояние «Отключено» или «Выкл».</p>
+<p>Если вы заметили, что после включения какой-либо опции устройство начало вести себя нестабильно, попробуйте выполнить сброс настроек меню разработчика. Обычно кнопка для этого находится в самом верху или в меню (три точки) данного раздела настроек. Это вернет все экспериментальные параметры к заводским значениям.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Главный принцип использования трассировки — включать только одну диагностическую функцию за раз, чтобы точно идентифицировать источник проблемы без визуального шума.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+<details>
+<summary>Безопасно ли включать трассировку GPU на постоянную основу?</summary>
+<p>Нет, это не рекомендуется. Постоянная работа инструментов отладки создает дополнительную нагрузку на процессор и видеокарту, что приводит к повышенному энергопотреблению и нагреву. Используйте эти функции только временно для диагностики.</p>
+</details>
+<details>
+<summary>Почему экран мигает разными цветами после включения настроек?</summary>
+<p>Это нормальное поведение при активации режимов вроде <strong>GPU Overdraw</strong> или <strong>Show surface updates</strong>. Цвета и мигания — это визуальная информация о том, как система обрабатывает изображение. Чтобы убрать их, нужно отключить соответствующие пункты в меню.</p>
+</details>
+<details>
+<summary>Влияет ли включение трассировки на скорость работы интернета?</summary>
+<p>Сама по себе трассировка графического интерфейса не влияет на скорость интернет-соединения. Однако если вы включили симуляцию сетевых условий (Network throttling) в том же меню разработчика, то скорость может быть искусственно ограничена для тестирования.</p>
+</details>
+<details>
+<summary>Как сбросить все настройки в меню разработчика?</summary>
+<p>В верхней части экрана меню «Для разработчиков» обычно есть кнопка сброса (иконка круговой стрелки или пункт в меню из трех точек). Нажатие на нее вернет все параметры, включая трассировку, к заводским значениям.</p>
+</details>
+<details>
+<summary>Можно ли настройки увеличить FPS в играх?</summary>
+<p>Нет, эти настройки предназначены для отладки, а не для разгона. Единственная опция, которая может изменить графику — <strong>Force 4x MSAA</strong>, но она скорее снизит FPS из-за возросшей нагрузки, хотя картинка станет глаже.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/e/es/est-li-predokhranitel-na-televizore-samsung.html" class="pb-related-card">
+                <span class="pb-related-title">Предохранитель в телевизоре Samsung: где находится и как заменить</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску и замене предохранителя в телевизорах Samsung. Схема расположения, ди</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-iptv-na-android-pristavku-96-maks.html" class="pb-related-card">
+                <span class="pb-related-title">Установка IPTV на приставку 96 Max: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке IPTV на Android TV box 96 Max. Выбор приложений, загрузка плейлис</span>
+            </a><a href="/articles/k/ka/kak-smotret-yutub-na-televizore-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть YouTube на телевизоре Ростелеком: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по установке YouTube на ТВ приставки Ростелеком. Решаем проблемы с запуском, о</span>
+            </a><a href="/articles/i/il/ilook-tv-iptv-gde-oplatit.html" class="pb-related-card">
+                <span class="pb-related-title">Ilook TV IPTV: где оплатить подписку и продлить тариф</span>
+                <span class="pb-related-desc">Полный гид по оплате Ilook TV. Узнайте, где найти код активации, как продлить подписку через приложе</span>
+            </a><a href="/articles/k/ka/kak-uvelichit-vnutrennyuyu-pamyat-na-televizore-filips.html" class="pb-related-card">
+                <span class="pb-related-title">Как увеличить память на телевизоре Philips: полные методы</span>
+                <span class="pb-related-desc">Подробная инструкция по расширению внутренней памяти Philips Android TV. Установка флешек, очистка к</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-ukazatel-na-televizore-lg.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить указатель на LG TV: полное руководство</span>
+                <span class="pb-related-desc">Инструкция по отключению курсора-указателя на телевизорах LG. Настройка Magic Remote, отключение фун</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Bootice v1.3.3: как починить загрузчик Windows и BCD — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по восстановлению загрузчика с помощью Bootice v1.3.3. Пошаговая настройка BCD Edit и MBR для запуска Windows.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bo/bootice-v133-kak-vylechit-zagruzshchika.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Bootice v1.3.3: как починить загрузчик Windows и BCD">
+    <meta property="og:description" content="Подробная инструкция по восстановлению загрузчика с помощью Bootice v1.3.3. Пошаговая настройка BCD Edit и MBR для запуска Windows.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Bootice v1.3.3: как починить загрузчик Windows и BCD</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-к-работе-с-загрузочными-записями">Подготовка к работе с загрузочными записями</a></li><li><a href="#диагностика-состояния-mbr-и-pbr">Диагностика состояния MBR и PBR</a></li><li><a href="#восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</a></li><li><a href="#настройка-partition-boot-record-pbr">Настройка Partition Boot Record (PBR)</a></li><li><a href="#редактирование-конфигурации-bcd-edit">Редактирование конфигурации BCD Edit</a></li><li><a href="#дополнительные-функции-и-работа-с-vhd">Дополнительные функции и работа с VHD</a></li><li><a href="#частые-ошибки-и-методы-их-устранения">Частые ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/k-/k-v-terminale-statsionarnom-besprovodnom-wp-658-nastroit-aon.html">Настройка АОН на стационарном терминале WP 658</a></li><li><a href="/articles/k/ka/kak-v-programme-zepp-life-pomenyat-yazyk.html">Как сменить язык в Zepp Life: полная инструкция</a></li><li><a href="/articles/l/la/lazy-media-deluxe-nastrojka-vlc.html">Настройка Lazy Media Deluxe и VLC: Полное руководство</a></li><li><a href="/articles/k/ka/kak-otklyuchit-bezopasnyj-rezhim-tele2.html">Как отключить безопасный режим на Tele2: полная инструкция</a></li><li><a href="/articles/k/ka/kak-sdelat-chto-by-drugoj-chelovek-ne-mog-smotret-premr-tnt.html">Как скрыть ТНТ Премьер от других: настройка доступа</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Bootice v1.3.3: Как вылечить загрузчик и восстановить запуск Windows</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-к-работе-с-загрузочными-записями">Подготовка к работе с загрузочными записями</a></li><li><a href="#диагностика-состояния-mbr-и-pbr">Диагностика состояния MBR и PBR</a></li><li><a href="#восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</a></li><li><a href="#настройка-partition-boot-record-pbr">Настройка Partition Boot Record (PBR)</a></li><li><a href="#редактирование-конфигурации-bcd-edit">Редактирование конфигурации BCD Edit</a></li><li><a href="#дополнительные-функции-и-работа-с-vhd">Дополнительные функции и работа с VHD</a></li><li><a href="#частые-ошибки-и-методы-их-устранения">Частые ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда компьютер отказывается загружать операционную систему, знакома многим пользователям. Вместо привычного рабочего стола вы видите черный экран с пугающим сообщением об отсутствии загрузочного устройства или повреждении системных файлов. Часто проблема кроется в поврежденном <strong>загрузочном секторе</strong> или неверных записях в <em>Boot Configuration Data</em>. Для решения таких задач не всегда требуется переустановка системы, достаточно использовать специализированный инструмент.</p>
+<p>Утилита <em>Bootice</em> версии 1.3.3 зарекомендовала себя как надежное средство для работы с загрузчиками в среде <strong>Windows</strong>. Этот компактный инструмент позволяет манипулировать загрузочными записями <strong>MBR</strong> и <strong>PBR</strong>, а также редактировать конфигурацию загрузки без риска повредить данные на диске. Мы рассмотрим процесс восстановления работоспособности системы шаг за шагом.</p>
+<p>Восстановление доступа к операционной системе — процесс, требующий внимательности, но вполне доступный даже для неопытных пользователей. Используя функционал <em>Bootice</em>, можно исправить ошибки, возникшие после установки второй ОС, сбоя файловой системы или вирусной атаки. Главное — четко следовать алгоритму действий и понимать, какие именно сектора диска подвергаются изменению.</p>
+
+<h2 id="подготовка-к-работе-с-загрузочными-записями">Подготовка к работе с загрузочными записями</h2>
+<p>Перед началом любых манипуляций с загрузочными секторами необходимо убедиться, что у вас есть доступ к среде, где можно запустить исполняемый файл. Обычно это требует создания загрузочной <strong>флешки</strong> с портативной версией Windows или использования LiveCD. Запустите <em>Bootice</em> от имени администратора, чтобы получить полные права на запись в системные области.</p>
+<p>Интерфейс программы может показаться аскетичным, но он содержит все необходимые инструменты. На главной вкладке <code>Physical Disk</code> отображаются все подключенные накопители. Важно не перепутать системный диск с внешним носителем, иначе можно повредить данные на неправильном устройстве. Внимательно изучите размеры и метки томов.</p>
+<blockquote>⚠️ Внимание: Все действия по записи MBR и PBR являются необратимыми. Убедитесь, что выбрали именно тот физический диск, на котором установлена операционная система, подлежащая восстановлению.</blockquote>
+<p>Для безопасной работы рекомендуется закрыть все фоновые приложения и антивирусные программы, которые могут блокировать доступ к низкоуровневым функциям диска. Если вы работаете из-под запущенной системы, убедитесь, что диск не используется интенсивно другими процессами. Это минимизирует риск возникновения конфликтов при записи.</p>
+
+<h2 id="диагностика-состояния-mbr-и-pbr">Диагностика состояния MBR и PBR</h2>
+<p>Первым шагом в процессе лечения является анализ текущего состояния загрузочных записей. В разделе <code>Physical Disk</code> выберите нужный диск из выпадающего списка и нажмите кнопку <strong>MBR</strong>. Откроется окно, где можно просмотреть код загрузчика и структуру разделов. Здесь отображается информация о том, какой именно код записан в первом секторе.</p>
+<p>Аналогичная процедура проводится для <strong>PBR</strong> (Partition Boot Record). Перейдите на вкладку <code>Partition Boot Record</code> после выбора диска. Это позволит увидеть состояние загрузочной записи конкретного раздела, где resides операционная система. Часто именно здесь кроются ошибки после неудачного форматирования или клонирования диска.</p>
+<ul>
+ <li>🔍 Проверьте, активен ли раздел с установленной Windows в таблице разделов.</li>
+ <li>💾 Убедитесь, что файловая система раздела читается корректно без ошибок CRC.</li>
+ <li>📂 Сверьте метку тома и букву диска с теми, что отображаются в «Моем компьютере».</li>
+</ul>
+<p>Если при попытке открыть раздел или просмотреть PBR возникают ошибки доступа, это может свидетельствовать о повреждении файловой системы или наличии битых секторов. В таком случае сначала имеет смысл провести проверку диска стандартными средствами <strong>chkdsk</strong>. Только после устранения логических ошибок можно приступать к перезаписи загрузчиков.</p>
+
+<h2 id="восстановление-master-boot-record-mbr">Восстановление Master Boot Record (MBR)</h2>
+<p>Процесс восстановления начинается с главной загрузочной записи. В окне управления MBR нажмите кнопку <strong>Install/Upgrade</strong>. Перед вами откроется список поддерживаемых загрузчиков. Для большинства современных систем, включая Windows 7, 8, 10 и 11, оптимальным выбором является <em>Windows NT 6.x MBR</em>. Этот код обеспечивает корректную передачу управления загрузчику операционной системы.</p>
+<p>После выбора типа загрузчика система запросит подтверждение операции. Нажмите <code>OK</code>, а затем подтвердите действие во втором диалоговом окне. Процесс занимает доли секунды, так как записывается всего 512 байт данных. Однако именно эти байты критически важны для старта компьютера.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка перед записью MBR</h4><label class="check-item"><input type="checkbox"><span>Выбран правильный физический диск</span></label><label class="check-item"><input type="checkbox"><span>Раздел с Windows помечен как активный</span></label><label class="check-item"><input type="checkbox"><span>Сделана резервная копия MBR</span></label><label class="check-item"><input type="checkbox"><span>Выбран тип Windows NT 6.x MBR</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+<p>Стоит отметить, что установка <strong>Windows NT 6.x MBR</strong> заменяет только код загрузчика, но не трогает таблицу разделов. Это безопасная операция, которая часто решает проблемы с сообщением"Missing operating system" или"Invalid partition table". Если же проблема была в самой таблице разделов, потребуется более глубокое вмешательство.</p>
+<blockquote>⚠️ Внимание: При установке MBR от более старой версии Windows (например, NT 5.x) вы можете потерять возможность загрузки современных систем, использующих сложную структуру BCD.</blockquote>
+<p>После успешной записи программа выдаст сообщение об успехе. Не спешите сразу перезагружаться. Убедитесь, что код записался корректно, повторно открыв окно просмотра MBR. Теперь можно перейти к следующему этапу — работе с загрузочной записью раздела.</p>
+
+<h2 id="настройка-partition-boot-record-pbr">Настройка Partition Boot Record (PBR)</h2>
+<p>Следующим важным этапом является работа с PBR активного раздела. В главном окне программы перейдите на вкладку <code>Partition Boot Record</code> и нажмите кнопку <strong>PBR</strong>. Здесь также появится список доступных загрузчиков. Для восстановления стандартного механизма загрузки Windows необходимо выбрать пункт <em>Windows NT 6.x PBR</em>.</p>
+<p>Этот тип загрузчика предназначен для файловых систем NTFS и совместим с механизмом <strong>Bootmgr</strong>. После выбора типа нажмите <code>Install/Upgrade</code> и подтвердите операцию двойным кликом по кнопке подтверждения. Как и в случае с MBR, процесс происходит мгновенно.</p>
+<p>Важно понимать разницу: MBR находится в самом начале диска и указывает, какой раздел активен, а PBR находится в начале раздела и содержит код для запуска конкретного загрузчика ОС. Если один из этих элементов поврежден, цепочка загрузки прерывается.</p>
+<details class="pb-accordion"><summary>Что делать, если PBR не устанавливается?</summary><div class="pb-accordion-body"><p>Если программа сообщает об ошибке при записи PBR, проверьте, не заблокирован ли диск другими процессами. Также убедитесь, что раздел действительно отформатирован в NTFS, так как этот тип PBR не работает с FAT32 или exFAT без дополнительных настроек. В редких случаях может потребоваться сначала отформатировать раздел, сохранив данные.</</p></div></details>
+<p>После успешной установки PBR структура загрузки на уровне секторов диска считается восстановленной. Однако для полноценного запуска Windows необходимо, чтобы правильно работала конфигурация BCD, которая хранится в файловой системе.</p>
+
+<h2 id="редактирование-конфигурации-bcd-edit">Редактирование конфигурации BCD Edit</h2>
+<p>Для управления списком загружаемых операционных систем в <em>Bootice</em> предусмотрен мощный инструмент <strong>BCD Edit</strong>. Перейдите на соответствующую вкладку в главном меню. Здесь отображается древовидная структура всех загрузочных записей. Вы можете видеть, какие ОС добавлены в меню загрузки и какие параметры им назначены.</p>
+<p>Если после восстановления MBR и PBR система не загружается автоматически, возможно, в BCD отсутствуют необходимые записи или они ведут на неверный путь. Вы можете добавить новую запись, нажав кнопку <code>Add</code>, и выбрать тип загрузчика (обычно <em>Windows Boot Manager</em>). Затем укажите путь к файлу <code>\Windows\system32\winload.efi</code> или <code>winload.exe</code>.</p>
+<table>
+ <thead>
+ <tr>
+ <th>Параметр</th>
+ <th>Описание</th>
+ <th>Типичное значение</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Device</td>
+ <td>Указывает раздел, где находится ОС</td>
+ <td>partition=C: или uuid</td>
+ </tr>
+ <tr>
+ <td>Path</td>
+ <td>Путь к загрузчику ядра</td>
+ <td>\Windows\system32\winload.exe</td>
+ </tr>
+ <tr>
+ <td>Locale</td>
+ <td>Язык интерфейса загрузчика</td>
+ <td>ru-RU или en-US</td>
+ </tr>
+ </tbody>
+</table>
+<p>Использование <mark>BCD Edit в Bootice</mark> позволяет гибко настраивать таймауты, порядок загрузки и параметры отладки. Это особенно полезно при наличии мультизагрузочных конфигураций, где стандартные средства Windows могут работать некорректно. Будьте осторожны при удалении записей: удаление активной записи сделает систему незагружаемой.</p>
+<p>Для применения изменений не требуется перезагрузка, они вступают в силу немедленно при следующем старте системы. Однако рекомендуется сохранить текущую конфигурацию в файл резервной копии, нажав кнопку <code>Save</code>. Это позволит быстро откатить изменения в случае ошибки.</p>
+
+<h2 id="дополнительные-функции-и-работа-с-vhd">Дополнительные функции и работа с VHD</h2>
+<p>Утилита <em>Bootice</em> версии 1.3.3 также поддерживает работу с виртуальными дисками <strong>VHD</strong>. Это позволяет монтировать образы виртуальных машин как обычные разделы и управлять их загрузкой. Функция <code>VHD Management</code> дает возможность создавать, прикреплять и откреплять виртуальные диски без использования стороннего софта.</p>
+<p>Кроме того, в арсенале программы есть инструменты для работы с файловой системой, такие как переименование разделов и изменение их букв. Эти функции могут пригодиться, если после сбоя буквы дисков перепутались, и загрузчик ищет систему не на том томе. Изменение буквы раздела в <em>Bootice</em> происходит на уровне таблицы разделов.</p>
+<div class="pb-poll" id="poll-b14277a4"><div class="pb-poll-question">📊 Какая ошибка загрузки встречается вам чаще всего?</div><div class="pb-poll-option" data-poll="b14277a4" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Черный экран с курсором</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="b14277a4" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Сообщение BOOTMGR is missing</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="b14277a4" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Синий экран смерти (BSOD)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="b14277a4" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Циклическая перезагрузка</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+<p>Не стоит забывать о функции резервного копирования. Перед любыми серьезными изменениями используйте кнопки <strong>Backup</strong> в разделах MBR и PBR. Сохраненные файлы имеют малый размер (512 байт) и могут быть восстановлены в любой момент через кнопку <code>Restore</code>. Это самый надежный способ обезопасить себя от фатальных ошибок.</p>
+
+<h2 id="частые-ошибки-и-методы-их-устранения">Частые ошибки и методы их устранения</h2>
+<p>Даже при использовании надежных инструментов могут возникать непредвиденные ситуации. Одной из частых ошибок является сообщение о том, что диск защищен от записи. Это может быть связано с физическим переключателем на флешке или атрибутами реестра. В случае с жесткими дисками проверьте состояние S.M.A.R.T. и отсутствиеых секторов.</p>
+<p>Иногда после восстановления загрузчика система начинает загружаться, но выдает ошибку <strong>0xc000000f</strong>. Это указывает на то, что файл BCD поврежден или отсутствует. В этом случае необходимо заново пересоздать хранилище BCD, используя соответствующую функцию в программе или командную строку.</p>
+<blockquote>⚠️ Внимание: Если после всех манипуляций система не стартует, проверьте настройки BIOS/UEFI. Режим загрузки (Legacy/CSM или UEFI) должен соответствовать типу установленной операционной системы и структуре разделов (MBR или GPT).</blockquote>
+<p>В сложных случаях может потребоваться комбинация методов: восстановление MBR, затем PBR, затем пересоздание BCD. Последовательность действий играет ключевую роль. Сначала восстанавливаем физическую структуру секторов, затем логическую конфигурацию.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте функцию"Disk Info" в Bootice для быстрого просмотра типа таблицы разделов (MBR или GPT) и статуса активности разделов перед началом работ.</p></aside>
+<p>Понимание принципов работы загрузчиков позволяет не просто слеfollow инструкциям, но и диагностировать причины сбоев. <em>Bootice</em> предоставляет прозрачный доступ к этим механизмам, делая процесс восстановления понятным и контролируемым.</p>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+<p>После выполнения всех необходимых операций по восстановлению загрузчика необходимо правильно завершить работу с программой. Закройте <em>Bootice</em>, убедившись, что все диалоговые окна подтверждены. Если вы работали в среде LiveCD, извлеките носитель только после выключения компьютера или смены приоритета загрузки в BIOS.</p>
+<p>Первая перезагрузка после восстановления — критический момент. Компьютер может загружаться чуть дольше обычного, пока система проверяет целостность файлов. Если появилось меню выбора операционной системы или сразу начался вход в Windows, значит, процедура прошла успешно.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Успешное восстановление загрузчика означает, что код MBR и PBR записан верно, а файл BCD содержит корректные пути к системным файлам Windows.</p></aside>
+<p>В случае возврата к ошибке стоит повторить диагностику, уделив внимание состоянию жесткого диска. Физические неисправности накопителя могут приводить к повторному повреждению загрузочных записей сразу после их восстановления. В такой ситуации программные методы бессильны без замены оборудования.</p>
+
+<details>
+ <summary>Можно ли использовать Bootice на дисках с разметкой GPT?</summary>
+ <p>Да, <em>Bootice</em> поддерживает работу с дисками GPT, но процесс отличается от MBR. Для GPT используется загрузчик EFI, и манипуляции проводятся через редактирование EFI-раздела. Функция PBR в классическом виде для GPT не применяется так, как для MBR, вместо этого редактируются записи в NVRAM или файлы.efi.</p>
+</details>
+
+<details>
+ <summary>Безопасно ли использовать Bootice v1.3.3 на Windows 10 и 11?</summary>
+ <p>Да, программа совместима с современными версиями Windows, включая 10 и 11. Однако из-за усиленных мер безопасности (Secure Boot, BitLocker) могут потребоваться дополнительные действия, такие как отключение Secure Boot в BIOS или приостановка защиты BitLocker перед записью секторов.</p>
+</details>
+
+<details>
+ <summary>Что делать, если после восстановления пропала вторая ОС?</summary>
+ <p>При установке стандартного загрузчика Windows (NT 6.x) записи о других операционных системах (например, Linux или старой Windows) могут исчезнуть из меню. Вам нужно вручную добавить их через вкладку <strong>BCD Edit</strong>, указав правильные пути к загрузчикам этих систем, или использовать сторонние менеджеры загрузки, такие как GRUB или rEFInd.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/k-/k-v-terminale-statsionarnom-besprovodnom-wp-658-nastroit-aon.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка АОН на стационарном терминале WP 658</span>
+                <span class="pb-related-desc">Техническое руководство по активации и настройке определителя номера (АОН) на беспроводном телефоне </span>
+            </a><a href="/articles/k/ka/kak-v-programme-zepp-life-pomenyat-yazyk.html" class="pb-related-card">
+                <span class="pb-related-title">Как сменить язык в Zepp Life: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по изменению языка интерфейса в приложении Zepp Life для Android и iOS. Настройки проф</span>
+            </a><a href="/articles/l/la/lazy-media-deluxe-nastrojka-vlc.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка Lazy Media Deluxe и VLC: Полное руководство</span>
+                <span class="pb-related-desc">Как настроить Lazy Media Deluxe и VLC плеер для Android TV. Инструкция по подключению, выбору проток</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-bezopasnyj-rezhim-tele2.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить безопасный режим на Tele2: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выходу из безопасного режима на смартфонах Tele2. Методы перезагрузки, откл</span>
+            </a><a href="/articles/k/ka/kak-sdelat-chto-by-drugoj-chelovek-ne-mog-smotret-premr-tnt.html" class="pb-related-card">
+                <span class="pb-related-title">Как скрыть ТНТ Премьер от других: настройка доступа</span>
+                <span class="pb-related-desc">Техническое руководство по ограничению доступа к контенту ТНТ Премьер. Настройка PIN-кодов, родитель</span>
+            </a><a href="/articles/c/cb/cbl-na-pulte-chto.html" class="pb-related-card">
+                <span class="pb-related-title">CBL на пульте: что это, функции и настройка | Полный гайд</span>
+                <span class="pb-related-desc">Подробный разбор кнопки CBL на пульте управления. Узнайте, как переназначить функцию, настроить пере</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

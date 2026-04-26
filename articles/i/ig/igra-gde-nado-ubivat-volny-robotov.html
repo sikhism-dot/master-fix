@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Разработка шутера про роботов: архитектура волн и ИИ — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию игры про волны роботов. Архитектура спавна, настройка ИИ и оптимизация производительности.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/ig/igra-gde-nado-ubivat-volny-robotov.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Разработка шутера про роботов: архитектура волн и ИИ">
+    <meta property="og:description" content="Техническое руководство по созданию игры про волны роботов. Архитектура спавна, настройка ИИ и оптимизация производительности.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/igry-geyming/">Игры и Гейминг</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Разработка шутера про роботов: архитектура волн и ИИ</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-менеджера-волн-и-спавна">Архитектура менеджера волн и спавна</a></li><li><a href="#реализация-искусственного-интеллекта-противников">Реализация искусственного интеллекта противников</a></li><li><a href="#оптимизация-производительности-и-рендеринг">Оптимизация производительности и рендеринг</a></li><li><a href="#балансировка-сложности-и-прогрессия">Балансировка сложности и прогрессия</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/ig/igra-na-pk-dlya-obucheniya-igre-na-gitare.html">Игра на ПК для обучения гитаре: выбор ПО и настройка</a></li><li><a href="/articles/v/vs/vstavit-v-fotografiyu-flag-rossii.html">Как вставить флаг России в фото: инструкция</a></li><li><a href="/articles/r/re/remote-controller-otklyuchit.html">Как отключить пульт Remote Controller: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-v-imo-udalit-predlagaemye-komnaty.html">Как в IMO удалить предлагаемые комнаты: полное руководство</a></li><li><a href="/articles/r/rf/rfab-sex-igra.html">Как запустить RFAB: технический гайд по эмуляции</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Инженерия игрового процесса: создание шутера про волны роботов</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-менеджера-волн-и-спавна">Архитектура менеджера волн и спавна</a></li><li><a href="#реализация-искусственного-интеллекта-противников">Реализация искусственного интеллекта противников</a></li><li><a href="#оптимизация-производительности-и-рендеринг">Оптимизация производительности и рендеринг</a></li><li><a href="#балансировка-сложности-и-прогрессия">Балансировка сложности и прогрессия</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Разработка устойчивой системы спавна вражеских юнитов часто сталкивается с проблемой рассинхронизации игрового цикла и таймеров, что приводит к рывкам анимации или неравномерному появлению противников.</p>
+<p>При проектировании сценариев с высокой плотностью объектов на экране критическим становится вопрос оптимизации вычислений, так как стандартные методы проверки столкновений начинают потреблять непропорционально много ресурсов процессора.</p>
+<p>Внедрение адаптивной сложности требует тонкой настройки параметров в реальном времени, чтобы избежать ситуаций, когда игрок либо получает слишком простой контент, либо сталкивается с непреодолимым препятствием из-за ошибки в формуле расчета.</p>
+
+<h2 id="архитектура-менеджера-волн-и-спавна">Архитектура менеджера волн и спавна</h2>
+<p>Базовая структура управления волнами должна строиться на основе конечного автомата (FSM), который четко разделяет состояния ожидания, подготовки, активной фазы и завершения раунда.</p>
+<p>Для реализации логики используется отдельный класс <em>WaveManager</em>, который хранит массив данных о конфигурации каждой волны, включая типы врагов, их количество и интервалы появления.</p>
+<p>Важно предусмотреть буферизацию данных, чтобы загрузка ассетов для следующей волны происходила асинхронно, пока игрок сражается с текущими противниками.</p>
+
+<h3>Конфигурация данных волны</h3>
+<p>Хранение параметров волны лучше всего осуществлять в виде скриптовых объектов или JSON-файлов, что позволяет балансировать игру без перекомпиляции кода.</p>
+<p>Каждый элемент конфигурации должен содержать ссылки на префабы врагов, координаты точек появления и временные задержки между выстрелами спавнера.</p>
+<p>Использование <strong>структурированных данных</strong> позволяет легко создавать вариативные сценарии, меняя только параметры в таблицах, а не переписывая логику движка.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм активации волны</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Инициализация счетчика волны</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Загрузка префабов врагов</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Активация точек спавна</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запуск таймера до первой атаки</span></div></div>
+
+<p>При переходе между состояниями система должна проверять наличие живых врагов на сцене, чтобы триггерить завершение волны только после уничтожения последнего юнита.</p>
+<p>Для предотвращения переполнения памяти необходимо внедрить механизм пулинга объектов, который будет возвращать уничтоженных роботов в пул вместо полной деструкции.</p>
+
+<h3>Логика распределения спавнеров</h3>
+<p>Расположение точек появления врагов должно быть динамическим, учитывающим текущую позицию игрока, чтобы избежать появления роботов прямо перед камерой или за стенами.</p>
+<p>Алгоритм выбора спавнера может использовать взвешенный рандом, где приоритет отдается точкам, находящимся дальше от игрока или в его слепых зонах.</p>
+<p>В условиях ограниченного пространства сцены применяется проверка коллизий в радиусе появления, гарантирующая, что новый враг не материализуется внутри другого объекта.</p>
+
+<p>Система должна поддерживать приоритизацию типов врагов: например, тяжелые юниты появляются реже и только после активации определенных триггеров карты.</p>
+<p>Для обеспечения <strong>предсказуемости</strong> геймплея интервалы появления можно делать прогрессирующе меньшими с течением времени внутри одной волны.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте отдельные каналы рендеринга для эффектов появления, чтобы они не перекрывали интерфейс пользователя.</p></aside>
+
+<h2 id="реализация-искусственного-интеллекта-противников">Реализация искусственного интеллекта противников</h2>
+<p>Поведение роботов строится на базе компонентной архитектуры, где каждый аспект (движение, стрельба, поиск пути) вынесен в отдельный модуль.</p>
+<p>Основной цикл обновления ИИ должен быть разделен на частые вызовы для реактивных действий и редкие вызовы для тяжелых вычислений, таких как пересчет пути.</p>
+
+<h3>Навигация и поиск пути</h3>
+<p>Для перемещения по сложному ландшафту используется навигационный меш (NavMesh), предварительно запеченный или динамически обновляемый при разрушении окружения.</p>
+<p>Во избежание столкновений групп роботов друг с другом применяется механизм локального избегания столкновений (Local Avoidance), расталкивающий юнитов.</p>
+<p>Если прямой путь к игроку заблокирован, ИИ должен уметь искать обходные маршруты или переходить в режим ожидания, пока путь не освободится.</p>
+
+<p>Оптимизация запросов пути достигается за счет кэширования последнего известного положения цели и пересчета маршрута только при значительном изменении дистанции.</p>
+<p>Для больших групп одинаковых врагов можно использовать упрощенную модель движения, где они следуют за лидером группы, эконоя вычислительные ресурсы.</p>
+
+<h3>Принятие решений и стрельба</h3>
+<p>Логика атаки базируется на проверке условий видимости и дистанции, где робот переходит в состояние стрельбы только при соблюдении обоих критериев.</p>
+<p>Точность стрельбы и скорость реакции настраиваются через параметры сложности, что позволяет создавать более опасных врагов на поздних этапах игры.</p>
+<p>Для разнообразия тактики внедряются разные профили поведения: одни роботы агрессивно бегут в атаку, другие отступают при низком здоровье.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Чрезмерное использование Raycast для проверки видимости каждым кадром для сотен врагов приведет к падению FPS. Используйте слой видимости и уменьшите частоту проверок.</p></aside>
+
+<p>Система должна учитывать состояние игрока: если он прячется за укрытием, умные боты могут использовать гранаты или обходные маневры.</p>
+<p>Важно реализовать <strong>механизм прерывания</strong> действий, чтобы робот мгновенно реагировал на появление игрока в поле зрения, даже если он выполнял другую команду.</p>
+
+<h2 id="оптимизация-производительности-и-рендеринг">Оптимизация производительности и рендеринг</h2>
+<p>При отображении сотен вражеских единиц на экране критически важным становится использование инстансинга для meshes и материалов.</p>
+<p>Текстуры всех роботов должны быть упакованы в атласы, чтобы минимизировать количество переключений контекста графического конвейера.</p>
+<p>Уровень детализации (LOD) моделей должен снижаться по мере удаления камеры, заменяя сложные модели на упрощенные версии или плоские спрайты.</p>
+
+<h3>Управление памятью и пулинг</h3>
+<p>Механизм объектного пулинга предполагает создание пула объектов при старте уровня и повторное использование их вместо создания новых.</p>
+<p>При «уничтожении» робота он не удаляется из памяти, а деактивируется и помещается в очередь свободных объектов для последующей активации.</p>
+<p>Это позволяет исключить пиковые нагрузки на сборщик мусора (Garbage Collector), которые вызывают микро-фризы в gameplay.</p>
+
+<p>Размер пула должен быть динамическим или рассчитанным на максимальное ожидаемое количество одновременных объектов на сцене.</p>
+<p>Для снарядов и эффектов также применяется пулинг, так как они создаются и уничтожаются чаще всего в игровом цикле.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка пула объектов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создать список пула</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Инициализировать N объектов в Start</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">При запросе брать первый неактивный</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">При «удалении» скрывать и возвращать в список</span></div></div>
+
+<h3>Оптимизация физики и коллизий</h3>
+<p>Использование упрощенных коллайдеров (сферы, капсулы) вместо сложных mesh-колайдеров значительно ускоряет расчеты столкновений.</p>
+<p>Физические расчеты для далеких или неактивных врагов можно отключать, переводя их в режим кинематики или полностью останавливая симуляцию.</p>
+<p>Разделение сцены на зоны активности позволяет обновлять физику только вблизи игрока, пока дальние роботы находятся в «спящем» режиме.</p>
+
+<p>Проверки столкновений следует проводить на отдельном слое (Layer), исключая ненужные взаимодействия между самими роботами, если это не требуется по геймплею.</p>
+<p>Внедрение <strong>пространственного разбиения</strong> помогает быстро отсекать пары объектов, которые физически не могут столкнуться.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод оптимизации</th>
+<th>Влияние на CPU</th>
+<th>Влияние на GPU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Объектный пулинг</td>
+<td>Высокое (снижение GC)</td>
+<td>Низкое</td>
+</tr>
+<tr>
+<td>GPU Instancing</td>
+<td>Среднее</td>
+<td>Высокое (снижение Draw Calls)</td>
+</tr>
+<tr>
+<td>LOD системы</td>
+<td>Среднее</td>
+<td>Высокое (снижение полигонов)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="балансировка-сложности-и-прогрессия">Балансировка сложности и прогрессия</h2>
+<p>Система баланса должна динамически оценивать эффективность игрока и подстраивать параметры врагов, чтобы поддерживать состояние потока.</p>
+<p>Параметры здоровья, урона и скорости роботов могут масштабироваться в зависимости от номера волны и текущего уровня экипировки игрока.</p>
+<p>Введение модификаторов для волн (например, «взрывные головы» или «ускоренное время») добавляет разнообразия и требует новой тактики.</p>
+
+<h3>Формулы расчета параметров</h3>
+<p>Базовая формула здоровья врага часто представляет собой экспоненту или линейную функцию с коэффициентом роста, зависящим от номера волны.</p>
+<p>Для расчета урона используется обратная зависимость от защиты игрока, чтобы время на уничтожение врага оставалось в пределах разумного (TTE - Time To Enemy).</p>
+<p>Важно ограничивать максимальные значения параметров, чтобы избежать ситуаций переполнения переменных или математически невозможных сценариев.</p>
+
+<p>Тестирование баланса требует прогона симуляций боя, где виртуальный игрок с определенным скиллом проходит тысячи волн.</p>
+<p>Сбор телеметрии о том, на каких волнах чаще всего погибает игрок, позволяет точно настраивать кривую сложности.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Динамическая балансировка</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Адаптивность под скилл игрока</li><li>✅ Снижение фрустрации</li><li>✅ Дольше удерживает внимание</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность реализации</li><li>❌ Риск «накрутки» сложности</li><li>❌ Трудно тестировать</li></ul></div>
+</div></div>
+
+<h3>Система наград и прокачки</h3>
+<p>Между волнами игроку должна предоставляться возможность улучшения характеристик или покупки нового оружия за заработанные ресурсы.</p>
+<p>Экономика игры строится на балансе между риском (остаться с низким здоровьем ради золота) и безопасностью.</p>
+<p>Дерево прокачки должно предлагать качественно разные улучшения, меняющие стиль игры, а не просто увеличивающие цифры урона.</p>
+
+<p>Введение редких бонусов или случайных событий во время волны (доставка, появление босса)ет монотонность.</p>
+<p>Для долгосрочного удержания стоит реализовать систему перманентных улучшений, действующих на все последующие запуски.</p>
+
+<h2 id="типичные-ошибки-при-разработке">Типичные ошибки при разработке</h2>
+<ol>
+<li><strong>Отсутствие лимита на количество объектов</strong> — бесконтрольный спавн приводит к переполнению сцены и падению производительности; необходимо жестко ограничивать пул и очередь появления.</li>
+<li><strong>Использование FindObjectsOfType в цикле</strong> — поиск объектов по тегу каждый кадр является одной из самых тяжелых операций; следует использовать списки регистрации или события.</li>
+<li><strong>Прямые ссылки на префабы в коде</strong> — хардкод ссылок усложняет поддержку; все конфигурации должны выноситься в ScriptableObject или внешние файлы данных.</li>
+<li><strong>Игнорирование краевых случаев</strong> — сценарии, когда игрок застревает или все спавнеры блокированы, должны обрабатываться логикой «сброса» или телепортации врагов.</li>
+</ol>
+
+<p>Завершающим этапом разработки является полировка визуальных эффектов и звукового сопровождения, которые создают ощущение мощи и удовлетворения от уничтожения полчищ роботов.</p>
+<p>Грамотно выстроенная архитектура позволяет легко масштабировать проект, добавляя новые типы врагов и механики без переписывания ядра игры.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех игры про волны роботов зависит от оптимизации рендеринга сотен объектов и сбалансированной кривой сложности, а не только от графики.</p></aside>
+
+<p>Соблюдение принципов модульности и оптимизации на ранних этапах saves время на рефакторинг в будущем.</p>
+<p>Реализация гибкой системы настройки параметров позволяет быстро тестировать гипотезы и находить идеальный баланс для целевой аудитории.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Ранняя игра</th>
+<th>Поздняя игра</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Количество врагов</td>
+<td>5-10 единиц</td>
+<td>50-100+ единиц</td>
+</tr>
+<tr>
+<td>Частота спавна</td>
+<td>2-3 секунды</td>
+<td>0.2-0.5 секунды</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для отладки спавна используйте gizmos в редакторе, визуализирующие зоны появления и пути патрулирования врагов.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/ig/igra-na-pk-dlya-obucheniya-igre-na-gitare.html" class="pb-related-card">
+                <span class="pb-related-title">Игра на ПК для обучения гитаре: выбор ПО и настройка</span>
+                <span class="pb-related-desc">Подробный обзор программ для обучения игре на гитаре на компьютере. Настройка интерфейса, работа с M</span>
+            </a><a href="/articles/v/vs/vstavit-v-fotografiyu-flag-rossii.html" class="pb-related-card">
+                <span class="pb-related-title">Как вставить флаг России в фото: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по добавлению флага РФ на изображение. Методы для ПК и смартфона, работа с про</span>
+            </a><a href="/articles/r/re/remote-controller-otklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить пульт Remote Controller: Полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по отключению и удалению Remote Controller. Решения для Android, Windows и S</span>
+            </a><a href="/articles/k/ka/kak-v-imo-udalit-predlagaemye-komnaty.html" class="pb-related-card">
+                <span class="pb-related-title">Как в IMO удалить предлагаемые комнаты: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению и удалению предлагаемых комнат в IMO. Настройка конфиденциальност</span>
+            </a><a href="/articles/r/rf/rfab-sex-igra.html" class="pb-related-card">
+                <span class="pb-related-title">Как запустить RFAB: технический гайд по эмуляции</span>
+                <span class="pb-related-desc">Подробная инструкция по установке и настройке эмулятора RFAB для мобильных игр. Решение ошибок, опти</span>
+            </a><a href="/articles/u/ui/ui-mode-desk.html" class="pb-related-card">
+                <span class="pb-related-title">UI Mode Desk: Настройка интерфейса рабочего стола</span>
+                <span class="pb-related-desc">Подробная инструкция по активации режима рабочего стола UI Mode Desk. Настройка интерфейса, управлен</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

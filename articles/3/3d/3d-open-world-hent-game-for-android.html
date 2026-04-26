@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Разработка 3D open world hent game для Android: технический гайд — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по созданию 3D open world hent game на Android. Оптимизация рендеринга, управление памятью и настройка управления для мобильных устройств.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/3/3d/3d-open-world-hent-game-for-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Разработка 3D open world hent game для Android: технический гайд">
+    <meta property="og:description" content="Инструкция по созданию 3D open world hent game на Android. Оптимизация рендеринга, управление памятью и настройка управления для мобильных устройств.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Разработка 3D open world hent game для Android: технический гайд</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурный-выбор-и-настройка-рендеринга">Архитектурный выбор и настройка рендеринга</a></li><li><a href="#управление-памятью-и-потоковая-загрузка">Управление памятью и потоковая загрузка</a></li><li><a href="#система-управления-и-пользовательский-интерфейс">Система управления и пользовательский интерфейс</a></li><li><a href="#тестирование-и-профилирование-производительности">Тестирование и профилирование производительности</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/m/mi/mi-phone-assistant-ne-vidit-telefon.html">Mi Phone Assistant не видит телефон: решение проблемы</a></li><li><a href="/articles/k/ka/kak-na-telefone-gigaset-da100-umenshit-gromkost-zvonka.html">Как уменьшить громкость звонка Gigaset DA100: полная инструкция</a></li><li><a href="/articles/k/ka/kak-na-ksiomt-redmi-note-12-zablokirovat-vozmozhnost-klonirovaniya-prilozhenij.html">Как запретить клонирование приложений на Redmi Note 12: Инструкция</a></li><li><a href="/articles/b/bo/boty-dlya-telegramm-dlya-skachivaniya-igr-dlya-android.html">Telegram боты для загрузки Android игр: Инструкция и безопасность</a></li><li><a href="/articles/k/ka/kak-podklyuchit-telefon-k-av-vkhodu.html">Как подключить телефон к AV входу телевизора: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническая реализация 3D open world hent game на Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурный-выбор-и-настройка-рендеринга">Архитектурный выбор и настройка рендеринга</a></li><li><a href="#управление-памятью-и-потоковая-загрузка">Управление памятью и потоковая загрузка</a></li><li><a href="#система-управления-и-пользовательский-интерфейс">Система управления и пользовательский интерфейс</a></li><li><a href="#тестирование-и-профилирование-производительности">Тестирование и профилирование производительности</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Процесс разработки сложного трехмерного проекта с открытым миром для платформы Android часто сталкивается с критическим ограничением ресурсов. Инженеры и разработчики регулярно обнаруживают, что прототип, стабильно работающий на мощном десктопе, демонстрирует неприемлемо низкую частоту кадров на мобильных процессорах.</p>
+
+<p>Проблема усугубляется необходимостью рендеринга обширных локаций без видимых подгрузок, что создает колоссальное давление на GPU и подсистему памяти устройства. В условиях жесткой конкуренции на рынке мобильных развлечений игнорирование оптимизации приводит к быстрой разрядке аккумулятора и перегреву гаджета.</p>
+
+<p>Данная инструкция фокусируется на архитектурных решениях, позволяющих реализовать масштабный мир с высокой детализацией, сохраняя при этом стабильную производительность. Рассмотрение технических аспектов начнется с выбора движка и настройки графического конвейера, что является фундаментом для любого успешного проекта.</p>
+
+<h2 id="архитектурный-выбор-и-настройка-рендеринга">Архитектурный выбор и настройка рендеринга</h2>
+
+<p>Выбор игрового движка определяет доступный инструментарий и предельные возможности оптимизации. Для создания масштабных проектов с открытым миром на Android наиболее целесообразным выбором остаются <em>Unity</em> или <em>Unreal Engine</em>, так как они предоставляют готовые решения для стриминга ассетов.</p>
+
+<p>Настройка графического пайплайна требует переключения на современные API, такие как <em>Vulkan</em> или <em>Metal</em>, которые обеспечивают более низкий оверхедр по сравнению с классическим <em>OpenGL ES</em>. В движке <em>Unity</em> это реализуется через переключение бэкенда в настройках игрока, что позволяет задействовать многопоточный рендеринг.</p>
+
+<p>Важным аспектом является управление уровнем детализации объектов, или <strong>LOD (Level of Detail)</strong>. Система должна динамически подменять высокополигональные модели на упрощенные версии по мере удаления камеры, что существенно снижает нагрузку на вершинный процессор.</p>
+
+<p>Для реализации бесшовного мира применяется техника чанкования, где территория разбивается на сетку, и активными остаются только те сектора, которые находятся в поле зрения игрока. Алгоритм должен предсказывать движение пользователя и заранее подгружать соседние секторы в фоновом потоке.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка графического бэкенда</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Player Settings в движке</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел Other Settings</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите пункт Graphics API</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Добавьте Vulkan и переместите его наверх списка</span></div></div>
+
+<p>Таблица ниже демонстрирует сравнительные характеристики различных графических API в контексте мобильных устройств:</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>OpenGL ES 3.2</th>
+<th>Vulkan</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Нагрузка на CPU</td>
+<td>Высокая</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Поддержка многоядерности</td>
+<td>Ограниченная</td>
+<td>Полная</td>
+</tr>
+<tr>
+<td>Сложность внедрения</td>
+<td>Низкая</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Оптимизация шейдеров и текстур</h3>
+
+<p>Использование тяжелых шейдеров с множеством вычислений в реальном времени является одной из главных причин падения FPS. Рекомендуется переходить на запеченное освещение (<em>Baked Lighting</em>) для статичных объектов окружения, оставляя динамические расчеты только для ключевых элементов сцены.</p>
+
+<p>Текстуры должны быть сжаты в формат, нативно поддерживаемый GPU конкретного устройства, например <em>ASTC</em> или <em>ETC2</em>. Это позволяет значительно уменьшить объем занимаемой оперативной памяти и снизить пропускную способность шины памяти.</p>
+
+<p>В коде шейдеров следует минимизировать использование операций деления и тригонометрических функций, заменяя их аппроксимациями или таблицами поиска (<em>Lookup Tables</em>). <strong>Оптимизация вычислений</strong> в фрагментном шейдере дает наибольший прирост производительности при рендеринге сложных материалов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Формат ASTC обеспечивает лучшее качество при меньшем размере файла, но требует проверки поддержки на целевых устройствах, так как старые модели могут не иметь соответствующих драйверов.</p></aside>
+
+<h2 id="управление-памятью-и-потоковая-загрузка">Управление памятью и потоковая загрузка</h2>
+
+<p>Оперативная память на мобильных устройствах является самым дефицитным ресурсом, и неэффективное управление ею приводит к аварийному завершению приложения операционной системой. Механизм <strong>Garbage Collector</strong> в управляемых средах выполнения может вызывать микро-фризы, если объем выделяемого мусора превышает допустимые лимиты.</p>
+
+<p>Для предотвращения этого необходимо использовать пулы объектов (<em>Object Pooling</em>) для часто создаваемых и уничтожаемых сущностей, таких как частицы эффектов или враги. Предварительное выделение памяти под массивы данных позволяет избежать фрагментации кучи в процессе игры.</p>
+
+<p>Стриминг ассетов должен быть реализован через асинхронные операции загрузки, чтобы основной поток рендеринга не блокировался ожиданием данных с диска. В <em>Unity</em> для этого используется класс <code>AssetBundle</code> в связке с <code>Addressables</code>, что позволяет гибко управлять версиями контента.</p>
+
+<pre><code>IEnumerator LoadLevelChunk(string chunkName)
+<p>{</p>
+<p>AsyncOperation operation = SceneManager.LoadSceneAsync(chunkName, LoadSceneMode.Additive);</p>
+<p>operation.allowSceneActivation = false;</p>
+<p>while (operation.progress < 0.9f) yield return null;</p>
+<p>operation.allowSceneActivation = true;</p>
+<p>}</code></pre></p>
+
+<p>При работе с большими объемами данных текстурирования важно контролировать лимиты видеопамяти. Если объем текстур превышает доступный пул, система должна автоматически снижать разрешение или применять более агрессивное сжатие для удаленных объектов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка загрузить в память текстуры общим объемом, превышающим 70% от доступной видеопамяти устройства, с высокой вероятностью приведет к крашу приложения (Out Of Memory).</p></aside>
+
+<p>Следующая таблица показывает примерное распределение памяти для типичного сценария загрузки:</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип ресурса</th>
+<th>Объем (МБ)</th>
+<th>Приоритет выгрузки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Текстуры окружения</td>
+<td>400-600</td>
+<td>Низкий</td>
+</tr>
+<tr>
+<td>Звуковые файлы</td>
+<td>50-100</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td>Модели персонажей</td>
+<td>100-150</td>
+<td>Средний</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Работа с файловой системой</h3>
+
+<p>Скорость чтения данных с накопителя устройства сильно варьируется в зависимости от типа памяти и состояния фрагментации. Критически важные данные, необходимые для старта игры, должны быть упакованы в основной файл приложения, чтобы обеспечить мгновенный доступ.</p>
+
+<p>Дополнительный контент и тяжелые ресурсы целесообразно загружать по сети и сохранять в кэш-директорию приложения. При этом необходимо реализовать механизм проверки целостности файлов, так как прерывание загрузки может повредить архивы ассетов.</p>
+
+<p>Использование <code>StreamingAssets</code> оправдано только для небольших объемов данных, так как доступ к ним на некоторых платформах Android может быть медленным из-за особенностей файловой системы. Для больших объемов предпочтительнее копировать данные во внутреннее хранилище при первом запуске.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Эффективное управление памятью требует комбинации пулинга объектов, асинхронной загрузки и строгого контроля за объемом используемых текстур.</p></aside>
+
+<h2 id="система-управления-и-пользовательский-интерфейс">Система управления и пользовательский интерфейс</h2>
+
+<p>Адаптация управления для сенсорных экранов представляет собой отдельную инженерную задачу, требующую учета отсутствия тактильной отдачи и ограниченной площади экрана. Виртуальные джойстики должны иметь настраиваемую зону мертвого хода и возможность перемещения по экрану.</p>
+
+<p>Для жанра, предполагающего активное взаимодействие с окружением, критически важна поддержка внешних контроллеров через <em>Bluetooth</em> или <em>USB</em>. Движок должен корректно обрабатывать события подключения и отключения геймпадов без необходимости перезапуска приложения.</p>
+
+<p>Интерфейс пользователя (<em>UI</em>) должен масштабироваться под различные соотношения сторон экранов, от вытянутых современных дисплеев до стандартных форматов. Использование канваса с режимом масштабирования <code>Scale With Screen Size</code> позволяет сохранять пропорции элементов управления.</p>
+
+<ol>
+<li>Определите базовое разрешение интерфейса, например 1920x1080.</li>
+<li>Настройте якоря (<em>Anchors</em>) для всех элементов UI, привязывая их к краям экрана.</li>
+<li>Реализуйте проверку наличия «челки» или вырезов в экране через системные API.</li>
+<li>Добавьте возможность кастомизации прозрачности и положения кнопок управления.</li>
+</ol>
+
+<p>Тактильная отдача (<em>Haptic Feedback</em>) играет важную роль в улучшении ощущения от игры, компенсируя отсутствие физических кнопок. Вибрация должна использоваться для подтверждения действий, получения урона или взаимодействия с объектами, но не должна быть навязчивой.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Геймпад vs Сенсор</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка внешних контроллеров</li><li>✅ Точность ввода</li><li>✅ Привычная эргономика</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Не у всех есть геймпад</li><li>❌ Требует дополнительной настройки</li><li>❌ Занятость портов подключения</li></ul></div>
+</div></div>
+
+<h3>Обработка мультитача</h3>
+
+<p>Современные алгоритмы обработки касаний должны корректно различать одиночные нажатия, свайпы и мультитач-жесты. Ошибки в распознавании могут приводить к тому, что персонаж вместо прыжка начнет вращать камерой.</p>
+
+<p>Для реализации сложных комбинаций, таких как зажим кнопки бега и свайп для рывка, требуется система приоритетов ввода. Сначала обрабатываются критические действия, затем вторичные, что предотвращает конфликты команд.</p>
+
+<p>Важно учитывать возможность одновременного нажатия множества точек, что характерно для интенсивных игровых сессий. Лимит одновременных касаний обычно составляет 10 точек, и распределение функций между ними должно быть логичным.</p>
+
+<h2 id="тестирование-и-профилирование-производительности">Тестирование и профилирование производительности</h2>
+
+<p>Финальным этапом разработки является всестороннее тестирование на широком парке устройств, охватывающем различные классы производительности. Использование встроенных профилировщиков позволяет выявлять узкие места в рендеринге и логике вычислений.</p>
+
+<p>Анализ кадрового времени (<em>Frame Time</em>) помогает определить, какой именно этап конвейера занимает больше всего ресурсов. Если основную нагрузку несет CPU, оптимизация должна быть направлена на снижение количества вызовов отрисовки (<em>Draw Calls</em>).</p>
+
+<p>В случае bottleneck на стороне GPU необходимо снижать разрешение рендеринга, упрощать шейдеры или уменьшать количество источников света. Инструменты вроде <em>Unity Profiler</em> или <em>Unreal Insights</em> предоставляют детальную статистику по использованию памяти и процессорного времени.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс профилирования</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство по USB к ПК</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите Profiler в режиме Remote Device</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запишите сессию игры в проблемной зоне</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проанализируйте график CPU/GPU Usage</span></div></div>
+
+<p>Автоматизированные тесты должны проверять не только функциональность, но и тепловую эффективность приложения. Длительные сессии игры не должны приводить к троттлингу процессора, вызывающему резкое падение производительности через 15-20 минут игры.</p>
+
+<p>Сбор телеметрии с устройств пользователей позволяет выявлять специфические баги, проявляющиеся только на определенных моделях смартфонов или версиях операционной системы. Это особенно актуально для фрагментированного рынка Android.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте облачные сервисы для тестирования на реальных устройствах, чтобы охватить редкие модели смартфонов, которых нет в физическом доступе.</p></aside>
+
+<h2 id="типичные-ошибки-при-разработке">Типичные ошибки при разработке</h2>
+
+<ol>
+<li><strong>Игнорирование разнообразия экранов</strong> — создание интерфейса под фиксированное разрешение приводит к обрезке элементов на новых устройствах; необходимо использовать адаптивную верстку.</li>
+<li><strong>Загрузка всех ресурсов в память</strong> – попытка держать весь открытый мир в RAM вызывает крачи; требуется внедрение строгой системы выгрузки неиспользуемых ассетов.</li>
+<li><strong>Отсутствие настройки для слабых устройств</strong> — отсутствие графических пресетов делает игру недоступной для бюджетного сегмента; обязательно наличие меню настроек графики.</li>
+<li><strong>Блокировка главного потока</strong> — выполнение тяжелых вычислений или операций ввода-вывода в основном потоке вызывает фризы; все ресурсоемкие операции должны быть асинхронными.</li>
+</ol>
+
+<p>Реализация качественного трехмерного проекта с открытым миром для мобильных платформ требует глубокого понимания ограничений hardware и software. Соблюдение принципов оптимизации, грамотное управление ресурсами и тщательное тестирование являются ключевыми факторами успеха.</p>
+
+<p>Техническая база, заложенная на ранних этапах разработки, определяет потенциал масштабирования и стабильность работы приложения в долгосрочной перспективе. Инвестиции времени в архитектурную проработку окупаются снижением количества багов и улучшением пользовательского опыта.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/m/mi/mi-phone-assistant-ne-vidit-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Mi Phone Assistant не видит телефон: решение проблемы</span>
+                <span class="pb-related-desc">PC Suite не обнаруживает Xiaomi. Инструкция по драйверам, USB-отладке и режимам загрузки. Решения дл</span>
+            </a><a href="/articles/k/ka/kak-na-telefone-gigaset-da100-umenshit-gromkost-zvonka.html" class="pb-related-card">
+                <span class="pb-related-title">Как уменьшить громкость звонка Gigaset DA100: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по снижению громкости звонка на телефоне Gigaset DA100. Настройки громкости, к</span>
+            </a><a href="/articles/k/ka/kak-na-ksiomt-redmi-note-12-zablokirovat-vozmozhnost-klonirovaniya-prilozhenij.html" class="pb-related-card">
+                <span class="pb-related-title">Как запретить клонирование приложений на Redmi Note 12: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению функции клонирования на Xiaomi Redmi Note 12. Настройка ограниче</span>
+            </a><a href="/articles/b/bo/boty-dlya-telegramm-dlya-skachivaniya-igr-dlya-android.html" class="pb-related-card">
+                <span class="pb-related-title">Telegram боты для загрузки Android игр: Инструкция и безопасность</span>
+                <span class="pb-related-desc">Полный технический гайд по использованию Telegram ботов для скачивания APK игр на Android. Настройка</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-telefon-k-av-vkhodu.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить телефон к AV входу телевизора: полная инструкция</span>
+                <span class="pb-related-desc">Узнайте, как соединить смартфон и ТВ через AV (тюльпаны). Схемы подключения, выбор переходников RCA,</span>
+            </a><a href="/articles/b/ba/barometr-v-xiaomi-s4-kak-izmenit-v-mm-rtutnogo-stolba.html" class="pb-related-card">
+                <span class="pb-related-title">Барометр Xiaomi Watch S4: настройка мм рт. ст.</span>
+                <span class="pb-related-desc">Подробная инструкция по изменению единиц измерения давления на Xiaomi Watch S4. Настройка барометра </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

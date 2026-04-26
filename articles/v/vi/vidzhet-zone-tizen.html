@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Виджет Zone Tizen: создание, настройка и отладка на Samsung — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по виджетам Zone в среде Tizen. Создание, методы рендеринга, работа с API и устранение ошибок для умных телевизоров.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vi/vidzhet-zone-tizen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Виджет Zone Tizen: создание, настройка и отладка на Samsung">
+    <meta property="og:description" content="Техническое руководство по виджетам Zone в среде Tizen. Создание, методы рендеринга, работа с API и устранение ошибок для умных телевизоров.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Виджет Zone Tizen: создание, настройка и отладка на Samsung</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-виджетов-zone-и-структура-проекта">Архитектура виджетов Zone и структура проекта</a></li><li><a href="#технологии-рендеринга-html5-canvas-против-dom">Технологии рендеринга: HTML5 Canvas против DOM</a></li><li><a href="#работа-с-api-tizen-и-сетевое-взаимодействие">Работа с API Tizen и сетевое взаимодействие</a></li><li><a href="#отладка-тестирование-и-типичные-ошибки">Отладка, тестирование и типичные ошибки</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/la/lazy-media-deluxe-dlya-tizen.html">Lazy Media Deluxe для Tizen OS: установка через SamyGO</a></li><li><a href="/articles/k/ka/kak-drugoj-priyomnik-trikolor-pereoformit-na-sebya.html">Как переоформить приемник Триколор на себя: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-pereoformit-lichnyj-kabinet-trikolor-na-sebya-v-rb.html">Как переоформить Триколор на себя в РБ: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-vaj-faj-k-pristavke-selenga-hd950d.html">Подключение Wi-Fi к приставке Selenga HD950D: полная инструкция</a></li><li><a href="/articles/v/vi/videopleer-ne-vosproizvodit-video-v-hd-videobox.html">Видеоплеер не работает в HD Videobox: решение проблем</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка и настройка виджетов Zone в среде Tizen</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-виджетов-zone-и-структура-проекта">Архитектура виджетов Zone и структура проекта</a></li><li><a href="#технологии-рендеринга-html5-canvas-против-dom">Технологии рендеринга: HTML5 Canvas против DOM</a></li><li><a href="#работа-с-api-tizen-и-сетевое-взаимодействие">Работа с API Tizen и сетевое взаимодействие</a></li><li><a href="#отладка-тестирование-и-типичные-ошибки">Отладка, тестирование и типичные ошибки</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь может столкнуться с ситуацией, когда стандартный интерфейс приложения на телевизоре Samsung не удовлетворяет требованиям по отображению динамического контента в фоновом режиме. Часто разработчики и продвинутые пользователи пытаются реализовать отображение информации, такой как погода, курс валют или статус умного дома, непосредственно на главном экране, минуя запуск основного приложения. Однако при попытке внедрения таких решений через стандартные методы веб-разработки возникает проблема несовместимости с архитектурой операционной системы Tizen.</p>
+
+<p>Вместо ожидаемого интерактивного элемента на экране появляется либо пустая область, либо статичное изображение, которое не обновляется без полного перезапуска компонента. Это происходит из-за того, что Tizen использует специфический механизм рендеринга виджетов, который существенно отличается от привычной работы веб-страниц в браузере или нативных приложений на мобильных платформах. Понимание внутренней структуры Zone Widget становится критически важным для успешной реализации задачи.</p>
+
+<p>На практике игнорирование специфики жизненного цикла виджета приводит к повышенному потреблению ресурсов устройства и возможной блокировке процесса системой безопасности. Операционная система строго лимитирует доступ к памяти и процессорному времени для фоновых элементов, чтобы обеспечить бесперебойную работу основного интерфейса Smart Hub. Поэтому внедрение любых изменений требует четкого следования техническим спецификациям платформы Samsung.</p>
+
+<h2 id="архитектура-виджетов-zone-и-структура-проекта">Архитектура виджетов Zone и структура проекта</h2>
+
+<p>Основой любого виджета в среде Tizen является строго определенная файловая структура, нарушение которой приводит к невозможности установки компонента на устройство. В отличие от обычных веб-приложений, здесь каждый файл играет критическую роль в процессе инициализации и отображения графического интерфейса. Центральным элементом выступает файл конфигурации <code>config.xml</code>, который содержит метаданные, права доступа и описание точек входа.</p>
+
+<p>Разработка начинается с создания базового набора файлов, включающего HTML-разметку, CSS-стили и JavaScript-логику. Важно понимать, что виджет Zone работает в ограниченном контексте выполнения, где многие стандартные браузерные API могут быть недоступны или работать с ограничениями. Ниже приведена таблица основных файлов, необходимых для минимально рабочего прототипа.</p>
+
+<table>
+<thead>
+<tr>
+<th>Файл</th>
+<th>Назначение</th>
+<th>Обязательность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>config.xml</code></td>
+<td>Манифест приложения, права, идентификаторы</td>
+<td>Обязательно</td>
+</tr>
+<tr>
+<td><code>index.html</code></td>
+<td>Основная разметка и структура DOM</td>
+<td>Обязательно</td>
+</tr>
+<tr>
+<td><code>style.css</code></td>
+<td>Визуальное оформление и адаптивность</td>
+<td>Рекомендуется</td>
+</tr>
+<tr>
+<td><code>main.js</code></td>
+<td>Логика работы и взаимодействие с API</td>
+<td>Обязательно</td>
+</tr>
+</tbody>
+</table>
+
+<p>Файл <code>config.xml</code> требует особого внимания, так как именно в нем прописывается тип виджета как "widget" и указываются необходимые привилегии. Если вы планируете получать данные из сети, необходимо явно запросить соответствующие права в секции <code>&lt;privileges&gt;</code>. Отсутствие даже одного требуемого разрешения приведет к блокировке сетевых запросов на уровне операционной системы.</p>
+
+<p>Внутри структуры проекта также важно учитывать ограничения на размер итогового пакета. Система Tizen может отказать в установке виджета, если его вес превышает допустимые нормы, установленные для конкретной модели телевизора. Оптимизация графики и кода становится не просто рекомендацией, а техническим требованием.</p>
+
+<h3>Конфигурация manifest и права доступа</h3>
+
+<p>Настройка манифеста начинается с определения уникального идентификатора приложения, который должен соответствовать правилам именования Samsung. В разделе <code>&lt;widget&gt;</code> указывается версия, имя и основной файл запуска. Для виджетов Zone часто требуется использование специфических профилей, которые определяют набор доступных API.</p>
+
+<p>Если виджету необходимо взаимодействовать с системными часами или датой, в конфигурации должны быть прописаны соответствующие разрешения. Например, для доступа к сетевым ресурсам используется привилегия <code>http://tizen.org/privilege/internet</code>. Без этого тега любой XMLHttpRequest или fetch-запрос вернет ошибку соединения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На телевизорах серий J, K, M и более новых могут требоваться дополнительные сертификаты для использования определенных API, даже для виджетов.</p></aside>
+
+<p>Допустим, вы создаете виджет погоды. В таком случае вам потребуется не только доступ в интернет, но, возможно, и доступ к геолокации, если телевизор подключен к сети и позволяет определять местоположение. Все эти параметры фиксируются в <code>config.xml</code> перед началом упаковки проекта.</p>
+
+<h2 id="технологии-рендеринга-html5-canvas-против-dom">Технологии рендеринга: HTML5 Canvas против DOM</h2>
+
+<p>При разработке интерфейса виджета перед разработчиком встает выбор между использованием стандартной DOM-верстки и технологии HTML5 Canvas. Каждый из этих подходов имеет свои преимущества и недостатки в контексте ограниченных ресурсов телевизионных процессоров. Выбор метода рендеринга напрямую влияет на плавность анимаций и потребление оперативной памяти.</p>
+
+<p>Использование DOM-элементов привычно для веб-разработчиков и позволяет легко применять CSS-анимации и медиа-запросы. Однако при большом количестве одновременно обновляемых элементов интерфейс может начать подтормаживать. Система Tizen пересчитывает layout и repaint при каждом изменении DOM-дерева, что создает нагрузку на главный поток выполнения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Выбор метода рендеринга</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Оцените количество динамических элементов</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверьте поддержку CSS3 на целевой модели</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Протестируйте FPS в эмуляторе</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выберите Canvas для сложной графики или DOM для статичного текста</span></div></div>
+
+<p>Если у вас виджет содержит сложную графику, множество движущихся объектов или необходимо отображать видеопоток, использование Canvas является предпочтительным вариантом. Этот метод позволяет рисовать пиксели напрямую, минуя тяжелые операции перерисовки DOM-дерева. Однако работа с Canvas требует написания большего объема кода и ручного управления каждым кадром анимации.</p>
+
+<h3>Оптимизация производительности отрисовки</h3>
+
+<p>Вне зависимости от выбранного метода, критически важно минимизировать количество перерисовок экрана. На практике это означает, что обновлять следует только те области, где изменились данные, а не весь виджет целиком. Для DOM это достигается через точечное обновление содержимого узлов, а для Canvas — через очистку и перерисовку только измененных слоев.</p>
+
+<p>Стоит учитывать, что телевизоры Samsung используют различные версии движка WebKit в зависимости от года выпуска и модели. Старые модели могут не поддерживать современные свойства CSS, такие как <code>transform</code> или <code>filter</code>, в полной мере, что приводит к программному рендерингу вместо аппаратного ускорения. Проверка совместимости на целевом устройстве обязательна.</p>
+
+<p>Для обеспечения плавной работы анимаций рекомендуется использовать <code>requestAnimationFrame</code> вместо <code>setInterval</code> или <code>setTimeout</code>. Этот метод синхронизирует выполнение кода с частотой обновления экрана, что предотвращает разрывы кадров и снижает нагрузку на процессор в моменты, когда вкладка виджета не активна или скрыта.</p>
+
+<h2 id="работа-с-api-tizen-и-сетевое-взаимодействие">Работа с API Tizen и сетевое взаимодействие</h2>
+
+<p>Взаимодействие виджета Zone с внешним миром осуществляется через специализированные API платформы Tizen и стандартные веб-протоколы. Получение данных из сети является одной из самых частых задач, будь то загрузка новостей, котировок или управления устройствами умного дома. Правильная организация сетевых запросов гарантирует отзывчивость интерфейса.</p>
+
+<p>Для выполнения HTTP-запросов в среде Tizen рекомендуется использовать объект <code>XMLHttpRequest</code> или более современный <code>fetch</code>, если версия прошивки позволяет. </p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование незащищенных HTTP-соединений (http://) может быть заблокировано политикой безопасности Tizen. Всегда используйте HTTPS для внешних запросов.</p></aside>
+
+<p>При обработке полученных данных необходимо предусмотреть сценарии обрыва связи или таймаута сервера. Виджет не должен «замирать» в ожидании ответа; он должен корректно отображать состояние ошибки или использовать закэшированные данные. Реализация механизма повторных попыток (retry logic) с экспоненциальной задержкой помогает справиться с кратковременными сбоями сети.</p>
+
+<h3>Использование системных API</h3>
+
+<p>Платформа Tizen предоставляет доступ к ряду системных функций, таких как получение текущего времени, информации об устройстве или управление медиа. Для работы с этими функциями необходимо подключать соответствующие скрипты и проверять доступность API перед вызовом. Например, доступ к системному времени осуществляется через объект <code>tizen.time</code>.</p>
+
+<p>Если виджет должен реагировать на изменения в системе, например, на смену сетевого подключения, следует использовать механизмы слушателей событий. Это позволяет виджету адаптироваться к изменениям окружения без вмешательства пользователя. Код должен быть написан с учетом возможного отсутствия некоторых API на более старых моделях телевизоров.</p>
+
+<p>В таблице ниже приведено сравнение методов получения данных для различных сценариев использования.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>Рекомендуемый метод</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Статичный текст</td>
+<td>DOM манипуляции</td>
+<td>Низкое потребление ресурсов</td>
+</tr>
+<tr>
+<td>Сложная анимация</td>
+<td>HTML5 Canvas</td>
+<td>Высокий FPS, больше кода</td>
+</tr>
+<tr>
+<td>Данные с сервера</td>
+<td>Fetch API / XHR</td>
+<td>Требуется privilege internet</td>
+</tr>
+<tr>
+<td>Системное время</td>
+<td>tizen.time</td>
+<td>Не требует сети</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="отладка-тестирование-и-типичные-ошибки">Отладка, тестирование и типичные ошибки</h2>
+
+<p>Процесс отладки виджетов на Tizen имеет свои особенности, отличающие его от веб-разработки для десктопов или мобильных устройств. Основным инструментом является Samsung SmartHub Emulator, который позволяет запускать и тестировать виджеты на ПК. Однако эмулятор не всегда полностью воспроизводит поведение реального устройства, особенно в части производительности и работы с памятью.</p>
+
+<p>Для подключения отладчика к реальному телевизору необходимо включить режим Developer Mode в настройках Smart Hub. Это позволяет подключаться к устройству по сети и использовать инструменты инспекции кода. Логирование является ключевым инструментом диагностики: все выводы в <code>console.log</code> доступны через отладчик, что помогает отследить ход выполнения скрипта.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте эмулятор для быстрой проверки верстки, но финальное тестирование производительности проводите только на реальном устройстве.</p></aside>
+
+<p>При тестировании стоит обращать внимание на поведение виджета при переключении между приложениями и при выходе в главное меню. Система может приостанавливать выполнение JavaScript-кода виджета для экономии энергии, и важно, чтобы при возврате пользователя виджет корректно возобновлял свою работу. Проверка сценариев прерывания и восстановления состояния обязательна.</p>
+
+<h3>Типичные ошибки</h3>
+
+<ol>
+<li><strong>Игнорирование асинхронности</strong> — попытка использовать данные до завершения сетевого запроса приводит к отображению пустых полей или ошибкам JavaScript; необходимо использовать промисы или callback-функции.</li>
+<li><strong>Утечки памяти в циклах</strong> — создание объектов или подписка на события внутри циклов без их последующей очистки приводит к постепенному замедлению работы телевизора; следует освобождать ресурсы при остановке виджета.</li>
+<li><strong>Некорректные пути к ресурсам</strong> — использование абсолютных путей или путей, не учитывающих структуру упаковки виджета, приводит к отсутствию изображений и стилей; используйте относительные пути относительно корня виджета.</li>
+<li><strong>Отсутствие обработки ошибок сети</strong> — отсутствие блока <code>catch</code> или проверки статуса ответа сервера приводит к «зависанию» виджета в случае проблем с интернетом; всегда предусматривайте сценарий fallback.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкость веб-технологий</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Доступность документации</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Кроссплатформенность подхода</li></ul></div>
+</div></div>
+
+<p>В заключение, создание качественного виджета Zone для платформы Tizen требует внимательного отношения к деталям реализации и глубокого понимания ограничений целевой платформы. Соблюдение правил оптимизации, правильное использование API и тщательное тестирование позволяют создать продукт, который будет стабильно работать на широком парке устройств Samsung.</p>
+
+<p>Успешная реализация проекта зависит от баланса между функциональностью и производительностью. Разработчик должен постоянно держать в уме, что телевизор — это устройство с ограниченным ресурсом, и каждый цикл процессора и каждый байт памяти имеют значение для общей отзывчивости системы.</p>
+
+<p>Следование описанным в инструкции практикам и использование современных методов разработки обеспечат создание надежного и эффективного виджета. Регулярное обновление знаний о новых версиях SDK Tizen и изменение требований магазина приложений Samsung поможет поддерживать актуальность и работоспособность разработанных решений.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Виджеты Zone на Tizen требуют строгой структуры проекта, оптимизации рендеринга и работы с API в рамках ограниченных ресурсов телевизора.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/la/lazy-media-deluxe-dlya-tizen.html" class="pb-related-card">
+                <span class="pb-related-title">Lazy Media Deluxe для Tizen OS: установка через SamyGO</span>
+                <span class="pb-related-desc">Техническое руководство по установке Lazy Media Deluxe на телевизоры Samsung Tizen. Настройка эмуляц</span>
+            </a><a href="/articles/k/ka/kak-drugoj-priyomnik-trikolor-pereoformit-na-sebya.html" class="pb-related-card">
+                <span class="pb-related-title">Как переоформить приемник Триколор на себя: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по переоформлению оборудования Триколор. Смена владельца ресивера, активация па</span>
+            </a><a href="/articles/k/ka/kak-pereoformit-lichnyj-kabinet-trikolor-na-sebya-v-rb.html" class="pb-related-card">
+                <span class="pb-related-title">Как переоформить Триколор на себя в РБ: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по смене владельца договора Триколор в Беларуси. Документы, способы подачи заявки и ре</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-vaj-faj-k-pristavke-selenga-hd950d.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Wi-Fi к приставке Selenga HD950D: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке беспроводной сети на ТВ-приставке Селенга HD950D. Решение проблем</span>
+            </a><a href="/articles/v/vi/videopleer-ne-vosproizvodit-video-v-hd-videobox.html" class="pb-related-card">
+                <span class="pb-related-title">Видеоплеер не работает в HD Videobox: решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок воспроизведения в HD Videobox. Настройка кодеков, очистка </span>
+            </a><a href="/articles/z/zo/zona-mobi-tizen.html" class="pb-related-card">
+                <span class="pb-related-title">Zona Mobi Tizen: Установка и настройка на телевизорах Samsung</span>
+                <span class="pb-related-desc">Полная инструкция по запуску Zona на Tizen OS. Разбор методов установки, альтернативы для Smart TV S</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

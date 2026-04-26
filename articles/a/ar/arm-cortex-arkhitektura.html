@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Архитектура ARM Cortex: Подробный разбор ядер и серий — Мастер Фикс</title>
+    <meta name="description" content="Полный анализ архитектуры ARM Cortex. Сравнение серий A, R, M. Особенности техпроцессов, энергоэффективности и применения в IoT и смартфонах.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/ar/arm-cortex-arkhitektura.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Архитектура ARM Cortex: Подробный разбор ядер и серий">
+    <meta property="og:description" content="Полный анализ архитектуры ARM Cortex. Сравнение серий A, R, M. Особенности техпроцессов, энергоэффективности и применения в IoT и смартфонах.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Архитектура ARM Cortex: Подробный разбор ядер и серий</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#базовые-принципы-архитектуры-arm-и">Базовые принципы архитектуры ARM и</a></li><li><a href="#классификация-процессорных-профилей-cortex">Классификация процессорных профилей Cortex</a></li><li><a href="#технологии-повышения-энергоэффективности-biglittle">Технологии повышения энергоэффективности big.LITTLE</a></li><li><a href="#особенности-реализации-в-микроконтроллерах-и-iot">Особенности реализации в микроконтроллерах и IoT</a></li><li><a href="#типичные-ошибки-при-работе-с-архитектурой-arm">Типичные ошибки при работе с архитектурой ARM</a></li><li><a href="#перспективы-развития-и-новые">Перспективы развития и новые</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-podklyuchit-dvd-pleer-k-stantsii-mikrofonov.html">Как подключить DVD плеер к микшерному пульту</a></li><li><a href="/articles/r/re/rechtsanwalt-v-kontakte-chto-eto.html">Rechtsanwalt в контакте: что это значит и как удалить</a></li><li><a href="/articles/s/sp/spider-poiskovik-v-fork-pleere.html">Spider-поисковик в ForkPlayer: поиск и настройка</a></li><li><a href="/articles/k/ka/kak-delat-skrinshot-v-tik-toke.html">Как сделать скриншот в ТикТоке: инструкция для Android и iOS</a></li><li><a href="/articles/v/v-/v-sistemnykh-prilozheniyakh-net-soobshchenij.html">Пропали системные сообщения: как вернуть уведомления</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Архитектура ARM Cortex: Структура, серии и особенности</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#базовые-принципы-архитектуры-arm-и">Базовые принципы архитектуры ARM и</a></li><li><a href="#классификация-процессорных-профилей-cortex">Классификация процессорных профилей Cortex</a></li><li><a href="#технологии-повышения-энергоэффективности-biglittle">Технологии повышения энергоэффективности big.LITTLE</a></li><li><a href="#особенности-реализации-в-микроконтроллерах-и-iot">Особенности реализации в микроконтроллерах и IoT</a></li><li><a href="#типичные-ошибки-при-работе-с-архитектурой-arm">Типичные ошибки при работе с архитектурой ARM</a></li><li><a href="#перспективы-развития-и-новые">Перспективы развития и новые</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Разработка высокопроизводительного встраиваемого устройства часто сталкивается с жестким ограничением по энергопотреблению, когда стандартные x86 решения оказываются избыточными или слишком «прожорливыми».</p>
+<p>Инженеры оказываются перед выбором, где необходимо балансировать между вычислительной мощностью и тепловыделением, чтобы обеспечить стабильную работу гаджета без активного охлаждения.</p>
+<p>Решение кроется в глубоком понимании структуры процессорных ядер, в частности, линейки Cortex, которая стала стандартом де-факто для мобильной индустрии и интернета вещей.</p>
+
+<h2 id="базовые-принципы-архитектуры-arm-и">Базовые принципы архитектуры ARM и</h2>
+<p>На практике проектирование процессоров для мобильных устройств начинается с выбора системы команд, и в случае с ARM это архитектура RISC (Reduced Instruction Set Computer).</p>
+<p>Если у вас есть опыт работы с десктопными процессорами, вы заметите фундаментальное отличие: здесь используется фиксированная длина инструкции, что значительно упрощает конвейеризацию и предсказание ветвлений.</p>
+<p>Ключевой особенностью является гарвардская модифицированная архитектура, позволяющая одновременно обращаться к памяти для данных и инструкций, что критически важно для выполнения кода в реальном времени.</p>
+
+<h3>Различия между ARMv7 и ARMv8</h3>
+<p>Переход на 64-битную архитектуру стал поворотным моментом, позволившим адресовать объемы памяти, превышающие 4 гигабайта, что было основным для старых смартфонов.</p>
+<p>В версии ARMv8 был полностью переработан набор регистров общего назначения, количество которых увеличилось с 16 до 32, а ширина каждого регистра составила 64 бита.</p>
+<p>Допустим, вы компилируете ядро операционной системы: для ARMv8 доступен расширенный набор SIMD-инструкций NEON, который ускоряет обработку мультимедиа и криптографические вычисления.</p>
+<p>Стоит помнить, что поддержка legacy-кода в новых ядрах осуществляется через переключение режимов работы, что добавляет накладные расходы, но обеспечивает обратную совместимость.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях процессоров 2015 года и старше переход в 64-битный режим мог занимать до 20 тактов, в то время как современные ядра делают это практически мгновенно.</p></aside>
+
+<p>Важно отметить, что <strong>архитектурное семейство</strong> определяет не только набор команд, но и модель памяти, включая механизмы виртуализации и безопасности TrustZone.</p>
+
+<h2 id="классификация-процессорных-профилей-cortex">Классификация процессорных профилей Cortex</h2>
+<p>Для правильного подбора компонента под задачу необходимо четко различать три основных профиля, каждый из которых заточен под свой класс приложений.</p>
+<p>Серия Cortex-A предназначена для приложений с богатым функционалом (Application), где требуется запуск сложных операционных систем вроде Linux или Android.</p>
+<p>Серия Cortex-R ориентирована на системы реального времени (Real-time), где критична детерминированность отклика, например, в контроллерах жестких дисков или автомобильной электронике.</p>
+
+<h3>Сравнение производительности серий A, R и M</h3>
+<p>Микроконтроллеры серии Cortex-M создавались для задач с ограниченными ресурсами, где важны минимальное энергопотребление и низкая стоимость кристалла.</p>
+<p>Если сравнить эти группы в таблице, становится очевидным разрыв в возможностях и целевом назначении каждого типа ядер.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Cortex-A</th>
+<th>Cortex-R / M</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ОС</td>
+<td>Linux, Android, Windows</td>
+<td>RTOS, Bare-metal</td>
+</tr>
+<tr>
+<td>Память</td>
+<td>Гигабайты (DRAM)</td>
+<td>Мегабайты/Килобайты (SRAM)</td>
+</tr>
+<tr>
+<td>Частота</td>
+<td>1 ГГц - 3 ГГц+</td>
+<td>100 МГц - 800 МГц</td>
+</tr>
+</tbody>
+</table>
+
+<p>Выбор между <em>Cortex-R52</em> и <em>Cortex-M7</em> часто зависит от необходимости поддержки виртуализации и требований к безопасности.</p>
+<p>На практике ядра серии R обладают более сложным конвейером и механизмами предсказания, что делает их дороже, но надежнее в критических системах.</p>
+<p>Микроконтроллеры серии M, такие как <em>Cortex-M4</em> или <em>Cortex-M33</em>, доминируют в носимой электронике благодаря способности работать от батарейки годами.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Выбор ядра для проекта</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Определите необходимость запуска ОС</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Оцените требования к времени отклика</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Рассчитайте бюджет по энергопотреблению</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выберите серию (A, R или M)</span></div></div>
+
+<h2 id="технологии-повышения-энергоэффективности-biglittle">Технологии повышения энергоэффективности big.LITTLE</h2>
+<p>Современные мобильные процессоры редко состоят из одинаковых ядер, так как это неэффективно с точки зрения баланса производительности и батареи.</p>
+<p>Технология big.LITTLE (а теперь DynamiQ) позволяет объединять в одном кластере мощные ядра для тяжелых задач и экономичные ядра для фоновых процессов.</p>
+<p>Когда пользователь открывает тяжелое приложение или игру, планировщик задач мгновенно мигрирует потоки на высокопроизводительные ядра Cortex-A78 или X1.</p>
+
+<h3>Механизм миграции задач и DynamiQ</h3>
+<p>В более старых реализациях использовалось переключение целых кластеров, что приводило к задержкам и скачкам потребления энергии.</p>
+<p>С внедрением архитектуры Dynamiq стало возможным смешивать ядра разных типов в одном кластере, что позволяет масштабировать производительность с шагом в одно ядро.</p>
+<p>Если у вас в руках флагманский смартфон, скорее всего, его чипсет использует схему 1+3+4, где одно супер-ядро берет на себя пиковые нагрузки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Конфигурация</th>
+<th>Сценарий использования</th>
+<th>Эффективность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Только Little</td>
+<td>Ожидание, музыка, навигация</td>
+<td>Максимальная</td>
+</tr>
+<tr>
+<td>Big + Little</td>
+<td>Соцсети, браузер, видео</td>
+<td>Баланс</td>
+</tr>
+<tr>
+<td>Только Big</td>
+<td>Рендеринг, игры, компиляция</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Критически важным элементом здесь выступает контроллер прерываний GIC, который корректно распределяет запросы между активными ядрами без потери данных.</p>
+<p>Неправильная настройка порогов переключения может привести к ситуации, когда устройство «греется» даже в простое, выполняя фоновые задачи на мощных ядрах.</p>
+<p>Инженеры компании ARM внедрили механизмы, позволяющие ядрам «засыпать» на уровне отдельных логических блоков, отключая питание неиспользуемых частей конвейера.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка разблокировать загрузчик и изменить частоты ядер без понимания тепловых лимитов может привести к деградации батареи и перегреву устройства.</p></aside>
+
+<p>Стоит отметить, что <strong>гетерогенные вычисления</strong> стали стандартом, и игнорирование этого факта при оптимизации ПО приведет к неэффективному использованию ресурсов.</p>
+
+<h2 id="особенности-реализации-в-микроконтроллерах-и-iot">Особенности реализации в микроконтроллерах и IoT</h2>
+<p>В сегменте интернета вещей требования смещаются в сторону минимизации площади кристалла и стоимости, что диктует использование упрощенных ядер.</p>
+<p>Архитектура ARMv6-M и ARMv7-M, лежащая в основе серий M0 и M3, лишена многих сложных блоков предсказания, характерных для старших собратьев.</p>
+<p>Это позволяет создавать чипы, занимающие площадь менее 12 тысяч логических вентилей, что делает их доступными для массового производства.</p>
+
+<h3>Безопасность и TrustZone для Cortex-M</h3>
+<p>С появлением стандартов безопасности для IoT, таких как PSA (Platform Security Architecture), в микроконтроллеры начали внедрять технологии TrustZone.</p>
+<p>Эта технология аппаратно разделяет память и периферию на безопасный и небезопасный миры, изолируя критические ключи шифрования от основного кода.</p>
+<p>Если устройство подвергается атаке через уязвимость в сетевом стеке, злоумышленник не сможет получить доступ к защищенной области памяти.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При разработке прошивок для IoT всегда используйте аппаратные генераторы случайных чисел (RNG) для создания ключей шифрования, не полагайтесь на программные алгоритмы.</p></aside>
+
+<p>Для разработчиков это означает необходимость разделения кода на две части: доверенную (firmware) и пользовательскую (application), что усложняет отладку.</p>
+<p>Тем не менее, наличие <em>Cortex-M33</em> с поддержкой TrustZone становится обязательным требованием для сертификации многих коммерческих продуктов.</p>
+<p>Встроенные модули защиты от сброса и отладки (Debug Access Port) позволяют блокировать чтение прошивки, предотвращая реверс-инжиниринг устройства.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Микроконтроллеры Cortex-M обеспечивают необходимый баланс между низкой стоимостью, энергоэффективностью и растущими требованиями к безопасности IoT.</p></aside>
+
+<h2 id="типичные-ошибки-при-работе-с-архитектурой-arm">Типичные ошибки при работе с архитектурой ARM</h2>
+<p>При переходе на платформу ARM разработчики часто допускают ошибки, связанные с особенностями выравнивания памяти и порядка байт.</p>
+
+<ol>
+<li><strong>Игнорирование выравнивания данных</strong> — доступ к 32-битной переменной по адресу, не кратному 4, может вызвать исключение HardFault, поэтому структуры данных должны быть выровнены правильно.</li>
+<li><strong>Некорректная работа с прерываниями</strong> — выполнение длительных операций в обработчиках прерываний (ISR) блокирует работу системы реального времени, все тяжелые задачи нужно выносить в основной цикл.</li>
+<li><strong>Неучет Endianness</strong> — хотя ARM поддерживает оба порядка байт, периферия может требовать строго Little-Endian, и смешение форматов приведет к порче данных.</li>
+<li><strong>Отсутствие барьеров памяти</strong> — в многопоточных средах или при работе с DMA отсутствие инструкций барьера (DMB/DSB) может привести к тому, что процессор увидит неактуальные данные в кэше.</li>
+</ol>
+
+<p>Понимание этих нюансов позволяет создавать стабильные системы, которые не уходят в неопределенность при пиковых нагрузках.</p>
+<p>Всегда проверяйте карту памяти и атрибуты регионов при настройке MPU (Memory Protection Unit), чтобы избежать случайной перезаписи критических областей.</p>
+
+<h2 id="перспективы-развития-и-новые">Перспективы развития и новые</h2>
+<p>Эволюция архитектуры не стоит на месте, и внедрение новых расширений направлено на ускорение машинного обучения на периферии.</p>
+<p>Расширения Helium (M-Profile Vector Extension) для серии M позволяют выполнять векторные вычисления, ранее доступные только в DSP или старших ядрах серии A.</p>
+<p>Это открывает возможности для распознавания образов и обработки сигналов непосредственно на микроконтроллере без передачи данных в облако.</p>
+
+<h3>Влияние на рынок вычислений</h3>
+<p>Успех процессоров Apple Silicon на базе ARM доказал, что эта архитектура способна конкурировать с традиционными десктопными решениями по производительности.</p>
+<p>Переход индустрии на техпроцессы 5 нм и менее позволяет размещать десятки ядер на одном кристалле, сохраняя приемлемое тепловыделение.</p>
+<p>Будущее за гетерогенными системами, где CPU, GPU и NPU тесно интегрированы, обмениваясь данными через единую шину с минимальными задержками.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Масштабируемость от кГц до ГГц</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Низкое энергопотребление</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Лицензионная модель</li></ul></div>
+</div></div>
+
+<p>В заключение, архитектура ARM Cortex представляет собой гибкую экосистему, охватывающую весь спектр вычислительных устройств от простых датчиков до мощных серверов.</p>
+<p>Глубокое понимание различий между сериями A, R и M, а также знание принципов работы с памятью и прерываниями, является ключевым навыком для современного инженера-embedded.</p>
+<p>Правильный выбор ядра и грамотная программная оптимизация позволяют создавать продукты, превосходящие конкурентов по автономности и быстродействию.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-podklyuchit-dvd-pleer-k-stantsii-mikrofonov.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить DVD плеер к микшерному пульту</span>
+                <span class="pb-related-desc">Техническое руководство по интеграции DVD плеера в аудиосистему. Схемы подключения, выбор кабелей, н</span>
+            </a><a href="/articles/r/re/rechtsanwalt-v-kontakte-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Rechtsanwalt в контакте: что это значит и как удалить</span>
+                <span class="pb-related-desc">Подробный разбор контакта Rechtsanwalt: вирус, спам или реальный юрист. Инструкция по удалению, блок</span>
+            </a><a href="/articles/s/sp/spider-poiskovik-v-fork-pleere.html" class="pb-related-card">
+                <span class="pb-related-title">Spider-поисковик в ForkPlayer: поиск и настройка</span>
+                <span class="pb-related-desc">Как найти и настроить Spider-поисковик в ForkPlayer. Инструкция по подключению, устранению ошибок и </span>
+            </a><a href="/articles/k/ka/kak-delat-skrinshot-v-tik-toke.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать скриншот в ТикТоке: инструкция для Android и iOS</span>
+                <span class="pb-related-desc">Подробное руководство по созданию скриншотов в TikTok. Обход блокировок, настройки уведомлений и мет</span>
+            </a><a href="/articles/v/v-/v-sistemnykh-prilozheniyakh-net-soobshchenij.html" class="pb-related-card">
+                <span class="pb-related-title">Пропали системные сообщения: как вернуть уведомления</span>
+                <span class="pb-related-desc">Подробная инструкция по восстановлению системных уведомлений на Android. Причины исчезновения, сброс</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-naushniki-bang-olufsen-beoplay-eleven-k-ajfonu.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Bang &amp; Olufsen Beoplay E11 к iPhone: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по сопряжению наушников B&amp;O Beoplay E11 с iOS. Настройка Bluetooth, устранение</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

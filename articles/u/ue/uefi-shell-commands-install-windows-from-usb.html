@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>UEFI Shell: Установка Windows с USB через консоль — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по запуску установки Windows 10/11 из UEFI Shell. Команды, разметка разделов и устранение ошибок загрузки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/u/ue/uefi-shell-commands-install-windows-from-usb.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="UEFI Shell: Установка Windows с USB через консоль">
+    <meta property="og:description" content="Подробное руководство по запуску установки Windows 10/11 из UEFI Shell. Команды, разметка разделов и устранение ошибок загрузки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">UEFI Shell: Установка Windows с USB через консоль</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</a></li><li><a href="#навигация-и-идентификация-устройств-в-uefi-shell">Навигация и идентификация устройств в UEFI Shell</a></li><li><a href="#запуск-установщика-windows-из-командной-строки">Запуск установщика Windows из командной строки</a></li><li><a href="#разметка-диска-и-работа-с-разделами-gpt">Разметка диска и работа с разделами GPT</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#сравнение-методов-установки-и-итоговые-рекомендации">Сравнение методов установки и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-nastroit-igru-mir-tankov-na-slabom-noutbuke-asus-eee-pc-protsess-amd-c-50.html">Настройка World of Tanks на ASUS Eee PC с AMD C-50: Инструкция</a></li><li><a href="/articles/a/as/asus-thunderbolt-noutbuk.html">ASUS Thunderbolt: Настройка, драйверы и устранение неисправностей</a></li><li><a href="/articles/h/hp/hp-noutbuki-s-sensornym-ekranom.html">HP ноутбуки с сенсорным экраном: диагностика и настройка</a></li><li><a href="/articles/k/ka/kak-vklyuchit-klavishi-gromkosti-na-noutbuke.html">Как включить громкость на ноутбуке: полная инструкция</a></li><li><a href="/articles/n/no/noutbuk-acer-aspire-2012.html">Ноутбук Acer Aspire 2012: Ремонт, модернизация и драйверы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Windows через UEFI Shell: Полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</a></li><li><a href="#навигация-и-идентификация-устройств-в-uefi-shell">Навигация и идентификация устройств в UEFI Shell</a></li><li><a href="#запуск-установщика-windows-из-командной-строки">Запуск установщика Windows из командной строки</a></li><li><a href="#разметка-диска-и-работа-с-разделами-gpt">Разметка диска и работа с разделами GPT</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#сравнение-методов-установки-и-итоговые-рекомендации">Сравнение методов установки и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь может столкнуться с ситуацией, когда стандартный графический интерфейс UEFI BIOS не видит загрузочную флешку, несмотря на корректную запись образа Windows. Часто это происходит при работе со специфическим оборудованием серверного класса, старых материнских платах или при использовании нестандартных схем разделов, когда автоматический поиск загрузчика EFI не срабатывает.</p>
+<p>В таких случаях единственным способом запустить инсталлятор операционной системы становится ручное взаимодействие с командной строкой UEFI Shell. Этот низкоуровневый инструмент позволяет напрямую управлять файловой системой EFI, монтировать разделы и принудительно запускать исполняемый файл <code>bootmgfw.efi</code>.</p>
+<p>Использование консоли требует точного понимания структуры каталогов и последовательности команд, так как любая ошибка в синтаксисе приведет к невозможности продолжения загрузки. Ниже представлено детальное описание процесса подготовки, навигации и запуска установщика Windows в среде UEFI Shell.</p>
+
+<h2 id="подготовка-загрузочного-носителя-и-настройка-bios">Подготовка загрузочного носителя и настройка BIOS</h2>
+<p>Переход к ручной установке начинается задолго до появления черной строки ввода команд. Критически важным этапом является правильная подготовка USB-накопителя, который должен быть отформатирован в файловой системе FAT32, так как нативный загрузчик UEFI не умеет читать NTFS без специальных драйверов.</p>
+<p>Если используется стандартный образ Windows, структура папок на флешке должна содержать каталог <code>EFI</code> в корне, внутри которого расположен файл <code>BOOT</code> и целевой исполняемый файл. Для создания такого носителя рекомендуется использовать утилиты вроде <em>Rufus</em> или <em>Ventoy</em>, выбирая схему раздела GPT и целевую систему UEFI.</p>
+<p>Настройки firmware материнской платы также требуют внимания. Необходимо войти в BIOS/UEFI (обычно клавишей Del или F2) и убедиться, что режим <code>Secure Boot</code> временно отключен или настроен на работу с внешними устройствами, а режим загрузки <code>CSM</code> (Legacy) полностью отключен во избежание конфликтов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отключение Secure Boot может потребоваться только в случае, если установочный носитель не имеет цифровой подписи Microsoft. После установки Windows этот параметр следует вернуть в исходное состояние.</p></aside>
+
+<p>После внесения изменений в настройки firmware следует сохранить их и перезагрузить систему. Если автоматическая загрузка с USB не происходит, нужно принудительно вызвать меню выбора устройства (Boot Menu) или, в крайнем случае, запустить встроенную оболочку UEFI Shell, если она присутствует в прошивке.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых серверных платах Supermicro или ASUS UEFI Shell может быть скрыта в разделе «Boot» или «Advanced». Ищите пункт «Launch EFI Shell from filesystem device».</p></aside>
+
+<h2 id="навигация-и-идентификация-устройств-в-uefi-shell">Навигация и идентификация устройств в UEFI Shell</h2>
+<p>После запуска интерфейса командной строки пользователь видит приглашение <code>Shell></code>, за которым следует текущий путь. Первым шагом всегда является определение доступных файловых систем и поиск той, на которой записан установочный дистрибутив Windows.</p>
+<p>Для просмотра списка всех доступных устройств ввода-вывода и смонтированных файловых систем используется команда <code>map</code> или <code>map -r</code>. В выводе команды устройства обозначаются буквенными идентификаторами, такими как <code>FS0:</code>, <code>FS1:</code>, <code>BLK0:</code>. Буквы <code>FS</code> указывают на файловые системы, а <code>BLK</code> — на блочные устройства без файловой структуры.</p>
+<p>Допустим, в списке отображаются устройства <code>FS0</code>, <code>FS1</code> и <code>FS2</code>. Чтобы определить, какая именно флешка содержит установщик, необходимо последовательно переключаться на них командой перехода (например, <code>FS0:</code>) и выполнять команду <code>ls</code> или <code>dir</code> для просмотра содержимого корневого каталога.</p>
+<p>На искомом носителе должны присутствовать папки <code>EFI</code> и <code>Sources</code>. Если после перехода на устройство <code>FS1:</command> команда <code>ls</code> показывает список директорий, среди которых есть <code>EFI</code>, значит, правильное устройство найдено. В противном случае следует вернуться назад командой <code>FS0:</code> (или предыдущим идентификатором) и проверить следующее.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск установщика</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите команду map -r</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите на устройство FS0:</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите ls</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Если папки EFI нет, перейдите на FS1: и повторите</span></div></div>
+
+<h2 id="запуск-установщика-windows-из-командной-строки">Запуск установщика Windows из командной строки</h2>
+<p>Когда целевое устройство идентифицировано и выбрано (курсор стоит после префикса, например, <code>FS1:</code>), можно переходить к запуску исполняемого файла. Путь к загрузчику Windows в среде UEFI всегда стандартен и находится внутри папки <code>EFI</code>.</p>
+<p>Для запуска процесса установки необходимо ввести полный путь к файлу <code>bootmgfw.efi</code>. Если вы находитесь в корне устройства, команда будет выглядеть как переход в папку <code>EFI</code>, затем в <code>BOOT</code> и запуск файла. Однако можно выполнить запуск одной строкой, не меняя текущую директорию.</p>
+<p>На практике чаще всего используется прямой вызов исполняемого файла с указанием полного пути от корня устройства. Это исключает ошибки, связанные с текущим местоположением пользователя в файловой структуре.</p>
+
+<pre><code>FS1:\EFI\BOOT\BOOTX64.EFI</code></pre>
+
+<p>В некоторых случаях, особенно на серверных платформах или при использовании специфических сборок, имя файла может отличаться. Стандартный путь для загрузчика Windows обычно ведет к файлу <code>bootmgfw.efi</code>, который может находиться по пути <code>\EFI\Microsoft\Boot\bootmgfw.efi</code> или быть скопированным в <code>\EFI\BOOT\BOOTX64.EFI</code> для универсальности.</p>
+<p>Если после ввода команды экран мигнет и появится логотип Windows с крутящимися точками, значит, процесс пошел корректно. Система считает необходимые драйверы файловой системы и запустит графический интерфейс установщика.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если команда не выполняется, проверьте расширение файла. В UEFI Shell регистр букв не важен, но расширение .efi обязательно. Попробуйте использовать автодополнение клавишей Tab.</p></aside>
+
+<h2 id="разметка-диска-и-работа-с-разделами-gpt">Разметка диска и работа с разделами GPT</h2>
+<p>Часто запуск установщика через UEFI Shell требуется именно тогда, когда стандартный механизм установки не может создать необходимые разделы или видит диск в неверном формате. В этом случае полезно знать базовые команды для проверки структуры диска перед началом инсталляции.</p>
+<p>Команда <code>diskpart</code> в UEFI Shell работает иначе, чем в среде Windows PE, и может быть недоступна в базовой версии оболочки. Однако команда <code>partinfo</code> позволяет получить сведения о разделах. Для полноценной работы с разделами лучше использовать встроенные средства установщика, вызвав их через Shift+F10 уже после запуска <code>bootmgfw.efi</code>.</p>
+<p>Тем не менее, понимание структуры GPT необходимо. Диск должен иметь раздел EFI System Partition (ESP) размером около 100-500 МБ с файловой системой FAT32. Именно в этот раздел при нормальной установке копиются файлы загрузчика.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>MBR (Legacy)</th>
+<th>GPT (UEFI)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Максимальный размер диска</td>
+<td>2 ТБ</td>
+<td>9.4 ЗБ (практически безлимитно)</td>
+</tr>
+<tr>
+<td>Количество разделов</td>
+<td>4 основных</td>
+<td>128 и более</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если установщик Windows запущен, но видит диск как MBR, установка на GPT-систему будет невозможна без конвертации. В этом случае в окне выбора диска нужно удалить все разделы (<code>Delete</code>), пока диск не станет «Незанятым пространством», и нажать «Создать». Установщик сам создаст нужную структуру GPT и EFI-раздел.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Удаление всех разделов на диске приведет к полной потере данных. Убедитесь, что на диске нет важной информации, или выберите другой накопитель для установки.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>Даже при точном следовании инструкции могут возникнуть проблемы, связанные с совместимостью оборудования или состоянием загрузочного носителя. Анализ кодов ошибок и поведения системы помогает быстро локализовать причину сбоя.</p>
+<p>Ниже приведен список наиболее частых проблем, с которыми сталкиваются администраторы при ручной установке через UEFI Shell, и способы их решения.</p>
+
+<ol>
+<li><strong>Ошибка «Invalid Partition Table» при старте установки</strong> — диск размечен в стиле MBR, а система настроена на UEFI. Решение: Удалить все разделы в окне выбора диска установщика или использовать diskpart для конвертации в GPT.</li>
+<li><strong>Команда map не видит USB-флешку</strong> — отсутствие драйверов USB 3.0/3.1 в прошивке UEFI для старых систем или использование порта USB 3.0 на порте, который не инициализирован. Решение: Переключить флешку в порт USB 2.0 или обновить BIOS.</li>
+<li><strong>Файл bootmgfw.efi не найден или не запускается</strong> — поврежден загрузочный сектор флешки или файл записан неверно. Решение: Перезаписать образ Windows заново, убедившись, что выбрана схема GPT для UEFI.</li>
+<li><strong>Система возвращается в Shell после попытки запуска</strong> — включен Secure Boot, блокирующий неподписанный загрузчик, или файл поврежден. Решение: Отключить Secure Boot в настройках BIOS.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство ошибок при установке через UEFI Shell связаны с несоответствием схемы разделов диска (GPT/MBR) или неправильной записью образа на флешку.</p></aside>
+
+<h2 id="сравнение-методов-установки-и-итоговые-рекомендации">Сравнение методов установки и итоговые рекомендации</h2>
+<p>Использование UEFI Shell является мощным инструментом в арсенале системного администратора, но оно не всегда является оптимальным выбором для рядового пользователя. Существует несколько методов запуска установки, каждый из которых имеет свои преимущества и недостатки.</p>
+<p>Стандартный метод через Boot Menu проще и быстрее, если оборудование исправно. Метод через Shell незаменим при диагностике, восстановлении загрузчика или работе со сложными RAID-массивами, где стандартный загрузчик не видит логические диски.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы загрузки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Автоматическое определение драйверов</li><li>✅ Простота использования</li><li>✅ Минимум действий</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует исправного Boot Menu</li><li>❌ Может не видеть сложные диски</li><li>❌ Зависит от записи флешки</li></ul></div>
+</div></div>
+
+<p>В таблице ниже приведено сравнение ключевых характеристик различных подходов к запуску инсталляции в среде UEFI.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Гибкость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Boot Menu (F12/F8)</td>
+<td>Низкая</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>UEFI Shell (Ручной)</td>
+<td>Высокая</td>
+<td>Максимальная</td>
+</tr>
+<tr>
+<td>PXE (Сеть)</td>
+<td>Очень высокая</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Завершая рассмотрение темы, стоит подчеркнуть, что успешная установка Windows через UEFI Shell базируется на трех китах: корректно записанная флешка в FAT32/GPT, правильное определение буквы устройства командой <code>map</code> и точный путь к файлу <code>.efi</code>. Владение этими навыками позволяет реанимировать систему даже в самых безнадежных ситуациях, когда графический интерфейс BIOS бессилен.</p>
+<p>После успешного запуска установщика дальнейший процесс проходит в стандартном графическом режиме. Не забудьте после завершения установки и первой загрузки вернуться в настройки BIOS и включить <code>Secure Boot</code> для повышения безопасности системы, если это требуется корпоративными политиками.</p>
+<p>Технологии меняются, но принципы работы с низкоуровневыми интерфейсами остаются фундаментом ИТ-инфраструктуры. Умение работать с командной строкой UEFI Shell выделяет специалиста и позволяет решать задачи там, где другие сдаются.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-nastroit-igru-mir-tankov-na-slabom-noutbuke-asus-eee-pc-protsess-amd-c-50.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка World of Tanks на ASUS Eee PC с AMD C-50: Инструкция</span>
+                <span class="pb-related-desc">Полная инструкция по запуску World of Tanks на ноутбуке ASUS Eee PC с процессором AMD C-50. Оптимиза</span>
+            </a><a href="/articles/a/as/asus-thunderbolt-noutbuk.html" class="pb-related-card">
+                <span class="pb-related-title">ASUS Thunderbolt: Настройка, драйверы и устранение неисправностей</span>
+                <span class="pb-related-desc">Полная инструкция по работе с портом Thunderbolt на ноутбуках ASUS. Установка драйверов, настройка B</span>
+            </a><a href="/articles/h/hp/hp-noutbuki-s-sensornym-ekranom.html" class="pb-related-card">
+                <span class="pb-related-title">HP ноутбуки с сенсорным экраном: диагностика и настройка</span>
+                <span class="pb-related-desc">Полное руководство по настройке, калибровке и устранению неисправностей тачскрина на ноутбуках HP. Р</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-klavishi-gromkosti-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить громкость на ноутбуке: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по активации клавиш громкости на ноутбуке. Решения для Windows 10/11, драйверо</span>
+            </a><a href="/articles/n/no/noutbuk-acer-aspire-2012.html" class="pb-related-card">
+                <span class="pb-related-title">Ноутбук Acer Aspire 2012: Ремонт, модернизация и драйверы</span>
+                <span class="pb-related-desc">Полная инструкция по обслуживанию ноутбуков Acer Aspire 2012 года выпуска. Модернизация SSD, установ</span>
+            </a><a href="/articles/s/su/support-acer-n16c1-electronic-characteristics-model-motherboard.html" class="pb-related-card">
+                <span class="pb-related-title">Материнская плата Acer N16C1: Характеристики и ремонт</span>
+                <span class="pb-related-desc">Технический анализ материнской платы Acer N16C1. Электрические схемы, параметры питания процессора, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

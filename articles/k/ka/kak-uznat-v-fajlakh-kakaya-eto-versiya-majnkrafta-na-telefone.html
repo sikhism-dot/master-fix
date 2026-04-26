@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как узнать версию Minecraft PE по файлам на Android — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по определению версии Minecraft в файлах APK, папках OBB и через ADB. Анализ манифеста, хеш-сумм и структуры архивов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-uznat-v-fajlakh-kakaya-eto-versiya-majnkrafta-na-telefone.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как узнать версию Minecraft PE по файлам на Android">
+    <meta property="og:description" content="Техническое руководство по определению версии Minecraft в файлах APK, папках OBB и через ADB. Анализ манифеста, хеш-сумм и структуры архивов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как узнать версию Minecraft PE по файлам на Android</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-структуры-apk-архива-и-файла-androidmanifestxml">Анализ структуры APK-архива и файла AndroidManifest.xml</a></li><li><a href="#исследование-файловой-системы-и-папок-данных-obb">Исследование файловой системы и папок данных OBB</a></li><li><a href="#использование-отладочного-моста-adb-для-получения-метаданных">Использование отладочного моста ADB для получения метаданных</a></li><li><a href="#типичные-ошибки-и-проблемы-при-определении-версии">Типичные ошибки и проблемы при определении версии</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vi/vid-ot-pervogo-litsa-mmorpg-na-android.html">Оптимизация MMORPG от первого лица на Android: настройка</a></li><li><a href="/articles/p/po/poco-x3-skryt-prilozheniya.html">Как скрыть приложения на POCO X3: Полная инструкция</a></li><li><a href="/articles/i/im/imprison-alibi-skachat-na-android.html">Imprison Alibi скачать на Андроид: Инструкция, APK и ошибки</a></li><li><a href="/articles/k/ka/kak-vojti-v-rekaveri-na-android-magnitole-etcar.html">Как войти в рекавери на магнитоле Etcar: полная инструкция</a></li><li><a href="/articles/g/gt/gta-3-definitiv-edishn-na-android-vyletaet.html">GTA 3 Definitive Edition на Android вылетает: решения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Определение версии Minecraft через файловую систему Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-структуры-apk-архива-и-файла-androidmanifestxml">Анализ структуры APK-архива и файла AndroidManifest.xml</a></li><li><a href="#исследование-файловой-системы-и-папок-данных-obb">Исследование файловой системы и папок данных OBB</a></li><li><a href="#использование-отладочного-моста-adb-для-получения-метаданных">Использование отладочного моста ADB для получения метаданных</a></li><li><a href="#типичные-ошибки-и-проблемы-при-определении-версии">Типичные ошибки и проблемы при определении версии</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда на устройстве установлен файл игры без явных признаков версии, встречается достаточно часто, особенно при работе с архивами резервных копий, модификациями или установщиками сторонних сборок. Пользователь сталкивается с файлом <em>com.mojang.minecraftpe.apk</em> или папкой данных, где стандартные методы отображения информации в интерфейсе операционной системы не дают точного цифрового значения релиза.</p>
+<p>В операционной системе Android, в отличие от настольных Windows или macOS, исполняемые файлы и ресурсы упакованы специфическим образом, скрывая метаданные внутри бинарной структуры. Простое переименование или просмотр свойств файла в стандартном проводнике часто показывает лишь номер сборки операционной системы или размер занимаемого места, игнорируя внутреннюю версию программного кода.</p>
+<p>Для точного определения необходимо обратиться к внутренней структуре архива или конфигурационным файлам, которые содержат жестко заданные параметры сборки. Понимание того, где именно хранится эта информация, позволяет не только узнать версию, но и проверить целостность файлов, наличие модификаций или совместимость с конкретными серверами.</p>
+
+<h2 id="анализ-структуры-apk-архива-и-файла-androidmanifestxml">Анализ структуры APK-архива и файла AndroidManifest.xml</h2>
+<p>Основным контейнером для приложения Minecraft на платформе Android является файл с расширением <code>.apk</code>, который представляет собой специализированный ZIP-архив. Внутри этого архива содержится весь необходимый код, ресурсы и, что наиболее важно для данной задачи, манифест приложения. Именно в манифесте прописывается техническая версия программы, которая используется системой для управления обновлениями и зависимостями.</p>
+<p>Для получения доступа к этой информации недостаточно просто открыть файл в архиваторе, так как бинарный манифест не читается человеком без декодирования. Однако существует прямой способ извлечь номер версии, используя стандартные инструменты командной строки или специализированные утилиты для анализа APK. Ключевым параметром здесь является <code>versionName</code>, который соответствует видимой пользователю версии, например, 1.20.50.</p>
+<p>Если у вас есть доступ к компьютеру с установленным SDK Platform Tools, можно использовать команду <code>aapt</code> (Android Asset Packaging Tool). Эта утилита умеет считывать заголовки APK-файлов без их распаковки. Необходимо подключить устройство или передать файл на ПК, после чего выполнить команду в терминале, указав путь к файлу установки.</p>
+
+<pre><code>aapt dump badging com.mojang.minecraftpe.apk | findstr versionName</code></pre>
+
+<p>В результате выполнения команды система выдаст строку, содержащую искомое значение. В некоторых случаях, если пакет <code>aapt</code> недоступен, можно воспользоваться онлайн-анализаторами APK или приложениями-просмотрщиками манифестов прямо на телефоне, которые парсят бинарный XML и выводят его в читаемом виде. Важно обращать внимание именно на поле <code>versionName</code>, так как <code>versionCode</code> представляет собой внутреннее целочисленное значение, используемое магазином Google Play для сортировки обновлений.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Анализ APK через архиватор</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите APK Editor или аналогичный инструмент</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте целевой файл Minecraft PE</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Перейдите во вкладку «Manifest» или «Common Edit»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Найдите строку versionName</span></div></div>
+
+<p>Стоит учитывать, что структура APK может быть разделена на базовый пакет и конфигурационные сплиты (split configs), особенно в современных версиях Android, использующих формат <code>.apks</code> или <code>.xapk</code>. В таких случаях основная версия указывается в базовом файле, но для полной проверки совместимости может потребоваться анализ всех компонентов сборки, так как ресурсы текстур или языковые пакеты могут обновляться независимо от основного кода.</p>
+
+<h3>Использование APK Analyzer и онлайн-инструментов</h3>
+<p>Для пользователей, не имеющих возможности использовать командную строку, существуют графические интерфейсы, встроенные в среду разработки Android Studio или доступные как отдельные веб-сервисы. Эти инструменты позволяют загрузить файл и визуализировать его содержимое, включая таблицу версий. Процесс анализа занимает несколько секунд и не требует глубоких знаний структуры Android-пакетов.</p>
+<p>При использовании онлайн-сервисов необходимо проявлять осторожность, так как загружаемый файл может содержать личные данные или модифицированный код, который не следует передавать третьим лицам. Локальные анализаторы, работающие непосредственно на устройстве, в этом плане безопаснее и обеспечивают мгновенный результат без загрузки больших объемов трафика.</p>
+<p>В таблице ниже приведено сравнение методов анализа APK-файла для определения версии:</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Требуемые навыки</th>
+<th>Точность данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Командная строка (aapt)</td>
+<td>Высокие</td>
+<td>100% (сырые данные)</td>
+</tr>
+<tr>
+<td>APK Analyzer (GUI)</td>
+<td>Средние</td>
+<td>100% (декодированный XML)</td>
+</tr>
+<tr>
+<td>Онлайн-сервисы</td>
+<td>Низкие</td>
+<td>Зависит от сервиса</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="исследование-файловой-системы-и-папок-данных-obb">Исследование файловой системы и папок данных OBB</h2>
+<p>Если исполняемый файл APK недоступен или модифицирован, версию игры можно попытаться определить через анализ файлов данных, расположенных в системных директориях. На Android данные приложений обычно хранятся по пути <code>/Android/obb/com.mojang.minecraftpe/</code> или <code>/Android/data/com.mojang.minecraftpe/</code>. В этих директориях находятся большие архивы ресурсов, имена которых часто содержат номер версии.</p>
+<p>Файлы с расширением <code>.obb</code> (Opaque Binary Blob) представляют собой дополнительные данные, загружаемые отдельно от основного приложения. Именование таких файлов часто следует шаблону, где присутствует номер версии. Например, файл может называться <code>main.2050.com.mojang.minecraftpe.obb</code>, где <code>2050</code> соответствует внутреннему коду версии (versionCode), который можно сопоставить с публичным релизом.</p>
+<p>Для доступа к этим папкам на современных версиях Android (начиная с 11 и выше) потребуются специальные разрешения или использование файлового менеджера с правами доступа к системным разделам, так как стандартный доступ к папке <code>/Android/</code> ограничен политиками безопасности Scoped Storage. Без root-прав или использования ADB (Android Debug Bridge) прямой доступ может быть затруднен.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Манипуляции с файлами в папке /Android/data/ могут привести к потере прогресса или некорректной работе игры. Перед любым редактированием создайте полную резервную копию папки.</p></aside>
+
+<p>Внутри папок данных также могут присутствовать лог-файлы или конфигурационные текстовые файлы, которые создаются в момент первого запуска или обновления. Хотя Minecraft PE не хранит версию в открытом <code>settings.json</code> в явном виде, косвенные признаки, такие как структура папок миров или версии библиотек в подкаталогах, могут указать на примерный период выпуска версии.</p>
+<p>Допустим, вы нашли файл <code>version.txt</code> или аналогичный в модифицированной сборке. В официальных версиях таких файлов нет, но мододелы часто добавляют их для идентификации сборки. Если же речь идет об официальной версии, основным маркером остается имя OBB-файла и его размер, который меняется с каждым крупным обновлением.</p>
+
+<h3>Анализ имен файлов и хеш-сумм</h3>
+<p>Опытные пользователи часто используют метод сравнения хеш-сумм (MD5 или SHA-1) известных версий с имеющимся файлом. Существуют базы данных, где собраны хеши официальных APK-файлов для всех версий Minecraft PE. Вычислив хеш-сумму вашего файла через любой калькулятор хешей на телефоне, можно найти точное совпадение в базе и узнать версию.</p>
+<p>Этот метод наиболее надежен, если файл был скачан из непроверенного источника и вы хотите убедиться в его подлинности. Изменение даже одного байта в файле полностью меняет его хеш-сумму, поэтому метод гарантирует, что файл не был поврежден при загрузке или намеренно изменен.</p>
+<p>Сравнение размеров файлов также может дать примерное понимание. С выходом новых версий, добавлением биомов или мобов, размер основного файла данных имеет тенденцию к увеличению. Резкое уменьшение размера может свидетельствовать об удалении ресурсов или использовании урезанной версии игры.</p>
+
+<h2 id="использование-отладочного-моста-adb-для-получения-метаданных">Использование отладочного моста ADB для получения метаданных</h2>
+<p>Наиболее профессиональным и точным способом получения информации об установленной версии является использование отладочного моста Android (ADB). Этот метод позволяет запросить у системы точные данные о пакете, даже если он скрыт от пользователя или имеет нестандартную структуру именования. ADB работает через USB-соединение или по Wi-Fi (на Android 11+).</p>
+<p>Для начала работы необходимо включить режим разработчика на устройстве и активировать отладку по USB в меню <code>Настройки → Система → Для разработчиков</code>. После подключения к компьютеру и установки драйверов, можно отправлять команды непосредственно в операционную систему телефона. Это позволяет получать информацию в реальном времени без анализа файлов вручную.</p>
+<p>Команда <code>dumpsys</code> является мощным инструментом для получения подробной информации о состоянии системы и запущенных службах. В контексте определения версии Minecraft нас интересует вывод информации о конкретном пакете. Система сама декодирует манифест и предоставляет данные в удобном для чтения формате.</p>
+
+<pre><code>adb shell dumpsys package com.mojang.minecraftpe | grep versionName</code></pre>
+
+<p>Выполнение данной команды вернет строку, содержащую текущую установленную версию. Преимущество метода в том, что он показывает именно ту версию, которую «видит» система, учитывая все возможные обновления «на лету» (Instant Run) или динамические особенности среды выполнения ART. Это исключает ошибки, связанные с ручным переименованием файлов пользователем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Если команда grep не работает (например, на Windows без Unix-утилит), используйте полный вывод dumpsys и ищите строку versionName вручную в текстовом потоке.</p></aside>
+
+<h3>Команды для удаленного доступа и скриптов</h3>
+<p>Для автоматизации процесса проверки версий на множестве устройств или в рамках скриптов мониторинга можно использовать более сложные конструкции ADB. Например, можно выгрузить весь список пакетов и отфильтровать только те, что относятся к Minecraft, получив сразу и версию кода, и версию имени.</p>
+<p>Также существует возможность запросить информацию о пути к APK-файлу, что полезно, если на устройстве установлено несколько профилей или клонированных приложений. Команда <code>pm path</code> укажет точное местоположение исполняемого файла, который затем можно проанализировать методами, описанными в первом разделе.</p>
+<p> При первом подключении на экране телефона появится запрос на разрешение отладки, который необходимо подтвердить. Без этого шага команды выполняться не будут, что является мерой безопасности для предотвращения несанкционированного доступа к данным.</p>
+
+<h2 id="типичные-ошибки-и-проблемы-при-определении-версии">Типичные ошибки и проблемы при определении версии</h2>
+<p>В процессе анализа файлов пользователи часто сталкиваются с misleading-информацией, которая приводит к неверным выводам. Понимание природы этих ошибок помогает избежать путаницы и потери времени. Ниже приведены наиболее распространенные заблуждения.</p>
+
+<ol>
+<li><strong>Путаница между versionCode и versionName</strong> — пользователи часто принимают внутренний числовой код (например, 2050) за версию игры (1.20.50). Числовой код используется системой для сравнения обновлений и не всегда линейно соответствует публичной нумерации, особенно в бета-версиях.</li>
+<li><strong>Доверие к имени файла</strong> — файл может называться <em>Minecraft_1.21.apk</em>, но внутри содержать код версии 1.19. Переименование файла в проводнике не меняет его содержимое, поэтому полагаться на имя файла категорически нельзя.</li>
+<li><strong>Игнорирование архитектуры процессора</strong> — при анализе APK важно учитывать, что файл может быть универсальным (fat binary) или заточенным под конкретную архитектуру (arm64-v8a, armeabi-v7a). Попытка установить версию, не совместимую с процессором, приведет к ошибке, даже если номер версии формально верен.</li>
+<li><strong>Анализ кэшированных данных</strong> — иногда в папках остаются старые версии OBB-файлов после обновления. Проверка даты модификации и сопоставление её с датой выхода версий помогает избежать анализа устаревших файлов.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Ручной анализ файлов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Не требует ПК</li><li>✅ Работает без интернета</li><li>✅ Понятная структура</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует времени</li><li>❌ Высокий риск ошибки</li><li>❌ Нужны специальные приложения</li></ul></div>
+</div></div>
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование ADB</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Максимальная точность</li><li>✅ Автоматизация</li><li>✅ Доступ к системным данным</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Нужен компьютер</li><li>❌ Требует настройки USB-отладки</li><li>❌ Сложнее для новичка</li></ul></div>
+</div></div>
+
+<p>Таблица ниже демонстрирует соответствие внутренних кодов версий и публичных релизов для последних обновлений, что поможет в ручной сверке:</p>
+
+<table>
+<thead>
+<tr>
+<th>Публичная версия</th>
+<th>Примерный versionCode</th>
+<th>Год выпуска</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.20.50+</td>
+<td>2050+</td>
+<td>2023-2026</td>
+</tr>
+<tr>
+<td>1.19.0 - 1.19.x</td>
+<td>11900 - 11999</td>
+<td>2022-2023</td>
+</tr>
+<tr>
+<td>1.18.0 - 1.18.x</td>
+<td>11800 - 11899</td>
+<td>2021-2022</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+<p>Определение версии Minecraft PE через файловую систему требует внимательного подхода и понимания структуры Android-приложений. Наиболее надежным методом остается анализ APK-файла через утилиты вроде <code>aapt</code> или специализированные просмотрщики манифеста, которые показывают точное значение <code>versionName</code>. Использование ADB предоставляет аналогичную точность для уже установленных приложений, позволяя получать данные напрямую от системы.</p>
+<p>При работе с файлами данных (OBB) и именами архивов следует проявлять осторожность, так как эти данные могут быть изменены пользователем или не соответствовать актуальной версии кода. Косвенные методы, такие как проверка хеш-сумм или размера файлов, хороши для быстрой предварительной оценки, но не гарантируют стопроцентной точности без перекрестной проверки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда проверяйте цифровую подпись APK-файла, если версия кажется подозрительной. Официальные версии подписаны ключом Mojang AB, и любые отклонения могут указывать на модифицированную сборку.</p></aside>
+
+<p>Владение этими техническими навыками позволяет не только решать проблемы совместимости, но и глубже понимать архитектуру мобильных приложений. Грамотное использование инструментов анализа файлов превращает хаотичный набор данных в структурированную информацию, необходимую для администрирования игровых серверов, разработки модов или просто поддержания порядка в цифровой библиотеке устройств.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Точную версию Minecraft на Android можно узнать только через анализ внутреннего манифеста APK-файла или через команды системной отладки ADB, игнорируя внешние имена файлов.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vi/vid-ot-pervogo-litsa-mmorpg-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Оптимизация MMORPG от первого лица на Android: настройка</span>
+                <span class="pb-related-desc">Техническое руководство по устранению лагов, настройке управления и графики в MMORPG от первого лица</span>
+            </a><a href="/articles/p/po/poco-x3-skryt-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Как скрыть приложения на POCO X3: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по скрытию приложений на POCO X3 NFC и Pro. Используем встроенные функции MIUI и стор</span>
+            </a><a href="/articles/i/im/imprison-alibi-skachat-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Imprison Alibi скачать на Андроид: Инструкция, APK и ошибки</span>
+                <span class="pb-related-desc">Подробное руководство по установке Imprison Alibi на Android. Где скачать APK, как обойти блокировки</span>
+            </a><a href="/articles/k/ka/kak-vojti-v-rekaveri-na-android-magnitole-etcar.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в рекавери на магнитоле Etcar: полная инструкция</span>
+                <span class="pb-related-desc">Подробный технический гид по входу в Recovery Mode на Android-магнитолах Etcar. Сброс, перепрошивка,</span>
+            </a><a href="/articles/g/gt/gta-3-definitiv-edishn-na-android-vyletaet.html" class="pb-related-card">
+                <span class="pb-related-title">GTA 3 Definitive Edition на Android вылетает: решения</span>
+                <span class="pb-related-desc">Если GTA 3 Definitive Edition вылетает на Android, выполните пошаговую диагностику. Устранение ошибо</span>
+            </a><a href="/articles/k/ka/kak-ubrat-zamazannuyu-chast-na-fotografii-na-androide.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать замазанную часть на фото в Android: методы</span>
+                <span class="pb-related-desc">Техническое руководство по удалению цензуры, размытия и артефактов на фото в Android. Анализ алгорит</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

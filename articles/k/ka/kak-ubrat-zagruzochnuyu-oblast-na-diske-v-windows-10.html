@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как удалить раздел EFI или загрузчик в Windows 10 — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по безопасному удалению зарезервированных разделов и загрузочных областей в Windows 10 через Diskpart.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-ubrat-zagruzochnuyu-oblast-na-diske-v-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как удалить раздел EFI или загрузчик в Windows 10">
+    <meta property="og:description" content="Инструкция по безопасному удалению зарезервированных разделов и загрузочных областей в Windows 10 через Diskpart.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как удалить раздел EFI или загрузчик в Windows 10</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-структуры-дисков-и-идентификация-разделов">Диагностика структуры дисков и идентификация разделов</a></li><li><a href="#подготовка-командной-строки-и-запуск-diskpart">Подготовка командной строки и запуск Diskpart</a></li><li><a href="#метод-удаления-через-утилиту-diskpart">Метод удаления через утилиту Diskpart</a></li><li><a href="#очистка-загрузочной-записи-bcd-после-удаления">Очистка загрузочной записи BCD после удаления</a></li><li><a href="#альтернативные-методы-и-сторонние-утилиты">Альтернативные методы и сторонние утилиты</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/r/ri/riftcat-i-trinus-ne-podklyuchayutsya-po-usb-k-noutu.html">RiftCat и Trinus: решение проблем USB-подключения</a></li><li><a href="/articles/k/ka/kak-v-noutbuke-ochistit-kesh.html">Как в ноутбуке очистить кэш: полное руководство по ускорению</a></li><li><a href="/articles/a/ac/acer-bios-windows-boot-manager.html">Acer BIOS и Windows Boot Manager: настройка и загрузка</a></li><li><a href="/articles/k/ka/kak-podklyuchit-tachpad-na-noutbuke-irbis.html">Как включить тачпад на ноутбуке Irbis: полное руководство</a></li><li><a href="/articles/k/ka/kak-aktivirovat-igrovoj-rezhim-windows-7.html">Как активировать игровой режим в Windows 7: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Удаление загрузочной области и зарезервированных разделов в Windows 10</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-структуры-дисков-и-идентификация-разделов">Диагностика структуры дисков и идентификация разделов</a></li><li><a href="#подготовка-командной-строки-и-запуск-diskpart">Подготовка командной строки и запуск Diskpart</a></li><li><a href="#метод-удаления-через-утилиту-diskpart">Метод удаления через утилиту Diskpart</a></li><li><a href="#очистка-загрузочной-записи-bcd-после-удаления">Очистка загрузочной записи BCD после удаления</a></li><li><a href="#альтернативные-методы-и-сторонние-утилиты">Альтернативные методы и сторонние утилиты</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке расширить системный диск C или объединить разделы пользователи часто сталкиваются с ситуацией, когда кнопка «Расширить том» в стандартной утилите управления дисками неактивна. Это происходит из-за наличия небольшого зарезервированного раздела, расположенного между основным диском и неразмеченной областью, которую необходимо присоединить. Обычно это скрытая область, содержащая файлы загрузчика или данные восстановления системы.</p>
+<p>Стандартными средствами графического интерфейса удалить этот раздел невозможно, так как система блокирует операции с критически важными данными. Для решения задачи требуется использование командной строки и утилиты Diskpart, позволяющей работать с дисковой структурой на низком уровне. Важно понимать, что удаление загрузочной области на активном системном диске приведет к невозможности запуска операционной системы.</p>
+<p>Операция по очистке структуры разделов должна выполняться только после создания полной резервной копии важных данных. Любое вмешательство в таблицу разделов несет в себе потенциальные риски, особенно если пользователь не до конца понимает назначение удаляемых областей. В данной инструкции рассматриваются методы работы с EFI-разделами и зарезервированными областями BIOS.</p>
+
+<h2 id="диагностика-структуры-дисков-и-идентификация-разделов">Диагностика структуры дисков и идентификация разделов</h2>
+
+<p>Первым шагом является точное определение типа файловой системы и назначения каждого раздела на диске. В операционной системе <em>Windows 10</em> используется два основных стандарта разметки: MBR для Legacy BIOS и GPT для UEFI. От этого зависит название и расположение загрузочной области. В современных компьютерах чаще всего встречается стандарт GPT, где загрузчик расположен на разделе с файловой системой FAT32, который обычно имеет объем от 100 до 500 МБ.</p>
+<p>Для визуального анализа текущей ситуации следует запустить встроенный инструмент управления дисками. Для этого используется сочетание клавиш <code>Win + R</code>, после чего в поле ввода вводится команда <code>diskmgmt.msc</code>. Открывшееся окно покажет графическое представление всех физических дисков и логических томов. Зарезервированный раздел часто помечен как «Зарезервировано системой» или «EFI System Partition».</p>
+<p>Если графический интерфейс не отображает букву диска или скрывает тип файловой системы, необходимо прибегнуть к более детальному анализу через командную строку. Запуск утилиты <code>diskpart</code> позволит получить полный список всех объектов дисковой подсистемы. Это критически важно, чтобы случайно не выбрать для удаления диск с данными или системный том.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Удаление раздела с меткой «Системный» или «Загрузочный» на текущем рабочем диске приведет к потере возможности запуска Windows. Убедитесь, что удаляете раздел на дополнительном диске или после переноса загрузчика.</p></aside>
+
+<p>В процессе диагностики стоит обратить внимание на размер удаляемого тома. Обычно загрузочный раздел EFI занимает около 100–500 МБ, в то время как раздел восстановления может достигать нескольких гигабайт. Путаница между этими разделами может привести к удалению инструментов отката системы, что нежелательно, хотя и не критично для текущей работы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип раздела</th>
+<th>Файловая система</th>
+<th>Типичный размер</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EFI System</td>
+<td>FAT32</td>
+<td>100–500 МБ</td>
+<td>Загрузчик UEFI</td>
+</tr>
+<tr>
+<td>Зарезервировано системой</td>
+<td>NTFS</td>
+<td>100–500 МБ</td>
+<td>Загрузчик BIOS (MBR)</td>
+</tr>
+<tr>
+<td>Раздел восстановления</td>
+<td>NTFS</td>
+<td>450–800 МБ</td>
+<td>Среда восстановления WinRE</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="подготовка-командной-строки-и-запуск-diskpart">Подготовка командной строки и запуск Diskpart</h2>
+
+<p>Для выполнения операций по удалению защищенных разделов требуются права администратора. Стандартный запуск командной строки в пользовательском режиме не позволит внести изменения в структуру диска. Необходимо найти приложение <code>cmd</code> или <code>PowerShell</code> через меню «Пуск», нажать правой кнопкой мыши и выбрать пункт «Запуск от имени администратора».</p>
+<p>После открытия окна консоли вводится команда <code>diskpart</code>. Система запросит подтверждение контроля учетных записей (UAC), после чего откроется отдельный сеанс утилиты управления дисками, о чем будет свидетельствовать измененная строка приглашения на ввод команд. Далее следует ввести команду <code>list disk</code>, которая выведет список всех физических дисков, подключенных к компьютеру.</p>
+<p>Критически важным моментом является правильная идентификация номера диска, на котором находится целевой раздел. Ориентироваться следует по объему диска. Например, если нужно убрать загрузочную область на дополнительном терабайтном диске, в списке он будет обозначен соответствующим размером, например, 931 ГБ. Выбор неверного диска приведет к потере данных на другом накопителе.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Идентификация диска</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите list disk</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Определите номер по размеру</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите select disk X (где X — номер)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите list partition</span></div></div>
+
+<p>После выбора диска командой <code>select disk N</code> (где N — номер диска) необходимо вывести список разделов командой <code>list partition</code>. Это действие покажет нумерацию логических областей внутри выбранного физического носителя. Именно номер раздела (Partition) понадобится для дальнейшего удаления.</p>
+
+<h2 id="метод-удаления-через-утилиту-diskpart">Метод удаления через утилиту Diskpart</h2>
+
+<p>Стандартный графический интерфейс Windows блокирует удаление системных разделов, помечая их как защищенные. Командная строка и утилита <code>diskpart</code> позволяют обойти это ограничение, принудительно удаляя том. После того как выбран нужный диск и определен номер целевого раздела (например, раздела EFI или зарезервированного), его необходимо выбрать командой <code>select partition M</code>, где M — номер раздела.</p>
+<p>Попытка удалить выбранный раздел стандартной командой <code>delete partition</code> может завершиться ошибкой с сообщением о том, что раздел является системным или зарезервированным. В этом случае требуется использование дополнительного параметра <code>override</code>. Эта команда игнорирует предупреждения системы безопасности и принудительно стирает запись о разделе из таблицы.</p>
+<p>Выполнение команды <code>delete partition override</code> происходит мгновенно, без дополнительных подтверждений. Сразу после этого неразмеченное пространство становится доступным для расширения соседних томов. Если целью было объединение пространства с диском C, теперь кнопка «Расширить том» в управлении дисками должна стать активной.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команда override работает только с разделами, не являющимися текущим загрузочным томом запущенной операционной системы. Удалить активный системный раздел «на лету» не получится даже этим методом.</p></aside>
+
+<p>Для пользователей, предпочитающих визуальный интерфейс, существует альтернативный метод через управление дисками, но он требует предварительной подготовки. Иногда помогает присвоение буквы раздела через <code>diskpart</code> (команда <code>assign letter=Z</code>), после чего раздел становится видимым в Проводнике, но удалить его через контекстное меню все равно не удастся без использования консольных команд удаления.</p>
+
+<pre><code>select disk 1
+<p>select partition 1</p>
+<p>delete partition override</code></pre></p>
+
+<h2 id="очистка-загрузочной-записи-bcd-после-удаления">Очистка загрузочной записи BCD после удаления</h2>
+
+<p>Просто удалить раздел недостаточно, если речь идет о диске, который ранее использовался для загрузки системы. В хранилище конфигурации загрузки (BCD) могут остаться записи, указывающие на несуществующий теперь раздел. Это может привести к увеличению времени загрузки или появлению лишних пунктов в меню выбора ОС при старте компьютера.</p>
+<p>Для очистки загрузочных записей используется утилита <code>bootrec</code> или <code>bcdedit</code>. Однако, если удалялся раздел на дополнительном диске, достаточно проверить, не пытается ли BIOS/UEEFI обращаться к нему. В случае, если удалялся раздел EFI на единственном диске, система перестанет загружаться, и потребуется восстановление загрузчика с установочной флешки.</p>
+<p>Если же целью было удаление старого загрузчика Linux или предыдущей версии Windows, после очистки раздела рекомендуется запустить команду <code>bcdedit /enum firmware</code> для просмотра записей UEFI. Удаление ненужных записей выполняется командой <code>bcdedit /delete {идентификатор}</code>, но это требует осторожности и понимания структуры идентификаторов.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование Diskpart</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Полный контроль над структурой</li><li>✅ Возможность удаления защищенных разделов</li><li>✅ Работа на уровне байтов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокий риск ошибки при невнимательности</li><li>❌ Отсутствие визуального интерфейса</li><li>❌ Требует точного ввода команд</li></ul></div>
+</div></div>
+
+<p> Их ярлыки и записи в реестре могут ссылаться на пути, которые больше не актуальны или требуют переустановки. Поэтому очистка загрузочной области целесообразна только на дисках, предназначенных исключительно для хранения данных.</p>
+
+<h2 id="альтернативные-методы-и-сторонние-утилиты">Альтернативные методы и сторонние утилиты</h2>
+
+<p>Для тех, кто не желает использовать командную строку, существуют специализированные программы управления разделами, такие как <em>AOMEI Partition Assistant</em>, <em>MiniTool Partition Wizard</em> или <em>GParted</em>. Эти инструменты обладают более гибким графическим интерфейсом и часто позволяют удалять зарезервированные разделы простым нажатием правой кнопки мыши и выбором пункта «Delete».</p>
+<p>Преимущество стороннего софта заключается в возможности визуализации зависимостей между разделами и автоматическом перемещении данных для объединения свободного пространства. Некоторые программы предлагают функцию «Wipe Partition», которая не только удаляет раздел, но и перезаписывает область нулями, что полезно при продаже диска.</p>
+<p>Однако использование стороннего ПО также требует загрузки с загрузочного носителя, если удаляется системный раздел. В бесплатных версиях многих программ функционал работы с системными разделами может быть ограничен, требуя покупки Pro-версии. Кроме того, доверять стороннему ПО критическую операцию стоит только после проверки источника загрузки программы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Перед использованием сторонних программ создайте точку восстановления системы. Это позволит откатить изменения реестра и драйверов, если программа внесет нежелательные правки в загрузчик.</p></aside>
+
+<p>Встроенные средства Windows, такие как <code>diskpart</code>, остаются наиболее надежным и бесплатным инструментом, не требующим установки дополнительного программного обеспечения. Они гарантированно совместимы с любой версией <em>Windows 10</em> и <em>Windows 11</em>, в то время как сторонние утилиты могут иметь проблемы с новыми файловыми системами или схемами разделов.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе удаления загрузочных областей пользователи часто допускают ошибки, которые могут привести к неработоспособности системы или потере данных. Понимание этих ошибок поможет избежать фатальных последствий.</p>
+<ol>
+<li><strong>Удаление активного раздела текущего диска</strong> — попытка удалить раздел EFI, с которого запущена текущая ОС, приведет к немедленной потере доступа к системе при следующей перезагрузке. Правильно: удалять разделы только на дополнительных дисках или после загрузки с внешнего носителя.</li>
+<li><strong>Выбор неверного номера диска в Diskpart</strong> — нумерация дисков может меняться при подключении USB-накопителей. Ошибка в выборе диска (например, Disk 1 вместо Disk 2) приведет крованию не того накопителя. Правильно: всегда перепроверять объем диска командой <code>list disk</code> перед выбором.</li>
+<li><strong>Игнорирование резервного копирования</strong> — работа с таблицей разделов всегда несет риски сбоя питания или ошибки контроллера. Правильно: перед началом операций создать образ системы или скопировать важные данные на внешний носитель.</li>
+<li><strong>Попытка удалить раздел восстановления без альтернативы</strong> — удаление раздела Recovery лишит возможности откатить систему к заводским настройкам без установочной флешки. Правильно: оценить необходимость этого раздела, особенно на ноутбуках, где нет установочных дисков.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Удаление загрузочной области требует использования утилиты Diskpart с правами администратора и командой override, но несет риски потери данных при ошибочном выборе диска.</p></aside>
+
+<p>Завершая обзор, стоит подчеркнуть, что удаление зарезервированных разделов — это штатная процедура при перераспределении дискового пространства, но она требует высокой концентрации внимания. Использование команды <code>delete partition override</code> является мощным инструментом, который обходит защитные механизмы Windows, поэтому каждое действие должно быть осознанным.</p>
+<p>Если целью операции было освобождение места на диске C, то после удаления зарезервированного раздела необходимо сразу же расширить основной том, чтобы незанятое пространство не было занято другими процессами или программами. В случае возникновения проблем с загрузкой после манипуляций, единственным решением остается восстановление загрузчика с помощью установочного носителя Windows.</p>
+<p>Грамотное управление дисковой структурой позволяет оптимизировать работу компьютера и эффективно использовать доступный объем памяти. Соблюдение последовательности действий и проверка выбранных параметров перед выполнением команды удаления гарантируют успешный результат без потери важных данных.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/r/ri/riftcat-i-trinus-ne-podklyuchayutsya-po-usb-k-noutu.html" class="pb-related-card">
+                <span class="pb-related-title">RiftCat и Trinus: решение проблем USB-подключения</span>
+                <span class="pb-related-desc">Полный гид по устранению ошибок USB в RiftCat и Trinus. Настройка драйверов, ADB, портов и сброс кон</span>
+            </a><a href="/articles/k/ka/kak-v-noutbuke-ochistit-kesh.html" class="pb-related-card">
+                <span class="pb-related-title">Как в ноутбуке очистить кэш: полное руководство по ускорению</span>
+                <span class="pb-related-desc">Узнайте, как правильно очистить кэш в ноутбуке на Windows и macOS. Подробные инструкции по очистке б</span>
+            </a><a href="/articles/a/ac/acer-bios-windows-boot-manager.html" class="pb-related-card">
+                <span class="pb-related-title">Acer BIOS и Windows Boot Manager: настройка и загрузка</span>
+                <span class="pb-related-desc">Как войти в BIOS Acer, настроить Windows Boot Manager и исправить ошибки загрузки. Полная инструкция</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-tachpad-na-noutbuke-irbis.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить тачпад на ноутбуке Irbis: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по активации тачпада на Irbis. Решение проблем с драйверами, настройками Window</span>
+            </a><a href="/articles/k/ka/kak-aktivirovat-igrovoj-rezhim-windows-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как активировать игровой режим в Windows 7: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке производительности и активации игрового режима в Windows 7. Оптим</span>
+            </a><a href="/articles/a/aa/aap-server-driver-skachat-s-ofitsialnogo-sajta-majkrosoft.html" class="pb-related-card">
+                <span class="pb-related-title">AAP Server Driver: поиск и установка драйверов Microsoft</span>
+                <span class="pb-related-desc">Инструкция по поиску, скачиванию и установке драйверов через центр обновлений Microsoft. Решение про</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

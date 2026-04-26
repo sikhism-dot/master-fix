@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Судоку легкий уровень: правила, стратегии и алгоритмы решения — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по решению судоку легкого уровня. Базовые алгоритмы, методы сканирования, логика заполнения ячеек и типичные ошибки новичков.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/su/sudoku-legkij-uroven.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Судоку легкий уровень: правила, стратегии и алгоритмы решения">
+    <meta property="og:description" content="Техническое руководство по решению судоку легкого уровня. Базовые алгоритмы, методы сканирования, логика заполнения ячеек и типичные ошибки новичков.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Судоку легкий уровень: правила, стратегии и алгоритмы решения</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#базовая-архитектура-и-правила-валидации-данных">Базовая архитектура и правила валидации данных</a></li><li><a href="#методология-первичного-сканирования-и-исключения">Методология первичного сканирования и исключения</a></li><li><a href="#техники-прямого-заполнения-и-кандидаты">Техники прямого заполнения и кандидаты</a></li><li><a href="#сравнительный-анализ-методов-решения">Сравнительный анализ методов решения</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/ge/get-apps-ne-obnovlyaetsya-prichina.html">GetApps не обновляется: причины и решение проблемы</a></li><li><a href="/articles/n/no/novex-kak-zajti-v-nastrojki-bez-pulta.html">Novex: вход в настройки без пульта — полная инструкция</a></li><li><a href="/articles/v/vi/virtualnaya-karta-trojka-kak-udalit.html">Как удалить виртуальную карту Тройка: полная инструкция</a></li><li><a href="/articles/v/v-/v-prilozhenii-sluzhba-nfc-proizoshel-sboj-v-rabote-prilozheniya.html">Ошибка NFC: как исправить сбой службы на Android</a></li><li><a href="/articles/j/jv/jvc-kak-nastroit-bez-pulta.html">Как настроить телевизор JVC без пульта: все методы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Судоку легкий уровень: алгоритмический подход и базовые стратегии</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#базовая-архитектура-и-правила-валидации-данных">Базовая архитектура и правила валидации данных</a></li><li><a href="#методология-первичного-сканирования-и-исключения">Методология первичного сканирования и исключения</a></li><li><a href="#техники-прямого-заполнения-и-кандидаты">Техники прямого заполнения и кандидаты</a></li><li><a href="#сравнительный-анализ-методов-решения">Сравнительный анализ методов решения</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь, столкнувшийся с задачей заполнения 9x9 сетки цифрами, часто испытывает затруднения при выборе начальной стратегии, полагаясь на интуицию вместо системного анализа.</p>
+<p>Отсутствие четкого алгоритма действий приводит к хаотичному перебору вариантов, что в условиях ограниченного времени или при необходимости высокой точности является неэффективным методом работы с данными.</p>
+<p>Для успешного прохождения уровней начальной сложности требуется внедрение структурированного подхода, основанного на исключении невозможных вариантов и последовательном сканировании массива.</p>
+
+<h2 id="базовая-архитектура-и-правила-валидации-данных">Базовая архитектура и правила валидации данных</h2>
+
+<p>Фундаментальным элементом системы является квадратное поле размером 9x9, которое программно можно представить как двумерный массив, где каждая ячейка должна содержать уникальное значение из диапазона от 1 до 9.</p>
+<p>Основное требование к валидности заполненного массива заключается в том, что ни одно число не должно повторяться в пределах одной строки, одного столбца или одного выделенного подблока размером 3x3.</p>
+<p>Входящие данные на легком уровне обычно содержат от 30 до 40 предустановленных значений, что обеспечивает высокую степень детерминированности решения и позволяет применять методы прямого логического вывода без необходимости построения деревьев вероятностей.</p>
+
+<h3>Структурные единицы и ограничения</h3>
+<p>Каждая горизонтальная строка (Row) и вертикальный столбец (Column) представляют собой множества, которые в конечном итоге должны содержать полный набор цифр {1, 2, 3, 4, 5, 6, 7, 8, 9} без дубликатов.</p>
+<p>Блоки 3x3, часто называемые регионами или боксами, являются независимыми логическими единицами, накладывающими дополнительные ограничения на возможные значения в пересекающихся строках и столбцах.</p>
+<p>Для автоматизации процесса проверки используется функция валидации, которая возвращает ошибку при обнаружении конфликта значений в любой из трех указанных проекций (строка, столбец, блок).</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В классическом судоку используется только девять символов (цифры 1-9), использование букв или других знаков характерно для модифицированных версий алгоритма.</p></aside>
+
+<p>Понимание топологии поля позволяет эффективно применять методы перекрестного сканирования, исключая целые группы ячеек из рассмотрения при поиске места для конкретной цифры.</p>
+
+<h2 id="методология-первичного-сканирования-и-исключения">Методология первичного сканирования и исключения</h2>
+
+<p>Начало работы с массивом данных требует выполнения процедуры первичного сканирования, направленной на поиск явных кандидатов для заполнения пустых ячеек.</p>
+<p>Наиболее эффективным методом на данном этапе является техника «скрытых одиночек» (Hidden Singles), которая базируется на анализе пересечений линий влияния уже заполненных ячеек.</p>
+<p>Если в определенной строке, столбце или блоке для цифры остается только одно возможное место размещения, это значение фиксируется как единственно верное для данной координаты.</p>
+
+<h3>Алгоритм поиска по строкам и столбцам</h3>
+<p>Процесс начинается с выбора цифры, например, единицы, и последовательного прохода по всем девяти блокам 3x3 для определения возможности ее размещения.</p>
+<p>Если в двух соседних горизонтальных строках внутри блока уже присутствуют единицы, то в третьей строке этого блока единица обязана находиться в оставшейся свободной ячейке, не занятой вертикальными ограничениями столбца.</p>
+<p>Данная операция повторяется циклически для всех цифр от 1 до 9, что позволяет заполнить значительную часть поля на легком уровне сложности без использования сложных логических цепочек.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичное сканирование</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите цифру для анализа (например, 5)</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Просканируйте все 9 блоков 3x3 на наличие этой цифры</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите строки и столбцы, где цифра уже стоит</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Определите единственную свободную ячейку в блоке, не пересекающуюся с найденными линиями</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Впишите цифру в найденную ячейку</span></div></div>
+
+<p>Систематическое применение этого алгоритма позволяет быстро увеличить плотность заполненных ячеек, открывая новые возможности для логического вывода.</p>
+
+<h2 id="техники-прямого-заполнения-и-кандидаты">Техники прямого заполнения и кандидаты</h2>
+
+<p>После исчерпания возможностей прямого сканирования переходят к более детальному анализу отдельных ячеек, используя метод «явных одиночек» (Naked Singles).</p>
+<p>Суть метода заключается в определении набора всех возможных кандидатов для конкретной пустой ячейки на основе уже заполненных соседей по строке, столбцу и блоку.</p>
+<p>Если после фильтрации всех запрещенных значений в ячейке остается только один возможный кандидат, это значение немедленно записывается в поле.</p>
+
+<h3>Работа с множеством кандидатов</h3>
+<p>Для каждой пустой ячейки формируется список потенциально допустимых значений, который динамически обновляется при каждом новом заполнении.</p>
+<p>На легком уровне сложности часто встречаются ситуации, когда в ячейке изначально возможно размещение только двух или трех цифр, и дальнейший анализ смежных областей быстро сокращает этот список до единицы.</p>
+<p>Важно вести запись кандидатов карандашом (в цифровом интерфейсе — использовать режим заметок), чтобы не потерять контекст ограничений при переходе между разными участками поля.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Заполнение ячейки значением без полной проверки всех трех направлений (строка, столбец, блок) может привести к логическому тупику, требующему полного сброса прогресса.</p></aside>
+
+<p>Использование карандашных заметок позволяет визуализировать скрытые пары и тройки, которые могут быть не очевидны при прямом взгляде на сетку.</p>
+
+<h2 id="сравнительный-анализ-методов-решения">Сравнительный анализ методов решения</h2>
+
+<p>Выбор стратегии решения зависит от текущей конфигурации поля и количества оставшихся пустых ячеек, что требует гибкого переключения между различными алгоритмами.</p>
+<p>Метод исключения по линиям эффективен на ранних этапах, когда поле заполнено менее чем на 30%, тогда как анализ кандидатов становится доминирующим при заполнении более 50% массива.</p>
+<p>Комбинирование этих подходов обеспечивает оптимальную скорость прохождения уровня и минимизирует когнитивную нагрузку на оператора.</p>
+
+<h3>Параметры эффективности алгоритмов</h3>
+<p>Таблица ниже демонстрирует сравнительные характеристики основных методов, применяемых на начальном этапе решения задач.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность реализации</th>
+<th>Эффективность на старте</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сканирование блоков</td>
+<td>Низкая</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Поиск одиночек</td>
+<td>Средняя</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Анализ пар</td>
+<td>Высокая</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Для легких уровней характерно преобладание ситуаций, решаемых методом сканирования блоков, что делает данный подход приоритетным для обучения.</p>
+<p>Более сложные техники, такие как поиск скрытых пар или рентгеновские рыбы, на простых задачах применяются редко и могут считаться избыточными.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сканирование блоков</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость</li><li>✅ Не требует записи кандидатов</li><li>✅ Интуитивно понятно</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует внимательности</li><li>❌ Менее эффективно на заполненных полях</li><li>❌ Не работает без опорных цифр</li></ul></div>
+</div></div>
+
+<p>Оптимизация процесса решения достигается за счет чередования методов в зависимости от плотности заполнения игрового поля.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе решения задач даже опытные пользователи допускают системные ошибки, которые нарушают логическую целостность массива данных.</p>
+<p>Наиболее частой причиной неудачи является поспешное заполнение ячеек без верификации всех ограничений, что приводит к конфликтам на поздних этапах.</p>
+<p>Отсутствие системы ведения заметок также существенно затрудняет отслеживание изменений в множестве кандидатов.</p>
+
+<ol>
+<li><strong>Игнорирование блока 3x3</strong> — пользователь проверяет строку и столбец, забывая про ограничения внутри квадрата, что приводит к дублированию цифры в пределах региона.</li>
+<li><strong>Преждевременное угадывание</strong> — попытка вписать число на основе вероятности, а не строгой логики, что недопустимо в детерминированных алгоритмах решения.</li>
+<li><strong>Отсутствие перепроверки</strong> — после вписывания новой цифры не проводится повторный анализ затронутых строк и столбцов для поиска новых одиночек.</li>
+<li><strong>Загрязнение поля заметками</strong> — запись лишних или неверных кандидатов создает информационный шум и сбивает с правильного пути анализа.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При обнаружении противоречия (две одинаковые цифры в строке) не пытайтесь исправить одну ячейку локально; лучше откатиться к последнему уверенному шагу и перепроверить логику.</p></aside>
+
+<p>Соблюдение дисциплины заполнения и регулярная валидация промежуточных результатов позволяют избежать критических ошибок.</p>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+
+<p>Решение судоку легкого уровня представляет собой строго формализованный процесс, основанный на последовательном применении правил исключения и поиска единственных кандидатов.</p>
+<p>Ключевым фактором успеха является системность подхода: переход от глобального сканирования блоков к локальному анализу ячеек обеспечивает стабильный прогресс.</p>
+<p>Использование карандашных заметок и отказ от интуитивных догадок гарантируют достижение правильного результата без логических тупиков.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Эффективное решение судоку легкого уровня базируется на приоритете метода сканирования блоков и строгом соблюдении правил валидации данных.</p></aside>
+
+<p>Освоение базовых алгоритмов на простых задачах формирует необходимую паттерны мышления для решения более сложных конфигураций поля.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/ge/get-apps-ne-obnovlyaetsya-prichina.html" class="pb-related-card">
+                <span class="pb-related-title">GetApps не обновляется: причины и решение проблемы</span>
+                <span class="pb-related-desc">Почему GetApps не обновляется? Полный разбор ошибок на Xiaomi, Redmi, Poco. Сброс кэша, смена регион</span>
+            </a><a href="/articles/n/no/novex-kak-zajti-v-nastrojki-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Novex: вход в настройки без пульта — полная инструкция</span>
+                <span class="pb-related-desc">Как войти в настройки телевизора Novex без пульта ДУ. Методы управления через кнопки на корпусе, сма</span>
+            </a><a href="/articles/v/vi/virtualnaya-karta-trojka-kak-udalit.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить виртуальную карту Тройка: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отвязке и удалению виртуальной карты Тройка с iPhone и Android. Разбор сбро</span>
+            </a><a href="/articles/v/v-/v-prilozhenii-sluzhba-nfc-proizoshel-sboj-v-rabote-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка NFC: как исправить сбой службы на Android</span>
+                <span class="pb-related-desc">Служба NFC на Android произошла сбой в работе приложения? Узнайте причины ошибок, способы сброса мод</span>
+            </a><a href="/articles/j/jv/jvc-kak-nastroit-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить телевизор JVC без пульта: все методы</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке JVC без пульта ДУ. Управление через кнопки на корпусе, смартфон, U</span>
+            </a><a href="/articles/z/za/zala-beltelekom-oshibka-potoka.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка потока Zala: причины и способы устранения</span>
+                <span class="pb-related-desc">Подробное руководство по устранению ошибки потока в Zala Белтелеком. Настройка роутеров, проверка ка</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление загрузчика Astra Linux: пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Полное руководство по восстановлению GRUB в Astra Linux. Решение проблем с загрузкой, настройка EFI и Legacy BIOS, работа с LiveCD и chroot.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/as/astra-linux-vosstanovlenie-zagruzchika.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление загрузчика Astra Linux: пошаговая инструкция">
+    <meta property="og:description" content="Полное руководство по восстановлению GRUB в Astra Linux. Решение проблем с загрузкой, настройка EFI и Legacy BIOS, работа с LiveCD и chroot.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление загрузчика Astra Linux: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-проблемы-и-подготовка-среды">Диагностика проблемы и подготовка среды</a></li><li><a href="#метод-автоматического-восстановления-через-boot-repair">Метод автоматического восстановления через Boot-Repair</a></li><li><a href="#ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</a></li><li><a href="#работа-с-efi-и-legacy-bios-системами">Работа с EFI и Legacy BIOS системами</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/t/ti/tivimate-premium-kak-oplatit-v-rossii.html">TiviMate Premium: как оплатить в России (2026)</a></li><li><a href="/articles/r/ra/raspajka-garnitury-cisco-7961.html">Распайка гарнитуры Cisco 7961: схемы и инструкции</a></li><li><a href="/articles/h/hp/hp-2010.html">HP OfficeJet Pro 2010: Сброс, драйверы и ремонт</a></li><li><a href="/articles/p/po/podklyuchenie-elektrogitary-k-kompyuteru.html">Как подключить электрогитару к компьютеру: полное руководство</a></li><li><a href="/articles/k/ka/kak-ochistit-kesh-v-prilozhenii-vajldberriz.html">Как очистить кэш Wildberries: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика Astra Linux</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-проблемы-и-подготовка-среды">Диагностика проблемы и подготовка среды</a></li><li><a href="#метод-автоматического-восстановления-через-boot-repair">Метод автоматического восстановления через Boot-Repair</a></li><li><a href="#ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</a></li><li><a href="#работа-с-efi-и-legacy-bios-системами">Работа с EFI и Legacy BIOS системами</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>После обновления ядра системы, некорректного завершения работы или изменений в структуре разделов жесткого диска операционная система может перестать реагировать на команды включения, выдавая лишь черный экран или сообщение об отсутствии загрузочного устройства.</p>
+<p>Владельцы рабочих станций и серверов на базе <em>Astra Linux Special Edition</em> или <em>Astra Linux Common Edition</em> часто сталкиваются с ситуацией, когда система не может найти конфигурационный файл загрузчика, что делает невозможным штатный запуск операционной среды.</p>
+<p>Для решения этой проблемы не всегда требуется переустановка всей системы, так как в большинстве случаев повреждается только программный модуль, отвечающий за инициализацию загрузки, а пользовательские данные и конфигурация остаются intact.</p>
+
+<h2 id="диагностика-проблемы-и-подготовка-среды">Диагностика проблемы и подготовка среды</h2>
+<p>Первым шагом в процессе восстановления является точное определение характера неисправности, так как симптомы могут указывать как на сбой файловой системы, так и на повреждение самой записи MBR или раздела EFI.</p>
+<p>Если при включении компьютера появляется сообщение «GRUB rescue>» или «No bootable device found», это свидетельствует о том, что базовая система ввода-вывода не может найти исполняемый код загрузчика или его конфигурацию.</p>
+<p>Для проведения восстановительных работ потребуется загрузочный носитель с дистрибутивом <em>Astra Linux</em> той же версии и разрядности, что и установленная система, либо любой другой дистрибутив на базе Debian с возможностью работы в режиме LiveCD.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Все операции с разделами диска несут риск потери данных. Перед началом работ настоятельно рекомендуется создать полную резервную копию важных данных на внешний носитель.</p></aside>
+
+<p>Загрузившись с внешнего носителя, необходимо перейти в режим работы с командной строкой или открыть терминал в графическом интерфейсе для выполнения диагностических команд.</p>
+<p>На практике важно убедиться, что жесткий диск определяется системой и его разделы читаемы, для чего используется утилита <code>fdisk</code> или <code>lsblk</code>.</p>
+
+<h3>Определение структуры разделов</h3>
+<p>Выполнение команды <code>lsblk</code> позволит увидеть логическую структуру дисков и понять, где расположен корневой раздел системы, а где находится разделEFI или загрузочный раздел.</p>
+<p>В выводе команды необходимо идентифицировать устройство, соответствующее системному диску, обычно обозначаемое как <code>/dev/sda</code> или <code>/dev/nvme0n1</code>, и обратить внимание на наличие раздела с файловой системой <em>ext4</em> или <em>xfs</em>.</p>
+<p>Также следует проверить наличие раздела с файловой системой <em>vfat</em> или <em>fat32</em>, который в современных системах с UEFI отвечает за хранение файлов загрузчика.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип раздела</th>
+<th>Файловая система</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Системный</td>
+<td>ext4 / xfs</td>
+<td>Хранение ОС и данных</td>
+</tr>
+<tr>
+<td>Загрузочный (EFI)</td>
+<td>vfat / fat32</td>
+<td>Файлы UEFI загрузчика</td>
+</tr>
+<tr>
+<td>Swap</td>
+<td>swap</td>
+<td>Файл подкачки</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На системах с BIOS загрузочный раздел может не иметь отдельной файловой системы, а код загрузчика хранится в MBR или на скрытом разделе BIOS Boot.</p></aside>
+
+<h2 id="метод-автоматического-восстановления-через-boot-repair">Метод автоматического восстановления через Boot-Repair</h2>
+<p>Наиболее простым и безопасным способом вернуть системе способность к загрузке является использование специализированной утилиты <em>Boot-Repair</em>, которая автоматически определяет конфигурацию и применяет необходимые исправления.</p>
+<p>Этот метод подходит для большинства стандартных конфигураций, где не проводилось сложное ручное изменение путей к ядру или нестандартное разбиение диска.</p>
+<p>Для начала работы необходимо добавить репозиторий с утилитой, если он отсутствует в базовой поставке Live-системы, и установить пакет через менеджер пакетов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка Boot-Repair</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду apt update</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду apt install boot-repair</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите утилиту командой boot-repair</span></div></div>
+
+<h3>Настройка параметров сканирования</h3>
+<p>После запуска утилиты в графическом или текстовом режиме потребуется выбрать опцию «Recommended repair» (Рекомендуемое восстановление), которая инициирует автоматический поиск установленных систем.</p>
+<p>Программа проанализирует таблицу разделов, проверит целостность файлов конфигурации <code>grub.cfg</code> и при необходимости переустановит пакеты <code>grub-efi</code> или <code>grub-pc</code>.</p>
+<p>В процессе работы утилита может запросить подтверждение на выполнение определенных действий, таких как переустановка загрузчика в MBR или обновление конфигурации NVRAM.</p>
+<p>Если автоматический режим не справляется с задачей, можно перейти в расширенные настройки, где доступно ручное указание пути к корневому разделу и параметров переустановки.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Автоматическое восстановление эффективно в 90% случаев стандартных сбоев и не требует глубоких знаний внутренней структуры загрузчика.</p></aside>
+
+<h2 id="ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</h2>
+<p>В ситуациях, когда автоматические инструменты бессильны или требуется тонкая настройка параметров, применяется метод ручного восстановления с использованием окружения <code>chroot</code>.</p>
+<p>Данный подход позволяет «поместить» работающую Live-систему внутрь установленной на диске операционной системы, получив полный доступ к ее конфигурационным файлам и исполняемым модулям.</p>
+<p>Первым этапом является монтирование корневого раздела установленной системы в заранее созданную директорию, например, <code>/mnt</code>.</p>
+
+<pre><code>mount /dev/sda2 /mnt</code></pre>
+
+<p>Если в системе используется отдельный раздел для <code>/boot</code> или <code>/boot/efi</code>, их также необходимо смонтировать в соответствующие точки внутри смонтированного корня.</p>
+<p>Для корректной работы динамических библиотек и устройств необходимо пробросить системные директории <code>/dev</code>, <code>/proc</code> и <code>/sys</code> из Live-системы в смонтированное окружение.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неправильное монтирование разделов или проброс системных директорий может привести к невозможности выполнения команд внутри chroot-окружения.</p></aside>
+
+<h3>Выполнение команды переустановки</h3>
+<p>После перехода в окружение <code>chroot</code> с помощью команды <code>chroot /mnt</code> все последующие действия будут выполняться уже в контексте установленной системы.</p>
+<p>Необходимо выполнить команду переустановки загрузчика, указывая при этом физическое устройство диска, а не номер раздела, например <code>/dev/sda</code>.</p>
+<p>Для систем с UEFI может потребоваться дополнительная установка пакетов <code>shim-signed</code> и <code>grub-efi-amd64-signed</code> для обеспечения безопасной загрузки.</p>
+<p>Финальным шагом внутри окружения является обновление конфигурационного файла с помощью команды <code>update-grub</code>, которая заново просканирует диск на наличие ядер и сформирует меню загрузки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Параметр</th>
+<th>Описание действия</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>grub-install</td>
+<td>/dev/sda</td>
+<td>Запись загрузчика в MBR/EFI</td>
+</tr>
+<tr>
+<td>update-grub</td>
+<td>(нет)</td>
+<td>Генерация файла grub.cfg</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Полный контроль над процессом|Возможностьить сложные конфигурации|Работа без интернета</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Требует точности</li><li>✅ Высокий риск ошибки</li><li>✅ Необходимость знания команд</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<h2 id="работа-с-efi-и-legacy-bios-системами">Работа с EFI и Legacy BIOS системами</h2>
+<p>Процедура восстановления существенно различается в зависимости от типа firmware материнской платы, так как механизмы хранения и запуска загрузчика в UEFI и BIOS принципиально разные.</p>
+<p>В системах с Legacy BIOS загрузочная запись находится в первых секторах диска (MBR), и для ее восстановления достаточно выполнить запись кода загрузчика на устройство.</p>
+<p>Современные системы используют интерфейс UEFI, где загрузчик представляет собой файл <code>.efi</code>, расположенный на FAT-разделе, а путь к нему прописан в энергонезависимой памяти материнской платы (NVRAM).</p>
+
+<h3>Особенности восстановления в UEFI</h3>
+<p>При работе с UEFI критически важно, чтобы раздел EFI был отформатирован в файловой системе FAT32 и имел флаг <code>boot</code> или <code>esp</code>.</p>
+<p>В процессе ручного восстановления необходимо смонтировать этот раздел в директорию <code>/boot/efi</code> внутри chroot-окружения перед выполнением команды установки.</p>
+<p>Если запись в NVRAM невозможна из-за ограничений firmware, можно использовать утилиту <code>efibootmgr</code> для ручного добавления записи о загрузке с указанием пути к файлу <code>shimx64.efi</code> или <code>grubx64.efi</code>.</p>
+<p>Стоит проверить настройки Secure Boot в BIOS, так как при включенной функции безопасной загрузки могут работать только подписанные ключами версии загрузчика.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду efibootmgr -v для просмотра текущего списка загрузочных записей и проверки их корректности.</p></aside>
+
+<h3>Специфика Legacy BIOS</h3>
+<p>В классическом режиме BIOS загрузчик занимает первые 446 байт Master Boot Record, и его восстановление требует прямой записи на блочное устройство.</p>
+<p>Здесь не требуется отдельный FAT-раздел, а сам загрузчик может подгружать дополнительные модули с раздела, отформатированного в любой поддерживаемой файловой системе.</p>
+<p>При переходе с UEFI на Legacy или наоборот часто возникает необходимость полной переразметки диска, так как структуры разделов GPT и MBR не всегда совместимы в одном контексте.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>Даже при следовании инструкции пользователи часто допускают ошибки, которые приводят к повторному возникновению проблемы или появлению новых сбоев в работе системы.</p>
+<p>Понимание природы этих ошибок позволяет избежать потери времени и данных, а также правильно интерпретировать сообщения об ошибках, выводимые консолью.</p>
+<p>Анализ логов и внимательная проверка введенных команд перед их выполнением являются ключевыми факторами успешного восстановления.</p>
+
+<ol>
+<li><strong>Указание раздела вместо диска</strong> — частая ошибка, когда команда <code>grub-install</code> выполняется с аргументом <code>/dev/sda1</code> вместо <code>/dev/sda</code>, что приводит к установке загрузчика в файловую систему, а не в загрузочную область.</li>
+<li><strong>Отсутствие монтирования EFI-раздела</strong> — в UEFI-системах забытый монтаж раздела <code>/boot/efi</code> перед установкой приводит к созданию файлов загрузчика в корне файловой системы, откуда firmware их не видит.</li>
+<li><strong>Несоответствие архитектуры</strong> — попытка установить 32-битный загрузчик на 64-битную UEFI-систему или наоборот без проверки совместимости делает загрузку невозможной.</li>
+<li><strong>Игнорирование Secure Boot</strong> — установка неподписанной версии GRUB на систему с включенной безопасной загрузкой блокирует старт, требуя либо подписи ключей, либо отключения функции в BIOS.</li>
+</ol>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка результата</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перезагрузите компьютер</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Извлеките загрузочную флешку</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте наличие меню GRUB</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Загрузите систему в штатном режиме</span></div></div>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+<p>После успешного выполнения всех процедур восстановления необходимо корректно завершить работу с Live-системой, чтобы зафиксировать изменения на диске.</p>
+<p>Следует выйти из окружения <code>chroot</code>, если оно использовалось, размонтировать все разделы командой <code>umount</code> и выполнить перезагрузку компьютера.</p>
+<p>Первый запуск после восстановления может занять чуть больше времени, так как система может проводить проверку файловой системы или обновлять конфигурацию.</p>
+
+<p>Если меню загрузчика появилось и система загружается штатно, рекомендуется сразу же выполнить обновление конфигурации и проверить работу всех ядер, присутствующих в списке.</p>
+<p>В случае сохранения проблемы следует вернуться к этапу диагностики, проверить логи <code>/var/log/syslog</code> или <code>dmesg</code> на предмет ошибок оборудования или целостности файловой системы.</p>
+<p>Своевременное обслуживание загрузчика и мониторинг состояния диска позволяют предотвратить внезапные отказы и обеспечивают стабильную работу информационной системы на базе <em>Astra Linux</em>.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Восстановление загрузчика — стандартная процедура администрирования, требующая внимательности при выборе целевого устройства и учета типа firmware.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/t/ti/tivimate-premium-kak-oplatit-v-rossii.html" class="pb-related-card">
+                <span class="pb-related-title">TiviMate Premium: как оплатить в России (2026)</span>
+                <span class="pb-related-desc">Подробная инструкция по активации TiviMate Premium в РФ. Методы оплаты через Google Play, коды актив</span>
+            </a><a href="/articles/r/ra/raspajka-garnitury-cisco-7961.html" class="pb-related-card">
+                <span class="pb-related-title">Распайка гарнитуры Cisco 7961: схемы и инструкции</span>
+                <span class="pb-related-desc">Подробная инструкция по распайке гарнитуры Cisco 7961. Схемы, цоколевка разъемов RJ-9 и RJ-45, устра</span>
+            </a><a href="/articles/h/hp/hp-2010.html" class="pb-related-card">
+                <span class="pb-related-title">HP OfficeJet Pro 2010: Сброс, драйверы и ремонт</span>
+                <span class="pb-related-desc">Полная инструкция по настройке HP OfficeJet Pro 2010. Сброс картриджа, установка драйверов, устранен</span>
+            </a><a href="/articles/p/po/podklyuchenie-elektrogitary-k-kompyuteru.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить электрогитару к компьютеру: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению электрогитары к ПК. Обзор интерфейсов, драйверов, настройки DAW </span>
+            </a><a href="/articles/k/ka/kak-ochistit-kesh-v-prilozhenii-vajldberriz.html" class="pb-related-card">
+                <span class="pb-related-title">Как очистить кэш Wildberries: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по очистке кэша приложения Wildberries на Android и iOS. Решение проблем с зав</span>
+            </a><a href="/articles/s/so/sony-kdl43w755c-kak-veshat-na-stenu.html" class="pb-related-card">
+                <span class="pb-related-title">Крепление Sony KDL43W755C на стену: инструкция, размеры VESA</span>
+                <span class="pb-related-desc">Подробная инструкция по монтажу телевизора Sony KDL43W755C на стену. Размеры VESA 200x200, выбор кро</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

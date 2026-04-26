@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Создание игры про ученого: техническое руководство по разработке — Мастер Фикс</title>
+    <meta name="description" content="Подробный мануал по разработке мобильной игры про ученого. Архитектура, движки, механики симуляции и оптимизация для Android и iOS.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/ig/igra-na-telefon-pro-uchenogo.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Создание игры про ученого: техническое руководство по разработке">
+    <meta property="og:description" content="Подробный мануал по разработке мобильной игры про ученого. Архитектура, движки, механики симуляции и оптимизация для Android и iOS.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Создание игры про ученого: техническое руководство по разработке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#выбор-игрового-движка-и-архитектуры-проекта">Выбор игрового движка и архитектуры проекта</a></li><li><a href="#реализация-механик-симуляции-и-физики">Реализация механик симуляции и физики</a></li><li><a href="#проектирование-интерфейса-и-управление">Проектирование интерфейса и управление</a></li><li><a href="#система-прогресса-и-монетизации">Система прогресса и монетизации</a></li><li><a href="#тестирование-и-отладка">Тестирование и отладка</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/z1/z123-pristavka-rostelekom-pereproshit-na-android.html">z123 приставка Ростелеком: как установить Android TV</a></li><li><a href="/articles/g/gd/gde-najti-zakladki-v-telefone-honor.html">Где найти закладки в Honor: поиск и управление в браузере</a></li><li><a href="/articles/c/co/com-android-wallpaperbackup-chto-eto-za-programma-na-android.html">com.android.wallpaperbackup: что это за процесс на Android и можно ли его отключить</a></li><li><a href="/articles/k/ka/kak-proverit-bitnost-android-na-planshete.html">Как проверить разрядность Android на планшете: точные методы</a></li><li><a href="/articles/k/ka/kak-podklyuchit-mocute-050-k-android.html">Как подключить Mocute 050 к Android: пошаговая инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка мобильной игры про ученого: техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-игрового-движка-и-архитектуры-проекта">Выбор игрового движка и архитектуры проекта</a></li><li><a href="#реализация-механик-симуляции-и-физики">Реализация механик симуляции и физики</a></li><li><a href="#проектирование-интерфейса-и-управление">Проектирование интерфейса и управление</a></li><li><a href="#система-прогресса-и-монетизации">Система прогресса и монетизации</a></li><li><a href="#тестирование-и-отладка">Тестирование и отладка</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Запуск проекта в жанре симулятора или стратегии на перенасыщенном рынке мобильных приложений требует четкого понимания технических ограничений и уникальных механик геймплея. Разработчики часто сталкиваются с проблемой масштабирования вычислительных процессов, когда симуляция химических реакций или физических экспериментов вызывает перегрев устройства и падение кадров.</p>
+<p>Если у вас есть идея создать игру, где игрок выступает в роли исследователя, управляющего лабораторией, ключевым моментом становится выбор правильной архитектуры приложения. Ошибки на этапе проектирования кодовой базы могут привести к невозможности внедрения сложных алгоритмов искусственного интеллекта или процедурной генерации уровней в будущем.</p>
+<p>На практике создание такого продукта подразумевает работу не только с графикой, но и с серьезной математической моделью, имитирующей научные процессы. Ниже представлен детальный разбор этапов разработки, который поможет избежать типичных технических тупиков и создать стабильный продукт.</p>
+
+<h2 id="выбор-игрового-движка-и-архитектуры-проекта">Выбор игрового движка и архитектуры проекта</h2>
+<p>Допустим, вы стоите перед выбором между нативной разработкой и кроссплатформенными решениями. Для игры про ученого, где важна интерактивность элементов лаборатории и сложная логика взаимодействий, использование готовых движков является наиболее рациональным подходом. <strong>Unity</strong> и <em>Unreal Engine</em> предлагают готовые инструменты для работы с физикой и частицами, что критически важно для симуляции экспериментов.</p>
+<p>Если у вас команда небольшая, целесообразно обратить внимание на движок <em>Godot</em> или фреймворк <em>libGDX</em>, которые обеспечивают меньший размер итогового APK-файла. Архитектура приложения должна строиться по принципу модульности, где логика расчетов отделена от визуального представления. Это позволит в будущем портировать игру на другие платформы без переписывания кода.</p>
+<p>Важно учитывать, что мобильные устройства имеют ограниченные ресурсы процессора, поэтому тяжелые вычисления следует выносить в отдельные потоки или выполнять на сервере. Использование паттерна <code>Entity-Component-System (ECS)</code> позволяет эффективно управлять тысячами объектов в кадре, что актуально для симуляции множества молекул или микроорганизмов.</p>
+<p>При настройке проекта в <em>Unity</em> рекомендуется сразу включить оптимизацию под мобильные платформы, отключив ненужные графические эффекты. Структура папок должна быть строго типизирована, чтобы избежать хаоса при подключении новых механик, таких как дерево исследований или система крафта реагентов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка проекта</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создание нового проекта в движке</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Настройка разрешений для Android и iOS</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Импорт базовых ассетов физики</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Настройка системы управления памятью</span></div></div>
+
+<p>Стоит отметить, что выбор движка влияет на доступные библиотеки для работы с базами данных, которые необходимы для сохранения прогресса исследований. Локальное хранение данных должно быть надежным, чтобы игрок не потерял результаты длительных экспериментов при сбое питания или перезагрузке устройства.</p>
+
+<h3>Сравнение популярных движков для симуляторов</h3>
+<p>Каждый движок имеет свои особенности реализации физики и рендеринга, что напрямую влияет на realism игры. Ниже приведено сравнение ключевых параметров, которые следует учитывать при принятии решения о стеке технологий.</p>
+
+<table>
+<thead>
+<tr>
+<th>Движок</th>
+<th>Язык программирования</th>
+<th>Оптимально для</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unity</td>
+<td>C#</td>
+<td>3D/2D симуляций средней сложности</td>
+</tr>
+<tr>
+<td>Unreal Engine</td>
+<td>C++ / Blueprints</td>
+<td>Высокодетализированной 3D графики</td>
+</tr>
+<tr>
+<td>Godot</td>
+<td>GDScript / C#</td>
+<td>2D проектов и легких 3D сцен</td>
+</tr>
+<tr>
+<td>libGDX</td>
+<td>Java / Kotlin</td>
+<td>Полностью кастомных 2D решений</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование <strong>C#</strong> в связке с Unity позволяет быстро прототипировать механики, используя богатую экосистему пакетов. Для более специфичных задач, требующих низкоуровневого доступа к железу, может потребоваться нативный код, интегрируемый через плагины.</p>
+
+<h2 id="реализация-механик-симуляции-и-физики">Реализация механик симуляции и физики</h2>
+<p>На практике симуляция научных процессов требует создания гибкой системы правил, описывающих взаимодействие объектов. Если в игре предполагается смешивание жидкостей или реакция элементов, необходимо разработать матрицу совместимости веществ. Каждый объект в лаборатории должен обладать набором свойств: температура, давление, химический состав, которые обновляются в каждом кадре или по таймеру.</p>
+<p>Допустим, игрок соединяет два реагента в колбе. Система должна проверить таблицу реакций и определить результат: взрыв, изменение цвета, выделение газа или отсутствие эффекта. Для оптимизации таких проверок используются хэш-таблицы или бинарные деревья поиска, чтобы избежать перебора всех возможных комбинаций.</p>
+<p>Визуализация процессов часто требует использования систем частиц (<em>Particle Systems</em>). Эффекты дыма, искр или bubbling жидкости должны быть оптимизированы, чтобы не перегружать GPU. В коде это реализуется через пулы объектов (<em>Object Pooling</em>), что позволяет переиспользовать частицы вместо постоянного создания и уничтожения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для симуляции жидкостей в 2D часто используются мета-боллы (Metaballs) или шейдерные эффекты на основе карт высот, что дешевле по ресурсам, чем полноценная гидродинамика.</p></aside>
+
+<p>Логика игры должна предусматривать состояние «ошибки эксперимента». Если игрок нарушает технику безопасности, система должна корректно обрабатывать критические ситуации, например, разрушение оборудования. Это добавляет элемент стратегии и заставляет пользователя внимательнее относиться к параметрам среды.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Сложные физические расчеты в основном потоке (Main Thread) приведут к фризам интерфейса. Все вычисления, занимающие более 10 мс, выносите в отдельные потоки (Threads).</p></aside>
+
+<h3>Алгоритмы взаимодействия элементов</h3>
+<p>Разработка алгоритмов требует тщательного тестирования граничных значений параметров. Например, реакция может не начаться, если температура ниже порога активации, даже если реагенты подобраны верно. Код должен быть устойчив к некорректным входным данным, которые может ввести пользователь.</p>
+<p>Ниже приведен пример псевдокода для проверки реакции, который демонстрирует базовую логику обработки событий в системе:</p>
+
+<pre><code>function CheckReaction(substanceA, substanceB) {
+<p>if (substanceA.State =="Liquid" && substanceB.State =="Liquid") {</p>
+<p>if (ReactionTable.Exists(substanceA.ID, substanceB.ID)) {</p>
+<p>TriggerEffect(ReactionTable.GetResult(substanceA.ID, substanceB.ID));</p>
+<p>} else {</p>
+<p>LogMessage("Реакция не найдена");</p>
+<p>}</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<p>Такая структура позволяет легко расширять базу знаний игры, добавляя новые элементы без изменения основной логики движка. Важно также предусмотреть систему логирования событий для отладки и анализа поведения игроков.</p>
+
+<h2 id="проектирование-интерфейса-и-управление">Проектирование интерфейса и управление</h2>
+<p>Управление в мобильной игре про ученого должно быть интуитивно понятным, так как экраны смартфонов ограничены в размерах. Основной упор делается на тач-интерфейсы: перетаскивание пробирок, зум микроскопа, свайпы для перемещения по лаборатории. Интерфейс не должен перекрывать обзор игровой зоны, оставляя максимум пространства для визуализации экспериментов.</p>
+<p>Если у игрока крупный палец, он должен комфортно доставать до ключевых элементов управления в нижней части экрана. Меню инвентаря и дерево исследований обычно прячутся в боковые панели или открываются по тапу. Адаптивная верстка (<em>Responsive Layout</em>) обязательна для поддержки различных соотношений сторон экранов, от вытянутых современных флагманов до старых 4:3 планшетов.</p>
+<p>Визуальный стиль интерфейса должен соответствовать тематике: строгие линии, шрифты в стиле печатной машинки или цифровые индикаторы. Использование <strong>UI Canvas</strong> в движках позволяет масштабировать элементы без потери качества. Важно предусмотреть режим для левшей, позволяющий зеркально отражать расположение кнопок.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка UI</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создание адаптивного Canvas</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Настройка якорей (Anchors) для элементов</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Добавление поддержки разных разрешений</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Тестирование на реальных устройствах</span></div></div>
+
+<p>Обратная связь с пользователем реализуется через анимации кнопок, звуковые сигналы при успешном действии и вибрацию при ошибке. Тактильный отклик (<em>Haptic Feedback</em>) значительно повышает погружение, особенно в моментах завершения эксперимента или получения нового открытия.</p>
+
+<h3>Оптимизация под различные устройства</h3>
+<p>Разнообразие Android-устройств диктует жесткие требования к оптимизации интерфейса. Тяжелые тени, размытие фона и сложная прозрачность могут сильно снизить производительность на бюджетных моделях. Рекомендуется использовать упрощенные спрайты и заранее запеченные текстуры для элементов UI.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Бюджетные устройства</th>
+<th>Флагманы</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Разрешение текстур UI</td>
+<td>512x512</td>
+<td>2048x2048</td>
+</tr>
+<tr>
+<td>Количество частиц</td>
+<td>до 100</td>
+<td>до 2000</td>
+</tr>
+<tr>
+<td>Пост-эффекты</td>
+<td>Отключены</td>
+<td>Bloom, DOF</td>
+</tr>
+</tbody>
+</table>
+
+<p>Динамическое изменение качества графики в зависимости от FPS помогает сохранять плавность gameplay. Если кадровая частота падает ниже 30 FPS, система автоматически снижает детализацию моделей и количество активных частиц.</p>
+
+<h2 id="система-прогресса-и-монетизации">Система прогресса и монетизации</h2>
+<p>Мотивация игрока в симуляторе строится на чувстве достижения и расширении возможностей. Дерево технологий должно быть разветвленным, позволяя выбирать специализацию: биология, химия, физика или робототехника. Каждый новый уровень открывает доступ к более сложному оборудованию и редким реагентам.</p>
+<p>Для удержания аудитории (<em>Retention</em>) внедряются ежедневные задания и цепочки квестов. Например, серия экспериментов по очистке воды или создание нового сплава. Выполнение условий дает валюту, необходимую для покупки улучшений лаборатории или ускорения процессов.</p>
+<p>Монетизация должна быть ненавязчивой. Оптимальной моделью является <em>Freemium</em> с возможностью покупки косметических улучшений, ускорителей времени или дополнительных слотов для хранения ресурсов. Реклама может быть внедрена в формате вознаграждаемого видео за удвоение прибыли от эксперимента.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Модель монетизации</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантированный доход</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск оттока игроков при агрессивной рекламе</li></ul></div>
+</div></div>
+
+<p>Сохранение прогресса должно происходить автоматически после каждого значимого действия. Использование облачных сохранений (<em>Cloud Save</em>) позволяет игроку не потерять данные при смене устройства. Синхронизация с аккаунтами <em>Google Play Games</em> или <em>Game Center</em> также добавляет социальный слой через таблицы лидеров.</p>
+
+<h2 id="тестирование-и-отладка">Тестирование и отладка</h2>
+<p>Финальный этап перед релизом требует тщательного тестирования на реальных устройствах. Эмуляторы не могут полностью воспроизвести поведение железа, особенно в вопросах нагрева, потребления памяти и работы сенсора. Необходимо проверить игру на устройствах с разными версиями ОС, от <em>Android 8.0</em> до последних версий <em>iOS</em>.</p>
+<p>Автоматизированные тесты помогают отлавливать критические баги при сборке. Скрипты проверяют целостность данных, отсутствие утечек памяти и корректность работы сохранений. Особое внимание уделяется сценариям прерывания: что будет, если во время эксперимента поступит звонок или разрядится батарея.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте профилировщики (Profiler) встроенные в движок, чтобы находить узкие места в производительности перед каждым крупным обновлением.</p></aside>
+
+<p>Сбор аналитики с бета-тестеров позволяет понять, где игроки застревают или какие механики вызывают трудности. Тепловые карты кликов показывают, какие элементы интерфейса игнорируются, а какие используются слишком часто.</p>
+
+<h3>Типичные ошибки при разработке</h3>
+<p>В процессе создания подобных проектов разработчики часто наступают на одни и те же грабли. Избежать их поможет знание чужого опыта и внимательное отношение к деталям реализации.</p>
+
+<ol>
+<li><strong>Игнорирование оптимизации памяти</strong> — приводит к вылетам игры на устройствах с 2 ГБ RAM и менее, решение: строгий контроль аллокаций и использование пулов.</li>
+<li><strong>Сложное управление на тач-экране</strong> — мелкие кнопки и отсутствие зума делают игру неиграбельной, решение: крупные зоны клика и адаптивный UI.</li>
+<li><strong>Отсутствие баланса сложности</strong> — слишком быстрый прогресс убивает интерес, слишком медленный вызывает фрустрацию, решение: итеративная настройка коэффициентов.</li>
+<li><strong>Плохая локализация</strong> — технические термины могут быть переведены некорректно, решение: привлекать специалистов или использовать проверенные глоссарии.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Качественная симуляция требует баланса между реалистичной физикой, оптимизацией под слабые устройства и удобным интерфейсом.</p></aside>
+
+<p>Подводя итог, можно сказать, что создание игры про ученого — это сложный технический процесс, требующий компетенций в области программирования, математики и дизайна. Успех проекта зависит от того, насколько хорошо удастся абстрагировать сложные научные процессы в понятные и увлекательные игровые механики.</p>
+<p>Соблюдение принципов чистой архитектуры и регулярное тестирование на различных устройствах позволят создать стабильный продукт, который займет свою нишу на рынке. Главное — не бояться экспериментировать с механиками, ведь сама тема игры этого подразумевает.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/z1/z123-pristavka-rostelekom-pereproshit-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">z123 приставка Ростелеком: как установить Android TV</span>
+                <span class="pb-related-desc">Подробное руководство по перепрошивке z123 на Android. Установка AOSP, обход блокировок Ростелеком и</span>
+            </a><a href="/articles/g/gd/gde-najti-zakladki-v-telefone-honor.html" class="pb-related-card">
+                <span class="pb-related-title">Где найти закладки в Honor: поиск и управление в браузере</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску, сохранению и удалению закладок на смартфонах Honor. Работа с Google </span>
+            </a><a href="/articles/c/co/com-android-wallpaperbackup-chto-eto-za-programma-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">com.android.wallpaperbackup: что это за процесс на Android и можно ли его отключить</span>
+                <span class="pb-related-desc">Полный технический разбор процесса com.android.wallpaperbackup. Функции, влияние на батарею, методы </span>
+            </a><a href="/articles/k/ka/kak-proverit-bitnost-android-na-planshete.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить разрядность Android на планшете: точные методы</span>
+                <span class="pb-related-desc">Пошаговая инструкция по определению разрядности процессора Android планшета. Проверка 32 или 64 бит </span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-mocute-050-k-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Mocute 050 к Android: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по сопряжению геймпада Mocute 050 с Android. Настройка Bluetooth, режимы работ</span>
+            </a><a href="/articles/k/ka/kak-na-androide-posmotret-kartinku-png.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть PNG на Андроид: полные способы</span>
+                <span class="pb-related-desc">Подробная инструкция по просмотру PNG на Android. Решение проблем с отображением, выбор галереи и ко</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

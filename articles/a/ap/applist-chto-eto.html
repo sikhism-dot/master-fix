@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>AndroidManifest.xml и applist: что это и как управлять доступом — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический анализ списка приложений (applist) в Android. Разбор AndroidManifest.xml, разрешений пакетов и скрытия софта.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/ap/applist-chto-eto.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="AndroidManifest.xml и applist: что это и как управлять доступом">
+    <meta property="og:description" content="Подробный технический анализ списка приложений (applist) в Android. Разбор AndroidManifest.xml, разрешений пакетов и скрытия софта.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">AndroidManifest.xml и applist: что это и как управлять доступом</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-основы-списка-приложений-в-android">Архитектурные основы списка приложений в Android</a></li><li><a href="#механизмы-ограничения-видимости-в-android-11">Механизмы ограничения видимости в Android 11+</a></li><li><a href="#практическое-управление-доступом-через-adb-и-настройки">Практическое управление доступом через ADB и настройки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-перспективы-развития">Резюме и перспективы развития</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-delat-animatsiyu.html">Как делать анимацию: полное руководство для начинающих</a></li><li><a href="/articles/k/ka/kak-vostanovit-ssylku-yandeks-disk.html">Как восстановить ссылку Яндекс Диска: полные методы</a></li><li><a href="/articles/b/bl/blok-pitaniya220-12volt-na-kondensatore.html">Блок питания 220-12В на конденсаторе: схема, расчет, сборка</a></li><li><a href="/articles/v/v-/v-rezhime-fastboot-idet-zaryadka.html">Fastboot зарядка: почему телефон заряжается в режиме загрузчика</a></li><li><a href="/articles/p/po/pochemu-kkhl-ne-zapuskaetsya.html">Почему не работает КХЛ: устранение ошибок на ТВ и ПК</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ структуры Applist и AndroidManifest.xml</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-основы-списка-приложений-в-android">Архитектурные основы списка приложений в Android</a></li><li><a href="#механизмы-ограничения-видимости-в-android-11">Механизмы ограничения видимости в Android 11+</a></li><li><a href="#практическое-управление-доступом-через-adb-и-настройки">Практическое управление доступом через ADB и настройки</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-перспективы-развития">Резюме и перспективы развития</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь часто сталкивается с ситуацией, когда установленное приложение внезапно перестает запускаться или выдает ошибку «Нет доступа к списку приложений», хотя ранее работало без нареканий. В логах системы или в сообщениях об ошибках появляется упоминание параметра <code>applist</code>, который вызывает недоумение у тех, кто не знаком с внутренней архитектурой операционной системы Android. Вместо ожидаемого функционала устройство блокирует определенные действия, требуя ручного вмешательства в настройки конфиденциальности или манифеста.</p>
+
+<p>Подобные проблемы особенно актуальны после обновления операционной системы до версий Android 11 и выше, где Google кардинально пересмотрела политику безопасности в отношении видимости установленных пакетов. Разработчики и продвинутые пользователи вынуждены разбираться с тем, как одно приложение может «видеть» другие, и какие механизмы ограничивают этот обзор. Понимание того, что представляет собой <code>applist</code> на уровне файловой системы и системных вызовов, становится критически важным для отладки и корректной работы софта.</p>
+
+<p>Игнорирование этих изменений приводит к нестабильной работе автоматизаций, лаунчеров и инструментов для разработчиков, которые полагаются на сканирование окружения. Если ранее процесс получения списка установленных программ был тривиальным, то теперь он требует явного декларирования намерений или получения специальных разрешений. Ниже представлен детальный разбор механизмов, управляющих видимостью приложений в современной экосистеме Android.</p>
+
+<h2 id="архитектурные-основы-списка-приложений-в-android">Архитектурные основы списка приложений в Android</h2>
+
+<p>В основе механизма <code>applist</code> лежит системный сервис Package Manager, который ведет учет всех установленных на устройстве пакетов. Каждое приложение в системе Android идентифицируется уникальным пакетным именем, и именно эти данные формируют глобальный список, доступный ядру системы. Однако для пользовательских приложений этот список по умолчанию скрыт или ограничен, что является фундаментальным изменением в модели безопасности.</p>
+
+<p>Доступ к полному списку пакетов ранее осуществлялся через методы вроде <code>getInstalledPackages</code> без каких-либо ограничений. На практике это означало, что любое приложение могло получить полную карту программного обеспечения пользователя, включая банковские клиенты, мессенджеры и системные утилиты. Такая открытость создавала огромные риски для конфиденциальности, позволяя злоумышленникам собирать данные об используемом софте для создания цифрового отпечатка устройства.</p>
+
+<p>С внедрением Android 11 (API уровень 30) была введена концепция «видимости пакетов» (Package Visibility). Теперь, если приложение не declares явно, с какими другими пакетами оно взаимодействует, система вернет пустой список или список, содержащий только системные приложения. Это требует от разработчиков модификации файла манифеста, добавляя туда секции <code>&lt;queries&gt;</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Параметр <code>applist</code> в логах часто указывает на попытку чтения этого списка без наличия соответствующих деклараций в манифесте или без пользовательского разрешения.</p></aside>
+
+<p>Важно понимать, что <code>applist</code> — это не один конкретный файл, который можно отредактировать текстовым редактором без root-прав. Это динамически формируемая база данных, хранящаяся в защищенной области системы. Манипуляции с ней возможны только через официальные API или специализированные инструменты отладки, такие как ADB (Android Debug Bridge).</p>
+
+<h3>Роль AndroidManifest.xml в фильтрации</h3>
+
+<p>Ключевым элементом управления видимостью является файл <code>AndroidManifest.xml</code>, который служит паспортом приложения. Именно здесь разработчик должен указать, какие именно типы приложений или конкретные пакеты ему необходимы для работы. Если в манифесте отсутствует секция запроса, система просто «обрежет» результат запроса, и приложение не увидит целевой софт.</p>
+
+<p>Для запроса доступа к конкретному приложению используется тег <code>&lt;package&gt;</code> внутри секции <code>&lt;queries&gt;</code>. Это наиболее строгий и безопасный метод, так как он ограничивает видимость только одним конкретным пакетом. Например, если лаунчеру нужно знать, установлен ли Telegram, он должен явно запросить пакет <code>org.telegram.messenger</code>.</p>
+
+<p>В случаях, когда приложение работает с категориями софта (например, все браузеры или все почтовые клиенты), используются запросы по_intent. Это позволяет системе вернуть список всех приложений, которые обрабатывают определенный тип действия, не раскрывая при этом лишней информации о других установленных программах. Такой подход балансирует между функциональностью и приватностью.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип запроса</th>
+<th>Описание</th>
+<th>Уровень доступа</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;package&gt;</code></td>
+<td>Запрос конкретного имени пакета</td>
+<td>Высокий (конкретное приложение)</td>
+</tr>
+<tr>
+<td><code>&lt;intent&gt;</code></td>
+<td>Запрос по типу действия (Intent)</td>
+<td>Средний (категория приложений)</td>
+</tr>
+<tr>
+<td><code>&lt;provider&gt;</code></td>
+<td>Запрос по контент-провайдеру</td>
+<td>Высокий (конкретный провайдер)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Добавление запроса в манифест</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте файл AndroidManifest.xml</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите или создайте тег <queries></span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Добавьте тег <package android:name="..." /></span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните и пересоберите проект</span></div></div>
+
+<h2 id="механизмы-ограничения-видимости-в-android-11">Механизмы ограничения видимости в Android 11+</h2>
+
+<p>Начиная с одиннадцатой версии мобильной операционной системы, алгоритмы фильтрации <code>applist</code> стали работать на уровне ядра и фреймворка. Когда приложение отправляет запрос <code>PackageManager.GET_INSTALLED_PACKAGES</code>, система проверяет декларацию <code>&lt;queries&gt;</code>. Если запрашиваемого пакета нет в белом списке, он исключается из возвращаемого массива данных еще до того, как достигнет кода приложения.</p>
+
+<p>Особое внимание уделяется приложениям, targeting API 30 и выше. Для них ограничения применяются жестко. Если же приложение создано для более старых версий Android (targetSdkVersion < 30), но запущено на Android 11+, ограничения также действуют, но могут быть менее строгими в некоторых сценариях использования системных вызовов, хотя Google рекомендует обновлять таргетирование.</p>
+
+<p>Существует также специальное разрешение <code>QUERY_ALL_PACKAGES</code>, которое дает доступ ко всему списку приложений, аналогично поведению в Android 10. Однако получение этого разрешения в Google Play Store требует серьезного обоснования. Модераторы отклоняют запросы, если функционал приложения (например, простой файловый менеджер) не требует знания обо всех установленных играх и утилитах.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование разрешения QUERY_ALL_PACKAGES без веской причины приведет к отказу в публикации приложения в Google Play Store.</p></aside>
+
+<p>В корпоративной среде (Android Enterprise) существуют профили «Владельца устройства», которые могут игнорировать некоторые ограничения видимости для целей управления MDM (Mobile Device Management). Это позволяет администраторам видеть полный <code>applist</code> на рабочих устройствах для контроля compliance, но на личных устройствах пользователей эти механизмы остаются активными.</p>
+
+<h3>Сценарии использования и исключения</h3>
+
+<p>Существует ряд сценариев, где доступ к полному списку приложений является функциональной необходимостью, а не просто удобством. К таким случаям относятся антивирусные решения, родительский контроль, лаунчеры и менеджеры файлов. Для этих категорий разработчики могут запросить расширенные права, но должны пройти дополнительную проверку.</p>
+
+<p>Если приложение является браузером, оно автоматически получает доступ к списку приложений, которые могут обрабатывать ссылки (через механизм Intents), без необходимости запрашивать полный список всех пакетов. Система сама отфильтрует результаты, оставив только то, что может открыть URL. Это пример того, как <code>applist</code> формируется динамически в зависимости от контекста запроса.</p>
+
+<p>Для отладки и тестирования разработчики могут использовать ADB с флагом <code>pm list packages</code>. В этом случае, если устройство подключено в режиме отладки, ограничения видимости могут быть обойдены для конкретного подключенного компьютера, что позволяет видеть полный список установленных пакетов для диагностических целей.</p>
+
+<pre><code>adb shell pm list packages -f</code></pre>
+
+<p>Эта команда выведет полный путь к APK-файлам всех установленных пакетов, игнорируя ограничения видимости, так как она выполняется с правами shell-пользователя, который имеет более высокий приоритет, чем обычные приложения.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ограничения видимости в Android 11+ работают на уровне системы и фильтруют результаты запросов PackageManager на основе деклараций в манифесте.</p></aside>
+
+<h2 id="практическое-управление-доступом-через-adb-и-настройки">Практическое управление доступом через ADB и настройки</h2>
+
+<p>Для продвинутых пользователей и системных администраторов управление видимостью приложений часто сводится к использованию инструментария ADB. Через командную строку можно не только (просматривать) список приложений, но и принудительно скрывать или отображать определенные пакеты для других приложений, эмулируя различные сценарии безопасности.</p>
+
+<p>Одной из частых задач является проверка того, видит ли одно приложение другое. Для этого можно использовать команду <code>dumpsys package</code>, которая выдает подробнейшую информацию о состоянии пакетного менеджера, включая списки разрешений и видимости. Анализ вывода этой команды позволяет понять, почему конкретное приложение не может запустить целевой сервис.</p>
+
+<p>В некоторых кастомных прошивках (например, LineageOS или MIUI с расширенными настройками) существуют пользовательские интерфейсы для управления доступом к <code>applist</code>. Пользователь может вручную запретить приложению «А» видеть приложение «Б», даже если формально у «А» есть соответствующие разрешения. Это реализация принципа минимальных привилегий на практике.</p>
+
+<ol>
+<li>Подключите устройство к компьютеру с включенной отладкой по USB.</li>
+<li>Откройте терминал и введите команду <code>adb shell pm list packages</code> для получения базового списка.</li>
+<li>Используйте <code>adb shell dumpsys package <package_name></code> для детального анализа конкретного приложения.</li>
+<li>Для проверки видимости запустите целевое приложение в режиме отладки и отслеживайте логи через <code>logcat</code>.</li>
+</ol>
+
+<p>Важно отметить, что стандартными средствами пользовательского интерфейса (без root-прав) изменить глобальный <code>applist</code> или правила его фильтрации для других приложений нельзя. Все манипуляции возможны только в рамках настроек конфиденциальности, предоставляемых самой ОС, или через специальные приложения-менеджеры разрешений (App Ops, Bouncer и аналоги).</p>
+
+<h3>Работа с App Ops и специальными разрешениями</h3>
+
+<p>Приложения вроде App Ops позволяют модифицировать поведение системы безопасности, внедряясь в процессы принятия решений о выдаче данных. С их помощью можно «обмануть» приложение, сообщив ему, что список приложений пуст, даже если на устройстве установлено сотни программ. Это достигается путем перехвата системных вызовов.</p>
+
+<p>Для работы таких инструментов часто требуется (предоставление) специальных разрешений через ADB. Например, разрешение <code>GET_APP_OPS_STATS</code> или использование режима «Владения через ADB» (<code>adb shell pm grant</code>). Это позволяет перенастроить политики доступа без необходимости получения root-прав, что сохраняет гарантию на устройство.</p>
+
+<p>Однако стоит учитывать, что глубокая модификация поведения Package Manager может привести к нестабильной работе системы. Если критически важное системное приложение перестанет видеть необходимые ему компоненты из-за ошибочной настройки App Ops, это может вызвать циклические перезагрузки или ошибки в работе интерфейса.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду <code>adb shell appops</code> для просмотра текущего статуса операций безопасности, если на устройстве установлен соответствующий инструментарий.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>При работе с механизмами видимости приложений разработчики и пользователи часто совершают однотипные ошибки, которые приводят к неработоспособности функционала. Понимание природы этих ошибок позволяет быстро диагностировать проблему и устранить её без глубокого погружения в исходный код системы.</p>
+
+<ol>
+<li><strong>Отсутствие тега &lt;queries&gt; в манифесте</strong> — самая распространенная ошибка разработчиков, при которой приложение на Android 11+ возвращает пустой список, хотя на старых версиях работало. Решение: добавить явные запросы пакетов или интентов.</li>
+<li><strong>Неправильное использование QUERY_ALL_PACKAGES</strong> — попытка получить это разрешение для приложения, которое не является файн-менеджером или антивирусом. Решение: пересмотреть архитектуру и использовать фильтрацию по Intent.</li>
+<li><strong>Игнорирование целевой версии SDK</strong> — запуск приложения, скомпилированного под старый API, на новой ОС без тестирования. Решение: обновить <code>targetSdkVersion</code> и протестировать поведение в новых условиях.</li>
+<li><strong>Ошибки в синтаксисе XML</code></strong> — неверное закрытие тегов в секции запросов, что приводит к крашу приложения при старте. Решение: внимательно проверить валидность XML-файла манифеста.</li>
+</ol>
+
+<p>Кроме того, часто встречается путаница между доступом к списку приложений и доступом к использованию приложений (Usage Access). Это два разных механизма: первый говорит о том, <em>что</em> установлено, второй — <em>как</em> и <em>когда</em> это использовалось. Запрос одного разрешения не дает доступа к другому.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Applist (Packages)</th>
+<th>Usage Access</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Цель</td>
+<td>Узнать, что установлено</td>
+<td>Узнать статистику использования</td>
+</tr>
+<tr>
+<td>Разрешение</td>
+<td><code>&lt;queries&gt;</code> / <code>QUERY_ALL</code></td>
+<td><code>PACKAGE_USAGE_STATS</code></td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Анализ Applist</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Точный контроль приватности</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность разработки</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-перспективы-развития">Резюме и перспективы развития</h2>
+
+<p>Механизм <code>applist</code> в современных версиях Android превратился из простого списка установленных программ в сложный инструмент защиты конфиденциальности. Переход от открытого доступа к модели «видимости по умолчанию скрыта» требует от разработчиков более ответственного подхода к декларированию зависимостей. Пользователи же получают дополнительный уровень защиты от слежки, хотя и сталкиваются с временными неудобствами при обновлении привычного софта.</p>
+
+<p>В будущем ожидается дальнейшее ужесточение правил доступа к данным о пакете. Google движется в сторону полной изоляции приложений друг от друга, где обмен данными будет возможен только через строго регламентированные каналы (Intents, Content Providers), а прямой опрос списка соседей станет уделом узкого спектра системных утилит. Понимание этих процессов необходимо всем, кто занимается мобильной разработкой или администрированием корпоративного парка устройств.</p>
+
+<p>Грамотное управление видимостью приложений позволяет найти баланс между функциональностью и безопасностью. Использование правильных методов запроса информации, своевременное обновление манифестов и понимание ограничений платформы — ключ к стабильной работе приложений в экосистеме Android.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-delat-animatsiyu.html" class="pb-related-card">
+                <span class="pb-related-title">Как делать анимацию: полное руководство для начинающих</span>
+                <span class="pb-related-desc">Подробная инструкция по созданию анимации. Выбор софта, этапы производства, 12 принципов движения и </span>
+            </a><a href="/articles/k/ka/kak-vostanovit-ssylku-yandeks-disk.html" class="pb-related-card">
+                <span class="pb-related-title">Как восстановить ссылку Яндекс Диска: полные методы</span>
+                <span class="pb-related-desc">Инструкция по восстановлению доступа к файлам, устранение ошибок 404 и сброс прав доступа в Яндекс Д</span>
+            </a><a href="/articles/b/bl/blok-pitaniya220-12volt-na-kondensatore.html" class="pb-related-card">
+                <span class="pb-related-title">Блок питания 220-12В на конденсаторе: схема, расчет, сборка</span>
+                <span class="pb-related-desc">Подробная инструкция по сборке бестрансформаторного блока питания 220-12В. Расчет гасящего конденсат</span>
+            </a><a href="/articles/v/v-/v-rezhime-fastboot-idet-zaryadka.html" class="pb-related-card">
+                <span class="pb-related-title">Fastboot зарядка: почему телефон заряжается в режиме загрузчика</span>
+                <span class="pb-related-desc">Подробный разбор ситуации, когда устройство заряжается в режиме Fastboot. Причины входа в Bootloader</span>
+            </a><a href="/articles/p/po/pochemu-kkhl-ne-zapuskaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Почему не работает КХЛ: устранение ошибок на ТВ и ПК</span>
+                <span class="pb-related-desc">Подробный разбор причин, почему приложение КХЛ не запускается. Решения проблем на Smart TV, смартфон</span>
+            </a><a href="/articles/k/ka/kak-najti-brauzer-na-khuavee.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти браузер на Хуавей: поиск и настройка по умолчанию</span>
+                <span class="pb-related-desc">Подробная инструкция, как найти браузер на Huawei. Решения для EMUI и HarmonyOS, если пропал значок </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

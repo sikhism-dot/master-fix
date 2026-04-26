@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Разница SW-декодеров: H.264 против H.265 и аппаратные решения — Мастер Фикс</title>
+    <meta name="description" content="Технический анализ различий программных и аппаратных декодеров. Сравнение кодеков, влияние на CPU и выбор плеера для ПК.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/v-/v-chem-raznitsa-dekoderov-sw.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Разница SW-декодеров: H.264 против H.265 и аппаратные решения">
+    <meta property="og:description" content="Технический анализ различий программных и аппаратных декодеров. Сравнение кодеков, влияние на CPU и выбор плеера для ПК.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Разница SW-декодеров: H.264 против H.265 и аппаратные решения</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-обработки-видеопотока-cpu-против-gpu">Архитектура обработки видеопотока: CPU против GPU</a></li><li><a href="#эволюция-стандартов-сжатия-от-h264-до-av1">Эволюция стандартов сжатия: от H.264 до AV1</a></li><li><a href="#конфликты-библиотек-и-настройка-плееров">Конфликты библиотек и настройка плееров</a></li><li><a href="#типичные-ошибки-при-конфигурации-видеосистемы">Типичные ошибки при конфигурации видеосистемы</a></li><li><a href="#резюме-и-ключевые-выводы">Резюме и ключевые выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/h/hu/huayu-pult-universalnyj-rm-l800-instruktsiya-naznachenie-knopok.html">Huayu RM-L800: назначение кнопок и инструкция по настройке</a></li><li><a href="/articles/k/ka/kak-obnovit-pochtu-majl-na-kompyutere.html">Как обновить почту на компьютере: полная инструкция</a></li><li><a href="/articles/i/iz/izmenit-imya-kompyutera-astra-linux.html">Как изменить имя компьютера в Astra Linux: полная инструкция</a></li><li><a href="/articles/k/ka/kak-udalit-moyu-komnatu-v-imo.html">Как удалить комнату в IMO: полная инструкция по закрытию</a></li><li><a href="/articles/s/sh/shared-chto-eto-za-papka.html">Shared папка: что это, где найти и как настроить доступ</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Различия программных декодеров: H.264, H.265 и аппаратное ускорение</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-обработки-видеопотока-cpu-против-gpu">Архитектура обработки видеопотока: CPU против GPU</a></li><li><a href="#эволюция-стандартов-сжатия-от-h264-до-av1">Эволюция стандартов сжатия: от H.264 до AV1</a></li><li><a href="#конфликты-библиотек-и-настройка-плееров">Конфликты библиотек и настройка плееров</a></li><li><a href="#типичные-ошибки-при-конфигурации-видеосистемы">Типичные ошибки при конфигурации видеосистемы</a></li><li><a href="#резюме-и-ключевые-выводы">Резюме и ключевые выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка воспроизведения видеофайла высокого разрешения часто приводит к непредсказуемым результатам: изображение рассыпается на квадраты, звук отстаёт от видеоряда или система полностью перестаёт реагировать на команды. Вместо плавной картинки пользователь наблюдает рывки, а диспетчер задач показывает стопроцентную загрузку центрального процессора, что особенно характерно при работе с современными контейнерами MKV или MP4, использующими сложные алгоритмы сжатия.</p>
+<p>Подобное поведение указывает на конфликт или некорректную работу программных декодеров, которые берут на себя задачу расшифровки видеопотока силами процессора, игнорируя возможности графического ускорителя. В операционных системах семейства Windows эта проблема усугубляется наличием множества библиотек, конфликтом версий кодеков и различиями в реализации алгоритмов сжатия разными производителями оборудования.</p>
+<p>Для устранения артефактов и обеспечения стабильного воспроизведения необходимо чётко понимать, какой именно механизм декодирования используется в конкретный момент времени. Разница между программным (Software) и аппаратным (Hardware) декодированием, а также между различными стандартами сжатия, такими как H.264 и H.265, определяет не только качество картинки, но и энергопотребление устройства, уровень нагрева и общую отзывчивость интерфейса.</p>
+
+<h2 id="архитектура-обработки-видеопотока-cpu-против-gpu">Архитектура обработки видеопотока: CPU против GPU</h2>
+<p>Если у вас наблюдается высокая загрузка центрального процессора при просмотре видео, значит, в системе активирован программный метод декодирования, при котором все вычислительные операции выполняет CPU. В этом сценарии видеопоток распаковывается пошагово: считывание данных с диска, демуксинг (разделение аудио и видео), дешифрация и, наконец, рендеринг кадра, что создаёт колоссальную нагрузку на основные ядра системы.</p>
+<p>На практике программное декодирование, часто обозначаемое как <strong>SW</strong> (Software), является универсальным, но ресурсоёмким решением, не зависящим от конкретной видеокарты. Алгоритмы сжатия, такие как <em>AVC (H.264)</em> или <em>HEVC (H.265)</em>, требуют выполнения миллионов математических операций в секунду для восстановления каждого кадра из сжатых данных, и при отсутствии специализированных блоков эти задачи ложатся на универсальные вычислительные мощности.</p>
+<p>Допустим, система использует старый кодек <em>LAV Video</em> в режиме Software, тогда даже воспроизведение FullHD может вызывать подёргивания, если фоновые процессы также требуют ресурсов процессора. Современные кодеки, такие как <em>AV1</em> или <em>VP9</em>, при программной обработке могут полностью парализовать работу ПК, не имеющего мощного многоядерного CPU, так как эффективность сжатия в них достигнута за счёт резкого роста сложности вычислений.</p>
+<p>В противовес этому, аппаратное ускорение перекладывает задачу декодирования на специализированные блоки внутри графического процессора (GPU), известные как <strong>VDPAU</strong>, <strong>VAAPI</strong> или <strong>DXVA</strong>. Графический чип содержит фиксированные логические схемы, заточенные под конкретные стандарты сжатия, что позволяет обрабатывать видеопоток с минимальным энергопотреблением и практически нулевой нагрузкой на центральный процессор.</p>
+<p>Разница между этими подходами становится критичной при работе с разрешениями 4K и выше, где пропускная способность памяти и скорость вычислений CPU могут быть недостаточными для поддержания частоты кадров. Использование аппаратных возможностей GPU позволяет воспроизводить контент с битрейтом в сотни мегабит в секунду, оставляя процессор свободным для других задач.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка приоритета декодера в LAV Filters</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите LAV Video Configuration</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">В разделе «Hardware Acceleration» выберите режим «D3D11» или «DXVA2»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите «Apply» и «OK» для сохранения параметров</span></div></div>
+
+<h3>Сравнительная таблица методов рендеринга</h3>
+<p>Для наглядного представления различий в потреблении ресурсов и поддерживаемых форматах целесообразно обратиться к сравнительным данным, которые демонстрируют эффективность различных подходов в реальных условиях эксплуатации мультимедийных систем.</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Программный (SW)</th>
+<th>Аппаратный (HW)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Загрузка CPU</td>
+<td>Высокая (до 100%)</td>
+<td>Низкая (1-5%)</td>
+</tr>
+<tr>
+<td>Поддержка кодеков</td>
+<td>Все (через библиотеки)</td>
+<td>Зависит от GPU</td>
+</tr>
+<tr>
+<td>Энергопотребление</td>
+<td>Высокое</td>
+<td>Минимальное</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="эволюция-стандартов-сжатия-от-h264-до-av1">Эволюция стандартов сжатия: от H.264 до AV1</h2>
+<p>Наиболее распространённым заблуждением является мнение, что любой современный декодер одинаково хорошо справляется со всеми форматами видео, однако разница в алгоритмах сжатия диктует свои требования к вычислительной мощности. Стандарт <strong>H.264 (AVC)</strong> стал индустриальным базисом, обеспечивающим хорошее качество при умеренном битрейте, и его программная декодировка под силу практически любому процессору, выпущенному за последние 15 лет.</p>
+<p>Ситуация кардинально меняется с внедрением стандарта <em>H.265 (HEVC)</em>, который обеспечивает сжатие в два раза эффективнее предшественника при том же качестве, но требует значительно более сложных вычислений. Программное декодирование HEVC без аппаратной поддержки может быть невозможным на процессорах старше 5-7 лет, так как количество операций на пиксель возрастает экспоненциально по сравнению с H.264.</p>
+<p>Если у вас ноутбук с интегрированной графикой, то переход на кодеки нового поколения, такие как <em>AV1</em>, может стать проблемой, если GPU не имеет встроенного блока декодирования для этого формата. В таких случаях система вынуждена переключаться на программный режим, что приводит к быстрому разряду батареи и нагреву корпуса, так как эффективность сжатия AV1 достигнута за счёт ещё более сложных алгоритмов предсказания.</p>
+<p>Важно понимать, что разница между SW-декодерами часто кроется именно в оптимизации под конкретные наборы инструкций процессора, такие как <strong>SSE</strong>, <strong>AVX2</strong> или <strong>AVX-512</strong>. Современные программные реализации, например, в составе <em>FFmpeg</em>, используют эти инструкции для ускорения вычислений, но даже они не могут сравниться со специализированными блоками GPU при работе с 4K HDR контентом.</p>
+<p>Для стриминговых сервисов и локальных библиотек высокого качества выбор правильного декодера становится вопросом совместимости: старые устройства могут просто не «потянуть» программное декодирование новых форматов, требуя либо снижения качества, либо замены оборудования.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Кодек AV1 становится новым стандартом для YouTube и Netflix, но его программное декодирование требует процессоров уровня Intel Core 11-го поколения или новее для комфортной работы.</p></aside>
+
+<h3>Таблица совместимости поколений GPU</h3>
+<p>При выборе оборудования или настройке системы полезно свериться с таблицей поддержки аппаратного декодирования, так как отсутствие поддержки конкретного кодека на уровне железа автоматически переводит нагрузку на процессор.</p>
+<table>
+<thead>
+<tr>
+<th>Поколение GPU</th>
+<th>Поддержка H.264</th>
+<th>Поддержка H.265 (10-bit)</th>
+<th>Поддержка AV1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NVIDIA GTX 10xx</td>
+<td>Да</td>
+<td>Да (Main)</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>Intel UHD 630</td>
+<td>Да</td>
+<td>Да</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>NVIDIA RTX 30xx</td>
+<td>Да</td>
+<td>Да</td>
+<td>Да</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="конфликты-библиотек-и-настройка-плееров">Конфликты библиотек и настройка плееров</h2>
+<p>В операционной среде Windows часто возникает ситуация, когда в системе установлено несколько наборов кодеков, которые конфликтуют друг с другом, пытаясь перехватить обработку видеопотока. Пользователь может столкнуться с тем, что один плеер воспроизводит видео корректно, используя встроенные декодеры, а другой выдаёт чёрный экран или зелёное изображение, обращаясь к системным фильтрам DirectShow.</p>
+<p>Наиболее частой причиной проблем является наличие устаревших пакетов кодеков, таких как старые версии <em>K-Lite Codec Pack</em> или <em>CCC Codec</em>, которые внедряют в систему свои SW-декодеры с низким приоритетом или ошибками. При попытке воспроизведения файл может обрабатываться неоптимизированным декодером, который не умеет корректно работать с современными цветовыми пространствами или глубиной цвета.</p>
+<p>Для решения этой проблемы рекомендуется использовать изолированные плееры, такие как <em>MPC-HC</em> или <em>MPV</em>, которые используют собственные внутренние библиотеки <strong>libavcodec</strong> и не зависят от системных настроек. В настройках таких плееров можно явно указать предпочтительный метод декодирования, принудительно выбрав аппаратное ускорение через <code>D3D11</code> или <code>DXVA2</code>, что исключит влияние стороннего ПО.</p>
+<p>Если же требуется использование системных декодеров, например, для работы в специфическом софте для видеомонтажа, следует воспользоваться утилитами вроде <em>Codec Tweak Tool</em> для сброса приоритетов и удаления дублирующихся фильтров. Чистка реестра от остатков удалённых пакетов кодеков также может восстановить корректную работу стандартных компонентов Windows Media Foundation.</p>
+<p>Стоит учитывать, что некоторые SW-декодеры имеют функции постобработки, такие как масштабирование или шумоподавление, которые могут быть полезны на слабых экранах, но излишни на современных 4K мониторах. Отключение лишних фильтров в цепочке обработки видеопотока часто повышает производительность и снижает задержку вывода изображения.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Удаление системных библиотек кодеков вручную через реестр может привести к неработоспособности стандартных приложений Windows. Используйте только специализированные утилиты для управления кодеками.</p></aside>
+
+<h2 id="типичные-ошибки-при-конфигурации-видеосистемы">Типичные ошибки при конфигурации видеосистемы</h2>
+<p>В процессе настройки и эксплуатации мультимедийных систем пользователи часто допускают ряд систематических ошибок, которые сводят на нет преимущества современного оборудования и приводят к нестабильной работе. Понимание природы этих ошибок позволяет быстро диагностировать и устранять проблемы с воспроизведением.</p>
+<ol>
+<li><strong>Игнорирование драйверов GPU</strong> — использование стандартных драйверов Microsoft Basic Display Adapter или устаревших версий от производителя блокирует доступ к аппаратным функциям декодирования, forcing систему использовать медленный программный режим.</li>
+<li><strong>Установка множественных пакетов кодеков</strong> — инсталляция нескольких наборов кодеков (например, K-Lite и Shark007 одновременно) создаёт хаос в реестре DirectShow, из-за чего плеер может выбрать не тот декодер, который нужен для конкретного файла.</li>
+<li><strong>Неверный выбор рендерера видео</strong> — даже при правильном декодировании выбор старого видеовыхода (например, <em>DirectX 9</em> вместо <em>Direct3D 11</em>) может ограничивать поддержку HDR и глубокого цвета, вызывая искажения цветопередачи.</li>
+<li><strong>Отключение аппаратного ускорения в браузере</strong> — при просмотре онлайн-видео (YouTube, Twitch) отключение функции «Использовать аппаратное ускорение» в настройках браузера переводит всю нагрузку на CPU, вызывая перегрев и лаги.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор метода декодирования</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Универсальная совместимость со всеми форматами:Возможность работы на любом CPU без мощной GPU:Гибкая настройка фильтров постобработки</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокое энергопотребление и нагрев:Невозможность воспроизведения 4K/8K на слабых CPU:Риск рассинхронизации аудио и видео</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-ключевые-выводы">Резюме и ключевые выводы</h2>
+<p>Фундаментальная разница между программными (SW) и аппаратными декодерами заключается в источнике вычислительной мощности: в первом случае нагрузку несёт универсальный центральный процессор, а во втором — специализированные блоки графического чипа. Для современных форматов с высокой степенью сжатия, таких как HEVC и AV1, использование аппаратного декодирования является не просто рекомендацией, а необходимостью для обеспечения плавности воспроизведения.</p>
+<p>Оптимальная конфигурация видеосистемы предполагает наличие актуальных драйверов GPU, использование изолированных плееров с внутренними декодерами и отсутствие конфликтов между различными пакетами кодеков. Правильная настройка приоритетов позволяет совместить высокое качество изображения с минимальным потреблением ресурсов, обеспечивая комфортный просмотр контента любого разрешения.</p>
+<p>Понимание принципов работы декодеров даёт пользователю инструменты для самостоятельной диагностики проблем, связанных с «тормозами» видео или артефактами изображения. Вместо хаотичной установки новых кодеков, грамотный подход требует анализа загрузки процессора и проверки задействованных механизмов ускорения в диспетчере задач.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к стабильному видео — использование аппаратного декодирования GPU там, где это возможно, и качественных SW-декодеров (как LAV) только в качестве резервного варианта для старых форматов.</p></aside>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки активного декодера во время воспроизведения нажмите Ctrl+J в плеере MPC-HC или вызовите статистику в VLC, чтобы увидеть, используется ли HW acceleration.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/h/hu/huayu-pult-universalnyj-rm-l800-instruktsiya-naznachenie-knopok.html" class="pb-related-card">
+                <span class="pb-related-title">Huayu RM-L800: назначение кнопок и инструкция по настройке</span>
+                <span class="pb-related-desc">Подробное руководство по пульту Huayu RM-L800. Назначение кнопок, программирование, коды брендов и у</span>
+            </a><a href="/articles/k/ka/kak-obnovit-pochtu-majl-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить почту на компьютере: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по обновлению почты Mail.ru на ПК. Настройка клиента, устранение ошибок синхрон</span>
+            </a><a href="/articles/i/iz/izmenit-imya-kompyutera-astra-linux.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить имя компьютера в Astra Linux: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене hostname в Astra Linux. Методы через терминал и графический интерфейс</span>
+            </a><a href="/articles/k/ka/kak-udalit-moyu-komnatu-v-imo.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить комнату в IMO: полная инструкция по закрытию</span>
+                <span class="pb-related-desc">Подробное руководство, как удалить комнату или чат в IMO на Android и iPhone. Решения проблем с нево</span>
+            </a><a href="/articles/s/sh/shared-chto-eto-za-papka.html" class="pb-related-card">
+                <span class="pb-related-title">Shared папка: что это, где найти и как настроить доступ</span>
+                <span class="pb-related-desc">Подробный разбор папки Shared: назначение, поиск пути в Windows, настройка общего доступа и решение </span>
+            </a><a href="/articles/k/ka/kak-uznat-kakie-karty-skachenny-v-yandeks-navigator.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить загруженные карты в Яндекс Навигаторе</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке офлайн-карт в Яндекс Навигаторе. Узнайте, как посмотреть статус заг</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

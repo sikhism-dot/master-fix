@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Home Assistant на ТВ-приставку: установка через Docker и Android TV — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по установке Home Assistant на Android TV приставку. Настройка Docker, Termux, прошивка и типичные ошибки при развертывании.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/ho/home-assistant-na-tv-pristavku.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Home Assistant на ТВ-приставку: установка через Docker и Android TV">
+    <meta property="og:description" content="Подробная инструкция по установке Home Assistant на Android TV приставку. Настройка Docker, Termux, прошивка и типичные ошибки при развертывании.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Home Assistant на ТВ-приставку: установка через Docker и Android TV</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-аппаратной-совместимости-и-выбор-метода">Анализ аппаратной совместимости и выбор метода</a></li><li><a href="#подготовка-среды-termux-для-запуска-контейнеров">Подготовка среды Termux для запуска контейнеров</a></li><li><a href="#установка-и-конфигурация-home-assistant-core">Установка и конфигурация Home Assistant Core</a></li><li><a href="#альтернативный-метод-использование-docker-на-android">Альтернативный метод: использование Docker на Android</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-перспективы-использования">Резюме и перспективы использования</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-nastroit-kanaly-televizora-s-dvumya-pultami.html">Настройка каналов телевизора с двумя пультами: пошаговая инструкция</a></li><li><a href="/articles/h/ht/hts-32hdr11b-hc24-nastrojka-dtv.html">HTS-32HDR11B-HC24: Настройка DTV и поиск каналов</a></li><li><a href="/articles/k/ka/kak-na-tcl-led40d2700b-podklyuchit-televizor-k-blyutuz.html">Как подключить TCL LED40D2700B к Bluetooth: Инструкция</a></li><li><a href="/articles/k/ka/kak-udlinit-ssylku-iptv.html">Как удлинить ссылку IPTV: методы и инструменты для списков</a></li><li><a href="/articles/k/ka/kak-perezagruzit-televizor-filips-ambilajt.html">Как перезагрузить телевизор Philips Ambilight: методы и инструкции</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Home Assistant на ТВ-приставку: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-аппаратной-совместимости-и-выбор-метода">Анализ аппаратной совместимости и выбор метода</a></li><li><a href="#подготовка-среды-termux-для-запуска-контейнеров">Подготовка среды Termux для запуска контейнеров</a></li><li><a href="#установка-и-конфигурация-home-assistant-core">Установка и конфигурация Home Assistant Core</a></li><li><a href="#альтернативный-метод-использование-docker-на-android">Альтернативный метод: использование Docker на Android</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-перспективы-использования">Резюме и перспективы использования</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка превратитьующую Android TV приставку в полноценный сервер умного дома часто сталкивается с ограничениями стандартной операционной системы. Пользователь обнаруживает, что привычный установщик Home Assistant не имеет версии для APK, а встроенные функции Android TV не позволяют запустить полноценный контейнер с базой данных и интеграциями.</p>
+<p>Основная сложность заключается в архитектурных различиях между десктопными Linux-дистрибутивами и мобильной ОС Android, которая базируется на ядре Linux, но имеет урезанный набор системных библиотек. Прямая установка Home Assistant OS невозможна без полной перепрошивки устройства, что несет высокие риски превратить гаджет в «кирпич».</p>
+<p>Однако существует проверенный технический путь обхода этих ограничений через использование среды выполнения Docker или эмулятора терминала. Ниже представлен детальный алгоритм действий, позволяющий развернуть <strong>Home Assistant Core</strong> на базе Android, сохранив при этом возможность использования приставки по прямому назначению или в качестве панели управления.</p>
+
+<h2 id="анализ-аппаратной-совместимости-и-выбор-метода">Анализ аппаратной совместимости и выбор метода</h2>
+<p>Первым критическим этапом является оценка вычислительных возможностей конкретного устройства. Большинство бюджетных моделей на базе процессоров <em>Amlogic S905</em> или <em>Rockchip RK3328</em> имеют ограниченный объем оперативной памяти, что делает запуск тяжелых контейнеров нестабильным.</p>
+<p>Для комфортной работы минимально требуется 2 ГБ оперативной памяти и наличие свободного места во внутренней памяти не менее 8 ГБ. Использование внешних накопителей через USB возможно, но скорость записи на дешевые флеш-карты может стать узким местом для базы данных <em>MariaDB</em> или <em>SQLite</em>.</p>
+<p>Существует два основных подхода к реализации задачи: установка нативного Docker через ROOT-права и использование пользовательского пространства без глубокого вмешательства в систему. Выбор зависит от версии Android и наличия прав суперпользователя.</p>
+<p>Если устройство работает под управлением Android TV 9 и выше, вероятность успешной установки Docker выше благодаря улучшенной поддержке сетевых интерфейсов. На более старых версиях, таких как Android 7, часто возникают конфликты портов и проблемы с пробросом сетей.</p>
+
+<h3>Сравнение методов развертывания</h3>
+<p>Метод с использованием <em>Termux</em> является наиболее безопасным, так как не требует изменения системного раздела и работает в изолированном окружении. Этот подход предпочтителен для пользователей, которые не хотят рисковать гарантией или стабильностью работы медиацентра.</p>
+<p>Использование полноценного Docker Engine требует получения ROOT-прав, что автоматически снимает устройство с гарантийного обслуживания. Кроме того, на многих приставках загрузчик заблокирован производителем, что делает получение прав суперпользователя технически сложным или невозможным.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Termux (User Space)</th>
+<th>Docker (Root Access)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Требование ROOT</td>
+<td>Не требуется</td>
+<td>Обязательно</td>
+</tr>
+<tr>
+<td>Стабильность сети</td>
+<td>Средняя (NAT)</td>
+<td>Высокая (Host mode)</td>
+</tr>
+<tr>
+<td>Риск поломки</td>
+<td>Минимальный</td>
+<td>Высокий</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях Xiaomi Mi Box и Nvidia Shield процесс разблокировки загрузчика может отличаться и требует поиска специфичных инструкций для конкретной ревизии платы.</p></aside>
+
+<h2 id="подготовка-среды-termux-для-запуска-контейнеров">Подготовка среды Termux для запуска контейнеров</h2>
+<p>Наиболее универсальным решением является использование эмулятора терминала <em>Termux</em>, который предоставляет полноценную Linux-подобную среду. Установка производится напрямую из репозитория <em>F-Droid</em>, так как версия из Google Play Store является устаревшей и не получает обновлений безопасности.</p>
+<p>После установки приложения необходимо выполнить первоначальную настройку окружения. Терминал запросит разрешение на доступ к хранилищу, которое следует предоставить для возможности сохранения конфигурационных файлов и логов.</p>
+<p>Первым шагом в терминале является обновление пакетных менеджеров и установка необходимых зависимостей. Без этого этапа последующие команды могут выполняться с ошибками или не выполняться вовсе из-за отсутствия библиотек.</p>
+<pre><code>pkg update && pkg upgrade
+<p>pkg install proot-distro</p>
+<p>proot-distro install ubuntu</code></pre></p>
+<p>Данная команда установит дистрибутив Ubuntu внутри изолированного пространства Termux. Это позволяет использовать стандартные пакеты Debian/Ubuntu, необходимые для работы Home Assistant, обходя ограничения Android.</p>
+<p>Запуск среды Ubuntu производится простой командой <code>proot-distro login ubuntu</code>. Внутри этой среды уже можно устанавливать Docker, хотя и с определенными ограничениями, связанными с отсутствием системного демона <em>systemd</em>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка Termux</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте Termux с F-Droid</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите обновление pkg update</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите proot-distro</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Загрузите образ Ubuntu</span></div></div>
+
+<h3>Настройка сетевого взаимодействия</h3>
+<p>Критически важным моментом является организация доступа к серверу из локальной сети. По умолчанию контейнеры, запущенные в Termux, находятся за двойным NAT и не видны другим устройствам умного дома.</p>
+<p>Для решения этой проблемы используется проброс портов. Необходимо пробросить порт 8123, на котором по умолчанию слушает Home Assistant, на IP-адрес самой приставки. Это делается через настройки роутера или внутренней перенаправлением в Android.</p>
+<p>Если приставка подключена по Wi-Fi, возможны проблемы с разрывом соединения при переходе устройства в спящий режим. Рекомендуется в настройках Android отключить энергосбережение для приложения Termux и установить режим «Высокая производительность».</p>
+<p>В некоторых случаях требуется статический IP-адрес для самой приставки, чтобы маршрутизация не сбивалась после перезагрузки роутера. Динамическое изменение IP приведет к недоступности панели управления умным домом.</p>
+
+<h2 id="установка-и-конфигурация-home-assistant-core">Установка и конфигурация Home Assistant Core</h2>
+<p>После подготовки окружения Ubuntu внутри Termux, следует перейти непосредственно к установке компонентов Home Assistant. Процесс аналогичен установке на любой другой Linux-системе, но требует ручной настройки некоторых параметров.</p>
+<p>Необходимо установить Python, pip и зависимости для компиляции некоторых модулей. Архитектура процессоров ARM, используемых в приставках, требует компиляции некоторых пакетов на месте, что может занять значительное время.</p>
+<pre><code>apt update
+<p>apt install python3 python3-pip python3-venv python3-dev libffi-dev libssl-dev</p>
+<p>python3 -m venv /srv/homeassistant</p>
+<p>source /srv/homeassistant/bin/activate</p>
+<p>pip3 install homeassistant</code></pre></p>
+<p>Запуск сервера производится командой <code>hass</code> из активированного виртуального окружения. Первый запуск занимает длительное время, так как происходит создание базы данных и первоначальная индексация компонентов.</p>
+<p>Для автозагрузки службы рекомендуется создать скрипт в <code>/etc/init.d/</code> или использовать встроенные средства Android для запуска приложений при старте системы, если устройство имеет соответствующие права или настройки разработчика.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прерывание процесса установки или нехватка места на диске во время загрузки компонентов может привести к повреждению виртуального окружения. Рекомендуется иметь запас минимум 4 ГБ свободной памяти.</p></aside>
+
+<h3>Работа с конфигурацией и интеграциями</h3>
+<p>Файлы конфигурации располагаются в домашней директории пользователя внутри виртуальной среды. Для редактирования файлов удобно использовать текстовые редакторы <code>nano</code> или <code>vim</code>, доступные в репозитории.</p>
+<p>При добавлении интеграций, требующих доступа к Bluetooth или Zigbee-координаторам, подключенным через USB, необходимо убедиться, что Termux имеет соответствующие разрешения. Android строго контролирует доступ приложений к аппаратным интерфейсам.</p>
+<p>Для USB-устройств может потребоваться проброс устройств через ADB или использование OTG-кабеля с активным питанием. Виртуализация USB в среде Proot-Distro работает не всегда стабильно и зависит от ядра Android.</p>
+<p>Логи системы следует мониторить в реальном времени через файл <code>home-assistant.log</code>. Это позволяет оперативно выявлять ошибки подключения к MQTT-брокеру или базе данных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Статус поддержки на ARM</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Z-Wave JS</td>
+<td>Частичная</td>
+<td>Требует внешнего контроллера</td>
+</tr>
+<tr>
+<td>MQTT</td>
+<td>Полная</td>
+<td>Стабильная работа</td>
+</tr>
+<tr>
+<td>Google Cast</td>
+<td>Полная</td>
+<td>Идеально для ТВ приставок</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Установка Core версии через Python-окружение обеспечивает максимальную совместимость с архитектурой ARM, но требует ручного управления зависимостями.</p></aside>
+
+<h2 id="альтернативный-метод-использование-docker-на-android">Альтернативный метод: использование Docker на Android</h2>
+<p>Для устройств с полученными ROOT-правами доступен более производительный метод — запуск нативного Docker Engine. Этот подход позволяет использовать официальные образы Home Assistant, хотя и с ограничениями архитектуры.</p>
+<p>Существуют специальные сборки Docker для Android, такие как <em>Termux-Docker</em> или модифицированные бинарники для конкретных ядер. Установка требует разблокировки загрузчика и установки кастомного recovery.</p>
+<p>Основное преимущество метода — возможность использования Docker Compose для управления стеком сервисов. Это упрощает обновление и резервное копирование конфигурации по сравнению с ручной установкой Python.</p>
+<p>Однако, стабильность работы сети в режиме моста (bridge) на Android часто вызывает проблемы. Контейнеры могут не получать IP-адреса или терять связь с шлюзом после переподключения Wi-Fi.</p>
+<p>Рекомендуется использовать сетевой режим <code>host</code> для контейнера Home Assistant, чтобы избежать сложностей с пробросом портов. Это делает сервер видимым в локальной сети сразу после запуска.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Производительность Docker|Управление через Compose|Официальные образы</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Сложность установки</li><li>✅ Нестабильность сети</li><li>✅ Риск потери гарантии</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>В процессе эксплуатации системы на базе Android TV часто возникают специфические проблемы, связанные с особенностями мобильной операционной системы. Понимание природы этих ошибок позволяет быстро восстановить работоспособность сервера.</p>
+<ol>
+<li><strong>Ошибка «Container exited with code 137»</strong> — это классический признак нехватки оперативной памяти (OOM Killer). Android aggressively убивает фоновые процессы, потребляющие много ресурсов. Решение: ограничить использование памяти в Docker или увеличить файл подкачки (swap) на внешнем накопителе.</li>
+<li><strong>Недоступность порта 8123 извне</strong> — часто вызвано тем, что Android блокирует входящие соединения для приложений, не имеющих специального разрешения. Необходимо проверить настройки брандмауэра и убедиться, что Termux или Docker имеют разрешение на доступ к локальной сети.</li>
+<li><strong>Коррупция базы данных после сбоя питания</strong> — приставки не имеют встроенной батареи и при резком отключении света файловая система может повредиться. Решение: использовать файловую систему <code>F2FS</code> вместо <code>EXT4</code> или настроить регулярные бэкапы на внешний сервер.</li>
+<li><strong>Отвал USB-устройств</strong> — драйверы USB на Android часто некорректно обрабатывают переподключение устройств без перезагрузки ядра. Требуется использование USB-хаба с собственным питанием и фиксация устройств в системе через udev-правила (если доступно).</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для повышения стабильности работы рекомендуется отключить автоматическое обновление системы Android TV, так как новые прошивки могут изменить структуру ядра и нарушить работу Docker или Termux.</p></aside>
+
+<h2 id="резюме-и-перспективы-использования">Резюме и перспективы использования</h2>
+<p>Развертывание Home Assistant на ТВ-приставке является viable решением для энтузиастов, желающих утилизировать имеющееся оборудование. Несмотря на технические сложности, связанные с архитектурой Android, система демонстрирует достаточную производительность для управления базовыми сценариями умного дома.</p>
+<p>Ключевым фактором успеха является правильный выбор метода установки: для большинства пользователей оптимальным будет вариант с Termux и Proot, обеспечивающий баланс между функциональностью и безопасностью системы.</p>
+<p>При правильной настройке и обеспечении стабильного электропитания, такая конфигурация способна работать годами, предоставляя удобный интерфейс управления домом прямо на экране телевизора через браузер или кастомное приложение.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-nastroit-kanaly-televizora-s-dvumya-pultami.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка каналов телевизора с двумя пультами: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке каналов ТВ при наличии двух пультов. Решение проблем совместимост</span>
+            </a><a href="/articles/h/ht/hts-32hdr11b-hc24-nastrojka-dtv.html" class="pb-related-card">
+                <span class="pb-related-title">HTS-32HDR11B-HC24: Настройка DTV и поиск каналов</span>
+                <span class="pb-related-desc">Полная инструкция по настройке цифрового ТВ (DTV) на телевизоре HTS-32HDR11B-HC24. Решение проблем с</span>
+            </a><a href="/articles/k/ka/kak-na-tcl-led40d2700b-podklyuchit-televizor-k-blyutuz.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить TCL LED40D2700B к Bluetooth: Инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению TCL LED40D2700B к Bluetooth. Настройка наушников, колонок и пере</span>
+            </a><a href="/articles/k/ka/kak-udlinit-ssylku-iptv.html" class="pb-related-card">
+                <span class="pb-related-title">Как удлинить ссылку IPTV: методы и инструменты для списков</span>
+                <span class="pb-related-desc">Подробная инструкция, как увеличить длину URL IPTV, обрезать список каналов и адаптировать плейлист </span>
+            </a><a href="/articles/k/ka/kak-perezagruzit-televizor-filips-ambilajt.html" class="pb-related-card">
+                <span class="pb-related-title">Как перезагрузить телевизор Philips Ambilight: методы и инструкции</span>
+                <span class="pb-related-desc">Полное руководство по перезагрузке Philips Ambilight. Программный сброс, использование пульта, Hard </span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-film-s-fleshki-na-televizore-shivaki-dk-004.html" class="pb-related-card">
+                <span class="pb-related-title">Как запустить фильм с USB на Shivaki DK-004: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по подключению флешки и запуску видеофайлов на телевизоре Shivaki DK-004. Наст</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

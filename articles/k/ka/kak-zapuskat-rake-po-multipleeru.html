@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Запуск Rake в мультиплеере: настройка и отладка — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по запуску задач Rake в многопользовательской среде. Настройка блокировок, миграций и CI/CD для командной работы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-zapuskat-rake-po-multipleeru.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Запуск Rake в мультиплеере: настройка и отладка">
+    <meta property="og:description" content="Техническое руководство по запуску задач Rake в многопользовательской среде. Настройка блокировок, миграций и CI/CD для командной работы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Запуск Rake в мультиплеере: настройка и отладка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#организация-распределенных-блокировок">Организация распределенных блокировок</a></li><li><a href="#синхронизация-миграций-базы-данных">Синхронизация миграций базы данных</a></li><li><a href="#управление-переменными-окружения-в-кластере">Управление переменными окружения в кластере</a></li><li><a href="#оптимизация-производительности-и-логирование">Оптимизация производительности и логирование</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/t/ti/tinstaller-rabochie-adresa.html">Рабочие адреса TInstaller: актуальные ссылки и серверы</a></li><li><a href="/articles/d/do/doffler-kak-ustanavlivat-prilozheniya-storonnie.html">Doffler TV: Как установить сторонние приложения APK</a></li><li><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html">Папка 2ГИС: где хранятся карты и как найти файлы</a></li><li><a href="/articles/g/ge/get-kontakt-gts-chto-znachit.html">Гет Контакт ГТС: Что значит и как расшифровать код</a></li><li><a href="/articles/h/ha/hartens-55-dyujmov-avtonastrojkp.html">Hartens 55 дюймов: настройка каналов и Wi-Fi</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Запуск Rake в мультиплеере: настройка и отладка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#организация-распределенных-блокировок">Организация распределенных блокировок</a></li><li><a href="#синхронизация-миграций-базы-данных">Синхронизация миграций базы данных</a></li><li><a href="#управление-переменными-окружения-в-кластере">Управление переменными окружения в кластере</a></li><li><a href="#оптимизация-производительности-и-логирование">Оптимизация производительности и логирование</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке параллельного запуска задач Rake на нескольких серверах или в рамках распределенной CI/CD-системы разработчики часто сталкиваются с критическими конфликтами доступа к ресурсам. Типичная ситуация: скрипт деплоя пытается выполнить миграцию базы данных одновременно на двух инстансах, что приводит к deadlock-ам, повреждению схемы или некорректному состоянию индексов.</p>
+<p>Проблема усугубляется тем, что стандартные задачи Rails не предназначены для автоматической синхронизации между воркерами без явной настройки механизмов блокировки. Если в логах появляются сообщения о таймаутах соединений или частичном выполнении задач, это прямой сигнал о необходимости внедрения распределенных блокировок.</p>
+<p>Решение требует глубокого понимания того, как Rake взаимодействует с базой данных и файловой системой в условиях конкуренции процессов. Ниже рассмотрены проверенные методы организации работы задач в кластерной среде, исключающие рассинхронизацию данных.</p>
+
+<h2 id="организация-распределенных-блокировок">Организация распределенных блокировок</h2>
+<p>Фундаментальным требованием для безопасного выполнения задач в мультиплеерной среде является наличие механизма распределенной блокировки (distributed lock). Без него два процесса могут одновременно попытаться изменить одну и ту же таблицу, что приведет к непредсказуемым результатам. Стандартный подход предполагает использование Redis или самой базы данных для создания мьютекса.</p>
+<p>На практике часто используется гем <code>redis-lock</code> или встроенные механизмы PostgreSQL advisory locks. Допустим, задача требует обновления кэша, который должен быть единственной копией истины. В этом случае перед началом выполнения кода процесс должен успешно захватить ключ блокировки в Redis. Если ключ уже занят другим воркером, текущий процесс либо ожидает освобождения ресурса, либо завершается, предотвращая дублирование работы.</p>
+<p>Важно учитывать время жизни блокировки (TTL). Если процесс, захвативший блокировку, упадет с ошибкой или будет убит системой, ресурс должен освободиться автоматически через заданный интервал. Это предотвращает ситуацию, когда задача больше не выполняется, но блокировка остается активной, останавливая всю очередь задач.</p>
+<p>Реализация такой логики часто требует оборачивания стандартных задач Rake в собственные обертки. Вместо прямого вызова <code>rake db:migrate</code> на всех серверах, скрипт сначала проверяет доступность специального флага в хранилище ключей.</p>
+
+<h3>Настройка блокировок через Redis</h3>
+<p>Для реализации блокировок через Redis необходимо добавить соответствующую зависимость в <code>Gemfile</code> и создать начальный файл конфигурации. Подключение к инстансу Redis должно быть надежным, с предусмотренными таймаутами повторного подключения.</p>
+<p>Пример реализации wrapper-задачи, которая гарантирует однократное выполнение:</p>
+<pre><code>namespace:deploy do
+<p>desc"Run migration with distributed lock"</p>
+<p>task:migrate_safe =>:environment do</p>
+<p>redis = Redis.new(url: ENV['REDIS_URL'])</p>
+<p>lock_key ="rake_lock:db_migrate"</p>
+<p>lock_timeout = 300 # секунд</p>
+
+<p>if redis.set(lock_key,"locked", ex: lock_timeout, nx: true)</p>
+<p>begin</p>
+<p>Rake::Task["db:migrate"].invoke</p>
+<p>ensure</p>
+<p>redis.del(lock_key)</p>
+<p>end</p>
+<p>else</p>
+<p>puts"Migration is already running on another node."</p>
+<p>end</p>
+<p>end</p>
+<p>end</code></pre></p>
+<p>Такой подход гарантирует, что даже при одновременном запуске скрипта на десяти серверах, миграция выполнится только один раз. Остальные девять процессов увидят установленный ключ и завершат работу без внесения изменений.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка распределенной блокировки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите gem'redis' в Gemfile</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создайте задачу-обертку с проверкой ключа</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Добавьте обработку таймаутов и очистку ключа</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Заменяйте прямые вызовы Rake на безопасные аналоги</span></div></div>
+
+<h2 id="синхронизация-миграций-базы-данных">Синхронизация миграций базы данных</h2>
+<p>Миграции схемы базы данных являются наиболее критичной операцией, требующей строгой последовательности. В среде, где приложение запущено на нескольких репликах или подкастах (pods), запуск <code>rake db:migrate</code> должен происходить централизованно. Параллельное выполнение миграций может привести к блокировкам на уровне таблиц или нарушению целостности данных при изменении структуры.</p>
+<p>Современные фреймворки, такие как Rails 6 и выше, имеют встроенную защиту от параллельных миграций через таблицу <code>ar_internal_metadata</code>. Однако полагаться исключительно на встроенные механизмы в высоконагруженных системах рискованно. Рекомендуется явно выделять этап миграции в отдельный процесс деплоя, который выполняется до масштабирования новых версий приложения.</p>
+<p>Если автоматическое разворачивание происходит через CI/CD пайплайн, задача миграции должна запускаться только на одном из раннеров. Конфигурация пайплайна должна гарантировать, что стадия миграции не будет распараллелена по матрице сборок.</p>
+<p>В случаях, когда миграция данных (data migration) занимает длительное время, стандартный таймаут соединения может прервать процесс. Для таких операций стоит использовать фоновые задачи или специализированные инструменты вроде <code>pg_partman</code> или <code>pt-online-schema-change</code>, вызываемые через Rake.</p>
+
+<h3>Стратегии для CI/CD пайплайнов</h3>
+<p>В системах непрерывной интеграции, таких как GitLab CI или GitHub Actions, важно правильно настроить стадии (stages). Миграция базы данных должна быть вынесена в отдельную джобу, которая выполняется строго до стадии развертывания кода (deploy). Это обеспечивает актуальность схемы перед запуском новых версий приложения.</p>
+<p>Типичная ошибка — запуск миграции внутри каждого пода при его старте. Это создает шторм соединений и высокую нагрузку на БД в момент обновления. Правильным подходом является запуск миграции один раз в рамках пайплайна, а затем обновление подов с проверкой готовности (readiness probe).</p>
+<p>Для больших баз данных стоит рассмотреть возможность использования режима <code>online</code> для миграций, если используемый ORM или гем это поддерживают. Это позволяет проводить изменения схемы без блокировки таблицы для записи, что критично для систем с высокой доступностью.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Никогда не запускайте rake db:migrate одновременно на нескольких серверах без внешней координации, даже если ORM утверждает, что это безопасно. Сетевые задержки могут привести к гонке условий.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Стандартный запуск</th>
+<th>Безопасный запуск (CI/CD)</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Частота выполнения</td>
+<td>При каждом старте пода</td>
+<td>Один раз перед деплоем</td>
+</tr>
+<tr>
+<td>Блокировка БД</td>
+<td>Высокий риск deadlock</td>
+<td>Контролируемая блокировка</td>
+</tr>
+<tr>
+<td>Влияние на доступность</td>
+<td>Возможны таймауты</td>
+<td>Плановое окно обслуживания</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="управление-переменными-окружения-в-кластере">Управление переменными окружения в кластере</h2>
+<p>В распределенной среде каждый узел должен иметь идентичную конфигурацию для корректного выполнения задач Rake. Различия в переменных окружения, таких как <code>RAILS_ENV</code>, <code>DB_POOL</code> или пути к файлам, могут привести к тому, что задача выполнится успешно на одном сервере и упадет на другом, либо, что хуже, затронет не ту базу данных.</p>
+<p>Использование <code>.env</code> файлов на продакшене считается плохой практикой. Вместо этого следует использовать механизмы инъекции переменных, предоставляемые оркестратором (Kubernetes ConfigMaps, Docker secrets, AWS Parameter Store). Это гарантирует, что чувствительные данные и настройки окружения синхронизированы.</p>
+<p>Особое внимание стоит уделить переменной <code>RAILS_ENV</code>. Если она не установлена явно, Rake может по умолчанию запуститься в режиме <code>development</code>, что приведет к созданию таблиц в тестовой базе вместо продакшена. Принудительная установка окружения в скрипте запуска или манифесте развертывания является обязательной.</p>
+<p>Для задач, зависящих от локальных файлов (например, загрузка справочников), необходимо убедиться, что файловое хранилище является общим (NFS, EFS, S3) или что артефакты сборки синхронизированы на все узлы перед запуском задачи. Локальные файловые системы отдельных контейнеров изолированы и не подходят для хранения общих данных.</p>
+
+<h3>Конфигурация пулов соединений</h3>
+<p>При запуске Rake задач в мультипроцессорном режиме или на множестве серверов количество соединений к базе данных может резко возрасти. По умолчанию Rails настраивает пул соединений исходя из количества потоков Puma или Sidekiq, но для Rake задач это значение часто равно 5.</p>
+<p>Если задача Rake запускается параллельно на 10 серверах, это может мгновенно исчерпать лимит соединений базы данных (max_connections). Необходимо явно задавать параметр <code>POOL</code> в переменной окружения для Rake задач, устанавливая его в минимально возможное значение (обычно 1 или 2), так как Rake задачи, как правило, однопоточны.</p>
+<p>Пример установки переменной перед запуском:</p>
+<pre><code>POOL=1 RAILS_ENV=production bundle exec rake my:task</code></pre>
+<p>Игнорирование этого параметра может привести к ошибкам <code>could not obtain a connection from the pool</code>, что остановит выполнение критических фоновых процессов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для задач, интенсивно работающих с БД, рассмотрите создание отдельного пользователя БД с ограниченным пулом соединений, чтобы фоновые задачи не влияли на работу основного приложения.</p></aside>
+
+<h2 id="оптимизация-производительности-и-логирование">Оптимизация производительности и логирование</h2>
+<p>Выполнение задач в распределенной среде требует детального логирования для отладки. Поскольку задача может выполниться на любом из узлов, стандартный вывод в консоль (stdout) может быть потерян, если контейнер завершит работу сразу после выполнения. Необходимо централизованное агрегирование логов.</p>
+<p>Рекомендуется использовать структурированное логирование (JSON format), отправляемое в систему типа ELK Stack, Splunk или Datadog. Это позволит отфильтровать логи по имени задачи, идентификатору сервера и времени выполнения. В коде задачи стоит добавлять уникальные корреляционные идентификаторы (correlation ID) для отслеживания цепочки вызовов.</p>
+<p>Производительность задач также зависит от состояния кэша и индексов. Если задача Rake выполняет выборку больших объемов данных, отсутствие необходимых индексов может привести к полному сканированию таблиц и падению производительности всей базы данных. Перед запуском тяжелых задач в продакшене обязательно проводится анализ плана выполнения запросов (EXPLAIN ANALYZE).</p>
+<p>Для длительных операций стоит реализовать механизм чекпоинтов (checkpointing). Если задача прервется на 90% выполнения, при перезапуске она должна продолжаться с места остановки, а не начинаться заново. Это реализуется через сохранение прогресса в отдельную таблицу или Redis.</p>
+
+<h3>Мониторинг длительных процессов</h3>
+<p>Длительные задачи Rake, такие как переиндексация или миграция данных, требуют специального мониторинга. Простого отсутствия ошибок в логах недостаточно. Необходимо отслеживать метрики: время выполнения, потребление памяти и количество обработанных записей в секунду.</p>
+<p>Интеграция с системами мониторинга (Prometheus, New Relic) позволяет визуализировать прогресс выполнения. Можно использовать гем <code>prometheus-client</code> для экспорта кастомных метрик прямо из задачи Rake.</p>
+<p>Важно настроить алертинг на длительность выполнения. Если задача, которая обычно длится 5 минут, выполняется 30 минут, система должна отправить уведомление ответственному инженеру. Это может указывать на блокировки в БД или проблемы с ресурсами сервера.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Централизованный запуск задач</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантия однократного выполнения</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Упрощенное логирование и отладка</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>При внедрении механизмов запуска Rake в кластере разработчики часто допускают ряд системных ошибок, которые сводят на нет преимущества распределенной архитектуры. Понимание этих нюансов позволяет избежать простоя системы.</p>
+<ol>
+<li><strong>Отсутствие таймаута блокировки</strong> — если процесс захватил распределенную блокировку и упал (OOM, kill -9), ресурс может остаться заблокированным навсегда. Правильно: всегда устанавливать TTL (Time To Live) для ключей блокировки, достаточный для выполнения задачи, но не бесконечный.</li>
+<li><strong>Запуск миграций в hook-ах приложения</strong> — попытка запустить <code>rake db:migrate</code> внутри кода приложения при старте процесса (например, в <code>before_first_request</code>). Правильно: миграции должны быть частью процесса деплоя (CI/CD), а не запуска приложения.</li>
+<li><strong>Игнорирование сетевых разделов (Network Partition)</strong> — в случае разрыва связи между сервером задач и Redis/БД, задача может выполниться дважды (Split-brain). Правильно: использовать алгоритмы консенсуса или строгие проверки состояния перед выполнением, хотя полная гарантия в распределенных системах сложна.</li>
+<li><strong>Некорректная обработка exit code</strong> — если Rake задача падает с ошибкой, но оркестратор считает ее успешной (из-за неправильной обработки кода возврата), пайплайн продолжится. Правильно: явно проверять код возврата и прерывать пайплайн при любом значении, отличном от 0.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду rake -D для вывода описания всех доступных задач. Это помогает убедиться, что кастомные задачи правильно документированы и видны другим членам команды.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Запуск Rake задач в мультиплеерной среде требует перехода от мышления «один сервер — одна задача» к архитектуре, учитывающей конкуренцию ресурсов. Ключевыми элементами успешной реализации являются распределенные блокировки через Redis, централизованное управление миграциями в пайплайнах CI/CD и строгий контроль переменных окружения.</p>
+<p>Пренебрежение этими правилами ведет к повреждению данных и нестабильности работы приложения. Внедрение описанных практик обеспечивает предсказуемость выполнения задач и сохраняет целостность данных даже при масштабировании инфраструктуры до десятков и сотен узлов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Безопасный запуск Rake в кластере невозможен без внешних механизмов координации, таких как Redis-блокировки и выделенные этапы миграции в CI/CD.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/t/ti/tinstaller-rabochie-adresa.html" class="pb-related-card">
+                <span class="pb-related-title">Рабочие адреса TInstaller: актуальные ссылки и серверы</span>
+                <span class="pb-related-desc">Актуальные рабочие адреса TInstaller для прошивки Android TV. Решения проблем с подключением, настро</span>
+            </a><a href="/articles/d/do/doffler-kak-ustanavlivat-prilozheniya-storonnie.html" class="pb-related-card">
+                <span class="pb-related-title">Doffler TV: Как установить сторонние приложения APK</span>
+                <span class="pb-related-desc">Подробная инструкция по установке приложений на Doffler. Методы загрузки APK, настройки USB и решени</span>
+            </a><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html" class="pb-related-card">
+                <span class="pb-related-title">Папка 2ГИС: где хранятся карты и как найти файлы</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску папки 2ГИС на Android. Узнайте, куда сохраняются карты, как их перене</span>
+            </a><a href="/articles/g/ge/get-kontakt-gts-chto-znachit.html" class="pb-related-card">
+                <span class="pb-related-title">Гет Контакт ГТС: Что значит и как расшифровать код</span>
+                <span class="pb-related-desc">Подробная расшифровка кода ГТС в приложении Get Contact. Что означают метки, как работает идентифика</span>
+            </a><a href="/articles/h/ha/hartens-55-dyujmov-avtonastrojkp.html" class="pb-related-card">
+                <span class="pb-related-title">Hartens 55 дюймов: настройка каналов и Wi-Fi</span>
+                <span class="pb-related-desc">Техническое руководство по автонастройке телевизора Hartens 55 дюймов. Настройка каналов, установка </span>
+            </a><a href="/articles/d/di/disciples-2-cant-initialize-disciples-2.html" class="pb-related-card">
+                <span class="pb-related-title">Disciples 2: Can&#x27;t Initialize — решение ошибки запуска</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки &#x27;Can&#x27;t initialize&#x27; в Disciples 2. Настройки совместимости,</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

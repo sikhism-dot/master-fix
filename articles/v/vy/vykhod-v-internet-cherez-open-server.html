@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Open Server: выход в интернет для локального хоста — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по настройке интернета внутри Open Server. Решение проблем с прокси, DNS и доступом к внешним API из локальной среды.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vy/vykhod-v-internet-cherez-open-server.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Open Server: выход в интернет для локального хоста">
+    <meta property="og:description" content="Инструкция по настройке интернета внутри Open Server. Решение проблем с прокси, DNS и доступом к внешним API из локальной среды.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Open Server: выход в интернет для локального хоста</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-сетевой-конфигурации-и-прокси">Анализ сетевой конфигурации и прокси</a></li><li><a href="#конфигурация-php-и-модуля-curl">Конфигурация PHP и модуля cURL</a></li><li><a href="#решение-проблем-с-dns-и-hosts">Решение проблем с DNS и hosts</a></li><li><a href="#диагностика-и-логирование-ошибок">Диагностика и логирование ошибок</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/go/gowifiru-vojti-v-internet-v-elektrichke.html">Gowifi.ru в электричке: вход, тарифы и решение проблем</a></li><li><a href="/articles/k/ka/kak-na-routere-rx-222200-rostelekom-nastroit-yutub.html">Настройка YouTube на роутере Ростелеком RX-2222</a></li><li><a href="/articles/k/ka/kak-vklyuchit-yutub-na-pristavke-shild-s-rostelekom.html">Как включить YouTube на приставке Shield с Ростелекомом: настройка и решение проблем</a></li><li><a href="/articles/k/ka/kak-vytashchit-internet-kabel-iz-kompyutera.html">Как вытащить интернет кабель из компьютера: полная инструкция</a></li><li><a href="/articles/a/an/antenna-kharchenko-zakonnost-ispolzovaniya-v-wifi.html">Антенна Харченко для WiFi: законность и эффективность</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка выхода в интернет для Open Server</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-сетевой-конфигурации-и-прокси">Анализ сетевой конфигурации и прокси</a></li><li><a href="#конфигурация-php-и-модуля-curl">Конфигурация PHP и модуля cURL</a></li><li><a href="#решение-проблем-с-dns-и-hosts">Решение проблем с DNS и hosts</a></li><li><a href="#диагностика-и-логирование-ошибок">Диагностика и логирование ошибок</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Разработчики веб-сайтов часто сталкиваются с ситуацией, когда локальный сервер, запущенный в среде Open Server, не имеет доступа к внешним ресурсам.</p>
+<p>Это может выражаться в невозможности обновить CMS, получить данные через curl-запросы или просто открыть ссылку на сторонний сервис из скрипта.</p>
+<p>Подобная изоляция нарушает рабочий процесс, требуя немедленного вмешательства в конфигурацию сетевых параметров.</p>
+<p>Чаще всего проблема кроется в конфликте настроек прокси-сервера, который перехватывает системные запросы, или в отсутствии прав у исполняемого файла PHP.</p>
+<p>Ниже представлен подробный алгоритм действий для устранения блокировок и обеспечения стабильного соединения.</p>
+
+<h2 id="анализ-сетевой-конфигурации-и-прокси">Анализ сетевой конфигурации и прокси</h2>
+
+<p>Первым шагом при диагностике всегда является проверка глобальных настроек прокси-сервера в операционной системе.</p>
+<p>Open Server по умолчанию использует системные настройки сети Windows, поэтому если в системе задан прокси, он будет применяться ко всем приложениям.</p>
+<p>Если прокси-сервер не настроен корректно или требует авторизации, скрипты на локальном хосте не смогут установить соединение с внешним миром.</p>
+<p>Важно понимать, что для локальной разработки прокси обычно не требуется, и его наличие лишь создает лишние препятствия.</p>
+<p>Стоит обратить внимание на то, что некоторые корпоративные политики безопасности могут принудительно устанавливать прокси через групповые политики.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях роутеров и в корпоративных сетях прокси может назначаться автоматически скриптом автоконфигурации (PAC).</p></aside>
+
+<h3>Проверка настроек в Windows</h3>
+
+<p>Для начала необходимо перейти в панель управления сетевыми подключениями и убедиться в отсутствии активных прокси.</p>
+<p>В операционной системе <em>Windows 10</em> и <em>Windows 11</em> путь к настройкам может отличаться от классической панели управления.</p>
+<p>Следует открыть параметры системы и найти раздел, отвечающий за прокси-сервер, чтобы внести необходимые изменения.</p>
+<p>Если переключатель использования прокси-сервера активен, его необходимо деактивировать для проведения тестов.</p>
+<p>После внесения изменений требуется перезапустить браузер и сам модуль Open Server для применения новых параметров.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Отключение системного прокси</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите Пуск и выберите Параметры (шестеренка)</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел Сеть и Интернет -> Прокси-сервер</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Отключите опцию «Использовать прокси-сервер»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните изменения и перезагрузите браузер</span></div></div>
+
+<h3>Настройка параметров в браузере</h3>
+
+<p>Отдельное внимание следует уделить настройкам самого браузера, так как он может иметь собственные расширения для управления прокси.</p>
+<p>Расширения вроде <em>Proxy SwitchyOmega</em> или встроенные функции браузеров могут игнорировать системные настройки.</p>
+<p>Если в браузере настроен прокси, то и PHP-скрипты, запускаемые через него, могут наследовать эти ограничения.</p>
+<p>Рекомендуется проверить установленные расширения и временно отключить те, которые влияют на сетевой трафик.</p>
+<p>Чистый профиль браузера без лишних дополнений поможет исключить фактор вмешательства стороннего ПО.</p>
+
+<h2 id="конфигурация-php-и-модуля-curl">Конфигурация PHP и модуля cURL</h2>
+
+<p>Основным инструментом для выхода в интернет из PHP-скриптов является библиотека <strong>cURL</strong>, которая требует правильной настройки.</p>
+<p>В среде Open Server конфигурационный файл <code>php.ini</code> может иметь ограничения, блокирующие внешние вызовы.</p>
+<p>Необходимо найти директиву <code>curl.cainfo</code> и убедиться, что она указывает на актуальный файл сертификатов CA.</p>
+<p>Отсутствие правильного пути к сертификатам является частой причиной ошибок при работе с HTTPS-ресурсами.</p>
+<p>Также стоит проверить, не отключена ли функция <code>allow_url_fopen</code>, которая разрешает открытие файлов по URL.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Редактирование системных файлов конфигурации без резервной копии может привести к неработоспособности сервера. Сохраните оригинал php.ini перед внесением изменений.</p></aside>
+
+<h3>Настройка файла php.ini</h3>
+
+<p>Для редактирования настроек PHP в Open Server не нужно искать файл вручную в папках программы.</p>
+<p>Достаточно кликнуть по флажку в трее, выбрать меню настроек и перейти к конфигурации PHP.</p>
+<p>В открывшемся файле следует найти секцию, отвечающую за cURL, и раскомментировать или прописать путь к <code>cacert.pem</code>.</p>
+<p>Путь обычно выглядит как абсолютная ссылка на файл внутри директории Open Server.</p>
+<p>После сохранения файла обязательно выполняется перезапуск всех модулей сервера.</p>
+
+<pre><code>; Пример правильной настройки пути к сертификатам
+<p>curl.cainfo = "C:/OpenServer/modules/php/PHP-7.4/cacert.pem"</p>
+<p>openssl.cafile = "C:/OpenServer/modules/php/PHP-7.4/cacert.pem"</code></pre></p>
+
+<h3>Проверка доступности функций</h3>
+
+<p>Убедиться в том, что настройки применены, можно создав простой тестовый скрипт.</p>
+<p>Функция <code>phpinfo()</code> выведет полную информацию о текущей конфигурации окружения.</p>
+<p>В таблице с информацией о cURL должен быть указан правильный путь к файлу сертификатов.</p>
+<p>Если путь указан неверно или файл отсутствует, соединения с защищенными сайтами работать не будут.</p>
+<p>Также стоит проверить версию библиотеки cURL, так как старые версии могут не поддерживать новые протоколы шифрования.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>allow_url_fopen</code></td>
+<td>On</td>
+<td>On</td>
+</tr>
+<tr>
+<td><code>curl.cainfo</code></td>
+<td>(пусто)</td>
+<td>Путь к cacert.pem</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="решение-проблем-с-dns-и-hosts">Решение проблем с DNS и hosts</h2>
+
+<p>Иногда сервер не может найти доменное имя удаленного ресурса из-за проблем с DNS.</p>
+<p>Системный файл <code>hosts</code> может содержать записи, перенаправляющие запросы на несуществующие адреса.</p>
+<p>Особенно часто это встречается после установки различных блокировщиков рекламы или антивирусного ПО.</p>
+<p>Для локальной разработки важно, чтобы запросы к внешним API не блокировались на уровне операционной системы.</p>
+<p>Проверка файла hosts является обязательным этапом глубокой диагностики сетевых проблем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте командную строку с правами администратора для редактирования системных файлов, чтобы избежать ошибок доступа.</p></aside>
+
+<h3>Редактирование файла hosts</h3>
+
+<p>Файл hosts находится по пути <code>C:\Windows\System32\drivers\etc\hosts</code>.</p>
+<p>Открыть его можно с помощью любого текстового редактора, но обязательно от имени администretora.</p>
+<p>Необходимо просмотреть список и удалить строки, которые блокируют доступ к нужным доменам.</p>
+<p>Записи, начинающиеся с символа решетки <code>#</code>, являются комментариями и не влияют на работу сети.</p>
+<p>После чистки файла изменения вступают в силу мгновенно, перезагрузка не требуется.</p>
+
+<h3>Сброс DNS кэша</h3>
+
+<p>Даже после исправления файла hosts система может использовать старые DNS-записи из кэша.</p>
+<p>Для принудительного обновления кэша используется команда <code>ipconfig /flushdns</code>.</p>
+<p>Выполнить её можно в командной строке, запущенной от имени администратора.</p>
+<p>Это действие clears кэш резолвера DNS и заставляет систему заново запросить IP-адреса доменов.</p>
+<p>В некоторых случаях помогает также перезапуск службы DNS Client через панель управления службами.</p>
+
+<ol>
+<li>Откройте командную строку (cmd) с правами администратора.</li>
+<li>Введите команду <code>ipconfig /flushdns</code> и нажмите Enter.</li>
+<li>Дождитесь сообщения об успешном сбросе кэша.</li>
+<li>Перезапустите Open Server и проверьте доступность ресурса.</li>
+</ol>
+
+<h2 id="диагностика-и-логирование-ошибок">Диагностика и логирование ошибок</h2>
+
+<p>Если простые методы не помогли, необходимо переходить к глубокому анализу логов и тестированию соединения.</p>
+<p>Open Server ведет подробные логи работы Apache, Nginx и PHP, где могут содержаться коды ошибок.</p>
+<p>Анализ кодов ответа HTTP (например, 403 Forbidden или 502 Bad Gateway) дает понимание природы проблемы.</p>
+<p>Также полезно использовать утилиты командной строки для проверки доступности портов и доменов.</p>
+<p>Изоляция проблемы на уровне конкретного скрипта или глобально для всего сервера — ключевой момент.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Диагностика через консоль</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите cmd от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите ping example.com для проверки доступа</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите curl -I https://example.com для проверки HTTPS</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сравните полученные коды ответа с ожидаемыми</span></div></div>
+
+<h3>Использование утилиты curl в консоли</h3>
+
+<p>Проверка доступности ресурса из-под системы поможет понять, в чем дело: в сервере или в сети.</p>
+<p>Команда <code>curl -v https://google.com</code> покажет весь процесс рукопожатия и обмена данными.</p>
+<p>Если в консоли соединение устанавливается, а в PHP нет, проблема точно в конфигурации PHP или правах доступа.</p>
+<p>Обратите внимание на сообщения об ошибках SSL/TLS, они часто указывают на проблемы с сертификатами.</p>
+<p>Verbose режим (<code>-v</code>) выводит подробную техническую информацию о каждом этапе соединения.</p>
+
+<h3>Анализ логов Open Server</h3>
+
+<p>Логи сервера находятся в папке <code>logs</code> внутри директории программы.</p>
+<p>Файлы <code>http_error_log</code> и <code>php_error_log</code> содержат информацию о критических сбоях.</p>
+<p>Ищите записи с меткой времени, совпадающей с моментом попытки соединения.</p>
+<p>Частой ошибкой является превышение времени ожидания (timeout), что говорит о блокировке фаерволом.</p>
+<p>Записи о невозможности разрешить имя хоста указывают на проблемы DNS.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип ошибки</th>
+<th>Возможная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSL certificate problem</td>
+<td>Неверный путь к CA</td>
+<td>Настроить curl.cainfo</td>
+</tr>
+<tr>
+<td>Connection timed out</td>
+<td>Блокировка фаерволом</td>
+<td>Проверить антивирус</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы диагностики</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Прямой запрос из PHP</li><li>✅ Использование curl в консоли</li><li>✅ Анализ логов сервера</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует времени</li><li>❌ Сложно для новичков</li><li>❌ Много технической информации</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки">Типичные ошибки</h2>
+
+<ol>
+<li><strong>Ошибка SSL certificate verify failed</strong> — возникает, когда PHP не может проверить подлинность сертификата удаленного сервера из-за отсутствия файла корневых сертификатов; решение: прописать путь к <code>cacert.pem</code> в <code>php.ini</code>.</li>
+<li><strong>Ошибка Connection refused</strong> — означает, что удаленный сервер отверг соединение, часто из-за блокировки IP или закрытого порта; решение: проверить доступность ресурса из браузера и настройки фаервола.</li>
+<li><strong>Ошибка Could not resolve host</strong> — указывает на невозможность преобразовать доменное имя в IP-адрес; решение: проверить настройки DNS и файл hosts.</li>
+<li><strong>Ошибка Proxy authentication required</strong> — возникает, если в системе задан прокси, требующий логин и пароль, которые не передаются скриптом; решение: отключить системный прокси или настроить его в коде cURL.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство проблем с доступом в интернет решаются корректной настройкой путей к сертификатам и отключением системного прокси-сервера.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Настройка выхода в интернет для Open Server требует последовательной проверки нескольких уровней конфигурации.</p>
+<p>Начинать всегда следует с исключения системных ограничений, таких как прокси и антивирусные блокировки.</p>
+<p>Затем необходимо убедиться в корректности настроек PHP, особенно касающихся SSL-сертификатов.</p>
+<p>Понимание принципов работы DNS и умение читать логи позволяют быстро локализовать источник проблемы.</p>
+<p>Грамотная настройка окружения обеспечивает стабильную работу всех функций веб-разработки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>После успешной настройки рекомендуется создать резервную копию папки Open Server, чтобы быстро восстановить работоспособность в случае сбоя.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/go/gowifiru-vojti-v-internet-v-elektrichke.html" class="pb-related-card">
+                <span class="pb-related-title">Gowifi.ru в электричке: вход, тарифы и решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению к gowifi.ru в поездах МЦД и ЦППК. Настройка роуминга, оплата, об</span>
+            </a><a href="/articles/k/ka/kak-na-routere-rx-222200-rostelekom-nastroit-yutub.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка YouTube на роутере Ростелеком RX-2222</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке YouTube на роутере RX-2222 (Ростелеком). Решение проблем с доступо</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-yutub-na-pristavke-shild-s-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить YouTube на приставке Shield с Ростелекомом: настройка и решение проблем</span>
+                <span class="pb-related-desc">Пошаговая инструкция: как запустить YouTube на NVIDIA Shield TV через Ростелеком. Настройка провайде</span>
+            </a><a href="/articles/k/ka/kak-vytashchit-internet-kabel-iz-kompyutera.html" class="pb-related-card">
+                <span class="pb-related-title">Как вытащить интернет кабель из компьютера: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению Ethernet-кабеля от ПК. Разбор типов коннекторов, фиксаторов, пре</span>
+            </a><a href="/articles/a/an/antenna-kharchenko-zakonnost-ispolzovaniya-v-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">Антенна Харченко для WiFi: законность и эффективность</span>
+                <span class="pb-related-desc">Полный анализ законности использования антенны Харченко для WiFi в РФ. Нормы ГКЧМ, ограничения мощно</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-internet-na-vindovs-khr.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить интернет на Windows XP: пошаговая инструкция</span>
+                <span class="pb-related-desc">Актуальная инструкция по настройке интернета на Windows XP. Настройка PPPoE, роутеров и устранение о</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

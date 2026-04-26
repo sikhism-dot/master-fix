@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>SMB2 на Windows Server 2003: возможно ли включить? — Мастер Фикс</title>
+    <meta name="description" content="Технический анализ совместимости Windows Server 2003 и протокола SMB2. Почему нельзя включить SMB2 и как настроить безопасную среду.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/windows-server-2003-smb2-vklyuchit.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SMB2 на Windows Server 2003: возможно ли включить?">
+    <meta property="og:description" content="Технический анализ совместимости Windows Server 2003 и протокола SMB2. Почему нельзя включить SMB2 и как настроить безопасную среду.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">SMB2 на Windows Server 2003: возможно ли включить?</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#технические-ограничения-архитектуры-windows-server-2003">Технические ограничения архитектуры Windows Server 2003</a></li><li><a href="#анализ-рисков-использования-протокола-smbv1">Анализ рисков использования протокола SMBv1</a></li><li><a href="#стратегии-совместимости-и-обходные-пути">Стратегии совместимости и обходные пути</a></li><li><a href="#практические-шаги-по-изоляции-и-защите">Практические шаги по изоляции и защите</a></li><li><a href="#типичные-ошибки-при-попытке-модернизации">Типичные ошибки при попытке модернизации</a></li><li><a href="#резюме-и-стратегия-миграции">Резюме и стратегия миграции</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otklyuchit-antivirus-windows-10-dlya-kms.html">Отключение антивируса Windows 10 для KMS-активации</a></li><li><a href="/articles/o/op/oppo-podklyuchit-po-yusb.html">Как подключить OPPO к компьютеру по USB: полная инструкция</a></li><li><a href="/articles/k/ka/kak-uznat-s-kakogo-diska-zagruzhaetsya-windows-10.html">Как узнать, с какого диска загружается Windows 10</a></li><li><a href="/articles/a/ac/acer-v3-771g-apgrejd.html">Апгрейд Acer V3-771G: замена SSD, RAM и чистка системы</a></li><li><a href="/articles/q/qt/qttabbar-oshibka-paketa-ustanovshchika-windows-10.html">Ошибка установщика QTTabBar в Windows 10: решение проблемы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Попытка активации SMB2 на Windows Server 2003</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#технические-ограничения-архитектуры-windows-server-2003">Технические ограничения архитектуры Windows Server 2003</a></li><li><a href="#анализ-рисков-использования-протокола-smbv1">Анализ рисков использования протокола SMBv1</a></li><li><a href="#стратегии-совместимости-и-обходные-пути">Стратегии совместимости и обходные пути</a></li><li><a href="#практические-шаги-по-изоляции-и-защите">Практические шаги по изоляции и защите</a></li><li><a href="#типичные-ошибки-при-попытке-модернизации">Типичные ошибки при попытке модернизации</a></li><li><a href="#резюме-и-стратегия-миграции">Резюме и стратегия миграции</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При развертывании гибридной инфраструктуры или попытке подключить современное сетевое оборудование к устаревшему серверу часто возникает критическая ошибка подключения. Администраторы, следуя инструкциям для более новых версий ОС, пытаются активировать протокол SMB версии 2 через реестр или групповые политики, но система игнорирует изменения или выдает ошибку отсутствия компонента. Такая ситуация ставит под угрозу целостность бизнес-процессов, требующих обмена файлами между разнородными системами.</p>
+<p>Фундаментальной проблемой является архитектурное несоответствие версий операционной системы и сетевого стека. Windows Server 2003, чья поддержка завершилась более десяти лет назад, физически не содержит в своем ядре библиотеки и драйверы, необходимые для работы с алгоритмами шифрования и структурой пакетов SMB2. Попытки внедрить эти функции сторонними методами приводят к нестабильности работы файлового сервера и возможным сбоям в доступе к данным.</p>
+<p>Вместо поиска несуществующей кнопки включения, технически грамотным подходом станет анализ текущей конфигурации безопасности и планирование миграции или изоляции устаревшего узла. Современные требования кибербезопасности диктуют отказ от использования SMBv1, который по умолчанию работает на этой платформе, что создает серьезные риски при интеграции с Windows 10, 11 или Server 2019/2022. Необходимо четко понимать ограничения платформы для построения работоспособной схемы взаимодействия.</p>
+
+<h2 id="технические-ограничения-архитектуры-windows-server-2003">Технические ограничения архитектуры Windows Server 2003</h2>
+<p>Операционная система <em>Windows Server 2003</em> была выпущена в эпоху, когда протокол SMB версии 2 еще не был разработан компанией Microsoft. Первая реализация SMB2 появилась только в <em>Windows Vista</em> и <em>Windows Server 2008</em>, принеся с собой улучшенную блокировку файлов, поддержку больших объемов данных и механизмы восстановления после сбоев. В коде серверной части 2003 года просто отсутствуют вызовы API и обработчики пакетов, необходимые для handshake-процесса второй версии протокола.</p>
+<p>Попытки модифицировать системные файлы или внедрить DLL-библиотеки из более новых ОС обречены на провал из-за зависимостей ядра. Ядро <em>Windows NT 5.2</em>, на котором базируется сервер 2003, имеет жесткую привязку к сетевому стеку, который не поддерживает расширенные заголовки SMB2. Даже если каким-то чудом запустить исполняемый код, отсутствие поддержки соответствующих функций безопасности в криптографических модулях ОС сделает соединение невозможным или крайне уязвимым.</p>
+<p>Важно осознавать, что отсутствие поддержки SMB2 — это не настройка, которую можно изменить, а фундаментальное ограничение версии продукта. Все официальные обновления безопасности, выпущенные до конца поддержки в 2015 году, не добавляли эту функциональность. Единственным штатным протоколом файлового обмена для этой системы остается SMB версии 1 (CIFS), который сейчас считается небезопасным.</p>
+
+<h3>Сравнение возможностей сетевого стека</h3>
+<p>Для понимания масштаба различий стоит рассмотреть сравнительную таблицу возможностей сетевых подсистем разных поколений Windows. Это поможет аргументировать необходимость обновления оборудования перед руководством или заказчиком.</p>
+<table>
+<thead>
+<tr>
+<th>Характеристика</th>
+<th>Windows Server 2003</th>
+<th>Windows Server 2008 R2 и новее</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Максимальная версия SMB</td>
+<td>SMB 1.0 (CIFS)</td>
+<td>SMB 2.0 / 2.1 / 3.0+</td>
+</tr>
+<tr>
+<td>Поддержка кластеризации</td>
+<code>Базовая (CSV отсутствует)</code>
+<td>Улучшенная (Cluster Shared Volumes)</td>
+</tr>
+<tr>
+<td>Шифрование трафика</td>
+<td>Требуется IPSec</td>
+<td>Встроенное шифрование SMB 3.0</td>
+</tr>
+</tbody>
+</table>
+<p>Как видно из таблицы, разрыв в функциональности колоссальный. Отсутствие поддержки масштабируемости и механизмов блокировок в старой версии приводит к тому, что при одновременной работе множества клиентов сервер может блокировать файлы или работать крайне медленно. Использование IPSec для шифрования трафика на уровне сети является единственным способом защитить данные при передаче, так как нативного шифрования на уровне приложения в SMB1 нет.</p>
+
+<h2 id="анализ-рисков-использования-протокола-smbv1">Анализ рисков использования протокола SMBv1</h2>
+<p>Поскольку Windows Server 2003 работает исключительно на SMBv1, эксплуатация этого сервера в современной сети несет критические риски безопасности. Протокол SMBv1 не поддерживает проверку целостности пакетов, что делает соединение уязвимым для атак типа "человек посередине". Злоумышленник может перехватить передаваемые данные или внедрить вредоносный код в транзакции.</p>
+<p>Наиболее известной уязвимостью, эксплуатирующей этот протокол, является <em>WannaCry</em> и вариации червя <em>EternalBlue</em>. Эти угрозы используют ошибки в обработке специальных пакетов SMBv1 для удаленного выполнения кода. Даже если на сервере установлены все доступные патчи, сама архитектура протокола не позволяет реализовать современные методы защиты от переполнения буфера и некорректной обработки команд.</p>
+<p>Современные операционные системы, такие как <em>Windows 10</em> и <em>Windows 11</em>, по умолчанию имеют отключенный клиент SMBv1. При попытке подключения к серверу 2003 с нового компьютера пользователь получит ошибку доступа. Это создает иллюзию неисправности, хотя на самом деле это защитный механизм новой ОС.</p>
+
+<h3>Сценарии уязвимости и методы атак</h3>
+<p>Если сервер 2003 все же необходимо использовать, следует понимать векторы атак. Чаще всего эксплуатируется отсутствие проверки подлинности сервера клиентом в старых реализациях. Атакующий может внедриться в сеанс связи и получить права администратора.</p>
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование Windows Server 2003 в сети с доступом в Интернет категорически запрещено из-за отсутствия обновлений безопасности последних 9 лет.</p></aside>
+<p>Кроме того, протокол SMBv1 не поддерживает безопасное завершение сеанса, что позволяет перехватывать хеши паролей при каждом подключении. Эти хеши затем могут быть подвергнуты брусу. В корпоративной среде это открывает путь к горизонтальному перемещению злоумышленника по домену.</p>
+
+<h2 id="стратегии-совместимости-и-обходные-пути">Стратегии совместимости и обходные пути</h2>
+<p>В ситуациях, когда замена сервера невозможна в краткосрочной перспективе, приходится искать компромиссные решения для обеспечения connectivity. Основная задача — изолировать устаревшую систему и минимизировать поверхность атаки, сохранив при этом возможность обмена файлами. Прямое включение SMB2 невозможно, поэтому применяются методы эмуляции или шлюзования.</p>
+<p>Одним из эффективных методов является использование промежуточного сервера-шлюза. На этот шлюз устанавливается современная ОС, поддерживающая SMB2/3, и настраивается проброс трафика или маппинг дисков к старому серверу. Клиенты подключаются к шлюзу по безопасному протоколу, а шлюз общается с Windows Server 2003 по SMB1 внутри изолированного сегмента сети.</p>
+<p>Другой вариант — использование специализированного ПО для эмуляции файлового хранилища, которое берет на себя функции протокола. Однако в случае с Windows Server 2003 роль сервера обычно сохраняется, и приходится настраивать клиенты для работы с legacy-протоколом, что менее безопасно.</p>
+
+<h3>Настройка клиентской части для работы с SMBv1</h3>
+<p>Если сервер обновить нельзя, настраивать придется клиенты. На современных версиях Windows необходимо вручную активировать поддержку устаревшего протокола. Это действие снижает общий уровень безопасности рабочей станции.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Активация SMBv1 на клиенте</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Панель управления → Программы и компоненты</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в «Включение или отключение компонентов Windows»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите «Поддержка общего доступа к файлам SMB 1.0/CIFS»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите флажок «Клиент SMB 1.0/CIFS»</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Перезагрузите компьютер</span></div></div>
+<p>После включения компонента система позволит инициировать соединение с сервером 2003. Однако стоит помнить, что при обновлении системы безопасности этот компонент может быть снова отключен автоматически. Также существует возможность принудительного включения через реестр, но это требует прав администратора.</p>
+<pre><code>Set-SmbClientConfiguration -EnableInsecureGuestLogons $true</code></pre>
+<p>Указанная команда PowerShell позволяет разрешить гостевые входы, которые часто используются в старых конфигурациях, но это крайне не рекомендуется делать в доменной среде без строгого контроля доступа.</p>
+
+<h2 id="практические-шаги-по-изоляции-и-защите">Практические шаги по изоляции и защите</h2>
+<p>Поскольку технически включить SMB2 на Windows Server 2003 невозможно, все усилия должны быть направлены на минимизацию рисков. Первым шагом является сегментация сети. Сервер не должен иметь прямой доступ в Интернет или находиться в одной плоской сети с пользовательскими ПК, если в этом нет острой необходимости.</p>
+<p>Необходимо настроить брандмауэр так, чтобы порты SMB (139, 445) были открыты только для доверенных IP-адресов шлюзов или конкретных административных машин. Использование VLAN для выделения legacy-оборудования в отдельный логический сегмент является стандартом де-факто в таких случаях.</p>
+<p>Также следует отключить неиспользуемые службы и протоколы на самом сервере. Чем меньше сервисов запущено, тем меньше потенциальных дыр. Удаление ненужных сетевых клиентов и протоколов из свойств сетевого адаптера уменьшает поверхность атаки.</p>
+
+<h3>Конфигурация групповых политик безопасности</h3>
+<p>Для ограничения доступа можно использовать локальные или доменные политики безопасности. Они позволяют запретить использование определенных версий протокола или требовать подписывания пакетов, хотя SMBv1 имеет ограниченную поддержку подписывания.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На Windows Server 2003 политики подписывания SMB находятся в разделе: Конфигурация компьютера → Конфигурация Windows → Параметры безопасности → Локальные политики → Параметры безопасности.</p></aside>
+<p>Важно установить параметр «Цифровая подпись связи клиента (всегда)» в положение «Отключено», если сервер не поддерживает подписывание, но лучше настроить сервер на требование подписывания, если клиенты это позволяют. Однако большинство клиентов SMBv1 не поддерживают эту функцию полноценно, что может привести к потере доступа.</p>
+<table>
+<thead>
+<tr>
+<th>Параметр политики</th>
+<th>Рекомендуемое значение для Server 2003</th>
+<th>Влияние</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Microsoft network server: Digitally sign communications (always)</td>
+<td>Disabled (по умолчанию)</td>
+<td>Совместимость со старыми клиентами</td>
+</tr>
+<tr>
+<td>Microsoft network server: Send unencrypted password</td>
+<td>Disabled</td>
+<td>Защита от перехвата паролей</td>
+</tr>
+</tbody>
+</table>
+<p>Изменение этих настроек требует перезагрузки сервера или перезапуска службы сервера. Перед внесением изменений в production-среду обязательно тестируйте конфигурацию на стенде.</p>
+
+<h2 id="типичные-ошибки-при-попытке-модернизации">Типичные ошибки при попытке модернизации</h2>
+<p>Администраторы, сталкиваясь с невозможностью включить SMB2, часто допускают ряд ошибок, пытаясь обойти системные ограничения. Эти действия могут привести к полной неработоспособности сервера или потере данных.</p>
+<ol>
+<li><strong>Попытка замены системных DLL файлов версиями из Server 2008.</strong> — Это приведет к критической ошибке ядра (BSOD) при загрузке, так как структуры данных и зависимости библиотек несовместимы между разными версиями NT kernel.</li>
+<li><strong>Игнорирование необходимости сегментации сети.</strong> — Оставление сервера 2003 в общей сети с современными ПК делает всю сеть уязвимой для атак через SMBv1, даже если на современных ПК протокол отключен (атака может идти от зараженного IoT-устройства).</li>
+<li><strong>Использование сторонних патчей от непроверенных источников.</strong> — В интернете можно найти «патчи для активации SMB2», которые на деле являются вредоносным ПО или нестабильными модификациями, нарушающими целостность файловой системы.</li>
+<li><strong>Отключение антивирусной защиты для «совместимости».</strong> — Часто старые антивирусы конфликтуют с новыми методами сканирования, и администраторы отключают защиту, оставляя сервер полностью беззащитным перед известными эксплойтами.</li>
+</ol>
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Виртуализация старого сервера</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Сохранение функционала старых приложений</li><li>✅ Изоляция в отдельной сети</li><li>✅ Возможность создания снапшотов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Затраты на лицензию гипервизора</li><li>❌ Необходимость поддержки legacy ОС</li><li>❌ Риск потери данных при сбое хоста</li></ul></div>
+</div></div>
+<p>Каждая из этих ошибок усугубляет положение. Вместо «костылей» следует планировать миграцию приложений на поддерживаемые платформы или использовать технологии виртуализации для изоляцииLegacy-системы.</p>
+
+<h2 id="резюме-и-стратегия-миграции">Резюме и стратегия миграции</h2>
+<p>Включение протокола SMB2 на Windows Server 2003 технически невозможно из-за архитектурных ограничений ядра операционной системы. Любые инструкции, обещающие это сделать, либо ошибочны, либо предлагают опасные модификации. Единственным штатным протоколом для данной платформы остается SMBv1, который требует строгой изоляции и дополнительных мер безопасности при эксплуатации.</p>
+<p>Оптимальным решением является размещение Windows Server 2003 в виртуальной среде с ограниченным сетевым доступом и использование шлюза для конвертации протоколов. Это позволит сохранить работоспособность критически важных приложений, зависящих от старой ОС, и одновременно обеспечить безопасный доступ к данным с современных рабочих станций через SMB2/3.</p>
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Windows Server 2003 не поддерживает SMB2 на уровне ядра; единственное решение — изоляция сервера и использование шлюзовых технологий или миграция приложений.</p></aside>
+<p>Дальнейшая эксплуатация данной операционной системы должна рассматриваться исключительно как временная мера. План миграции на поддерживаемую платформу должен быть приоритетом номер один для обеспечения информационной безопасности организации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otklyuchit-antivirus-windows-10-dlya-kms.html" class="pb-related-card">
+                <span class="pb-related-title">Отключение антивируса Windows 10 для KMS-активации</span>
+                <span class="pb-related-desc">Инструкция по настройке исключений Защитника Windows для KMS. Как добавить сервер в список доверенны</span>
+            </a><a href="/articles/o/op/oppo-podklyuchit-po-yusb.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить OPPO к компьютеру по USB: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по подключению смартфона OPPO к ПК через USB. Настройка режимов, драйверы, решение пр</span>
+            </a><a href="/articles/k/ka/kak-uznat-s-kakogo-diska-zagruzhaetsya-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать, с какого диска загружается Windows 10</span>
+                <span class="pb-related-desc">Подробная инструкция по определению загрузочного диска в Windows 10. Методы через BIOS, командную ст</span>
+            </a><a href="/articles/a/ac/acer-v3-771g-apgrejd.html" class="pb-related-card">
+                <span class="pb-related-title">Апгрейд Acer V3-771G: замена SSD, RAM и чистка системы</span>
+                <span class="pb-related-desc">Полная инструкция по модернизации Acer Aspire V3-771G. Замена жесткого диска на SSD, увеличение опер</span>
+            </a><a href="/articles/q/qt/qttabbar-oshibka-paketa-ustanovshchika-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка установщика QTTabBar в Windows 10: решение проблемы</span>
+                <span class="pb-related-desc">Подробное руководство по устранению ошибки пакета установщика Windows при обновлении QTTabBar. Метод</span>
+            </a><a href="/articles/k/ka/kak-proslushat-audiodisk-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как прослушать аудиодиск на ноутбуке: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по воспроизведению аудио CD на ноутбуке. Настройка приводов, выбор кодеков, реш</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

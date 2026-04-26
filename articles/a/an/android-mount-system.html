@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как смонтировать /system на Android: полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по монтированию раздела /system на Android через ADB и TWRP. Решения проблем с доступом root, ошибками монтирования и модификацией.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/an/android-mount-system.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как смонтировать /system на Android: полная инструкция">
+    <meta property="og:description" content="Подробное руководство по монтированию раздела /system на Android через ADB и TWRP. Решения проблем с доступом root, ошибками монтирования и модификацией.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как смонтировать /system на Android: полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-окружения-и-проверка-прав-доступа">Подготовка окружения и проверка прав доступа</a></li><li><a href="#монтирование-через-adb-и-командную-строку">Монтирование через ADB и командную строку</a></li><li><a href="#использование-кастомного-рекавери-twrp">Использование кастомного рекавери TWRP</a></li><li><a href="#альтернативные-методы-и-файловые-менеджеры">Альтернативные методы и файловые менеджеры</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-ochistit-telefon-ot-musora-android-realmi-s21.html">Как почистить Realme C21 от мусора: полная инструкция</a></li><li><a href="/articles/k/ka/kak-zapretit-dostup-k-buferu-obmena-na-telefone.html">Как запретить доступ к буферу обмена на телефоне: полная инструкция</a></li><li><a href="/articles/k/ka/kak-nastroit-razmer-shrifta-v-yandeks-brauzere-na-telefone-android-vdgkhukaos-fidtsompkb-vakvlik-bltfyts.html">Настройка шрифта в Яндекс Браузере на Android: полная инструкция</a></li><li><a href="/articles/b/bu/budilnik-po-nomeru-telefona.html">Будильник по номеру телефона: создание и автоматизация</a></li><li><a href="/articles/h/hu/huawei-watch-gt-3-pro-opoveshchenie-na-ios.html">Huawei Watch GT 3 Pro и iOS: настройка уведомлений</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Монтирование раздела /system на Android: техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-окружения-и-проверка-прав-доступа">Подготовка окружения и проверка прав доступа</a></li><li><a href="#монтирование-через-adb-и-командную-строку">Монтирование через ADB и командную строку</a></li><li><a href="#использование-кастомного-рекавери-twrp">Использование кастомного рекавери TWRP</a></li><li><a href="#альтернативные-методы-и-файловые-менеджеры">Альтернативные методы и файловые менеджеры</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка внести изменения в системные файлы Android, будь то удаление предустановленного софта, замена шрифтов или модификация конфигурационных файлов, часто упускается из-за невозможности получить доступ к записи в корневую директорию.</p>
+<p>Стандартная файловая система Android по умолчанию монтирует раздел <code>/system</code> в режиме «только для чтения» (read-only), что является ключевым элементом безопасности операционной системы, предотвращающим случайное или вредоносное повреждение критических компонентов.</p>
+<p>Для инженеров, разработчиков и энтузиастов модификации прошивок возникает острая необходимость переключить этот режим в «чтение-запись» (read-write), чтобы применить требуемые правки непосредственно в запущенной системе.</p>
+<p>Выполнение данной операции требует наличия прав суперпользователя (root), установленного инструментария отладки ADB или кастомного рекавери, так как стандартными средствами интерфейса пользователя доступ к этим функциям закрыт.</p>
+<p>Некорректное выполнение команд может привести к «окирпичиванию» устройства, потере гарантии или невозможности загрузки операционной системы, поэтому каждое действие должно быть осознанным и подкрепленным пониманием структуры файловой системы.</p>
+
+<h2 id="подготовка-окружения-и-проверка-прав-доступа">Подготовка окружения и проверка прав доступа</h2>
+<p>Перед началом любых манипуляций с системными разделами необходимо убедиться, что устройство подготовлено к выполнению низкоуровневых команд и имеет необходимые привилегии.</p>
+<p>Базовым требованием является наличие разблокированного загрузчика и установленных прав root, полученных через Magisk, KernelSU или встроенных в кастомную прошивку.</p>
+<p>Если права суперпользователя отсутствуют, команды монтирования будут возвращать ошибку разрешения, и доступ к записи останется заблокированным вне зависимости от используемого метода.</p>
+<p>Также потребуется компьютер с установленным платформенным инструментарием <em>Android SDK Platform Tools</em>, содержащим утилиты <code>adb</code> и <code>fastboot</code>, либо наличие терминала непосредственно на устройстве, такого как <em>Termux</em> или <em>Terminal Emulator</em>.</p>
+<p>Важно проверить версию Android, так как начиная с <em>Android 10</em> и особенно в <em>Android 11/12/13/14</em>, архитектура хранения данных претерпела изменения, внедрив концепцию динамических разделов и системных образов, монтируемых через <code>overlayfs</code>.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Получение root-прав и разблокировка загрузчика аннулирует гарантию производителя и может привести к блокировке банковских приложений и сервисов Google Pay.</p></aside>
+
+<p>Для проверки текущего статуса прав доступа можно воспользоваться командой в терминале, которая покажет, запущен ли shell от имени пользователя root.</p>
+<pre><code>adb shell
+<p>su</p>
+<p>whoami</code></pre></p>
+<p>Если в ответ на команду <code>whoami</code> возвращается <code>root</code>, значит, привилегии получены успешно, и можно переходить к определению файловой системы.</p>
+<p>В случае отказа в доступе необходимо предоставить разрешение в всплывающем окне менеджера root-прав на экране смартфона или планшета.</p>
+
+<h3>Особенности версий Android 10 и новее</h3>
+<p>На современных версиях операционной системы прямое монтирование раздела <code>/system</code> в режим записи часто невозможно из-за использования системы верификации загрузки и read-only по умолчанию.</p>
+<p>Вместо прямого изменения файлов используется механизм наложения (overlay), который позволяет вносить изменения, не затрагивая исходный образ системы, что требует применения специфических утилит, таких как <em>Systemless</em> модули Magisk.</p>
+<p>Попытканого перемонтирования на новых устройствах может привести к циклической перезагрузке (bootloop), если контрольные суммы системы не совпадут при следующей загрузке.</p>
+
+<h2 id="монтирование-через-adb-и-командную-строку">Монтирование через ADB и командную строку</h2>
+<p>Наиболее универсальным способом работы с файловой системой является использование отладочного моста Android (ADB), который позволяет отправлять команды напрямую в оболочку устройства с компьютера.</p>
+<p>Данный метод предпочтителен при работе с живым устройством, когда нет возможности загрузиться в режим восстановления, но есть стабильное соединение по USB.</p>
+<p>Перед выполнением команд необходимо включить режим отладки по USB в меню разработчика, скрывающемся по пути <code>Настройки → О телефоне → Номер сборки</code> (7 кликов).</p>
+<p>После подключения кабеля и подтверждения авторизации на экране устройства, открывается терминал на ПК для ввода инструкций.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подключение ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Включите отладку по USB в меню разработчика</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите устройство кабелем к ПК</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду adb devices и подтвердите отпечаток ключа на экране смартфона</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите adb shell для входа в консоль устройства</span></div></div>
+
+<p>Классическая команда для перемонтирования выглядит как <code>mount -o rw,remount /system</code>, однако её синтаксис и эффективность зависят от типа файловой системы (ext4, f2fs) и структуры разделов.</p>
+<p>В некоторых случаях требуется указать конкретную точку монтирования или устройство, например <code>/dev/block/mmcblk0p..</code>, но на современных устройствах проще работать с путями.</p>
+<p>Если стандартная команда не работает, можно попробовать использовать утилиту <code>mount_root</code>, которая часто встроена в окружение recovery или специальные оболочки root.</p>
+<pre><code>adb shell
+<p>su</p>
+<p>mount -o rw,remount /system</code></pre></p>
+<p>После успешного выполнения команды статус раздела изменится, и станет возможным запись файлов, хотя на Android 10+ это может быть лишь временным эффектом в текущей сессии.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Описание действия</th>
+<th>Статус на Android 11+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mount -o rw,remount /</code></td>
+<td>Перемонтирование корневого раздела</td>
+<td>Частично работает / Зависит от ядра</td>
+</tr>
+<tr>
+<td><code>mount -o rw,remount /system</code></td>
+<td>Перемонтирование системного раздела</td>
+<td>Часто блокируется верификатором</td>
+</tr>
+<tr>
+<td><code>remount /system</code></td>
+<td>Специфичная команда некоторых оболочек</td>
+<td>Работает в TWRP/OrangeFox</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Работа с динамическими разделами</h3>
+<p>Устройства с динамическими разделами используют логическую группировку, где физический размер не фиксирован жестко, что усложняет прямое монтирование.</p>
+<p>В таких случаях система может автоматически перенаправлять запросы на запись в специальный раздел <code>/product</code> или использовать механизмы <em>system-as-root</em>.</p>
+<p>Для успешной модификации часто требуется отключить верификацию загрузки (AVB) или использовать специальные скрипты-патчи, внедряемые через Magisk.</p>
+
+<h2 id="использование-кастомного-рекавери-twrp">Использование кастомного рекавери TWRP</h2>
+<p>Режим восстановления (Recovery), в частности кастомная прошивка <em>TWRP</em> (Team Win Recovery Project), предоставляет наиболее полный контроль над разделами устройства в обход ограничений запущенной ОС.</p>
+<p>В отличие от работающей системы, в рекавери раздел <code>/system</code> по умолчанию часто доступен для модификации или может быть легко перемонтирован через графический интерфейс.</p>
+<p>Для входа в этот режим необходимо выключить устройство и зажать комбинацию клавиш (обычно <em>Громкость вверх + Питание</em>) или использовать команду <code>adb reboot recovery</code>.</p>
+<p>После загрузки интерфейса TWRP следует перейти в раздел <code>Advanced → Terminal</code> для ввода команд или воспользоваться файловым менеджером.</p>
+<p>В файловом менеджере TWRP при попытке изменения файлов в папке <code>/system</code> программа сама предложит выполнить монтирование раздела в режим записи (Mount System as R/W).</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых устройствах (например, Xiaomi с MIUI или Samsung с Knox) может потребоваться дополнительный патч для работы TWRP, иначе раздел /system останется заблокированным.</p></aside>
+
+<p>Если автоматическое монтирование не происходит, можно воспользоваться встроенным терминалом внутри рекавери.</p>
+<p>Команды в терминале TWRP выполняются уже с правами root, поэтому префикс <code>su</code> не требуется, что упрощает процесс.</p>
+<pre><code>mount -o rw,remount /system</code></pre>
+<p>После внесения изменений важно не забыть смонтировать раздел обратно в режим только для чтения перед перезагрузкой, хотя TWRP часто делает это автоматически при выходе.</p>
+
+<h3>Сравнение методов доступа</h3>
+<p>Выбор между использованием ADB в работающей системе и TWRP зависит от конкретной задачи и состояния устройства.</p>
+<p>ADB удобен для быстрых правок без перезагрузки, но ограничен политиками безопасности запущенного ядра.</p>
+<p>TWRP дает глубокий доступ, но требует перезагрузки устройства и наличия установленной кастомной среды восстановления.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Глубокий доступ к файлам</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Не требует загрузки ОС</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность восстановления при ошибках</li></ul></div>
+</div></div>
+
+<h2 id="альтернативные-методы-и-файловые-менеджеры">Альтернативные методы и файловые менеджеры</h2>
+<p>Для пользователей, предпочитающих графический интерфейс и не желающих работать с консольными командами, существуют специализированные файловые менеджеры с поддержкой root-доступа.</p>
+<p>Приложения вроде <em>Root Explorer</em>, <em>Solid Explorer</em> или <em>MiXplorer</em> способны запрашивать права суперпользователя и монтировать разделы по клику.</p>
+<p>При первом запуске такого приложения необходимо предоставить ему root-права через менеджер суперпользователя (Magisk/SuperSU).</p>
+<p>В интерфейсе программы обычно присутствует кнопка «Mount R/W» или переключатель в верхней части экрана, меняющий статус доступа к корневой директории.</p>
+<p>После активации режима записи файловый менеджер позволяет копировать, удалять и редактировать файлы в папке <code>/system</code> так же, как и в обычной памяти.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте встроенную функцию резервного копирования файлов перед их удалением или заменой в системных папках, чтобы иметь возможность откатить изменения.</p></aside>
+
+<p>Стоит учитывать, что даже с root-правами некоторые системные процессы могут блокировать запись в определенные файлы, если они активно используются ядром.</p>
+<p>В таких случаях помогает остановка соответствующего сервиса или выполнение операций в безопасном режиме, либо снова же через TWRP.</p>
+<p>Некоторые менеджеры предлагают функцию «SysRw», которая автоматически выполняет необходимые команды монтирования в фоновом режиме.</p>
+
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Уровень сложности</th>
+<th>Требуемые права</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB Shell</td>
+<td>Высокий</td>
+<td>Root, ПК, USB</td>
+</tr>
+<tr>
+<td>TWRP Recovery</td>
+<td>Средний</td>
+<td>Root, Custom Recovery</td>
+</tr>
+<tr>
+<td>Root Explorer</td>
+<td>Низкий</td>
+<td>Root, Приложение</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Системные изменения без монтирования</h3>
+<p>Современная практика модификации Android смещается в сторону системных изменений без прямого редактирования раздела <code>/system</code>.</p>
+<p>Использование <em>Magisk Modules</em> позволяет внедрять изменения в систему на лету, при каждой загрузке, оставляя оригинальный раздел нетронутым.</p>
+<p>Этот подход (Systemless) повышает стабильность устройства и позволяет легко удалять внесенные изменения простым отключением модуля.</p>
+
+<h2 id="типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</h2>
+<p>Процесс монтирования системных разделов сопряжен с рядом технических трудностей, которые могут возникнуть даже у опытных пользователей.</p>
+<p>Понимание природы этих ошибок позволяет быстро диагностировать проблему и выбрать верное решение без риска для устройства.</p>
+<p>Ниже приведены наиболее распространенные сценарии сбоев и способы их устранения.</p>
+
+<ol>
+<li><strong>Ошибка «Read-only file system» при попытке записи</strong> — это означает, что команда монтирования не выполнилась или была проигнорирована системой безопасности; следует проверить наличие root-прав и попробовать выполнить команду <code>mount -o rw,remount /</code> вместо конкретного пути.</
+<li><strong>Циклическая перезагрузка после модификации</strong> — возникает при повреждении критических системных файлов или несоответствии контрольных сумм; необходимо загрузиться в TWRP и восстановить оригинальный файл из бэкапа или выполнить сброс данных (wipe data).</
+<li><strong>Команда «mount» не найдена</strong> — в некоторых минималистичных оболочках Android команда может отсутствовать или быть заменена; в таком случае используйте <code>toybox mount</code> или <code>toolbox mount</code> в зависимости от реализации в прошивке.</
+<li><strong>Отказ в доступе (Permission denied) несмотря на root</strong> — характерно для Android 11+ с включенной верификацией; требуется использование магisk-модулей или отключение AVB через fastboot (что снижает безопасность).</
+</ol>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка исправить ошибку циклической перезагрузки путем повторной установки приложений или смены лаунчера не поможет, так как проблема находится на уровне загрузки ядра и системных файлов.</p></aside>
+
+
+<p>Поиск информации по конкретной модели на специализированных форумах (например, 4PDA или XDA Developers) часто дает более точные команды, чем универсальные инструкции.</p>
+<p>Ведение логов через <code>logcat</code> в момент ошибки может помочь выявить точную причину отказа системы в монтировании.</p>
+
+<h2 id="резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</h2>
+<p>Монтирование раздела <code>/system</code> в режим записи является мощным инструментом для глубокой кастомизации Android, но требует осторожности и понимания рисков.</p>
+<p>Наиболее безопасным методом для современных устройств является использование системных модулей (Magisk), которые не требуют прямого изменения системного раздела.</p>
+<p>Если прямое редактирование необходимо, предпочтительно использовать кастомное рекавери (TWRP), где риск повреждения активной системы минимален.</p>
+<p>Всегда создавайте полную резервную копию (Nandroid backup) перед началом любых операций с корневыми разделами.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное монтирование /system требует root-прав и понимания файловой системы; для Android 10+ предпочтительно использование системных модулей вместо прямой записи.</p></aside>
+
+<p>Соблюдение инструкций и наличие резервных копий позволит экспериментировать с операционной системой, сохраняя устройство в рабочем состоянии.</p>
+<p>Технический прогресс Android делает прямое монтирование все менее актуальным в пользу более гибких и безопасных методов модификации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-ochistit-telefon-ot-musora-android-realmi-s21.html" class="pb-related-card">
+                <span class="pb-related-title">Как почистить Realme C21 от мусора: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по очистке Realme C21. Удаление кэша, системного мусора, скрытых файлов и оп</span>
+            </a><a href="/articles/k/ka/kak-zapretit-dostup-k-buferu-obmena-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как запретить доступ к буферу обмена на телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по защите буфера обмена на Android и iOS. Настройки безопасности, скрытие текста, блок</span>
+            </a><a href="/articles/k/ka/kak-nastroit-razmer-shrifta-v-yandeks-brauzere-na-telefone-android-vdgkhukaos-fidtsompkb-vakvlik-bltfyts.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка шрифта в Яндекс Браузере на Android: полная инструкция</span>
+                <span class="pb-related-desc">Как изменить размер шрифта в Яндекс Браузере на Android. Подробная настройка масштабирования, устран</span>
+            </a><a href="/articles/b/bu/budilnik-po-nomeru-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Будильник по номеру телефона: создание и автоматизация</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке звонка-будильника. Сценарии автоматизации для Android и iOS, скрип</span>
+            </a><a href="/articles/h/hu/huawei-watch-gt-3-pro-opoveshchenie-na-ios.html" class="pb-related-card">
+                <span class="pb-related-title">Huawei Watch GT 3 Pro и iOS: настройка уведомлений</span>
+                <span class="pb-related-desc">Полная инструкция по настройке оповещений Huawei Watch GT 3 Pro на iPhone. Решение проблем с WhatsAp</span>
+            </a><a href="/articles/k/ka/kak-uznat-kogda-telefon-byl-aktivirovan-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать дату активации Андроид: все способы проверки</span>
+                <span class="pb-related-desc">Подробная инструкция: как узнать, когда был активирован телефон Android. Методы через настройки, Goo</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

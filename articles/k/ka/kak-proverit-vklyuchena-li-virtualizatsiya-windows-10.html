@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как проверить включена ли виртуализация в Windows 10: методы — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по проверке статуса Hyper-V, VT-x и AMD-V. Диагностика через Диспетчер задач, командную строку и BIOS.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-proverit-vklyuchena-li-virtualizatsiya-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как проверить включена ли виртуализация в Windows 10: методы">
+    <meta property="og:description" content="Подробная инструкция по проверке статуса Hyper-V, VT-x и AMD-V. Диагностика через Диспетчер задач, командную строку и BIOS.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как проверить включена ли виртуализация в Windows 10: методы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-через-диспетчер-задач-windows">Диагностика через Диспетчер задач Windows</a></li><li><a href="#анализ-через-командную-строку-и-powershell">Анализ через командную строку и PowerShell</a></li><li><a href="#настройка-biosuefi-для-активации-функции">Настройка BIOS/UEFI для активации функции</a></li><li><a href="#проверка-работы-гипервизора-и-компонентов">Проверка работы гипервизора и компонентов</a></li><li><a href="#типичные-ошибки-при-проверке-и-настройке">Типичные ошибки при проверке и настройке</a></li><li><a href="#сравнительная-таблица-методов-проверки">Сравнительная таблица методов проверки</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/go/goluboj-ekran-s-opoveshcheniem-windows.html">Синий экран смерти Windows: коды ошибок, причины и методы устранения</a></li><li><a href="/articles/k/ka/kak-udalit-bitlocker-windows-10-polnostyu.html">Как удалить BitLocker Windows 10 полностью: гайд</a></li><li><a href="/articles/k/ka/kak-ustanovit-windows10-na-dcnhjtyysq-ssd-noutbuk-vaio.html">Как установить Windows 10 на SSD ноутбука VAIO: подробная инструкция</a></li><li><a href="/articles/k/ka/kak-mojno-opredelit-zavodskoy-nomer-pc.html">Как узнать заводской номер ПК: 6 способов для Windows и BIOS</a></li><li><a href="/articles/w/wi/windows-oshibka.html">Ошибки Windows: Полное руководство по диагностике и устранению</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Проверка статуса виртуализации в Windows 10</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-через-диспетчер-задач-windows">Диагностика через Диспетчер задач Windows</a></li><li><a href="#анализ-через-командную-строку-и-powershell">Анализ через командную строку и PowerShell</a></li><li><a href="#настройка-biosuefi-для-активации-функции">Настройка BIOS/UEFI для активации функции</a></li><li><a href="#проверка-работы-гипервизора-и-компонентов">Проверка работы гипервизора и компонентов</a></li><li><a href="#типичные-ошибки-при-проверке-и-настройке">Типичные ошибки при проверке и настройке</a></li><li><a href="#сравнительная-таблица-методов-проверки">Сравнительная таблица методов проверки</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Пользователи часто сталкиваются с ситуацией, когда при попытке запустить эмулятор Android, развернуть виртуальную машину или использовать подсистему Linux возникает критическая ошибка, указывающая на недоступность аппаратных функций. Система сообщает, что гипервизор не запущен, хотя в настройках операционной системы все соответствующие флаги могут быть активированы. Это создает замкнутый круг проблем, когда программное обеспечение не может получить доступ к ресурсам процессора для изоляции среды выполнения.</p>
+<p>Причиной такого поведения в подавляющем большинстве случаев является отключенная на уровне микрокода материнской платы технология виртуализации. Даже если операционная система полностью готова к работе с виртуальными средами, без разрешения от BIOS/UEFI процессор блокирует соответствующие инструкции. Игнорирование этого параметра делает невозможным запуск современных инструментов разработки, контейнеризации и тестирования программного обеспечения.</p>
+<p>Существует несколько уровней проверки: от быстрой диагностики через графический интерфейс диспетчера задач до глубокого анализа логов системы и состояния регистров процессора. Каждый метод предоставляет разную степень детализации, позволяя не только констатировать факт включения или выключения функции, но и определить, какая именно технология (Intel VT-x или AMD-V) активна, а также работает ли в данный момент гипервизор. Понимание различий между этими состояниями критически важно для правильной настройки рабочей среды.</p>
+
+<h2 id="диагностика-через-диспетчер-задач-windows">Диагностика через Диспетчер задач Windows</h2>
+<p>Наиболее быстрым и доступным способом первичной диагностики является использование стандартного инструмента мониторинга ресурсов. Для запуска утилиты достаточно нажать комбинацию клавиш <code>Ctrl + Shift + Esc</code> или вызвать контекстное меню панели задач и выбрать соответствующий пункт. В открывшемся окне необходимо переключиться на вкладку «Производительность», где отображается текущая нагрузка на основные компоненты системы в реальном времени.</p>
+<p>В левой части окна следует выбрать категорию «ЦП». В правой области, где отображаются графики загрузки ядер и потоков, в нижней части расположена информационная панель с техническими характеристиками процессора. Именно здесь находится строка «Виртуализация», статус которой может принимать значения «Включено» или «Отключено». Наличие отметки «Включено» свидетельствует о том, что материнская плата разрешает процессору использовать расширенные наборы инструкций для работы с виртуальными машинами.</p>
+<p>Важно понимать, что данный метод показывает только аппаратную готовность, но не информирует о том, запущен ли в данный момент гипервизор Windows. Если статус «Включено», но программы не работают, проблема может крыться в конфликте программных компонентов или настройках самой операционной системы. Тем не менее, для первичного ответа на вопрос о поддержке «железа» этот метод является наиболее предпочтительным благодаря своей скорости и простоте.</p>
+<p>В некоторых случаях строка со статусом может отсутствовать или отображаться некорректно, если драйверы чипсета установлены неправильно или система не может считать данные с датчиков материнской платы. В такой ситуации стоит обновить программное обеспечение chipset с официального сайта производителя ноутбука или материнской платы, после чего перезагрузить компьютер для повторной проверки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях ноутбуков бизнес-класса статус виртуализации может отображаться только после обновления BIOS до последней версии, предоставленной производителем.</p></aside>
+
+<h3>Интерпретация данных о процессоре</h3>
+<p>Помимо статуса виртуализации, в этом же окне диспетчера задач можно увидеть модель процессора, его скорость и количество логических процессоров. Эти данные полезны для определения типа используемой технологии. Например, для процессоров Intel актуальна технология <em>VT-x</em>, а для AMD — <em>AMD-V</em>. Знание точной модели помогает в случае необходимости искать специфические инструкции по настройке BIOS для конкретного семейства чипов.</p>
+<p>Если в строке статуса указано «Отключено», это означает, что функция заблокирована на уровне firmware. Программными методами внутри Windows включить ее в этом случае невозможно. Требуется обязательное вмешательство в настройки BIOS/UEFI. Попытки активировать компоненты Hyper-V или WSL2 при таком статусе приведут к ошибкам загрузки или неработоспособности виртуальных сред.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Диспетчер задач показывает аппаратную поддержку, но не статус работы гипервизора в операционной системе.</p></aside>
+
+<h2 id="анализ-через-командную-строку-и-powershell">Анализ через командную строку и PowerShell</h2>
+<p>Для получения более детализированной информации о состоянии системы виртуализации целесообразно использовать встроенные средства командной строки. Утилита <code>systeminfo</code> позволяет вывести сводный отчет о конфигурации компьютера, включая данные о гипервизоре. Запускать командную строку или PowerShell в данном случае желательно от имени администратора, хотя базовая информация доступна и в обычном режиме пользователя.</p>
+<p>После запуска терминала необходимо ввести команду <code>systeminfo</code> и дождаться завершения сканирования системы. В выведенном списке следует найти блок «Сведения о Hyper-V». Здесь представлены несколько ключевых параметров, которые дают полную картину состояния виртуализации. Наличие записей в этом блоке уже говорит о том, что операционная система распознает возможности гипервизора.</p>
+<pre><code>C:\Users\User&gt; systeminfo
+<p>...</p>
+<p>Сведения о Hyper-V:</p>
+<p>Расширения монитора виртуальных машин: Да</p>
+<p>Виртуализация в прошивке: Да</p>
+<p>Перенаправление второго уровня: Да</p>
+<p>Защита данных: Нет</p>
+<p>Гипервизор обнаружен: Да. Гипервизор запущен.</p>
+<p>...</code></pre></p>
+<p>Ключевым параметром является «Виртуализация в прошивке» (Virtualization Enabled in Firmware). Если здесь указано «Да», значит, настройка в BIOS активна. Параметр «Гипервизор обнаружен» сообщает о том, запущен ли сам гипервизор Windows прямо сейчас. Если указано «Нет», но виртуализация в прошивке включена, значит, компоненты Hyper-V отключены в функциях Windows или заняты другим ПО.</p>
+
+
+
+<h3>Использование утилиты PowerShell для детального анализа</h3>
+<p>Более гибким инструментом является PowerShell, который позволяет запрашивать информацию о виртуализации в структурированном виде. Команда <code>Get-ComputerInfo</code> предоставляет доступ к сотням параметров системы. Для фильтрации нужных данных можно использовать команду <code>Get-ComputerInfo | Select-Object HyperV*</code>, что позволит быстро увидеть статус всех компонентов, связанных с виртуализацией.</p>
+<p>Также существует специализированная команда для проверки статуса службы гипервизора: <code>Get-VMHost</code>. Однако она работает только если роль Hyper-V уже установлена и активирована. В стандартной домашней версии Windows 10 эта роль может быть недоступна, поэтому метод <code>systeminfo</code> остается наиболее универсальным для всех редакций ОС.</p>
+<p>При анализе вывода командной строки стоит обратить внимание на строку «Требуется исправление». Если она присутствует и указывает на необходимость обновления, это может означать несовместимость текущей версии микрокода процессора с требованиями гипервизора Windows. В таких случаях требуется обновление BIOS.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение параметров виртуализации через реестр или групповые политики без понимания последствий может привести к невозможности загрузки других виртуальных машин, таких как VirtualBox или VMware.</p></aside>
+
+<h2 id="настройка-biosuefi-для-активации-функции">Настройка BIOS/UEFI для активации функции</h2>
+<p>Если диагностические инструменты показывают, что виртуализация отключена в прошивке, единственным решением является вход в настройки BIOS или UEFI. Интерфейс этих настроек зависит от производителя материнской платы или ноутбука, но логика расположения искомых параметров остается схожей. Для входа необходимо перезагрузить компьютер и в момент появления логотипа производителя нажать специальную клавишу, обычно это <code>F2</code>, <code>Del</code>, <code>F10</code> или <code>Esc</code>.</p>
+<p>После входа в интерфейс настроек следует искать разделы с названиями «Advanced», «Configuration», «CPU Configuration» или «Security». Внутри этих разделов необходимо найти параметр, отвечающий за технологии виртуализации. Для процессоров Intel он обычно называется <em>Intel Virtualization Technology</em>, <em>VT-x</em>, <em>Vanderpool</em> или <em>Virtualization</em>. Для процессоров AMD этот параметр может называться <em>SVM Mode</em>, <em>AMD-V</em> или <em>Secure Virtual Machine</em>.</p>
+<p>Значение параметра необходимо переключить из состояния <code>Disabled</code> в <code>Enabled</code>. После изменения настройки обязательно нужно сохранить изменения перед выходом. Обычно это делается клавишей <code>F10</code> или через пункт меню «Save & Exit». Компьютер перезагрузится, и изменения вступят в силу.</p>
+<p>На современных материнских платах с интерфейсом UEFI управление мышью позволяет быстро найти нужный пункт через поиск или графическое меню. На старых системах с текстовым BIOS навигация осуществляется исключительно клавишами со стрелками. Важно не перепутать параметр виртуализации с технологиями энергосбережения, которые также могут иметь схожие названия.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На ноутбуках Lenovo, HP и Dell вход в BIOS иногда требует использования специальной утилиты в Windows или нажатия отдельной физической кнопки на корпусе устройства.</p></aside>
+
+<h3>Особенности активации на разных платформах</h3>
+<p>Владельцы оборудования от разных производителей могут столкнуться с вариативностью названий и расположения настроек. Например, на материнских платах ASUS параметр часто находится в разделе <code>Advanced → CPU Configuration → Intel Virtualization Technology</code>. На системах MSI путь может выглядеть как <code>Settings → Advanced → Windows OS Configuration → VT-d</code>.</p>
+<p>Для процессоров AMD важно включить не только основную виртуализацию (SVM), но иногда и параметр <code>IOMMU</code> (Intel VT-d для Intel), если требуется проброс физических устройств в виртуальную машину. Без этого эмуляторы могут работать нестабильно или не видеть сетевые адаптеры. Также на некоторых платах встречается опция «Execute Disable Bit» или «NX Mode», которую также рекомендуется держать включенной для безопасности и совместимости.</p>
+
+
+
+<h2 id="проверка-работы-гипервизора-и-компонентов">Проверка работы гипервизора и компонентов</h2>
+<p>После подтверждения аппаратной поддержки и включения настроек в BIOS необходимо убедиться, что компоненты Windows правильно инициализированы. Даже при включенной виртуализации в BIOS, сама служба гипервизора может быть отключена в системе. Это часто встречается на сборках Windows, где приоритет отдается сторонним виртуализаторам, или после обновлений системы.</p>
+<p>Проверить активацию компонентов можно через панель управления. Необходимо перейти в раздел «Программы и компоненты», затем выбрать «Включение или отключение компонентов Windows». В открывшемся списке следует найти пункты «Hyper-V», «Платформа виртуальной машины» и «Платформа гипервизора Windows». Наличие галочек напротив этих пунктов означает, что компоненты установлены и готовы к работе.</p>
+<p>Если пункты не активны, их следует включить и перезагрузить компьютер. После перезагрузки система создаит виртуальную среду, и проверка через <code>systeminfo</code> должна показать «Гипервизор обнаружен: Да». Это состояние необходимо для работы Docker Desktop, WSL2 и песочницы Windows.</p>
+
+
+
+<h3>Конфликты с другим виртуальным ПО</h3>
+<p>Частой проблемой является конфликт между нативным гипервизором Windows и сторонними программами вроде VirtualBox или VMware Workstation старых версий. Гипервизор Windows захватывает аппаратные ресурсы виртуализации, не позволяя другим программам получить к ним прямой доступ. В результате сторонние виртуальные машины могут не запускаться или работать крайне медленно.</p>
+<p>Решением является использование актуальных версий ПО, которые научились работать поверх Hyper-V, либо полное отключение компонентов Microsoft при необходимости использования классического режима виртуализации. Для временного отключения можно использовать команду в PowerShell от администратора: <code>bcdedit /set hypervisorlaunchtype off</code>, а для включения — <code>bcdedit /set hypervisorlaunchtype auto</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки конфликта попробуйте запустить диспетчер задач. Если виртуализация включена, но гипервизор не обнаружен, скорее всего, он отключен в компонентах Windows.</p></aside>
+
+<h2 id="типичные-ошибки-при-проверке-и-настройке">Типичные ошибки при проверке и настройке</h2>
+<p>В процессе диагностики пользователи часто сталкиваются с повторяющимися проблемами, которые легко решить, зная их природу. Ниже приведен список наиболее распространенных ошибок и способы их устранения.</p>
+<ol>
+<li><strong>Статус «Отключено» после включения в BIOS</strong> — часто пользователи забывают сохранить настройки перед выходом из BIOS или не дожидаются полной перезагрузки. Убедитесь, что выбрали «Save & Exit», а не просто «Exit».</li>
+<li><strong>Конфликт версий VirtualBox и Hyper-V</strong> — если после включения виртуализации перестал работать VirtualBox, необходимо обновить его до версии 6.0 и выше, которая поддерживает работу поверх API Windows Hypervisor Platform.</li>
+<li><strong>Отсутствие пункта в Диспетчере задач</strong> — если строка статуса не отображается, возможно, устарела версия драйверов чипсета или используется очень старая версия Windows 10. Обновите систему и драйверы.</li>
+<li><strong>Ошибка «Гипервизор не запущен» при включенной функции</strong> — это означает, что компонент включен в системе, но не активирован в загрузчике. Требуется проверка командой <code>bcdedit</code> и перезагрузка.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отключение гипервизора через bcdedit может привести к неработоспособности WSL2 и Docker. Возвращайте настройки в исходное состояние, если эти инструменты вам нужны.</p></aside>
+
+<h2 id="сравнительная-таблица-методов-проверки">Сравнительная таблица методов проверки</h2>
+<p>Для удобства выбора способа диагностики ниже приведено сравнение рассмотренных методов. Каждый из них имеет свои преимущества в зависимости от требуемой глубины анализа.</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Уровень доступа</th>
+<th>Информативность</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Диспетчер задач</td>
+<td>Аппаратный (BIOS)</td>
+<td>Базовая (Вкл/Выкл)</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>SystemInfo (CMD)</td>
+<td>Системный + Аппаратный</td>
+<td>Высокая (детали Hyper-V)</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>BIOS/UEFI</td>
+<td>Аппаратный</td>
+<td>Полная (настройки)</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Дополнительно стоит учитывать совместимость технологий виртуализации с различными задачами. Не все сценарии требуют полного гипервизора; иногда достаточно просто аппаратной поддержки.</p>
+<table>
+<thead>
+<tr>
+<th>Задача</th>
+<th>Требуется VT-x/AMD-V</th>
+<th>Требуется Hyper-V</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Эмуляторы Android (Bluestacks)</td>
+<td>Да</td>
+<td>Нет (желательно)</td>
+</tr>
+<tr>
+<td>WSL 2 (Linux)</td>
+<td>Да</td>
+<td>Да</td>
+</tr>
+<tr>
+<td>Docker Desktop</td>
+<td>Да</td>
+<td>Да</td>
+</tr>
+<tr>
+<td>VirtualBox (старый)</td>
+<td>Да</td>
+<td>Нет (конфликт)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Проверка статуса виртуализации в Windows 10 является фундаментальным шагом для любого пользователя, работающего с современными инструментами разработки или тестирования. Простой взгляд на вкладку «Производительность» в Диспетчере задач позволяет мгновенно определить, готова ли аппаратная часть к работе. Если статус отрицательный, решение кроется исключительно в настройках BIOS/UEFI, где необходимо активировать соответствующие технологии для процессоров Intel или AMD.</p>
+<p>Однако наличие аппаратной поддержки — лишь половина успеха. Для полноценной работы таких технологий, как WSL2 или Docker, необходима также корректная настройка компонентов операционной системы и запуск гипервизора. Понимание разницы между «Виртуализация в прошивке» и «Гипервизор запущен» позволяет эффективно диагностировать проблемы и избегать конфликтов между различными платформами виртуализации.</p>
+<p>Регулярный контроль этих параметров, особенно после крупных обновлений Windows или смены оборудования, гарантирует стабильность работы виртуальных сред. Использование командной строки для глубокой диагностики остается наиболее надежным способом получения исчерпывающей информации о состоянии системы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/go/goluboj-ekran-s-opoveshcheniem-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Синий экран смерти Windows: коды ошибок, причины и методы устранения</span>
+                <span class="pb-related-desc">Полное руководство по диагностике BSOD. Анализ кодов ошибок, драйверов, памяти и реестра для стабиль</span>
+            </a><a href="/articles/k/ka/kak-udalit-bitlocker-windows-10-polnostyu.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить BitLocker Windows 10 полностью: гайд</span>
+                <span class="pb-related-desc">Пошаговая инструкция, как отключить и полностью удалить BitLocker в Windows 10. Сброс ключей, очистк</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-windows10-na-dcnhjtyysq-ssd-noutbuk-vaio.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить Windows 10 на SSD ноутбука VAIO: подробная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по установке Windows 10 на ноутбуки VAIO с SSD. Настройка BIOS, создание загру</span>
+            </a><a href="/articles/k/ka/kak-mojno-opredelit-zavodskoy-nomer-pc.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать заводской номер ПК: 6 способов для Windows и BIOS</span>
+                <span class="pb-related-desc">Подробная инструкция, как найти заводской номер компьютера или ноутбука через командную строку, BIOS</span>
+            </a><a href="/articles/w/wi/windows-oshibka.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибки Windows: Полное руководство по диагностике и устранению</span>
+                <span class="pb-related-desc">Подробный анализ ошибок Windows. Методы диагностики, коды сбоев, работа с реестром и устранение крит</span>
+            </a><a href="/articles/z/za/zapis-dvd-rw-v-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Запись DVD RW в Windows 10: полная инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по записи и перезаписи дисков DVD RW в Windows 10. Выбор формата файловой</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

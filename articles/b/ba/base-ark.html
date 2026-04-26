@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>ARK: Survival Evolved на базе: установка и настройка сервера — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по развертыванию базы ARK на Linux. Настройка Docker, оптимизация памяти, порты и устранение ошибок запуска игрового сервера.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/ba/base-ark.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="ARK: Survival Evolved на базе: установка и настройка сервера">
+    <meta property="og:description" content="Техническое руководство по развертыванию базы ARK на Linux. Настройка Docker, оптимизация памяти, порты и устранение ошибок запуска игрового сервера.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">ARK: Survival Evolved на базе: установка и настройка сервера</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-операционной-среды-и-зависимостей">Подготовка операционной среды и зависимостей</a></li><li><a href="#методы-развертывания-docker-против-нативной-установки">Методы развертывания: Docker против нативной установки</a></li><li><a href="#конфигурация-сервера-и-управление-параметрами">Конфигурация сервера и управление параметрами</a></li><li><a href="#автоматизация-моды-и-сетевая-инфраструктура">Автоматизация, моды и сетевая инфраструктура</a></li><li><a href="#диагностика-проблем-и-оптимизация-производительности">Диагностика проблем и оптимизация производительности</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sdelat-kharmoni-os.html">Как установить HarmonyOS: Руководство по переходу на новую систему</a></li><li><a href="/articles/o/ot/otpravleno-slishkom-mnogo-kodov-apple-id.html">Отправлено слишком много кодов Apple ID: как исправить блокировку</a></li><li><a href="/articles/i/ir/ir-razem.html">IR разъем: назначение, распиновка и настройка пульта</a></li><li><a href="/articles/z/za/zavisaet-kompyuter-reagiruet-na-zvuki-i-rabotaet-mysh.html">Зависает компьютер, но работает мышь и звук: решение</a></li><li><a href="/articles/g/gd/gde-skachat-prilozheniya-toppal-voice-i-toppal-service.html">Как скачать Toppal Voice и Service: официальная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Развертывание базы ARK Survival Evolved: инструкция по настройке</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-операционной-среды-и-зависимостей">Подготовка операционной среды и зависимостей</a></li><li><a href="#методы-развертывания-docker-против-нативной-установки">Методы развертывания: Docker против нативной установки</a></li><li><a href="#конфигурация-сервера-и-управление-параметрами">Конфигурация сервера и управление параметрами</a></li><li><a href="#автоматизация-моды-и-сетевая-инфраструктура">Автоматизация, моды и сетевая инфраструктура</a></li><li><a href="#диагностика-проблем-и-оптимизация-производительности">Диагностика проблем и оптимизация производительности</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка развернуть выделенный сервер ARK: Survival Evolved часто сталкивается с критической нехваткой оперативной памяти или ошибками зависимостей библиотек на чистых дистрибутивах Linux. Владельцы хостингов и системные администраторы регулярно сообщают о падении процесса сразу после инициализации, если не настроены специфические флаги запуска или отсутствуют 32-битные библиотеки в 64-битной среде.</p>
+<p>Ситуация усугубляется тем, что стандартные скрипты установки иногда не учитывают особенности файловой системы или сетевые конфигурации фаервола, блокирующие входящие соединения от клиентов. Вместо ожидаемой стабильной игровой среды пользователь получает циклические перезагрузки процесса и логи, переполненные сообщениями об отсутствии исполняемых файлов или невозможности заблочить память.</p>
+<p>Решение требует системного подхода к подготовке окружения, выбору метода изоляции процессов и тонкой настройке параметров выделения ресурсов. Ниже представлен детальный алгоритм действий, позволяющий избежать распространенных ловушек при инсталляции серверного ПО на базе дистрибутивов семейства Debian и CentOS.</p>
+
+<h2 id="подготовка-операционной-среды-и-зависимостей">Подготовка операционной среды и зависимостей</h2>
+
+<p>Первым шагом является обеспечение наличия всех необходимых системных библиотек, без которых бинарный файл сервера не сможет запуститься. Несмотря на то, что современные дистрибутивы поставляются с актуальными пакетами, для корректной работы <em>ShooterGameServer</em> часто требуется принудительная установка 32-битных версий библиотек <code>glibc</code> и <code>libstdc++</code>.</p>
+<p>Если у вас используется минималистичная установка Ubuntu или Debian, стоит выполнить обновление репозиториев и добавить архитектуру <code>i386</code>, даже если основная система работает на <code>amd64</code>. Это критически важный момент, так как отсутствие совместимых библиотек вызывает ошибку «No such file or directory» при попытке исполнить файл, который физически присутствует на диске.</p>
+<p>Для дистрибутивов на базе RHEL, таких как CentOS 7 или AlmaLinux, процесс может потребовать подключения репозитория EPEL и ручного поиска пакетов совместимости. В некоторых случаях требуется создание символических ссылок для библиотек, если их версии в системе отличаются от тех, что ожидает исполняемый файл игры.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отсутствие 32-битных библиотек в 64-битной системе — причина 90% ошибок запуска. Убедитесь, что пакеты lib32gcc1 или glibc.i686 установлены.</p></aside>
+
+<p>Проверка целостности установленных пакетов проводится через менеджер версий или командную строку. На практике, отсутствие даже одного компонента, например <code>libcurl</code> или <code>zlib</code>, приведет к мгновенному завершению процесса, что в логах может выглядеть как аппаратный сбой.</p>
+
+<pre><code>sudo dpkg --add-architecture i386
+<p>sudo apt-get update</p>
+<p>sudo apt-get install lib32gcc1 libsdl2-2.0-0:i386</code></pre></p>
+
+<p>После установки базовых зависимостей следует убедиться, что права доступа к директории установки корректны. Запуск сервера от имени суперпользователя <code>root</code> не рекомендуется из соображений безопасности; лучше создать отдельного пользователя с ограниченными правами, но с доступом к необходимым сетевым портам.</p>
+
+<h2 id="методы-развертывания-docker-против-нативной-установки">Методы развертывания: Docker против нативной установки</h2>
+
+<p>Выбор между нативной установкой и использованием контейнеризации зависит от требований к изоляции и масштабируемости проекта. Нативный метод подразумевает прямую установку файлов сервера в файловую систему хоста, что обеспечивает максимальную производительность дисковых операций, но создает риски конфликтов версий библиотек.</p>
+<p>Использование Docker позволяет упаковать сервер вместе со всеми зависимостями в изолированный контейнер, что упрощает миграцию и резервное копирование. Однако, при работе с ARK необходимо учитывать накладные расходы на эмуляцию сети и файловую систему, а также правильно пробрасывать порты и тома данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Нативная установка предпочтительнее для серверов с большим количеством модов, так как прямое обращение к диску работает быстрее, чем через слой Docker VFS.</p></aside>
+
+<p>При нативной установке файлы обычно размещаются в домашней директории пользователя или в специально отведенном разделе <code>/srv/ark</code>. Важно, чтобы путь не содержал пробелов или специальных символов, которые могут быть неправильно интерпретированы скриптами запуска.</p>
+<p>Контейнерный подход требует наличия установленного Docker Engine и Docker Compose. Конфигурация осуществляется через файл <code>docker-compose.yml</code>, где прописываются переменные окружения, такие как имя сервера, максимальное количество игроков и список карт.</p>
+
+<table>
+<thead>
+<tr>
+<th>Критерий</th>
+<th>Нативная установка</th>
+<th>Docker контейнер</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Производительность</td>
+<td>Максимальная</td>
+<td>Высокая (минимальные потери)</td>
+</tr>
+<tr>
+<td>Изоляция</td>
+<td>Низкая (зависит от ОС)</td>
+<td>Полная</td>
+</tr>
+<tr>
+<td>Сложность бэкапа</td>
+<td>Ручное копирование файлов</td>
+<td>Копирование тома или образа</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если вы планируете разворачивать несколько игровых миров на одном физическом сервере, Docker станет безальтернативным выбором для предотвращения конфликтов портов и версий исполняемых файлов. В противном случае, для одиночного сервера нативный метод может показаться более прозрачным в отладке.</p>
+<p>Стоит также учитывать, что обновления игры в Docker-среде часто происходят быстрее и автоматизированнее, так как можно просто заменить тег образа, тогда как нативная установка требует ручного запуска скриптов обновления через <code>steamcmd</code>.</p>
+
+<h2 id="конфигурация-сервера-и-управление-параметрами">Конфигурация сервера и управление параметрами</h2>
+
+<p>Основная настройка игрового процесса происходит в файле <code>GameUserSettings.ini</code>, который располагается в папке <code>SavedConfig/LinuxServer/</code>. Именно здесь прописываются множители опыта, скорости сбора ресурсов, настройки погоды и другие параметры, влияющие на геймплей.</p>
+<p>Для изменения системных параметров, таких как выделенная память или количество потоков процессора, используются аргументы командной строки при запуске. Ключевым параметром является <code>?MaxPlayers=</code>, который должен соответствовать лицензии, а также параметры <code>?RCONEnabled=True</code> для удаленного администрирования.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка GameUserSettings.ini</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте файл в текстовом редакторе</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите секцию [ServerSettings]</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Измените ServerPassword и AdminPassword</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните файл и закройте редактор</span></div></div>
+
+<p>Управление памятью требует особого внимания, так как ARK известен неэффективным использованием ресурсов. Использование аргумента <code>-servergamelog</code> позволяет включать подробное логирование, но это может значительно увеличить нагрузку на диск и процессор при высокой активности игроков.</p>
+<p>Настройка портов требует открытия диапазонов в фаерволе. Стандартный игровой порт — 7777 (UDP), порт запросов — 27015 (UDP), а порт RCON — 27020 (TCP). Блокировка любого из этих портов сделает сервер невидимым для списка серверов или недоступным для подключения.</p>
+<p>Для внесения изменений в конфигурацию часто требуется полная остановка сервера. Динамическое применение некоторых параметров, таких как множители скорости, возможно только через консольные команды администратора уже запущенного сервера, но базовые настройки требуют перезагрузки.</p>
+
+<pre><code>./ShooterGameServer TheIsland?listen?SessionName=MyServer?MaxPlayers=20 -server -servergamelog -nomansky -usecache -lowmemory</code></pre>
+
+<p>Важно правильно прописать путь к карте при запуске. Если используется модифицированная карта или DLC, имя карты в командной строке должно точно соответствовать внутреннему идентификатору, иначе сервер запустится на стандартной локации или завершит работу.</p>
+
+<h2 id="автоматизация-моды-и-сетевая-инфраструктура">Автоматизация, моды и сетевая инфраструктура</h2>
+
+<p>Установка модов осуществляется автоматически при первом запуске, если в параметрах запуска или конфигурационном файле указан список ID модов. Сервер обращается к мастер-серверу Steam, скачивает необходимые файлы в папку <code>Mods</code> и активирует их при загрузке мира.</p>
+<p>Для автоматизации процесса обновления сервера и модов рекомендуется использовать скрипты, которые проверяют версию файлов на сервере Steam и сравнивают их с локальными. Регулярное обновление критически важно, так как клиенты с новой версией игры не смогут подключиться к старому серверу.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте утилиту cron для планирования задач обновления. Запускайте проверку обновлений в часы наименьей активности игроков, например, в 4:00 утра.</p></aside>
+
+<p>Сетевая инфраструктура должна обеспечивать стабильный канал с низкой задержкой. Для серверов с большим количеством игроков (более 50) рекомендуется использовать выделенный IP-адрес и гарантированную пропускную способность канала не менее 100 Мбит/с.</p>
+<p>Настройка RCON (Remote Console) позволяет администраторам управлять сервером удаленно, выдавать предметы, телепортировать игроков или менять время суток без прямого доступа к консоли сервера. Это стандартный инструмент для поддержания порядка на проекте.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Интервал автосохранения</td>
+<td>15 минут</td>
+<td>5-10 минут</td>
+</tr>
+<tr>
+<td>Максимальное число сохранений</td>
+<td>10</td>
+<td>20-30</td>
+</tr>
+</tbody>
+</table>
+
+<p>Модификации могут конфликтовать друг с другом, вызывая вылеты у клиентов. При добавлении нового мода всегда проверяйте его совместимость с текущей версией игры и другими установленными дополнениями. Порядок загрузки модов в конфигурационном файле также может влиять на стабильность работы.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Управление модами</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Автоматическое обновление</li><li>✅ Проверка целостности</li><li>✅ Удобный список ID</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск конфликтов версий</li><li>❌ Зависимость от серверов Steam</li><li>❌ Увеличение размера диска</li></ul></div>
+</div></div>
+
+<h2 id="диагностика-проблем-и-оптимизация-производительности">Диагностика проблем и оптимизация производительности</h2>
+
+<p>В процессе эксплуатации сервера могут возникать ситуации, когда он перестает отвечать на запросы или потребляет аномально много ресурсов. Первым признаком проблем обычно является рост времени отклика (пинга) или периодические фризы у всех подключенных игроков.</p>
+<p>Анализ логов — основной метод диагностики. Файлы логов содержат информацию о подключении игроков, ошибках скриптов и системных сбоях. Поиск ключевых слов вроде «Error», «Warning» или «Crash» помогает быстро локализовать причину нестабильной работы.</p>
+<p>Оптимизация часто сводится к ограничению количества динозавров и структур на карте. Перенаселение мира объектами приводит к экспоненциальному росту нагрузки на процессор. Использование команды <code>DestroyWildDinos</code> помогает сбросить нагрузку, но требует осторожности.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На картах с большим количеством растительности, таких как Scorched Earth, нагрузка на CPU выше. Учитывайте это при выборе хостинга.</p></aside>
+
+<p>Типичные ошибки при настройке и эксплуатации:</p>
+<ol>
+<li><strong>Ошибка подключения к порту 27015</strong> — чаще всего означает, что порт закрыт фаерволом или не проброшен на роутере. Необходимо проверить правила iptables или настройки безопасности хостинг-провайдера.</li>
+<li><strong>Сервер виден в списке, но не подключает</strong> — проблема часто кроется в несоответствии версий клиента и сервера или отсутствии необходимых модов у пользователя. Также возможно блокирование антивирусным ПО.</li>
+<li><strong>Вылеты с ошибкой памяти</strong> — возникают при нехватке оперативной памяти или отсутствии флага <code>-lowmemory</code> в параметрах запуска. На 32-битных системах лимит памяти составляет 4 ГБ, что критически мало для ARK.</li>
+<li><strong>Моды не загружаются</strong> — проверьте правильность написания ID модов (только цифры, без пробелов) и наличие доступа сервера к интернету. Иногда помогает ручная очистка папки <code>Mods</code>.</li>
+</ol>
+
+<p>Для мониторинга состояния сервера в реальном времени можно использовать утилиты вроде <code>htop</code> или <code>glances</code>. Они позволяют отслеживать потребление CPU, RAM и дисковый I/O, что помогает прогнозировать необходимость апгрейда оборудования.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Стабильность сервера ARK зависит от корректной настройки библиотек, достаточного объема памяти и регулярного обслуживания модов.</p></aside>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+
+<p>Развертывание сервера ARK: Survival Evolved требует внимательного отношения к деталям, особенно в части системных зависимостей и сетевой конфигурации. Правильный выбор между нативной установкой и Docker-контейнером позволяет найти баланс между производительностью и удобством администрирования.</p>
+<p>Регулярное резервное копирование файлов сохранений и конфигурации является обязательной процедурой, способной спасти проект от потери прогресса в случае аппаратных сбоев. Игнорирование обновлений и игнорирование логов ошибок неизбежно ведет к деградации игрового опыта.</p>
+<p>Соблюдение описанных технических требований и использование рекомендованных параметров запуска обеспечит стабильную работу игрового мира для сообщества игроков. Грамотная настройка серверной части — фундамент для успешного долгосрочного проекта.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sdelat-kharmoni-os.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить HarmonyOS: Руководство по переходу на новую систему</span>
+                <span class="pb-related-desc">Подробная инструкция по установке HarmonyOS на устройства Huawei и Honor. Разбор методов обновления,</span>
+            </a><a href="/articles/o/ot/otpravleno-slishkom-mnogo-kodov-apple-id.html" class="pb-related-card">
+                <span class="pb-related-title">Отправлено слишком много кодов Apple ID: как исправить блокировку</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки «Отправлено слишком много кодов» на iPhone. Сброс настроек</span>
+            </a><a href="/articles/i/ir/ir-razem.html" class="pb-related-card">
+                <span class="pb-related-title">IR разъем: назначение, распиновка и настройка пульта</span>
+                <span class="pb-related-desc">Техническое руководство по IR разъему: устройство инфракрасного порта, распиновка контактов, настрой</span>
+            </a><a href="/articles/z/za/zavisaet-kompyuter-reagiruet-na-zvuki-i-rabotaet-mysh.html" class="pb-related-card">
+                <span class="pb-related-title">Зависает компьютер, но работает мышь и звук: решение</span>
+                <span class="pb-related-desc">Компьютер завис, но курсор двигается? Разбираем причины, почему система реагирует на звуки и мышь, н</span>
+            </a><a href="/articles/g/gd/gde-skachat-prilozheniya-toppal-voice-i-toppal-service.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать Toppal Voice и Service: официальная инструкция</span>
+                <span class="pb-related-desc">Полное руководство по установке приложений Toppal Voice и Service. Ссылки, методы загрузки APK и уст</span>
+            </a><a href="/articles/k/ka/kak-perezagruzit-na-kompyutere-valdberi.html" class="pb-related-card">
+                <span class="pb-related-title">Как перезагрузить компьютер Wildberries: инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по перезагрузке терминалов, ноутбуков и планшетов Wildberries. Решение проблем </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

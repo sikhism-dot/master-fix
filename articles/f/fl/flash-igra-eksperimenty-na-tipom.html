@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Flash-игры: эксперименты с типами данных и их влияние — Мастер Фикс</title>
+    <meta name="description" content="Технический анализ экспериментов с типами данных во Flash-играх. Разбор производительности, памяти и типизации в ActionScript 3.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/f/fl/flash-igra-eksperimenty-na-tipom.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Flash-игры: эксперименты с типами данных и их влияние">
+    <meta property="og:description" content="Технический анализ экспериментов с типами данных во Flash-играх. Разбор производительности, памяти и типизации в ActionScript 3.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Flash-игры: эксперименты с типами данных и их влияние</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-числовых-типов-в-actionscript-3">Архитектура числовых типов в ActionScript 3</a></li><li><a href="#оптимизация-логических-операций-и-булевой-алгебры">Оптимизация логических операций и булевой алгебры</a></li><li><a href="#работа-со-строками-и-конкатенация-в-циклах">Работа со строками и конкатенация в циклах</a></li><li><a href="#типизация-массивов-и-коллекций-данных">Типизация массивов и коллекций данных</a></li><li><a href="#типичные-ошибки-при-работе-с-типами">Типичные ошибки при работе с типами</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sdelat-chtoby-ne-otklyuchalsya-internet-pri-zakrytii-noutbuka.html">Интернет при закрытии ноутбука: настройка Windows и BIOS</a></li><li><a href="/articles/z/za/zamena-wifi-modulya-na-asus-g56jr.html">Замена Wi-Fi модуля на ASUS G56JR: подробная инструкция</a></li><li><a href="/articles/k/ka/kak-uznat-tolshchinu-diskovoda-v-noutbuke.html">Как узнать толщину дисковода в ноутбуке: точные замеры</a></li><li><a href="/articles/g/gd/gde-mozhno-uznat-kakogo-goda-noutbuk-aser.html">Как узнать год выпуска ноутбука Acer: все способы</a></li><li><a href="/articles/k/ka/kak-uznat-est-li-vtoroj-slot-dlya-ssd-v-noutbuke.html">Как проверить наличие второго слота для SSD в ноутбуке</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Эксперименты с типами данных в Flash-играх: технический разбор</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-числовых-типов-в-actionscript-3">Архитектура числовых типов в ActionScript 3</a></li><li><a href="#оптимизация-логических-операций-и-булевой-алгебры">Оптимизация логических операций и булевой алгебры</a></li><li><a href="#работа-со-строками-и-конкатенация-в-циклах">Работа со строками и конкатенация в циклах</a></li><li><a href="#типизация-массивов-и-коллекций-данных">Типизация массивов и коллекций данных</a></li><li><a href="#типичные-ошибки-при-работе-с-типами">Типичные ошибки при работе с типами</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Разработка игрового движка на базе Adobe Flash Platform часто сталкивается с критическим падением производительности при обработке тысяч объектов одновременно. Пользователь может наблюдать рывки анимации или полную остановку приложения (Not Responding) именно в моменты активной симуляции физики или отрисовки частиц.</p>
+<p>Причиной таких проблем редко становится сама графика, чаще всего корень зла кроется в неоптимальном использовании типов данных в коде ActionScript 3.0. Неверный выбор между <code>int</code>, <code>uint</code> и <code>Number</code> приводит к избыточному потреблению оперативной памяти и лишним циклам процессора.</p>
+<p>Эксперименты с типами данных позволяют выявить скрытые накладные расходы виртуальной машины AVM2. Понимание внутренней структуры памяти необходимо для создания стабильных проектов, способных работать в браузере даже на слабых устройствах без использования сторонних оптимизаторов.</p>
+
+<h2 id="архитектура-числовых-типов-в-actionscript-3">Архитектура числовых типов в ActionScript 3</h2>
+<p>Виртуальная машина AVM2, отвечающая за исполнение кода Flash-приложений, по-разному обрабатывает целочисленные и дробные значения. Базовый тип <code>Number</code> всегда занимает 64 бита и соответствует стандарту IEEE 754 для чисел с двойной точностью. Это универсальный инструмент, но его использование там, где не нужны дробные значения, является ошибкой архитектуры.</p>
+<p>Типы <code>int</code> (знаковое целое) и <code>uint</code> (беззнаковое целое) занимают всего 32 бита. При работе с координатами спрайтов, счетчиками циклов или индексами массивов использование 64-битного типа удваивает объем занимаемой памяти. В масштабах игры с десятками тысяч объектов это приводит к существенному росту нагрузки на сборщик мусота (Garbage Collector).</p>
+<p>Если у вас есть цикл, обрабатывающий массив из 100 000 элементов, разница во времени выполнения между использованием <code>Number</code> и <code>int</code> может достигать 30-40%. Математические операции над целыми числами выполняются процессором напрямую, тогда как операции с плавающей запятой требуют обращения к математическому сопроцессору или эмуляции через программные библиотеки.</p>
+
+<h3>Сравнительный анализ производительности</h3>
+<p>Проведение бенчмарков показывает, что арифметические операции над типом <code>uint</code> выполняются быстрее всего, так как исключается проверка знака числа. Это особенно актуально для работы с пиксельными буферами или цветовой палитрой, где отрицательные значения невозможны по определению.</p>
+<p>Ниже приведена таблица, демонстрирующая различия в памяти и скорости выполнения базовых операций для различных числовых типов в среде выполнения Flash Player.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип данных</th>
+<th>Размер (бит)</th>
+<th>Диапазон значений</th>
+<th>Скорость операций</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>uint</code></td>
+<td>32</td>
+<td>0 to 4,294,967,295</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td>32</td>
+<td>-2,147,483,648 to 2,147,483,647</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td><code>Number</code></td>
+<td>64</td>
+<td>±1.7e+308</td>
+<td>Средняя/Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Стоит учитывать, что динамическая типизация в ActionScript 3 позволяет присваивать переменные типа <code>*</code> (Any), но это полностью отключает оптимизацию компилятора. В строго типизированных проектах, где переменным заранее определен тип <code>int</code>, код исполняется значительно эффективнее.</p>
+<p>На практике это означает, что счетчик кадров или индекс массива всегда должен быть объявлен как <code>int</code>. Использование <code>Number</code> для этих целей не только не дает преимуществ, но и замедляет работу приложения за счет лишних преобразований типов во время исполнения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В ActionScript 3 оператор деления всегда возвращает тип Number, даже если операнды являются целыми числами. Для целочисленного деления используйте побитовые операции или функцию Math.floor.</p></aside>
+
+<h2 id="оптимизация-логических-операций-и-булевой-алгебры">Оптимизация логических операций и булевой алгебры</h2>
+<p>Логические флаги состояния игры часто хранятся в виде переменных типа <code>Boolean</code>. Хотя этот тип занимает минимальное количество памяти, массивы булевых значений могут фрагментировать кучу памяти. В высокопроизводительных системах, таких как игровые движки, состояния часто кодируют в битовые маски.</p>
+<p>Использование побитовых операторов позволяет упаковать до 32 логических флагов в одну переменную типа <code>uint</code>. Это не только экономит память, но и ускоряет проверку условий. Операции <code>&</code> (AND), <code>|</code> (OR) и <code>^</code> (XOR) выполняются на уровне процессора за один такт.</p>
+<p>Допустим, необходимо отслеживать состояние персонажа: «жив», «видим», «под действием магии», «на земле». Вместо четырех переменных <code>Boolean</code> создается одна переменная <code>uint</code>, где каждый бит отвечает за конкретный флаг. Проверка состояния сводится к одной операции сравнения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Реализация битовых флагов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Объявите константы для каждого флага (например, FLAG_ALIVE = 1, FLAG_VISIBLE = 2)</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Инициализируйте переменную состояния нулем</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Для установки флага используйте оператор</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">=</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Для проверки флага используйте оператор &</span></div></div>
+
+<p>При работе с большими массивами объектов такая оптимизация дает ощутимый прирост. Если в сцене находится 5000 врагов, и каждый имеет 10 флагов состояния, использование отдельных булевых переменных создаст 50 000 объектов в памяти. Упаковка в битовые маски сократит это количество до 5000 целочисленных переменных.</p>
+<p>Кроме того, логические операции над числами позволяют выполнять сложные проверки состояний мгновенно. Например, проверка «жив и видим» выполняется одной строкой кода с использованием побитового И. Это критически важно для циклов обновления игры, которые должны выполняться 60 раз в секунду.</p>
+
+<h3>Сценарии использования битовых масок</h3>
+<p>В игровых движках битовые маски часто применяются для определения слоев коллизий (collision layers). Каждому объекту присваивается маска слоя, и столкновение проверяется побитовым AND между маской объекта и маской слоя, с которым он может взаимодействовать.</p>
+<p>Если у вас сложная система взаимодействий, где одни объекты проходят сквозь другие, но сталкиваются с третьими, битовые маски являются стандартом индустрии. Они позволяют избежать тяжелых проверок <code>if-else</code> и делают код более читаемым и предсказуемым.</p>
+<p> Операторы сравнения имеют более высокий приоритет, чем побитовые, поэтому использование скобок обязательно для корректной работы логики.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При сдвиге битов влево (<<) убедитесь, что значение не выйдет за пределы диапазона uint. Переполнение может привести к непредсказуемым результатам в логике игры.</p></aside>
+
+<h2 id="работа-со-строками-и-конкатенация-в-циклах">Работа со строками и конкатенация в циклах</h2>
+<p>Строки в ActionScript 3 являются неизменяемыми объектами. Любая операция изменения строки, включая конкатенацию, создает новый объект в памяти. В циклах, где происходит сборка больших текстовых блоков или XML-структур, это приводит к катастрофическому росту нагрузки на сборщик мусота.</p>
+<p>Классическая ошибка — использование оператора <code>+=</code> внутри цикла для наращивания строки. На каждой итерации создается новая строка, копируется содержимое старой, добавляется новый фрагмент, а старый объект отправляется на утилизацию. Для 1000 итераций это тысячи аллокаций памяти.</p>
+<p>Для решения этой проблемы существует класс <code>StringBuilder</code> (или его аналоги в виде массивов). Стратегия заключается в накоплении частей строки в массиве или буфере и объединении их в одну строку только в конце операции. Это снижает количество создаваемых объектов с N до 1.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Количество объектов</th>
+<th>Нагрузка на GC</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Оператор +=</td>
+<td>N (где N — число итераций)</td>
+<td>Критическая</td>
+<td>Избегать в циклах</td>
+</tr>
+<tr>
+<td>Класс Array + join</td>
+<td>1 (итоговая строка)</td>
+<td>Низкая</td>
+<td>Рекомендуется</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если в проекте требуется частая работа с текстом, например, генерация логов или парсинг данных, стоит рассмотреть использование <code>ByteArray</code> для бинарных данных. Работа с бинарными массивами исключает накладные расходы на кодирование и декодирование строк на промежуточных этапах.</p>
+<p>На практике переход на использование массивов для сборки строк увеличивает производительность текстовых операций в 10-20 раз при больших объемах данных. Это освобождает ресурсы процессора для рендеринга графики и расчетов физики.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте метод array.join("") вместо конкатенации в цикле. Это стандартный паттерн оптимизации работы со строками в ActionScript 3.</p></aside>
+
+<h2 id="типизация-массивов-и-коллекций-данных">Типизация массивов и коллекций данных</h2>
+<p>Массивы <code>Array</code> в ActionScript 3 являются динамическими и могут хранить объекты любых типов. Эта гибкость имеет свою цену: при доступе к элементам массива виртуальная машина должна проверять типы данных. В плотных циклах эти проверки суммируются и замедляют выполнение.</p>
+<p>Для хранения однородных данных (только числа, только векторы, только ссылки на спрайты) рекомендуется использовать векторы <code>Vector.&lt;T&gt;</code>. Векторы являются типизированными массивами фиксированного типа, что позволяет AVM2 оптимизировать доступ к памяти и исключить проверки типов на лету.</p>
+<p>Создание вектора требует указания типа данных в угловых скобках, например <code>Vector.&lt;int&gt;</code> или <code>Vector.&lt;Sprite&gt;</code>. Это гарантирует, что в массив не будут добавлены объекты несоответствующего типа, что также повышает надежность кода и уменьшает количество runtime-ошибок.</p>
+
+<h3>Сравнение Array и Vector</h3>
+<p>Основное преимущество векторов — предсказуемое использование памяти. В отличие от обычных массивов, векторы не требуют хранения дополнительной информации о типах элементов. Доступ к элементу вектора происходит быстрее, так как смещение вычисляется арифметически без дополнительных проверок.</p>
+<p>При инициализации вектора можно задать его размер. Это позволяет зарезервировать непрерывный блок памяти сразу, избегая частого перераспределения памяти (realloc) при добавлении элементов, что характерно для динамических массивов.</p>
+<p>Однако стоит помнить, что векторы менее гибки. Они не поддерживают некоторые динамические методы массивов, такие как сортировка с произвольной функцией сравнения, так же эффективно, как <code>Array</code>. Выбор между ними должен основываться на конкретных требованиях задачи.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества Vector</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость доступа</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Экономия памяти</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-при-работе-с-типами">Типичные ошибки при работе с типами</h2>
+<p>В процессе экспериментов с типами данных разработчики часто допускают системные ошибки, которые сводят на нет все усилия по оптимизации. Понимание этих ошибок помогает избегать их в будущих проектах.</p>
+<ol>
+<li><strong>Использование Number для целочисленных счетчиков</strong> — приводит к лишним затратам памяти и замедлению вычислений. Правильно: использовать <code>int</code> или <code>uint</code>.</li>
+<li><strong>Динамическая типизация там, где она не нужна</strong> — объявление переменных как <code>*</code> или отсутствие типа отключает оптимизацию компилятора. Правильно: всегда указывать явный тип.</li>
+<li><strong>Конкатенация строк в циклах</strong> — создает огромное количество мусора. Правильно: использовать массивы и метод <code>join</code>.</li>
+<li><strong>Игнорирование переполнения при битовых операциях</strong> — может привести к логическим ошибкам. Правильно: проверять диапазоны значений перед сдвигами.</li>
+</ol>
+
+<p>Анализ кода с помощью профилировщика (Profiler) позволяет выявить узкие места, связанные с типами данных. Инструменты отладки показывают время выполнения методов и объем выделенной памяти, помогая найти неоптимальные участки.</p>
+<p>Регулярный рефакторинг кода с заменой общих типов на специфичные (например, замена <code>Number</code> на <code>int</code>) является хорошей практикой. Это не только ускоряет работу, но и делает код более понятным для других разработчиков.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильный выбор типа данных — фундамент производительности Flash-игры. Использование специфичных типов вместо общих позволяет значительно снизить нагрузку на процессор и память.</p></aside>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Эксперименты с типами данных в среде Flash Platform демонстрируют, что даже в высокоуровневом языке программирования выбор типа переменной напрямую влияет на производительность приложения. Переход с <code>Number</code> на <code>int</code>, использование векторов вместо массивов и применение битовых масок для флагов позволяют выжать максимум из ограниченных ресурсов виртуальной машины.</p>
+<p>Оптимизация на уровне типов данных не требует сложных алгоритмических изменений, но дает ощутимый результат. Внедрение строгой типизации и отказ от динамических конструкций в критических участках кода является обязательным стандартом для профессиональной разработки игр.</p>
+<p>Внедрение описанных практик позволяет создавать более стабильные и отзывчивые приложения. Техническая грамотность в вопросах работы с памятью и типами данных отличает любительский код от промышленного решения, способного выдерживать высокие нагрузки.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sdelat-chtoby-ne-otklyuchalsya-internet-pri-zakrytii-noutbuka.html" class="pb-related-card">
+                <span class="pb-related-title">Интернет при закрытии ноутбука: настройка Windows и BIOS</span>
+                <span class="pb-related-desc">Подробная инструкция: как оставить Wi-Fi активным при закрытии крышки. Настройка электропитания, дра</span>
+            </a><a href="/articles/z/za/zamena-wifi-modulya-na-asus-g56jr.html" class="pb-related-card">
+                <span class="pb-related-title">Замена Wi-Fi модуля на ASUS G56JR: подробная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по замене Wi-Fi модуля в ноутбуке ASUS G56JR. Выбор совместимых карт, снятие к</span>
+            </a><a href="/articles/k/ka/kak-uznat-tolshchinu-diskovoda-v-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать толщину дисковода в ноутбуке: точные замеры</span>
+                <span class="pb-related-desc">Подробная инструкция по определению толщины DVD-привода (9.5 или 12.7 мм). Методы измерения, специфи</span>
+            </a><a href="/articles/g/gd/gde-mozhno-uznat-kakogo-goda-noutbuk-aser.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать год выпуска ноутбука Acer: все способы</span>
+                <span class="pb-related-desc">Подробная инструкция по определению даты производства ноутбука Acer. Проверка серийного номера, BIOS</span>
+            </a><a href="/articles/k/ka/kak-uznat-est-li-vtoroj-slot-dlya-ssd-v-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить наличие второго слота для SSD в ноутбуке</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску свободного разъема M.2 или SATA в ноутбуке. Программные и аппаратные </span>
+            </a><a href="/articles/z/za/zapis-ekrana-kompyutera-windows-v-skrytom-fone.html" class="pb-related-card">
+                <span class="pb-related-title">Скрытая запись экрана Windows: Технические методы и софт</span>
+                <span class="pb-related-desc">Техническое руководство по фоновой записи экрана в Windows. Анализ методов, скрытых команд и специал</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

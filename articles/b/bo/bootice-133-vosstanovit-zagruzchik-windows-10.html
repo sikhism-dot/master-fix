@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Bootice 1.3.3: Восстановление загрузчика Windows 10 — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по восстановлению загрузчика Windows 10 через Bootice 1.3.3. Пошаговый алгоритм действий, настройка MBR и PBR, устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bo/bootice-133-vosstanovit-zagruzchik-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Bootice 1.3.3: Восстановление загрузчика Windows 10">
+    <meta property="og:description" content="Подробная инструкция по восстановлению загрузчика Windows 10 через Bootice 1.3.3. Пошаговый алгоритм действий, настройка MBR и PBR, устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Bootice 1.3.3: Восстановление загрузчика Windows 10</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-рабочей-среды-и-запуск-утилиты">Подготовка рабочей среды и запуск утилиты</a></li><li><a href="#восстановление-главной-загрузочной-записи-mbr">Восстановление главной загрузочной записи MBR</a></li><li><a href="#настройка-загрузочного-сектора-раздела-pbr">Настройка загрузочного сектора раздела (PBR)</a></li><li><a href="#управление-хранилищем-загрузочных-данных-bcd">Управление хранилищем загрузочных данных BCD</a></li><li><a href="#специфика-работы-с-uefi-и-gpt-дисками">Специфика работы с UEFI и GPT дисками</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vojti-bios-na-telev-tsl.html">Как войти в BIOS на телевизоре TCL: полная инструкция</a></li><li><a href="/articles/l/le/lenovo-v145-15ast-drajvera.html">Lenovo V145-15AST: установка драйверов и решение проблем</a></li><li><a href="/articles/a/ac/acer-25wbh-noutbuk-podklyuchenie-shlejfa.html">Acer 25WBH: Подключение шлейфа матрицы и клавиатуры</a></li><li><a href="/articles/t/ti/time-capsule-apple-podklyuchenie-na-windows.html">Time Capsule Apple: подключение к Windows и настройка сети</a></li><li><a href="/articles/p/pr/prestigio-bios.html">Prestigio Биос: Вход, Настройки и Сброс BIOS на планшетах</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика Windows 10 через Bootice 1.3.3</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-рабочей-среды-и-запуск-утилиты">Подготовка рабочей среды и запуск утилиты</a></li><li><a href="#восстановление-главной-загрузочной-записи-mbr">Восстановление главной загрузочной записи MBR</a></li><li><a href="#настройка-загрузочного-сектора-раздела-pbr">Настройка загрузочного сектора раздела (PBR)</a></li><li><a href="#управление-хранилищем-загрузочных-данных-bcd">Управление хранилищем загрузочных данных BCD</a></li><li><a href="#специфика-работы-с-uefi-и-gpt-дисками">Специфика работы с UEFI и GPT дисками</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда операционная система отказывается загружаться, выводя на экран сообщения вроде «Operating System not found», «Invalid partition table» или просто уходя в циклическую перезагрузку, часто застает пользователя врасплох. Подобная проблема может возникнуть после сбоя электропитания, некорректного завершения работы, экспериментов с разделами диска или воздействия вредоносного ПО. В большинстве случаев целостность файлов самой операционной системы не нарушена, и проблема кроется исключительно в поврежденной загрузочной записи или конфигурации BCD.</p>
+
+<p>Для решения данной задачи стандартные средства Windows, такие как автоматическое восстановление, могут оказаться бессильными или требовать наличия установочного диска конкретной сборки, что не всегда доступно под рукой. В таких ситуациях на помощь приходят специализированные утилиты для работы с загрузчиками, среди которых <em>Bootice 1.3.3</em> зарекомендовала себя как надежный и функциональный инструмент. Данная версия программы особенно популярна благодаря своей портативности и отсутствию необходимости установки, что позволяет запускать ее непосредственно с флешки в среде <em>WinPE</em>.</p>
+
+<p>Использование утилиты требует внимательного отношения к деталям, так как работа ведется на низком уровне с таблицами разделов и загрузочными секторами. Ошибка в выборе диска или типа файловой системы может привести к полной неработоспособности накопителя. Однако при грамотном подходе процесс восстановления занимает всего несколько минут и позволяет вернуть системе способность к запуску без переустановки. Ниже представлен детальный алгоритм действий для различных сценариев отказа загрузки.</p>
+
+<h2 id="подготовка-рабочей-среды-и-запуск-утилиты">Подготовка рабочей среды и запуск утилиты</h2>
+
+<p>Прежде чем приступать к манипуляциям с загрузочными записями, необходимо обеспечить доступ к файловой системе поврежденного диска и самой утилите. Поскольку штатная операционная система не загружается, единственным вариантом остается использование загрузочного носителя. Оптимальным решением является создание флешки с образом <em>WinPE</em> (Windows Preinstallation Environment), на которую заранее помещена папка с программой <em>Bootice 1.3.3</em>. Существуют готовые сборки, такие как <em>Sergei Strelec</em> или <em>WinPE 10-8</em>, где данный инструмент уже интегрирован в меню «Пуск».</p>
+
+<p>Если используется портативная версия, скачанная отдельно, важно помнить о разрядности исполняемого файла. Для современных компьютеров с процессорами архитектуры x64 предпочтительнее запускать 64-битную версию утилиты (<em>BOOTICE64.exe</em>), хотя и 32-битная (<em>BOOTICE.exe</em>) корректно работает в большинстве случаев. Запуск следует производить от имени администратора, чтобы обеспечить необходимый уровень доступа к аппаратным ресурсам дискового контроллера. В среде <em>WinPE</em> права администратора обычно предоставляются автоматически.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Все действия по восстановлению загрузчика несут риск потери данных при ошибочном выборе диска. Перед началом работ убедитесь, что выбран именно системный накопитель, а не внешний жесткий диск или флешка с образом системы.</p></aside>
+
+<p>После запуска программы открывается главное окно интерфейса, которое содержит всю необходимую информацию о подключенных накопителях. В верхней части окна, в выпадающем списке «Target Disk», отображаются все физические диски, detected системой. Выбор правильного диска является критически важным этапом, так как все последующие операции будут применяться именно к нему. Идентифицировать нужный диск можно по объему, модели или номеру (Disk 0, Disk 1).</p>
+
+<p>На практике системный диск часто имеет метку Disk 0, но в серверных конфигурациях или при подключенных внешних накопителях порядок может меняться. Рекомендуется свериться с содержимым разделов, открыв «Windows Explorer» или файловый менеджер, чтобы точно знать букву и объем системного тома. После того как целевой диск выбран в списке <em>Bootice</em>, становится активным доступ к основным функциям управления загрузкой.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В версии 1.3.3 интерфейс может быть на английском или китайском языке. Для переключения языка используйте кнопку «Options» или «Language», если она доступна, однако базовый функционал интуитивно понятен по расположению кнопок.</p></aside>
+
+<h2 id="восстановление-главной-загрузочной-записи-mbr">Восстановление главной загрузочной записи MBR</h2>
+
+<p>Первым этапом восстановления при проблемах с загрузкой на компьютерах с классической схемой разделов (BIOS/MBR) является проверка и перезапись главной загрузочной записи (Master Boot Record). MBR находится в самом начале физического диска и содержит код, указывающий компьютеру, где искать активный раздел для дальнейшей загрузки операционной системы. Повреждение этого сектора приводит к тому, что BIOS не может передать управление загрузчику Windows.</p>
+
+<p>Для выполнения операции необходимо перейти на вкладку «MBR» (или «Physical Process» -> «MBR» в некоторых локализациях). В открывшемся окне отобразится текущая структура MBR выбранного диска. Здесь важно обратить внимание на статус загрузочного кода. Если код поврежден или отсутствует, система не сможет продолжить процесс инициализации. Утилита предлагает несколько вариантов кода загрузчика, среди которых для Windows 10 наиболее актуальным является «Windows NT 6.x MBR».</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Восстановление MBR</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите целевой диск в списке Target Disk</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите на вкладку MBR</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку Install/Upgrade</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">В списке выберите Windows NT 6.x MBR</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Подтвердите действие кнопкой OK</span></div></div>
+
+<p>Процесс записи кода занимает доли секунды. После нажатия кнопки подтверждения утилита запросит финальное согласие на внесение изменений в структуру диска. Следует внимательно прочитать предупреждение, так как оно информирует о том, что текущая загрузочная запись будет перезаписана. Для Windows 10, 8 и 7 используется единый формат загрузчика NT 6.x, что упрощает задачу, так как не требуется искать специфичную версию для конкретной ОС.</p>
+
+<p>Стоит отметить различия между форматами загрузочных записей для разных операционных систем. Выбор неверного типа кода может привести к тому, что загрузчик перестанет понимать структуру разделов или не сможет передать управление следующему этапу. В таблице ниже приведено сравнение основных типов MBR, доступных в <em>Bootice</em>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип MBR</th>
+<th>Назначение</th>
+<th>Совместимость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GRUB4DOS 0.4.5c</code></td>
+<td>Универсальный загрузчик</td>
+<td>Linux, DOS, старые Windows</td>
+</tr>
+<tr>
+<td><code>Windows NT 6.x MBR</code></td>
+<td>Стандартный загрузчик MS</td>
+<td>Windows Vista, 7, 8, 10, 11</td>
+</tr>
+<tr>
+<td><code>Default MBR</code></td>
+<td>Базовая загрузочная запись</td>
+<td>Общая совместимость</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если после установки нового кода MBR проблема сохраняется, возможно, повреждена таблица разделов или изменен статус активного раздела. В окне управления MBR также доступна функция «Edit» для ручного просмотра hex-кода, однако для рядового пользователя рекомендуется ограничиться стандартной процедурой установки. После успешной записи кода MBR необходимо перейти к следующему этапу — работе с загрузочным сектором раздела (PBR).</p>
+
+<h2 id="настройка-загрузочного-сектора-раздела-pbr">Настройка загрузочного сектора раздела (PBR)</h2>
+
+<p>После того как главная загрузочная запись (MBR) восстановлена и указывает на правильный раздел, в дело вступает загрузочный сектор раздела (Partition Boot Record — PBR). Именно код, находящийся в PBR, непосредственно загружает файл <code>bootmgr</code>, который, в свою очередь, считывает конфигурацию хранилища загрузочных данных (BCD). Без корректного PBR цепочка загрузки прерывается, даже если MBR исправна.</p>
+
+<p>Для работы с PBR в главном окне <em>Bootice</em> необходимо нажать кнопку «Process PBR». Откроется новое диалоговое окно, где в верхней части снова потребуется выбрать целевой раздел. В отличие от работы с физическим диском, здесь выбирается логический том, помеченный как системный (обычно имеет метку «System» или «Зарезервировано системой» и файловую систему NTFS). Важно не перепутать системный раздел с разделом, где установлена сама Windows (диск C:), хотя в простых конфигурациях они могут быть объединены.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если системный раздел скрыт и не имеет буквы, в окне выбора раздела утилита покажет его размер и файловую систему. Ориентируйтесь на объем: системный раздел обычно занимает 100-500 МБ.</p></aside>
+
+<p>В списке доступных загрузчиков для PBR следует выбрать «Windows NT 6.x PBR». Этот вариант полностью соответствует требованиям Windows 10 и обеспечивает корректную передачу управления файлу <code>bootmgr</code>. Процедура установки аналогична работе с MBR: выбор типа загрузчика, нажатие кнопки «Install/Upgrade» и подтверждение операции. Утилита предупредит о замене текущего кода сектора, на что необходимо согласиться.</p>
+
+<p>В некоторых случаях, особенно после работы с программами для клонирования дисков или изменения размера разделов, может потребоваться не только обновить код, но и проверить параметры самого сектора. Окно управления PBR позволяет просмотреть информацию о скрытых секторах и общей геометрии. Однако для стандартной процедуры восстановления Windows 10 достаточно просто переписать стандартный код загрузчика Microsoft. Это действие безопасно и возвращает сектор в исходное, заводское состояние.</p>
+
+<p>После выполнения операции окно можно закрыть и вернуться к главному меню. На этом этапе восстановлены два критических компонента: MBR на уровне физического диска и PBR на уровне логического раздела. Если бы проблема заключалась только в повреждении кода, система должна была бы начать загружаться. Однако часто требуется дополнительная настройка конфигурации, за что отвечает следующий этап работы.</p>
+
+<h2 id="управление-хранилищем-загрузочных-данных-bcd">Управление хранилищем загрузочных данных BCD</h2>
+
+<p>Файл конфигурации хранилища загрузочных данных (Boot Configuration Data — BCD) содержит информацию о том, какие операционные системы доступны для загрузки, где они расположены и какие параметры нужно применить при старте. Повреждение этого файла или отсутствие записей в нем приводит к появлению ошибок вроде «The Boot Configuration Data for your PC is missing or contains errors». Утилита <em>Bootice 1.3.3</em> предоставляет мощный инструмент для редактирования BCD в графическом интерфейсе.</p>
+
+<p>Для доступа к функциям управления необходимо перейти на вкладку «BCD Edit» (или «BCD» в зависимости от версии интерфейса). В открывшемся окне следует выбрать режим работы «System BCD», что позволит редактировать конфигурацию установленной операционной системы. Если система не загружается и автоматическое определение путей невозможно, можно выбрать «Select BCD file» и вручную указать путь к файлу <code>\Boot\BCD</code> на системном разделе.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Редактирование BCD</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите на вкладку BCD Edit</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите System BCD</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку Edit/Save</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте наличие записи Windows 10</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">При необходимости добавьте новую запись</span></div><div class="pb-step"><span class="pb-step-num">6</span><span class="pb-step-text">Сохраните изменения</span></div></div>
+
+<p>В списке загрузочных записей должна присутствовать строка с названием «Windows 10» (или соответствующей версии). Если такая запись отсутствует, ее необходимо создать вручную, указав правильный путь к загрузчику <code>\Windows\system32\winload.efi</code> (для UEFI) или <code>\Windows\system32\winload.exe</code> (для BIOS). Также важно проверить параметр «Partition», который указывает букву диска, где установлена ОС. В среде <em>WinPE</em> буквы дисков могут отличаться от привычных, поэтому путь может выглядеть, например, как <code>D:\Windows</code>.</p>
+
+<p>Особое внимание стоит уделить параметрам, связанным с режимом загрузки. Для Windows 10 актуальны настройки, связанные с безопасной загрузкой и режимом тестирования. Если ранее проводились эксперименты с драйверами, в BCD мог остаться флаг «Test Mode», который иногда вызывает проблемы. В окне редактирования параметров записи можно снять галочки с ненужных опций или, наоборот, включить режим отладки для диагностики. После внесения всех изменений обязательно нажмите кнопку «Save» или «Write to Disk», чтобы записать обновленный файл конфигурации.</p>
+
+<p>Сложность работы с BCD часто заключается в различии путей для систем BIOS и UEFI. В то время как legacy-системы используют <code>winload.exe</code>, современные компьютеры требуют наличия файла <code>winload.efi</code> и соответствующего раздела EFI. Ошибка в указании типа загрузчика в BCD приведет к тому, что даже при исправных MBR и PBR загрузка не начнется. Поэтому перед сохранением изменений рекомендуется дважды перепроверить указанные пути и типы устройств.</p>
+
+<h2 id="специфика-работы-с-uefi-и-gpt-дисками">Специфика работы с UEFI и GPT дисками</h2>
+
+<p>Современные компьютеры, поставляемые с предустановленной Windows 10, используют интерфейс UEFI и таблицу разделов GPT вместо устаревших BIOS и MBR. В этой архитектуре процесс загрузки отличается: вместо MBR используется специальный раздел EFI System Partition (ESP), отформатированный в FAT32. Утилита <em>Bootice 1.3.3</em> поддерживает работу с GPT, но подход к восстановлению загрузчика здесь имеет свои особенности.</p>
+
+<p>При работе с GPT-диском вкладка «MBR» заменяется или дополняется вкладкой «GPT». Здесь можно просмотреть структуру таблицы разделов, однако основной задачей является наличие правильного загрузчика в разделе EFI. В отличие от MBR-дисков, где код записывается в первый сектор, в GPT важна целостность самого раздела ESP и наличие в нем файла <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>. <em>Bootice</em> позволяет управлять загрузочными записями разделов, но для полной диагностики UEFI-систем часто требуется проверка содержимого ESP.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На дисках GPT раздел EFI обычно скрыт и не имеет буквы диска. Для доступа к нему в среде WinPE может потребоваться назначение буквы через утилиту diskpart или проводник.</p></aside>
+
+<p>Если проблема заключается в отсутствии загрузочной записи UEFI в NVRAM материнской платы, простого копирования файлов может быть недостаточно. В этом случае <em>Bootice</em> может помочь проверить наличие файлов, но для регистрации загрузчика в UEFI часто требуется использование командной строки и утилиты <code>bcdeboot</code>. Тем не менее, функция «Process PBR» в <em>Bootice</em> полезна для восстановления загрузочного кода самого раздела FAT32, если он был поврежден вирусами или сбоями.</p>
+
+<p>Важно понимать, что для UEFI-систем критически важна файловая система FAT32 на системном разделе. Попытка отформатировать его в NTFS или изменить кластерность сделает загрузку невозможной. <em>Bootice</em> не предназначен для форматирования, но позволяет увидеть файловую систему выбранного раздела. Если раздел EFI поврежден физически или логически, восстановление может потребовать создания нового раздела EFI и копирования туда загрузочных файлов из резервной копии или дистрибутива.</p>
+
+<p>Ниже приведена таблица, сравнивающая ключевые отличия в процедуре восстановления для разных типов разметки, что поможет избежать путаницы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>BIOS (MBR)</th>
+<th>UEFI (GPT)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ключевой сектор</td>
+<td>MBR (сектор 0)</td>
+<td>EFI Partition (FAT32)</td>
+</tr>
+<tr>
+<td>Файл загрузчика</td>
+<td><code>bootmgr</code></td>
+<td><code>bootmgfw.efi</code></td>
+</tr>
+<tr>
+<td>Инструмент Bootice</td>
+<td>MBR / PBR (NT 6.x)</td>
+<td>PBR (FAT) / BCD Edit</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Особенности восстановления UEFI</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка современных стандартов безопасности</li><li>✅ Высокая скорость загрузки</li><li>✅ Гибкость настройки</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует FAT32 раздела</li><li>❌ Зависимость от прошивки материнской платы</li><li>❌ Сложнее в ручном восстановлении</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе восстановления загрузчика пользователи часто сталкиваются с повторяющимися проблемами, вызванными невнимательностью или непониманием архитектуры загрузки. Анализ наиболее частых ошибок позволяет избежать критических ситуаций и сэкономить время. Ниже приведены описания типичных сценариев failures и методы их коррекции.</p>
+
+<ol>
+<li><strong>Выбор неверного физического диска</strong> — самая опасная ошибка, при которой пользователь записывает MBR на диск с данными или внешний USB-накопитель вместо системного диска. Это приводит к потере доступа к данным на выбранном диске. Всегда сверяйте объем и модель диска в окне <em>Bootice</em> с данными в проводнике перед нажатием любых кнопок записи.</li>
+<li><strong>Путаница между MBR и PBR</strong> — многие пользователи ограничиваются восстановлением только MBR, забывая про PBR. Без корректного кода в загрузочном секторе раздела (PBR) цепочка загрузки прерывается. Необходимо выполнять оба этапа: сначала «Process MBR», затем «Process PBR».</li>
+<li><strong>Неверный тип загрузчика в BCD</strong> — указание пути к <code>winload.exe</code> вместо <code>winload.efi</code> (или наоборот) в конфигурации BCD делает загрузку невозможной. Тип файла должен строго соответствовать режиму работы BIOS/UEFI. Проверьте расширение файла в папке <code>System32</code> перед внесением записей.</li>
+<li><strong>Игнорирование активного статуса раздела</strong> — для BIOS-систем раздел, содержащий загрузчик, должен быть помечен как «Active». Если после восстановления MBR/PBR система пишет «Missing operating system», проверьте в управлении дисками, стоит ли флаг активности на нужном томе.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное восстановление загрузчика требует последовательного выполнения трех шагов: запись кода MBR, запись кода PBR и проверка конфигурации BCD.</p></aside>
+
+<p>Завершая обзор, стоит подчеркнуть, что <em>Bootice 1.3.3</em> остается одним из самых эффективных инструментов для решения проблем с загрузкой Windows 10. Его преимущество заключается в глубоком уровне доступа к структуре диска и возможности ручного контроля над каждым этапом процесса. В отличие от автоматических скриптов, данная утилита позволяет точно диагностировать, на каком именно уровне произошел сбой: в главной загрузочной записи, в секторе раздела или в конфигурационном файле.</p>
+
+<p>Регулярное создание резервных копий загрузочных секторов с помощью функции «Backup» в <em>Bootice</em> может значительно упростить жизнь в будущем. Сохраненный файл размером в несколько килобайт позволит мгновенно восстановить работоспособность системы в случае сбоя, избежав длительных процедур настройки. Такой подход является признаком грамотного администрирования и обеспечивает дополнительную надежность хранения данных.</p>
+
+<p>Владение навыками работы с загрузчиками уровня MBR/PBR/BCD является важным компетенцией для любого специалиста по обслуживанию ПК. Понимание принципов взаимодействия BIOS, дисковой подсистемы и операционной системы позволяет решать проблемы, которые кажутся нерешаемыми для стандартных средств диагностики. Использование проверенных инструментов в сочетании с внимательным анализом ситуации гарантирует успешное восстановление работоспособности компьютера.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vojti-bios-na-telev-tsl.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS на телевизоре TCL: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по входу в сервисное меню и инженерный режим на Smart TV TCL. Коды, методы с п</span>
+            </a><a href="/articles/l/le/lenovo-v145-15ast-drajvera.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo V145-15AST: установка драйверов и решение проблем</span>
+                <span class="pb-related-desc">Полное руководство по поиску и установке драйверов для ноутбука Lenovo V145-15AST. Решения для Windo</span>
+            </a><a href="/articles/a/ac/acer-25wbh-noutbuk-podklyuchenie-shlejfa.html" class="pb-related-card">
+                <span class="pb-related-title">Acer 25WBH: Подключение шлейфа матрицы и клавиатуры</span>
+                <span class="pb-related-desc">Подробная инструкция по замене шлейфа экрана на Acer Aspire 5 A515-56G. Разборка, демонтаж матрицы и</span>
+            </a><a href="/articles/t/ti/time-capsule-apple-podklyuchenie-na-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Time Capsule Apple: подключение к Windows и настройка сети</span>
+                <span class="pb-related-desc">Полное руководство по подключению Apple Time Capsule к ПК на Windows. Настройка через AirPort Утилит</span>
+            </a><a href="/articles/p/pr/prestigio-bios.html" class="pb-related-card">
+                <span class="pb-related-title">Prestigio Биос: Вход, Настройки и Сброс BIOS на планшетах</span>
+                <span class="pb-related-desc">Как войти в Prestigio Биос? Инструкция по загрузке Recovery, сбросу настроек и обновлению прошивки н</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-i-obnovit-drajvera-na-noutbuke-lenovo-g50-45.html" class="pb-related-card">
+                <span class="pb-related-title">Установка драйверов Lenovo G50-45: полное руководство</span>
+                <span class="pb-related-desc">Пошаговая инструкция по поиску, установке и обновлению драйверов для ноутбука Lenovo G50-45. Решения</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

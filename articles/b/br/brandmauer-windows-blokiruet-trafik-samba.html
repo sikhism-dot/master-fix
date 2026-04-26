@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Брандмауэр Windows и Samba: настройка доступа к файлам — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по устранению блокировки трафика Samba брандмауэром Windows. Настройка портов, профилей и правил для стабильной работы сети.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/br/brandmauer-windows-blokiruet-trafik-samba.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Брандмауэр Windows и Samba: настройка доступа к файлам">
+    <meta property="og:description" content="Подробная инструкция по устранению блокировки трафика Samba брандмауэром Windows. Настройка портов, профилей и правил для стабильной работы сети.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Брандмауэр Windows и Samba: настройка доступа к файлам</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-блокировки-сетевого-трафика">Диагностика блокировки сетевого трафика</a></li><li><a href="#настройка-правил-для-портов-smb-и-netbios">Настройка правил для портов SMB и NetBIOS</a></li><li><a href="#управление-профилями-сети-и-типами-доступа">Управление профилями сети и типами доступа</a></li><li><a href="#специфика-работы-с-доменом-и-гостевым-доступом">Специфика работы с доменом и гостевым доступом</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-posmotret-diski-na-windows-11.html">Как посмотреть диски на Windows 11: полное руководство</a></li><li><a href="/articles/i/in/insydeh20-setup-utility-kak-ustanovit-windows.html">Установка Windows через InsydeH20: настройка BIOS для ноутбуков</a></li><li><a href="/articles/k/ka/kak-podklyuchit-usb-k-dvd-pleeru.html">Как подключить USB к DVD плееру: полная инструкция</a></li><li><a href="/articles/h/hp/hp-tpn-c126-noutbuk-kharakteristiki.html">HP TPN-C126: Полный обзор ноутбука и технические характеристики</a></li><li><a href="/articles/m/ms/msi-click-bios-5-kak-pereustanovit-vindu.html">MSI Click BIOS 5: переустановка Windows 10/11</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка брандмауэра Windows для работы с Samba</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-блокировки-сетевого-трафика">Диагностика блокировки сетевого трафика</a></li><li><a href="#настройка-правил-для-портов-smb-и-netbios">Настройка правил для портов SMB и NetBIOS</a></li><li><a href="#управление-профилями-сети-и-типами-доступа">Управление профилями сети и типами доступа</a></li><li><a href="#специфика-работы-с-доменом-и-гостевым-доступом">Специфика работы с доменом и гостевым доступом</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>При попытке организовать общий доступ к файлам в локальной сети пользователи часто сталкиваются с ситуацией, когда сетевое окружение пустеет, а прямые обращения по IP-адресу завершаются таймаутом.</p>
+<p>Система может отображать ошибку «Не удалось получить доступ» или требовать учетные данные, которые не принимаются, хотя на стороне сервера все папки расшарены корректно.</p>
+<p>В большинстве случаев причиной такого поведения становится встроенный механизм защиты операционной системы, который по умолчанию ограничивает входящие соединения для протокола SMB.</p>
+
+<h2 id="диагностика-блокировки-сетевого-трафика">Диагностика блокировки сетевого трафика</h2>
+<p>Первым шагом в решении проблемы является точное определение того, что именно прерывает соединение между клиентом и сервером.</p>
+<p>Если у вас есть возможность временно отключить защиту сети, можно быстро проверить гипотезу о блокировке портов, хотя делать это на публичных сетях категорически не рекомендуется.</p>
+<p>На практике более безопасным методом является анализ журналов событий и состояния правил фильтрации пакетов в режиме реального времени.</p>
+<p>Стоит проверить, активен ли профиль сети, который вы используете, так как Windows применяет разные политики безопасности для доменных, частных и общественных сетей.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>По умолчанию Windows классифицирует новые подключения как «Общественные», что автоматически блокирует большинство входящих соединений SMB.</p></aside>
+
+<p>Для получения детальной информации о текущем состоянии фильтрации можно использовать встроенную утилиту командной строки, которая покажет активные правила.</p>
+<pre><code>netsh advfirewall firewall show rule name=all | find "SMB"</code></pre>
+<p>Эта команда выведет список всех правил, содержащих слово SMB, и их текущий статус (включено или отключено), что позволит понять, работает ли стандартный механизм защиты.</p>
+<p>Если стандартные правила отсутствуют или имеют статус «Блокировать», необходимо перейти к ручной настройке исключений для протокола.</p>
+
+<h2 id="настройка-правил-для-портов-smb-и-netbios">Настройка правил для портов SMB и NetBIOS</h2>
+<p>Протокол Samba, являющийся реализацией SMB в среде Windows, использует несколько портов для обеспечения полного функционала, включая обнаружение служб и передачу данных.</p>
+<p>Основной порт <code>445</code> отвечает за прямой обмен данными по протоколу SMB поверх TCP/IP, в то время как порты <code>137</code>, <code>138</code> и <code>139</code> используются для совместимости с NetBIOS.</p>
+<p>В современных версиях операционной системы, таких как <em>Windows 10</em> и <em>Windows 11</em>, основной упор делается на порт 445, однако для работы в смешанных сетях со старыми устройствами могут потребоваться и остальные.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание правила для порта</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте «Брандмауэр Защитника Windows»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Дополнительные параметры»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Создайте правило для входящих подключений</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Укажите порт TCP 445</span></div></div>
+
+<p>При создании нового правила важно выбрать правильный тип протокола, так как SMB работает исключительно поверх TCP, а не UDP, за исключением некоторых служб обнаружения.</p>
+<p>Если в сети присутствуют устройства с операционной системой <em>Windows XP</em> или старые сетевые хранилища <em>NAS</em>, потребуется открыть весь диапазон портов для обеспечения обратной совместимости.</p>
+<p>В таблице ниже приведено соответствие портов и служб, что поможет настроить фильтрацию максимально точно.</p>
+
+<table>
+<thead>
+<tr>
+<th>Порт</th>
+<th>Протокол</th>
+<th>Служба</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>137</td>
+<td>UDP</td>
+<td>NetBIOS Name Service</td>
+</tr>
+<tr>
+<td>139</td>
+<td>TCP</td>
+<td>NetBIOS Session Service</td>
+</tr>
+<tr>
+<td>445</td>
+<td>TCP</td>
+<td>SMB Direct</td>
+</tr>
+</tbody>
+</table>
+
+<p>После добавления правил необходимо убедиться, что они применяются к правильному профилю сети, иначе трафик будет проходить только в определенном сценарии подключения.</p>
+
+<h2 id="управление-профилями-сети-и-типами-доступа">Управление профилями сети и типами доступа</h2>
+<p>Ключевым аспектом безопасности в Windows является разделение сетей на профили, каждый из которых имеет свой набор правил брандмауэра.</p>
+<p>Если компьютер подключен к сети с профилем «Общественная», система считает окружение небезопасным и блокирует входящие соединения для общего доступа к файлам.</p>
+<p>Для работы Samba необходимо переключить профиль на «Частная» или «Доменная», что сигнализирует системе о доверии к другим устройствам в сегменте сети.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Переключение профиля на «Частный» делает компьютер видимым для других устройств. Убедитесь, что вы подключены к доверенной домашней или корпоративной сети.</p></aside>
+
+<p>Изменить тип сети можно через графический интерфейс параметров, перейдя в раздел состояния сети и выбрав свойства активного подключения.</p>
+<p>В некоторых корпоративных средах профиль может управляться групповыми политиками, и ручное изменение будет недоступно или будет сбрасываться при перезагрузке.</p>
+<p>Если автоматическое определение профиля не сработало, можно принудительно назначить профиль с помощью PowerShell, что часто решает проблемы с видимостью в сети.</p>
+<pre><code>Set-NetConnectionProfile -InterfaceAlias "Ethernet" -NetworkCategory Private</code></pre>
+<p>Выполнение этой команды требует прав администратора, но позволяет мгновенно активировать правила для частных сетей, включая доступ к SMB.</p>
+<p>Стоит учитывать, что при подключении через VPN или некоторые типы туннелей система может ошибочно классифицировать интерфейс как общественный, требуя повторной настройки.</p>
+
+<h2 id="специфика-работы-с-доменом-и-гостевым-доступом">Специфика работы с доменом и гостевым доступом</h2>
+<p>В environments, где используется домен Active Directory, правила брандмауэра могут наследоваться от контроллера домена, переопределяя локальные настройки пользователя.</p>
+<p>Если компьютер не входит в домен, но пытается получить доступ к ресурсам, часто возникает конфликт политик безопасности, требующий явного разрешения гостевого доступа или настройки учетных данных.</p>
+<p>Для домашних сетей, где домена нет, важно правильно настроить параметры общего доступа, чтобы брандмауэр не блокировал анонимные или гостевые подключения, если они необходимы.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильный выбор профиля сети (Частная) является критическим условием для работы Samba без создания дыр в безопасности.</p></aside>
+
+<p>При использовании гостевого доступа необходимо активировать соответствующее правило в брандмауэре, которое часто скрыто по умолчанию в целях безопасности.</p>
+<p>В корпоративных сетях администраторы часто создают специальные группы безопасности для файлообменников, чтобы не открывать порты SMB для всех пользователей домена.</p>
+<p>Ограничение доступа по IP-адресам в свойствах правила брандмауэра позволяет создать whitelist доверенных клиентов, минимизируя риски атак.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкая настройка правил</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Разрешение только нужных IP</li><li>✅ Контроль по времени</li><li>✅ Детальное логирование</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность администрирования</li><li>❌ Риск ошибки при ручном вводе</li><li>❌ Необходимость поддержки списка IP</li></ul></div>
+</div></div>
+
+<p>Такой подход требует больше времени на первоначальную настройку, но обеспечивает высокий уровень защищенности данных при передаче по локальной сети.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>Даже при правильной настройке портов пользователи могут столкнуться с проблемами доступа из-за нюансов конфигурации или конфликтов программного обеспечения.</p>
+<p>Ниже перечислены наиболее распространенные mistakes, которые приводят к неработоспособности Samba, и способы их исправления.</p>
+
+<ol>
+<li><strong>Правило создано, но не применено</strong> — часто пользователи забывают поставить галочку «Включить» в свойствах нового правила или применяют его только к профилю «Доменная», находясь в частной сети.</li>
+<li><strong>Конфликт сторонних антивирусов</strong> — установленные решения безопасности, такие как <em>Kaspersky</em> или <em>ESET</em>, могут иметь свой собственный брандмауэр, который игнорирует настройки Windows и блокирует порт 445.</li>
+<li><strong>Неверный тип протокола</strong> — создание правила для UDP вместо TCP на порту 445 приведет к тому, что соединение просто не установится, так как SMB требует надежного канала.</li>
+<li><strong>Блокировка службой IPv6</strong> — если в сети приоритет отдается IPv6, а правила настроены только для IPv4, трафик может теряться; рекомендуется создавать правила для обоих типов адресов.</li>
+</ol>
+
+<p>Для проверки работы портов после внесения изменений можно использовать утилиту <code>telnet</code> или <code>Test-NetConnection</code> в PowerShell с другого компьютера в сети.</p>
+<pre><code>Test-NetConnection -ComputerName 192.168.1.10 -Port 445</code></pre>
+<p>Если тест показывает успех (TcpTestSucceeded : True), значит, брандмауэр настроен корректно и пропускает трафик Samba.</p>
+
+<h2 id="резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</h2>
+<p>Настройка брандмауэра для работы с Samba требует внимательного отношения к деталям, но позволяет организовать удобный и безопасный обмен файлами.</p>
+<p>Главным принципом должно быть предоставление минимально необходимых прав: открывайте только нужные порты и только для доверенных профилей сети.</p>
+<p>Регулярная проверка журналов безопасности поможет своевременно выявлять попытки несанкционированного доступа и корректировать правила фильтрации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте сложные пароли для учетных записей, имеющих доступ к общим папкам, так как открытие портов SMB повышает риск атак брутфорсом.</p></aside>
+
+<p>Соблюдение этих простых правил обеспечит стабильную работу сетевых ресурсов без компромиссов в уровне защиты системы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-posmotret-diski-na-windows-11.html" class="pb-related-card">
+                <span class="pb-related-title">Как посмотреть диски на Windows 11: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке, управлению и диагностике дисков в Windows 11. Узнайте, как использ</span>
+            </a><a href="/articles/i/in/insydeh20-setup-utility-kak-ustanovit-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Установка Windows через InsydeH20: настройка BIOS для ноутбуков</span>
+                <span class="pb-related-desc">Пошаговая инструкция по настройке InsydeH20 Setup Utility. Как включить Legacy, отключить Secure Boo</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-usb-k-dvd-pleeru.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить USB к DVD плееру: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по подключению флешки к DVD плееру. Настройка форматов, устранение ошибок, таб</span>
+            </a><a href="/articles/h/hp/hp-tpn-c126-noutbuk-kharakteristiki.html" class="pb-related-card">
+                <span class="pb-related-title">HP TPN-C126: Полный обзор ноутбука и технические характеристики</span>
+                <span class="pb-related-desc">Подробные характеристики, спецификации и особенности ноутбука HP TPN-C126. Анализ процессоров, экран</span>
+            </a><a href="/articles/m/ms/msi-click-bios-5-kak-pereustanovit-vindu.html" class="pb-related-card">
+                <span class="pb-related-title">MSI Click BIOS 5: переустановка Windows 10/11</span>
+                <span class="pb-related-desc">Полная инструкция по настройке MSI Click BIOS 5 для установки Windows. Настройка Secure Boot, UEFI/L</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-printer-pantum-p2516-k-noutbuku-cherez-usb-kabel.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Pantum P2516 по USB: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по установке драйверов и настройке принтера Pantum P2516 на Windows через USB-к</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

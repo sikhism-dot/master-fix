@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Интернет-радио из Arduino: полная инструкция по сборке и настройке — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по созданию интернет-радио на базе Arduino и ESP32. Схемы подключения, выбор модулей, настройка библиотек и устранение типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/in/internet-radio-iz-arduino.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Интернет-радио из Arduino: полная инструкция по сборке и настройке">
+    <meta property="og:description" content="Подробное руководство по созданию интернет-радио на базе Arduino и ESP32. Схемы подключения, выбор модулей, настройка библиотек и устранение типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Интернет-радио из Arduino: полная инструкция по сборке и настройке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#выбор-аппаратной-платформы-и-компонентов">Выбор аппаратной платформы и компонентов</a></li><li><a href="#схема-электрических-соединений-и-монтаж">Схема электрических соединений и монтаж</a></li><li><a href="#программная-настройка-и-работа-с-библиотеками">Программная настройка и работа с библиотеками</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-uznat-svoj-ip-adres-v-pristavke-rostelekoma.html">Как узнать IP-адрес приставки Ростелеком: полная инструкция</a></li><li><a href="/articles/r/ra/ras-dial-in-bez-dostupa-k-internetu.html">RAS Dial In без интернета: запуск PPPoE локально</a></li><li><a href="/articles/k/ka/kak-proverit-status-zadaniya-v-rostelekom.html">Как проверить статус заявки в Ростелеком: все способы и коды</a></li><li><a href="/articles/k/ka/kak-iskat-kartinki-s-pomoshchyu-ai-lens-na-planshete-khuavej.html">Как искать по картинке на Huawei: AI Lens и Google Объектив</a></li><li><a href="/articles/n/na/nastroit-internet-velkom-cherez-tridzhik.html">Настройка 3G/4G модема для провайдера Welcome: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Сборка интернет-радио на базе Arduino и ESP32</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-аппаратной-платформы-и-компонентов">Выбор аппаратной платформы и компонентов</a></li><li><a href="#схема-электрических-соединений-и-монтаж">Схема электрических соединений и монтаж</a></li><li><a href="#программная-настройка-и-работа-с-библиотеками">Программная настройка и работа с библиотеками</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда необходимо получить фоновое звуковое сопровождение в мастерской, гараже или на кухне, но смартфон или компьютер находятся далеко, либо их экраны слишком велики и энергозатратны для стационарной точки, встречается часто. Стандартные решения часто требуют подписки, сложной настройки или просто занимают лишнее место, тогда как компактное устройство, работающее автономно и транслирующее поток напрямую из сети, стало бы идеальным дополнением к рабочему месту.</p>
+<p>Использование классической платы Arduino Uno для декодирования потокового аудио в реальном времени является технически невозможным из-за нехватки вычислительной мощности и отсутствия буферизации данных, что приводит к постоянным разрывам соединения и артефактам звука. Современные микроконтроллеры серии ESP32, обладающие двухъядерной архитектурой и встроенным модулем Wi-Fi, позволяют решать эту задачу эффективно, обеспечивая стабильную буферизацию и декодирование MP3 или AAC потоков без внешних сложных компонентов.</p>
+<p>Реализация такого проекта требует не только правильного подбора аппаратных компонентов, но и грамотной программной настройки, так как работа с аудиопотоками подразумевает жесткие требования к времени отклика и объему оперативной памяти. Ниже приведена детальная техническая спецификация, позволяющая собрать работоспособное устройство, способное воспроизводить тысячи радиостанций со всего мира, управляемое простыми физическими кнопками или веб-интерфейсом.</p>
+
+<h2 id="выбор-аппаратной-платформы-и-компонентов">Выбор аппаратной платформы и компонентов</h2>
+<p>Основой проекта является микроконтроллер, и выбор здесь критически важен для производительности всей системы. В то время как классические 8-битные платы Arduino Uno или Nano не справятся с декодированием потокового аудио и работой Wi-Fi стека одновременно, плата <em>ESP32 DevKit V1</em> или <em>NodeMCU-32S</em> предоставляет необходимые ресурсы, включая достаточный объем SRAM и тактовую частоту до 240 МГц.</p>
+<p>Для вывода звука необходимо использовать внешний ЦАП (цифро-аналоговый преобразователь), так как встроенные средства микроконтроллера не обеспечивают качественного аналогового сигнала. Наиболее распространенным и доступным решением является модуль <em>MAX98357</em>, который представляет собой усилитель класса D с интерфейсом I2S, позволяющий передавать цифровой аудиосигнал непосредственно с ESP32 на динамик без потери качества.</p>
+<p>Важным элементом конструкции является источник питания, поскольку Wi-Fi модуль в моменты пиковой нагрузки может потреблять ток до 500 мА, что вызывает просадки напряжения на дешевых USB-портах. Рекомендуется использовать качественный блок питания с выходным током не менее 2А или Li-Ion аккумулятор с платой защиты, подключенный через стабилизатор напряжения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Рекомендуемая модель</th>
+<th>Ключевая характеристика</th>
+</tr>
+<tr>
+<td>Микроконтроллер</td>
+<td>ESP32 DevKit V1</td>
+<td>Wi-Fi, Bluetooth, 2 ядра</td>
+</tr>
+<tr>
+<td>Аудио модуль</td>
+<td>MAX98357</td>
+<td>I2S интерфейс, 3Вт</td>
+</tr>
+<tr>
+<td>Динамик</td>
+<td>3Вт 4Ом 8Ом</td>
+<p>Полнодиапазонный</p>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Дисплей (опц.)</td>
+<p>OLED 0.96" I2C</p>
+<td>SSD1306</td>
+</tr>
+<tr>
+<td>Питание</td>
+<p>Li-Ion 18650</p>
+<td>3.7В 2000мАч+</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При выборе динамика обращайте внимание на его импеданс (сопротивление). Для модуля MAX98357 оптимальным является сопротивление 4-8 Ом, использование динамика с меньшим сопротивлением может привести к перегреву усилителя.</p></aside>
+
+<h3>Сравнение интерфейсов подключения звука</h3>
+<p>Существует несколько способов передачи аудиоданных от микроконтроллера к усилителю, и выбор между ними влияет на качество звука и сложность монтажа. Интерфейс I2S (Inter-IC Sound) является предпочтительным стандартом для цифрового аудио, так как он передает данные в несжатом виде и синхронизирует их отдельными линиями тактирования, что минимизирует джиттер и искажения.</p>
+<p>Альтернативные методы, такие как использование ШИМ (PWM) или аналогового выхода через ЦАП, требуют дополнительной фильтрации и часто дают худшее соотношение сигнал/шум. В контексте интернет-радио, где поток уже цифровой, использование I2S позволяет избежать лишних преобразований и снизить нагрузку на процессор.</p>
+
+<ul>
+<li>I2S обеспечивает высокое качество звука и низкую задержку передачи данных.</li>
+<li>Интерфейс требует подключения трех основных линий данных: BCLK (тактирование), LRC (выбор канала) и DIN (данные).</li>
+<li>Поддержка I2S встроена в аппаратную периферию ESP32, что освобождает процессор для декодирования потока.</li>
+<li>Длина проводов между ESP32 и аудио-модулем должна быть минимальной во избежание наводок.</li>
+</ul>
+
+<h2 id="схема-электрических-соединений-и-монтаж">Схема электрических соединений и монтаж</h2>
+<p>Сборка электронной схемы требует внимательности к распиновке, так как неправильное подключение линий питания или данных может вывести компоненты из строя. Логика соединения строится вокруг передачи сигналов I2S от ESP32 к модулю MAX98357 и подключения управляющих элементов, таких как энкодер или кнопки.</p>
+<p>Для начала необходимо определить контакты на плате ESP32, которые поддерживают аппаратный I2S. В стандартной конфигурации библиотеки <em>ESP32-audioI2S</em> или <em>AudioLib</em> часто используются GPIO 25 и 26 для ЦАП, однако для I2S требуется назначить три пина: BCLK, LRC и DOUT. Типовая конфигурация для DevKit V1 часто задействует GPIO 26 (LRC), 25 (DOUT) и 22 (BCLK), но эти значения можно менять в коде.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Категорически запрещается подключать линии данных I2S (BCLK, LRC, DIN) к контактам с напряжением 5В, если плата ESP32 не имеет соответствующей защиты. Используйте только контакты 3.3В логики.</p></aside>
+
+<p>Подключение кнопок управления осуществляется через цифровые входы с подтяжкой. Для надежной работы рекомендуется использовать внешние резисторы 10 кОм, подтягивающие сигнал к земле или питанию, чтобы исключить дребезг контактов, хотя программная фильтрация также применяется. Энкодер, если он используется для регулировки громкости и переключения станций, подключается к двум входам, поддерживающим прерывания, для мгновенной реакции на поворот.</p>
+
+<ol>
+<li>Подключите вывод GND модуля MAX98357 к GND платы ESP32.</li>
+<li>Соедините вывод VCC модуля с контактом 5V (или 3.3V в зависимости от версии модуля) на ESP32.</li>
+<li>Подключите линию LRC (Word Select) модуля к GPIO 26 микроконтроллера.</li>
+<li>Соедините линию DIN (Data In) модуля с GPIO 25.</li>
+<li>Подключите линию BCLK (Bit Clock) к GPIO 22.</li>
+<li>Подсоедините динамик к выходным клеммам L+ и L- на модуле усилителя.</li>
+</ol>
+
+<p>После физического соединения компонентов необходимо проверить схему мультиметром на предмет короткого замыкания перед подачей питания. Особое внимание уделяется полярности питания динамика и самого модуля, так как обратное включение мгновенно выводит микросхему из строя. Для удобства отладки можно временно подключить UART-конвертер к контактам TX/RX ESP32 для вывода логов в компьютер.</p>
+
+<h3>Организация управления и индикации</h3>
+<p>Управление устройством может быть реализовано различными способами, от простой кнопки до полноценного веб-интерфейса. В базовой конфигурации достаточно трех кнопок: «Вверх» (следующая станция/увеличение громкости), «Вниз» (предыдущая станция/уменьшение громкости) и «Выбор» (сохранение/воспроизведение).</p>
+<p>Если планируется использование дисплея, например, OLED матрицы на базе контроллера SSD1306, то подключение осуществляется по шине I2C. Контакты SDA и SCL на ESP32 обычно находятся на GPIO 21 и 22 соответственно, но их можно переназначить в коде. Дисплей позволяет отображать название текущей станции, битрейт потока и уровень громкости, что значительно повышает удобство использования.</p>
+
+<table>
+<thead>
+<tr>
+<th>Функция</th>
+<th>GPIO (ESP32)</th>
+<th>Компонент</th>
+</tr>
+<tr>
+<td>Переключение/Громкость +</td>
+<td>GPIO 34 (ADC)</td>
+<td>Кнопка/Энкодер A</td>
+</tr>
+<tr>
+<td>Выбор станции/Громкость -</td>
+<td>GPIO 35 (ADC)</td>
+<td>Кнопка/Энкодер B</td>
+</tr>
+<tr>
+<td>Меню/Сохранение</td>
+<td>GPIO 32</td>
+<td>Кнопка</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SDA (Дисплей)</td>
+<td>GPIO 21</td>
+<td>OLED Display</td>
+</tr>
+<tr>
+<td>SCL (Дисплей)</td>
+<td>GPIO 22</td>
+<td>OLED Display</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная проверка схемы</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите только питание и проверьте напряжение на VCC модуля</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите USB к ПК и проверьте наличие устройства в диспетчере</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Загрузите тестовый скетч мигания светодиодом</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте целостность линий I2S омметром</span></div></div>
+
+<h2 id="программная-настройка-и-работа-с-библиотеками">Программная настройка и работа с библиотеками</h2>
+<p>Программная часть проекта базируется на среде разработки Arduino IDE, которая требует предварительной установки поддержки плат ESP32. Без добавления URL-адреса платы в настройки IDE компилятор не увидит устройство, поэтому первым шагом является интеграция менеджера плат ESP32 через меню <code>Файл → Настройки</code>.</p>
+<p>Для воспроизведения аудио потоков наиболее эффективной считается библиотека <em>ESP32-audioI2S</em> от schreibfaul1, которая оптимизирована для работы с I2S и поддерживает буферизацию данных. Альтернативой может служить библиотека <em>Audio</em>, но она часто требует более сложной настройки и менее стабильна при работе с нестабильным интернет-соединением.</p>
+<p>После установки необходимых библиотек через <code>Инструменты → Управление библиотеками</code>, необходимо создать скетч, в котором будут инициализированы Wi-Fi соединение и аудио-объект. Критически важным параметром является буфер потока: слишком маленький буфер приведет к прерываниям звука при скачках сети, а слишком большой увеличит задержку при переключении станций.</p>
+
+<pre><code>#include "Audio.h"
+<p>#include "WiFi.h"</p>
+
+<p>Audio audio;</p>
+<p>const char* ssid = "Your_SSID";</p>
+<p>const char* password = "Your_PASSWORD";</p>
+
+<p>void setup() {</p>
+<p>Serial.begin(115200);</p>
+<p>audio.setPinout(26, 25, 22); // LRC, DOUT, BCLK</p>
+<p>audio.setVolume(15); // 0...21</p>
+<p>WiFi.begin(ssid, password);</p>
+<p>while (WiFi.status() != WL_CONNECTED) {</p>
+<p>delay(500);</p>
+<p>Serial.print(".");</p>
+<p>}</p>
+<p>audio.connecttohost("http://stream.zeno.fm/ваш_поток");</p>
+<p>}</code></pre></p>
+
+<p>В коде необходимо корректно прописать SSID и пароль от вашей Wi-Fi сети, а также URL аудиопотока. Важно использовать прямые ссылки на потоки (часто заканчиваются на .mp3, .aac или содержат порт, например :8000), а не ссылки на страницы радиостанций. Для поиска прямых ссылок можно использовать специализированные онлайн-каталоги радиостанций.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте потоки с битрейтом не выше 128 кбит/с. Высокий битрейт (320 кбит/с) может создавать избыточную нагрузку на процессор при декодировании и требовать более стабильного интернет-соединения.</p></aside>
+
+<h3>Настройка буферизации и стабильности</h3>
+<p>Одной из главных проблем интернет-радио является нестабильность канала связи. Библиотеки позволяют настраивать размер буфера, который сглаживает эти</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-uznat-svoj-ip-adres-v-pristavke-rostelekoma.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать IP-адрес приставки Ростелеком: полная инструкция</span>
+                <span class="pb-related-desc">Узнайте свой IP-адрес на приставке Ростелеком. Пошаговые инструкции для Wink, SberBox и Android TV. </span>
+            </a><a href="/articles/r/ra/ras-dial-in-bez-dostupa-k-internetu.html" class="pb-related-card">
+                <span class="pb-related-title">RAS Dial In без интернета: запуск PPPoE локально</span>
+                <span class="pb-related-desc">Инструкция по настройке RAS Dial In и PPPoE в локальной сети без доступа к глобальному интернету. Ре</span>
+            </a><a href="/articles/k/ka/kak-proverit-status-zadaniya-v-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить статус заявки в Ростелеком: все способы и коды</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке статуса заявки в Ростелеком через Личный кабинет, мобильное приложе</span>
+            </a><a href="/articles/k/ka/kak-iskat-kartinki-s-pomoshchyu-ai-lens-na-planshete-khuavej.html" class="pb-related-card">
+                <span class="pb-related-title">Как искать по картинке на Huawei: AI Lens и Google Объектив</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску изображений на планшетах Huawei через AI Lens и Google Объектив. Реше</span>
+            </a><a href="/articles/n/na/nastroit-internet-velkom-cherez-tridzhik.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка 3G/4G модема для провайдера Welcome: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке интернета Welcome через 3G/4G модем. Пошаговые действия, APN пара</span>
+            </a><a href="/articles/p/po/polaris-robot-pylesos-pvcr-g2-0926w-wifi-home-ne-delaet-kartu.html" class="pb-related-card">
+                <span class="pb-related-title">Polaris PVCR G2 0926W не строит карту: решение</span>
+                <span class="pb-related-desc">Робот-пылесос Polaris PVCR G2 0926W не сохраняет карту? Инструкция по настройке Wi-Fi, сбросу и кали</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

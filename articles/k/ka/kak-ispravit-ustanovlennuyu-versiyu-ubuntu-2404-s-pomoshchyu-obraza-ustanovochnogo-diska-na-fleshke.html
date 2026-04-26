@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление Ubuntu 24.04 через Live USB: полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по ремонту загрузчика, файловой системы и репозиториев Ubuntu 24.04 с помощью установочной флешки. Методы chroot и fsck.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-ispravit-ustanovlennuyu-versiyu-ubuntu-2404-s-pomoshchyu-obraza-ustanovochnogo-diska-na-fleshke.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление Ubuntu 24.04 через Live USB: полное руководство">
+    <meta property="og:description" content="Подробная инструкция по ремонту загрузчика, файловой системы и репозиториев Ubuntu 24.04 с помощью установочной флешки. Методы chroot и fsck.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление Ubuntu 24.04 через Live USB: полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочного-носителя-и-диагностика-разделов">Подготовка загрузочного носителя и диагностика разделов</a></li><li><a href="#метод-chroot-вход-в-установленную-систему">Метод Chroot: вход в установленную систему</a></li><li><a href="#восстановление-загрузчика-grub-и-конфигурации">Восстановление загрузчика GRUB и конфигурации</a></li><li><a href="#ремонт-репозиториев-и-обновление-ядра">Ремонт репозиториев и обновление ядра</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vyyasnit-kogda-zapisan-kontakt-v-ajfon.html">Как узнать дату создания контакта на iPhone: полная инструкция</a></li><li><a href="/articles/e/ex/exhibitionist-apk-game.html">Exhibitionist APK: безопасная установка и настройка игры</a></li><li><a href="/articles/v/vt/vtb-onlajn-poyavilas-novaya-karta-a-staruyu-ne-vidno.html">ВТБ Онлайн: появилась новая карта, а старой нет — решение</a></li><li><a href="/articles/a/ar/arkhikad-nagruzhaet-tolko-protsessor.html">Архикад нагружает только процессор: решение проблемы</a></li><li><a href="/articles/n/ne/ne-rabotayut-strelki-v-boot.html">Не работают стрелки в BIOS: Полное руководство по исправлению</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Ремонт системы Ubuntu 24.04 с помощью Live USB</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочного-носителя-и-диагностика-разделов">Подготовка загрузочного носителя и диагностика разделов</a></li><li><a href="#метод-chroot-вход-в-установленную-систему">Метод Chroot: вход в установленную систему</a></li><li><a href="#восстановление-загрузчика-grub-и-конфигурации">Восстановление загрузчика GRUB и конфигурации</a></li><li><a href="#ремонт-репозиториев-и-обновление-ядра">Ремонт репозиториев и обновление ядра</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда операционная система перестает загружаться после обновления ядра или сбоя файловой системы, является критической для любого пользователя Linux. Чаще всего экран гаснет после логотипа производителя, или появляется черный экран с мигающим курсором, что делает невозможным вход в графическую оболочку. В таких случаях переустановка системы не является обязательной, так как большинство проблем можно устранить, используя загрузочный носитель с образом Ubuntu 24.04.</p>
+<p>Использование Live-режима позволяет получить доступ к файловой системе жесткого диска, смонтировать разделы и выполнить ремонтные работы в изолированном окружении. Этот метод особенно эффективен при повреждении загрузчика GRUB, ошибках в конфигурационных файлах <code>/etc/fstab</code> или необходимости переустановки критически важных пакетов ядра. Ниже приведены детальные шаги для диагностики и восстановления работоспособности системы без потери пользовательских данных.</p>
+<p>Перед началом любых манипуляций необходимо убедиться в наличии актуальной резервной копии важных данных, если есть техническая возможность их скопировать. Работа с разделами диска и загрузочными записями несет в себе риск потери информации при некорректном выполнении команд. Точность ввода путей и имен устройств является ключевым фактором успеха всей операции восстановления.</p>
+
+<h2 id="подготовка-загрузочного-носителя-и-диагностика-разделов">Подготовка загрузочного носителя и диагностика разделов</h2>
+<p>Первым этапом восстановления является создание загрузочной флешки с образом <em>Ubuntu 24.04 LTS</em>. Для записи образа рекомендуется использовать утилиты <em>Etcher</em> или <em>Rufus</em>, которые гарантируют корректную структуру разделов на носителе. После записи необходимо загрузиться с созданного USB-накопителя, выбрав соответствующий пункт в меню BIOS/UEFI.</p>
+<p>После загрузки в Live-режиме следует выбрать опцию «Try Ubuntu» (Запустить Ubuntu), чтобы попасть в рабочую среду без установки системы на жесткий диск. Открыв терминал, первым делом стоит выполнить команду <code>sudo fdisk -l</code> или <code>lsblk</code> для отображения структуры дисков и идентификации основного раздела с установленной системой. Важно правильно определить устройство, обычно это <code>/dev/sda1</code>, <code>/dev/nvme0n1p2</code> или аналогичное обозначение, чтобы не повредить данные на других носителях.</p>
+<p>Если файловая система повреждена, стандартные операции монтирования могут завершиться ошибкой. В таком случае необходимо выполнить проверку диска утилитой <code>fsck</code> перед попыткой монтирования. Эта процедура сканирует файловую систему на наличие логических ошибок и битых секторов, пытаясь автоматически исправить найденные несоответствия.</p>
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Выполнение fsck на смонтированном разделе категорически запрещено и может привести к полной потере данных. Убедитесь, что раздел размонтирован перед запуском проверки.</p></aside>
+<p>Для автоматического исправления ошибок используется команда с флагом принудительной проверки. Если система обнаружит серьезные повреждения, она может запросить подтверждение на исправление каждого из них, поэтому процесс может требовать участия пользователя.</p>
+<pre><code>sudo fsck -y /dev/nvme0n1p2</code></pre>
+<p>После успешной проверки можно приступать к монтированию корневого раздела в временную директорию для дальнейшей работы. Это создаст точку доступа к файлам установленной системы из-под Live-окружения.</p>
+<pre><code>sudo mount /dev/nvme0n1p2 /mnt</code></pre>
+
+<h2 id="метод-chroot-вход-в-установленную-систему">Метод Chroot: вход в установленную систему</h2>
+<p>Технология <code>chroot</code> (change root) позволяет изменить корневую директорию текущего процесса на директорию смонтированной системы. Это дает возможность запускать исполняемые файлы и утилиты установленной Ubuntu 24.04, используя ядро Live-носителя, что необходимо для переустановки пакетов или правки конфигурации. Без этого шага многие системные утилиты не смогут найти свои библиотеки и конфигурационные файлы.</p>
+<p>Для корректной работы <code>chroot</code> необходимо смонтировать виртуальные файловые системы <code>/dev</code>, <code>/proc</code> и <code>/sys</code> из Live-окружения в смонтированную систему. Эти псевдо-файловые системы содержат информацию о процессах, устройствах и системные переменные, необходимые для работы утилит управления пакетами и загрузчиком.</p>
+
+<p>Выполнение следующих команд обеспечит доступ к оборудованию и сетевым интерфейсам изнутри восстановляемой системы. Если пропустить этот шаг, команды обновления или переустановки драйверов могут завершиться ошибкой доступа к устройствам.</p>
+<pre><code>sudo mount --bind /dev /mnt/dev
+<p>sudo mount --bind /dev/pts /mnt/dev/pts</p>
+<p>sudo mount --bind /proc /mnt/proc</p>
+<p>sudo mount --bind /sys /mnt/sys</code></pre></p>
+<p>После монтирования всех необходимых каталогов выполняется непосредственно команда смены корневого каталога. С этого момента все пути в терминале будут вести к файлам на жестком диске, а не к файлам на флешке.</p>
+<pre><code>sudo chroot /mnt</code></pre>
+<p>Находясь внутри окружения <code>chroot</code>, стоит сразу проверить доступ к сети, так как для восстановления часто требуется загрузка пакетов из репозиториев. Если DNS не работает, можно прописать серверы вручную в файле <code>/etc/resolv.conf</code>.</p>
+<pre><code>echo "nameserver 8.8.8.8" > /etc/resolv.conf</code></pre>
+<p>Теперь система готова к проведению ремонтных работ, таких как обновление списков пакетов или переустановка ядра. Все изменения, вносимые в этом режиме, применяются непосредственно к установленной на диске системе.</p>
+
+<h2 id="восстановление-загрузчика-grub-и-конфигурации">Восстановление загрузчика GRUB и конфигурации</h2>
+<p>Наиболее частой причиной невозможности загрузки является повреждение загрузчика <em>GRUB</em> или его конфигурационного файла. Это может произойти после установки второй операционной системы, обновления BIOS или сбоя при записи обновлений. Симвптомами являются сообщение «GRUB rescue» или отсутствие меню выбора ОС при старте компьютера.</p>
+<p>Для восстановления загрузчика в среде <code>chroot</code> необходимо переустановить пакет <code>grub-efi-amd64</code> (для систем с UEFI) или <code>grub-pc</code> (для Legacy BIOS). Важно правильно указать целевое устройство, обычно это весь диск (например, <code>/dev/sda</code>), а не конкретный раздел.</p>
+<table>
+<thead>
+<tr>
+<th>Тип прошивки</th>
+<th>Пакет GRUB</th>
+<th>Команда установки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UEFI (современные ПК)</td>
+<td>grub-efi-amd64</td>
+<td>grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=ubuntu</td>
+</tr>
+<tr>
+<td>Legacy BIOS (старые ПК)</td>
+<td>grub-pc</td>
+<td>grub-install /dev/sda</td>
+</tr>
+</tbody>
+</table>
+<p>После установки пакета необходимо перегенерировать конфигурационный файл <code>grub.cfg</code>, который содержит меню загрузки и параметры ядра. Утилита <code>update-grub</code> сканирует диски на наличие установленных ядер Linux и других операционных систем, добавляя их в меню.</p>
+<pre><code>update-grub</code></pre>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В Ubuntu 24.04 используется загрузчик GRUB с поддержкой Secure Boot. Если после восстановления система не загруется, проверьте настройки Secure Boot в BIOS, возможно, потребуется обновить ключи MOK.</p></aside>
+<p>Если стандартная переустановка не помогает, можно попробовать восстановить конфигурацию вручную, отредактировав файл <code>/etc/default/grub</code>. В этом файле задаются таймауты, разрешение экрана и параметры ядра, которые могут блокировать загрузку при некорректных значениях.</p>
+<p>Часто проблемой становится неверно указанный UUID корневого раздела в конфигурации. Убедиться в совпадении UUID можно, сравнив вывод команды <code>blkid</code> и содержимое файла <code>/etc/fstab</code> внутри смонтированной системы.</p>
+
+<h2 id="ремонт-репозиториев-и-обновление-ядра">Ремонт репозиториев и обновление ядра</h2>
+<p>Сбои при обновлении системы часто приводят к состоянию, когда пакеты установлены лишь наполовину, что блокирует нормальную работу ОС. В среде восстановления это можно исправить, завершив прерванные транзакции менеджера пакетов <code>apt</code>. Команда <code>dpkg --configure -a</code> пытается завершить настройку всех распакованных, но не сконфигурированных пакетов.</p>
+<p>Если проблема связана с повреждением списков репозиториев или ключей подписи, стоит очистить кэш apt и обновить списки заново. Это особенно актуально, если перед сбоем менялись источники ПО или истекли сроки действия ключей безопасности.</p>
+<pre><code>apt clean
+<p>apt update</p>
+<p>apt upgrade</code></pre></p>
+
+<p>В случае, если система перестала загружаться после обновления ядра, можно удалить проблемное ядро или установить заново мета-пакет. В Ubuntu 24.04 мета-пакет <code>linux-image-generic</code> всегда указывает на последнюю стабильную версию, доступную в репозитории.</p>
+<pre><code>apt install --reinstall linux-image-generic linux-headers-generic</code></pre>
+<p>После выполнения всех операций по восстановлению пакетов и конфигурации необходимо выйти из режима <code>chroot</code> и размонтировать разделы в обратном порядке. Это гарантирует, что все буферы записи будут сброшены на диск и файловая система останется в консистентном состоянии.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>Процесс восстановления сложен и требует внимательности, поэтому пользователи часто сталкиваются с повторяющимися проблемами. Понимание природы этих ошибок позволяет быстрее найти решение и избежать усугубления ситуации.</p>
+<ol>
+<li><strong>Ошибка монтирования «wrong fs type, bad option, bad superblock»</strong> — обычно означает, что раздел не был проверен на ошибки или файловая система требует принудительного монтирования. Необходимо выполнить <code>fsck</code> перед повторной попыткой.</li>
+<li><strong>Команда chroot возвращает ошибку исполнения бинарного файла</strong> — возникает, если не были смонтированы псевдо-файловые системы <code>/proc</code>, <code>/sys</code> и <code>/dev</code>. Без них динамический линковщик не может найти необходимые библиотеки.</li>
+<li><strong>GRUB не видит разделы Windows или другие ОС</strong> — часто случается, если в BIOS включен режим Fast Boot или диски заблокированы. Также стоит проверить, что пакет <code>os-prober</code> установлен и в конфигурации GRUB разрешен поиск других ОС.</li>
+<li><strong>Отсутствие сети в chroot</strong> — файл <code>/etc/resolv.conf</code> в смонтированной системе может быть пустым или вести на локальный кэширующий сервер, недоступный в Live-режиме. Требуется ручная прописка DNS.</li>
+</ol>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду history внутри chroot, чтобы сохранить список выполненных действий, и скопируйте его в текстовый файл на флешку для анализа в случае повторного сбоя.</p></aside>
+<p> Внимательное чтение вывода терминала часто дает прямую подсказку, какой шаг был пропущен или выполнен неверно.</p>
+<p>Если автоматические средства восстановления не помогают, можно попробовать вручную скопировать конфигурационные файлы из резервной копии или с другого работающего компьютера той же версии. Иногда замена одного поврежденного файла конфигурации возвращает систему к жизни.</p>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+<p>После успешного выполнения всех процедур восстановления необходимо корректно завершить сеанс работы с Live-окружением. Выход из режима <code>chroot</code> осуществляется командой <code>exit</code>, после чего следует размонтировать все ранее смонтированные каталоги в обратном порядке, чтобы избежать повреждения данных.</p>
+<pre><code>exit
+<p>sudo umount /mnt/sys</p>
+<p>sudo umount /mnt/proc</p>
+<p>sudo umount /mnt/dev/pts</p>
+<p>sudo umount /mnt/dev</p>
+<p>sudo umount /mnt</code></pre></p>
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректное размонтирование разделов является обязательным финальным шагом, гарантирующим сохранность данных на диске.</p></aside>
+<p>Теперь можно извлечь загрузочную флешку и перезагрузить компьютер. Если все операции прошли успешно, система должна загрузиться в штатном режиме, предложив стандартное окно входа или рабочий стол. В случае возникновения новых ошибок, стоит вернуться к логам, которые можно найти в директории <code>/var/log</code> на восстановленном разделе.</p>
+<p>Регулярное создание точек восстановления и резервных копий конфигурационных файлов позволит в будущем решать подобные проблемы значительно быстрее. Использование инструментов мониторинга состояния диска и файловой системы поможет предупреждать критические сбои до их возникновения.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vyyasnit-kogda-zapisan-kontakt-v-ajfon.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать дату создания контакта на iPhone: полная инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по выяснению времени записи контакта в iPhone через iCloud, экспорты и си</span>
+            </a><a href="/articles/e/ex/exhibitionist-apk-game.html" class="pb-related-card">
+                <span class="pb-related-title">Exhibitionist APK: безопасная установка и настройка игры</span>
+                <span class="pb-related-desc">Подробная инструкция по загрузке и установке Exhibitionist APK. Анализ рисков, настройка прав доступ</span>
+            </a><a href="/articles/v/vt/vtb-onlajn-poyavilas-novaya-karta-a-staruyu-ne-vidno.html" class="pb-related-card">
+                <span class="pb-related-title">ВТБ Онлайн: появилась новая карта, а старой нет — решение</span>
+                <span class="pb-related-desc">Почему в ВТБ Онлайн видна только новая карта. Инструкция по настройке отображения, устранению ошибок</span>
+            </a><a href="/articles/a/ar/arkhikad-nagruzhaet-tolko-protsessor.html" class="pb-related-card">
+                <span class="pb-related-title">Архикад нагружает только процессор: решение проблемы</span>
+                <span class="pb-related-desc">Почему ArchiCAD использует только CPU и игнорирует GPU? Разбор причин, настроек OpenGL, драйверов и </span>
+            </a><a href="/articles/n/ne/ne-rabotayut-strelki-v-boot.html" class="pb-related-card">
+                <span class="pb-related-title">Не работают стрелки в BIOS: Полное руководство по исправлению</span>
+                <span class="pb-related-desc">Не работают стрелки в Boot меню? Подробная инструкция по решению проблем с навигацией в BIOS, UEFI и</span>
+            </a><a href="/articles/d/de/defender-blast-instruktsiya.html" class="pb-related-card">
+                <span class="pb-related-title">Defender Blast: инструкция по устранению неполадок и настройке</span>
+                <span class="pb-related-desc">Полная инструкция по устранению ошибки Defender Blast. Решения для Windows 10/11, настройки брандмау</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

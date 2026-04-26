@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>OAD Channel: Настройка и управление OTA обновлениями — Мастер Фикс</title>
+    <meta name="description" content="Техническая инструкция по использованию OAD Channel для обновления прошивок IoT устройств. Настройка сервера, проверка версий и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/o/oa/oad-channel.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="OAD Channel: Настройка и управление OTA обновлениями">
+    <meta property="og:description" content="Техническая инструкция по использованию OAD Channel для обновления прошивок IoT устройств. Настройка сервера, проверка версий и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">OAD Channel: Настройка и управление OTA обновлениями</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-и-принципы-работы-oad-channel">Архитектура и принципы работы OAD Channel</a></li><li><a href="#конфигурирование-серверной-части-и-менеджмента-версий">Конфигурирование серверной части и менеджмента версий</a></li><li><a href="#процесс-обновления-на-стороне-устройства-client-side">Процесс обновления на стороне устройства (Client-side)</a></li><li><a href="#диагностика-проблем-и-логирование-процессов">Диагностика проблем и логирование процессов</a></li><li><a href="#типичные-ошибки-при-внедрении-oad">Типичные ошибки при внедрении OAD</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sdelat-chto-by-prikhodilo-sms-posle-vostanovleniya-simkarty.html">Как настроить СМС после восстановления SIM-карты: полное руководство</a></li><li><a href="/articles/d/do/dom-kinoteatr-bbk-razveshat-kolonki.html">Как правильно развесить колонки BBK: схема и настройка</a></li><li><a href="/articles/k/ka/kak-otklyuchit-gruppovoj-zvonok-vo-vremya-razgovora-v-vatsape.html">Отключение группового звонка в WhatsApp: инструкция</a></li><li><a href="/articles/k/ka/kak-najti-graficheskij-redaktor-na-kompyutere.html">Как найти графический редактор на компьютере: поиск в Windows и macOS</a></li><li><a href="/articles/k/ka/kak-vyjti-iz-sberbanka-na-ajfone.html">Как выйти из СберБанка на iPhone: пошаговая инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка OAD Channel для OTA обновлений прошивок</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-и-принципы-работы-oad-channel">Архитектура и принципы работы OAD Channel</a></li><li><a href="#конфигурирование-серверной-части-и-менеджмента-версий">Конфигурирование серверной части и менеджмента версий</a></li><li><a href="#процесс-обновления-на-стороне-устройства-client-side">Процесс обновления на стороне устройства (Client-side)</a></li><li><a href="#диагностика-проблем-и-логирование-процессов">Диагностика проблем и логирование процессов</a></li><li><a href="#типичные-ошибки-при-внедрении-oad">Типичные ошибки при внедрении OAD</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапный отказ парка устройств после попытки обновления или невозможность доставить критический патч безопасности на тысячи девайсов — это кошмар любого инженера IoT. Ситуация, когда гаджеты «зависают» на старой версии или бесконечно пытаются загрузить битый файл, требует немедленного вмешательства и глубокого понимания архитектуры каналов распространения.</p>
+<p>Часто проблема кроется не в аппаратной части, а в конфигурации OAD Channel — логического или физического пути, по которому устройство получает образ новой прошивки. Неправильно настроенный таймаут, некорректная проверка подписи или сбой в цепочке доверия могут превратить процесс обновления в хаос.</p>
+<p>Рассмотрение механизмов работы Over-the-Air Delivery (OAD) позволяет выстроить отказоустойчивую систему, где каждое устройство получает именно тот бинарный файл, который соответствует его текущему состоянию. Грамотная настройка канала передачи данных минимизирует риски и обеспечивает предсказуемое поведение всей сети.</p>
+
+<h2 id="архитектура-и-принципы-работы-oad-channel">Архитектура и принципы работы OAD Channel</h2>
+
+<p>На практике OAD Channel представляет собой не просто ссылку на файл, а сложный программно-аппаратный интерфейс, обеспечивающий целостность и актуальность данных. <strong>Канал обновлений</strong> должен гарантировать, что устройство загрузит валидный образ, даже если соединение прервется на 99% процесса.</p>
+<p>Если у вас в сети присутствуют устройства разных поколений, архитектура канала должна учитывать различия в размерах памяти и поддерживаемых протоколах шифрования. Допустим, старые модули могут работать только по HTTP, тогда как новые требуют обязательного HTTPS для передачи критических данных.</p>
+<p>В основе лежит механизм опроса сервера или получения пуш-уведомления, после чего инициируется загрузка. Важнейшим элементом является проверка хеш-суммы и цифровой подписи перед записью во флеш-память, что предотвращает установку модифицированного или поврежденного кода.</p>
+
+<h3>Протоколы передачи данных и безопасность</h3>
+<p>Выбор протокола зависит от требований к безопасности и доступной пропускной способности сети. Для промышленных контроллеров, где важна надежность, часто используется MQTT с QoS 1 или 2, гарантирующий доставку сообщения хотя бы один раз или ровно один раз соответственно.</p>
+<p>Для потребительской электроники, такой как <em>Smart Home</em> устройства, часто применяется классический HTTP/HTTPS запрос к статическому ресурсу или CDN. В этом случае <strong>шифрование трафика</strong> является обязательным условием для защиты от подмены прошивки злоумышленниками (Man-in-the-Middle атаки).</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование самоподписанных сертификатов на производственных устройствах возможно только на этапе отладки. Для релиза необходим сертификат от доверенного центра (CA).</p></aside>
+
+<p>Сравнение основных протоколов показывает, что каждый имеет свои сценарии применения. Ниже приведена таблица, иллюстрирующая различия в контексте обновлений.</p>
+
+<table>
+<thead>
+<tr>
+<th>Протокол</th>
+<th>Надежность доставки</th>
+<th>Накладные расходы</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP/1.1</td>
+<td>Низкая (без повторов)</td>
+<td>Средние</td>
+</tr>
+<tr>
+<td>HTTPS</td>
+<td>Высокая (TLS)</td>
+<td>Высокие</td>
+</tr>
+<tr>
+<td>MQTT</td>
+<td>Настраиваемая (QoS)</td>
+<td>Низкие</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильный выбор протокола OAD Channel напрямую влияет на скорость развертывания обновлений и безопасность устройства.</p></aside>
+
+<h2 id="конфигурирование-серверной-части-и-менеджмента-версий">Конфигурирование серверной части и менеджмента версий</h2>
+
+<p>Настройка серверной инфраструктуры требует внимательного отношения к структуре хранения файлов и метаданных. Сервер должен не просто отдавать бинарный файл, но и предоставлять устройству информацию о версии, размере и обязательности обновления.</p>
+<p>Перейдите в конфигурационный файл вашего сервера обновлений (например, Nginx или специализированный IoT-шлюз) и убедитесь, что пути к файлам соответствуют логике версионирования. Обычно используется семантическое версионирование <code>MAJOR.MINOR.PATCH</code>.</p>
+<p>Важно настроить правила кеширования на стороне CDN или прокси-сервера, чтобы избежать ситуации, когда устройство загружает старую версию из кеша браузера или шлюза. Заголовки <code>Cache-Control</code> должны быть настроены корректно для бинарных файлов прошивок.</p>
+
+<h3>Структура манифеста обновлений</h3>
+<p>Устройство запрашивает JSON-файл манифеста, который содержит инструкции. В этом файле прописывается URL загрузки, хеш-сумма (SHA256) и условия применения. Если хеш загруженного файла не совпадает с указанным в манифесте, процесс установки прерывается.</p>
+<p>Допустим, вы выпускаете хотфикс только для версии 1.0.5. В манифесте должно быть явно указано условие: «Если текущая версия == 1.0.5, то обновить до 1.0.6». Для других версий правило может отсутствовать или вести на стабильную ветку.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание манифеста</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Сгенерируйте SHA256 хеш бинарного файла</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создайте JSON структуру с полями version, url, hash</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Разместите файл на HTTPS сервере</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте доступность по внешнему URL</span></div></div>
+
+<p>Для управления большим парком устройств используется система таргетирования. Она позволяет разбить устройства на группы (каналы) иить обновления поэтапно. Сначала обновляется тестовая группа (1% устройств), затем, при отсутствии ошибок, — основная масса.</p>
+
+<h2 id="процесс-обновления-на-стороне-устройства-client-side">Процесс обновления на стороне устройства (Client-side)</h2>
+
+<p>Реализация клиента OAD на микроконтроллере или одноплатном компьютере — это критический участок кода. Ошибка здесь может привести к «кирпичу» (bricking), когда устройство перестает реагировать на команды. <strong>Механизм отката</strong> (rollback) должен быть предусмотрен обязательно.</p>
+<p>Если у вас ограниченный объем оперативной памяти, загрузка может происходить по частям (chunks) непосредственно во flash-память, минуя RAM. Это требует точного расчета адресов памяти и аккуратной работы с указателями.</p>
+<p>Рассмотрим типовой алгоритм: устройство проверяет наличие нового манифеста, сравнивает версию, загружает образ в свободную область памяти (Slot B), проверяет подпись и, если все верно, помечает Slot B как активный при следующей перезагрузке.</p>
+
+<h3>Реализация двойной загрузки (Dual Bank)</h3>
+<p>Метод двойной загрузки является стандартом индустрии для надежных систем. Пока устройство работает с активной прошивки (Bank A), новая загружается в резервную (Bank B). Это позволяет в любой момент вернуться к рабочей версии.</p>
+<p>На практике переключение банков происходит через изменение флага в загрузчике (Bootloader). Загрузчик проверяет этот флаг при старте и запускает код из соответствующего адреса. Если новая прошивка не прошла самотестирование, флаг сбрасывается, и система загружает старую версию.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прерывание питания во время записи во flash-память может повредить файловую систему. Используйте журналы транзакций или атомарные операции записи там, где это возможно.</p></aside>
+
+<p>Код загрузчика должен быть максимально простым и надежным, так как он не обновляется OTA (или обновляется отдельным, крайне осторожным процессом). Любая ошибка в загрузчике делает устройство непригодным к использованию без физического программатора.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Single Bank</th>
+<th>Dual Bank</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Требования к памяти</td>
+<td>Минимальные</td>
+<td>2x от размера прошивки</td>
+</tr>
+<tr>
+<td>Безопасность</td>
+<td>Низкая (риск кирпича)</td>
+<td>Высокая (автоматический откат)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Метод Dual Bank</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантия восстановления</li><li>✅ Возможность тестирования перед запуском</li><li>✅ Нулевой даунтайм для пользователя</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует больше памяти</li><li>❌ Сложнее в реализации</li><li>❌ Увеличивает размер бинарного образа</li></ul></div>
+</div></div>
+
+<h2 id="диагностика-проблем-и-логирование-процессов">Диагностика проблем и логирование процессов</h2>
+
+<p>Когда обновление проходит успешно, об этом редко кто-то вспоминает. Проблемы начинаются, когда процесс зависает или завершается ошибкой. <strong>Детальное логирование</strong> на всех этапах — от получения запроса до перезагрузки — является единственным способом понять причину сбоя.</p>
+<p>На практике логи должны писаться в циклический буфер в RAM и, по возможности, сохраняться в постоянную память перед критическими операциями. Это позволяет извлечь историю событий даже после перезагрузки устройства.</p>
+<p>Если у вас есть возможность, настройте отправку телеметрии об успешности обновления на сервер сразу после завершения процесса. Это позволит видеть процент успешных обновлений в реальном времени.</p>
+
+<h3>Анализ кодов ошибок и таймаутов</h3>
+<p>Частой проблемой являются таймауты соединения. Сеть может быть нестабильной, особенно если устройства работают через сотовые сети (LTE-M, NB-IoT). Клиент должен уметь возобновлять загрузку с места разрыва (resume capability), а не начинать сначала.</p>
+<p>Ошибки проверки подписи часто возникают из-за рассинхронизации времени на устройстве или истечения срока действия сертификата. В таких случаях в логах будут записи о нарушении целостности или истекшем времени (Not Before / Not After).</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте уникальные ID транзакций для каждого сеанса обновления. Это позволит сопоставить логи на устройстве и записи на сервере, быстро найдя узкое место.</p></aside>
+
+<p>Для отладки используйте эмуляторы сети, которые могут искусственно создавать задержки, обрывать пакеты или имитировать низкую скорость соединения. Это поможет выявить скрытые баги в механизме повторных попыток.</p>
+
+<h2 id="типичные-ошибки-при-внедрении-oad">Типичные ошибки при внедрении OAD</h2>
+
+<p>В процессе настройки канала обновлений инженеры часто наступают на одни и те же грабли. Избежать их поможет знание распространенных сценариев failures.</p>
+
+<ol>
+<li><strong>Отсутствие проверки свободного места</strong> — устройство начинает загрузку, не проверив объем доступной памяти, что приводит к переполнению и краху файловой системы. Всегда проверяйте свободное пространство перед стартом.</li>
+<li><strong>Игнорирование состояния батареи</strong> — попытка обновить устройство с разряженным аккумулятором. Внезапное отключение питания во время прошивки флеш-памяти гарантированно выведет устройство из строя. Внедрите блокировку обновления при заряде ниже 20-30%.</li>
+<li><strong>Жестко заданные URL</strong> — «зашивание» адреса сервера обновлений прямо в код без возможности изменения через конфигурацию. Если сервер придется перенести, потребуется физический доступ к устройствам для перепрошивки.</li>
+<li><strong>Отсутствие тестирования на «железе»</strong> — проверка обновлений только на эмуляторе. Реальные устройства могут иметь специфичные задержки записи во flash или особенности работы watchdog-таймера, которые эмулятор не учитывает.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Всегда тестируйте процедуру обновления на устройствах с минимально возможной конфигурацией (минимум RAM/Flash), чтобы убедиться в работоспособности на всех моделях.</p></aside>
+
+<h2 id="резюме-и-лучшие-практики">Резюме и лучшие практики</h2>
+
+<p>Организация надежного OAD Channel — это баланс между безопасностью, скоростью и отказоустойчивостью. Использование двойной загрузки, строгая проверка подписей и поэтапное развертывание позволяют минимизировать риски при обновлении тысяч устройств.</p>
+<p>Ключевым фактором успеха является не столько сам механизм передачи файла, сколько инфраструктура управления версиями и возможность быстрого отката в случае проблем. Инвестиции в качественную систему логирования и телеметрии окупаются при первом же инциденте.</p>
+<p>Соблюдение описанных практик позволит создать систему, которая остается незаметной для пользователя, но гарантирует, что парк устройств всегда работает на актуальном и безопасном программном обеспечении.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sdelat-chto-by-prikhodilo-sms-posle-vostanovleniya-simkarty.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить СМС после восстановления SIM-карты: полное руководство</span>
+                <span class="pb-related-desc">Техническая инструкция по устранению проблем с СМС после перевыпуска SIM. Настройка роуминга, сети и</span>
+            </a><a href="/articles/d/do/dom-kinoteatr-bbk-razveshat-kolonki.html" class="pb-related-card">
+                <span class="pb-related-title">Как правильно развесить колонки BBK: схема и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по установке и калибровке акустики BBK. Схемы расстановки динамиков, выбор мест</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-gruppovoj-zvonok-vo-vremya-razgovora-v-vatsape.html" class="pb-related-card">
+                <span class="pb-related-title">Отключение группового звонка в WhatsApp: инструкция</span>
+                <span class="pb-related-desc">Как отключить групповой звонок в WhatsApp во время разговора. Полное руководство для Android и iOS: </span>
+            </a><a href="/articles/k/ka/kak-najti-graficheskij-redaktor-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти графический редактор на компьютере: поиск в Windows и macOS</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску графических редакторов на ПК. Методы поиска через меню, диспетчер зад</span>
+            </a><a href="/articles/k/ka/kak-vyjti-iz-sberbanka-na-ajfone.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из СберБанка на iPhone: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по выходу из аккаунта в СберБанке на iOS. Решения проблем с зависанием пр</span>
+            </a><a href="/articles/a/a5/a515f-smena-regiona.html" class="pb-related-card">
+                <span class="pb-related-title">Смена региона Samsung A515F: Инструкция по прошивке CSC</span>
+                <span class="pb-related-desc">Техническое руководство по смене региона (CSC) на Samsung Galaxy A51 5G. Методы через Odin, SamFw и </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

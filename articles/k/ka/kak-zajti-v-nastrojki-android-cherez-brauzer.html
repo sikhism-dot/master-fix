@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Удаленный вход в настройки Android через браузер: методы ADB и веб-интерфейсы — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по доступу к системным настройкам Android через браузер с использованием ADB, эмуляторов и веб-интерфейсов отладки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-zajti-v-nastrojki-android-cherez-brauzer.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Удаленный вход в настройки Android через браузер: методы ADB и веб-интерфейсы">
+    <meta property="og:description" content="Техническое руководство по доступу к системным настройкам Android через браузер с использованием ADB, эмуляторов и веб-интерфейсов отладки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Удаленный вход в настройки Android через браузер: методы ADB и веб-интерфейсы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#технологические-ограничения-и-концепция-веб-доступа">Технологические ограничения и концепция веб-доступа</a></li><li><a href="#использование-chrome-remote-debugging-для-управления-устройством">Использование Chrome Remote Debugging для управления устройством</a></li><li><a href="#веб-интерфейсы-adb-и-сторонние-серверные-решения">Веб-интерфейсы ADB и сторонние серверные решения</a></li><li><a href="#сценарии-использования-эмуляторов-и-виртуальных-устройств">Сценарии использования эмуляторов и виртуальных устройств</a></li><li><a href="#типичные-ошибки-и-проблемы-подключения">Типичные ошибки и проблемы подключения</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sdelat-skrinshot-na-telefone-xiaomi-redmi-note-13-pro.html">Скриншот на Xiaomi Redmi Note 13 Pro: все методы</a></li><li><a href="/articles/k/ka/kak-obnovit-drajvery-na-knopochnom-telefone.html">Как обновить драйверы на кнопочном телефоне: полная инструкция</a></li><li><a href="/articles/f/fu/fullscreen-android-yandex-browser.html">Полноэкранный режим Яндекс Браузера на Android: настройка</a></li><li><a href="/articles/k/ka/kak-otklyuchit-bezopasnyj-rezhim-na-telefone-nokia-1029.html">Как отключить безопасный режим на Nokia 1029: Полное руководство</a></li><li><a href="/articles/s/sy/system-launcher-chto-eto-za-programma-na-android-i-nuzhna-li-ona.html">System Launcher на Android: что это и можно ли удалить</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Удаленное управление и доступ к настройкам Android через веб-браузер</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#технологические-ограничения-и-концепция-веб-доступа">Технологические ограничения и концепция веб-доступа</a></li><li><a href="#использование-chrome-remote-debugging-для-управления-устройством">Использование Chrome Remote Debugging для управления устройством</a></li><li><a href="#веб-интерфейсы-adb-и-сторонние-серверные-решения">Веб-интерфейсы ADB и сторонние серверные решения</a></li><li><a href="#сценарии-использования-эмуляторов-и-виртуальных-устройств">Сценарии использования эмуляторов и виртуальных устройств</a></li><li><a href="#типичные-ошибки-и-проблемы-подключения">Типичные ошибки и проблемы подключения</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда необходимо изменить системные параметры или запустить отладку на устройстве Android, а физический доступ к экрану ограничен или тачскрин не реагирует на касания, требует нестандартных решений.</p>
+<p>Часто пользователи сталкиваются с необходимостью сбросить забытый графический ключ, изменить разрешение экрана для эмулятора или включить режим отладки, когда интерфейс заблокирован, и единственным доступным инструментом остается персональный компьютер с подключенным к нему смартфоном.</p>
+<p>Прямой вход в графический интерфейс «Настроек» операционной системы Android исключительно через адресную строку браузера на удаленном устройстве невозможен без предварительной подготовки и использования специализированных протоколов отладки.</p>
+
+<h2 id="технологические-ограничения-и-концепция-веб-доступа">Технологические ограничения и концепция веб-доступа</h2>
+
+<p>Попытка ввести локальный адрес в браузере смартфона в надежде увидеть системное меню обречена на провал из-за архитектурных особенностей безопасности платформы.</p>
+<p>Операционная система Android изолирует процессы приложений и системных служб, не предоставляя стандартного HTTP-сервера для управления конфигурацией через веб-интерфейс, как это реализовано в роутерах или IoT-устройствах.</p>
+<p>Для реализации управления через браузер необходимо создать промежуточный слой, который будет транслировать команды из веб-интерфейса в системные вызовы Android, что требует наличия прав суперпользователя или активной отладки по USB.</p>
+<p>Существуют специализированные приложения-серверы, которые, будучи установленными на устройство, открывают веб-порт, позволяющий управлять некоторыми функциями через браузер, но доступ к глубоким системным настройкам остается ограниченным.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка установки непроверенных серверных приложений из неизвестных источников может привести к утечке персональных данных или заражению устройства вредоносным ПО.</p></aside>
+
+<p>Основной метод взаимодействия, который формально позволяет использовать браузер для управления устройством, базируется на технологии Chrome DevTools и протоколе удаленной отладки.</p>
+<p>Этот подход не дает прямого доступа к меню «Настройки», но позволяет инспектировать запущенные приложения, изменять DOM-элементы веб-страниц и выполнять JavaScript-код, который может эмулировать пользовательские действия.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для работы большинства методов удаленного управления необходимо заранее активировать режим разработчика и включить отладку по USB в меню «О телефоне».</p></aside>
+
+<h2 id="использование-chrome-remote-debugging-для-управления-устройством">Использование Chrome Remote Debugging для управления устройством</h2>
+
+<p>Наиболее легитимным и безопасным способом взаимодействия с Android через браузер настольного компьютера является использование встроенного инструмента удаленной отладки в Google Chrome.</p>
+<p>Этот метод позволяет видеть экран устройства, взаимодействовать с ним мышью и даже эмулировать сенсорный ввод, что фактически заменяет физический доступ к тачскрину.</p>
+<p>Для начала работы необходимо подключить устройство к компьютеру через USB-кабель и убедиться, что на обоих устройствах установлен браузер Google Chrome последней версии.</p>
+<p>После подключения и подтверждения отладки на экране смартфона, в адресной строке десктопного браузера следует ввести специальный адрес для доступа к панели инструментов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка удаленной отладки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Включите отладку по USB в настройках разработчика</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите телефон к ПК кабелем</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите chrome://inspect в адресной строке браузера на ПК</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Inspect под названием вашего устройства</span></div></div>
+
+<p>Открыв адрес <code>chrome://inspect/#devices</code>, пользователь получит список всех подключенных устройств и запущенных на них вкладок браузера Chrome или WebView.</p>
+<p>Кнопка «Inspect» открывает полноценную панель разработчика, где вкладка «Device Screen» транслирует изображение с экрана смартфона в реальном времени.</p>
+<p>Через эту панель можно кликать по элементам интерфейса, включая иконку «Настройки», если она отображается на экране, и переходить по меню, используя курсор мыши.</p>
+<p>Важно понимать, что это не прямой доступ к системе, а удаленное управление видеопотоком и вводными событиями, поэтому задержка может зависеть от скорости USB-соединения.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Метод Chrome Remote Debugging обеспечивает полный визуальный контроль над устройством, но требует физического подключения кабеля и предварительной активации отладки.</p></aside>
+
+<h2 id="веб-интерфейсы-adb-и-сторонние-серверные-решения">Веб-интерфейсы ADB и сторонние серверные решения</h2>
+
+<p>Для более глубокого доступа к настройкам, выходящего за рамки простого удаленного управления экраном, используются веб-оболочки для Android Debug Bridge (ADB).</p>
+<p>ADB — это консольная утилита, позволяющая отправлять команды на устройство, но существуют проекты, которые оборачивают эти команды в веб-интерфейс, доступный через localhost.</p>
+<p>Одним из таких решений является запуск локального веб-сервера на самом устройстве или на компьютере, который проксирует запросы в ADB-демон.</p>
+<p>Например, использование инструмента <em>scrcpy</em> в связке с веб-клиентом позволяет транслировать экран и управлять устройством через браузер без установки дополнительных приложений на телефон.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод доступа</th>
+<th>Необходимые права</th>
+<th>Функционал</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chrome DevTools</td>
+<td>Отладка по USB</td>
+<td>Управление экраном, отладка JS, эмуляция тача</td>
+</tr>
+<tr>
+<td>ADB Web Interface</td>
+<td>ADB / Root (опционально)</td>
+<td>Выполнение shell-команд, установка APK, логи</td>
+</tr>
+<tr>
+<td>VNC Server</td>
+<td>Root права</td>
+<td>Полный доступ к графической оболочке системы</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если на устройстве получены права суперпользователя (Root), открывается возможность установки VNC-серверов, которые создают полноценный графический интерфейс, доступный через VNC-клиент в браузере.</p>
+<p>Приложения вроде <em>droidVNC-NG</em> позволяют запустить сервер, после чего по адресу <code>http://localhost:5900</code> (или через проброс портов) можно увидеть рабочий стол Android.</p>
+<p>В этом режиме пользователь получает полный контроль: можно войти в «Настройки», изменить системные файлы, удалить системные приложения.</p>
+<p>Без прав Root функционал таких серверов ограничен, так как они не могут внедриться в системные процессы для захвата экрана без использования специальных эксплойтов или отладки.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Возможность управления с ПК</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над системой:Работает даже при разбитом экране:Удобство ввода текста с клавиатуры</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует предварительной настройки:Низкая производительность графики:Риск безопасности при открытии портов</li></ul></div>
+</div></div>
+
+<h2 id="сценарии-использования-эмуляторов-и-виртуальных-устройств">Сценарии использования эмуляторов и виртуальных устройств</h2>
+
+<p>В контексте разработки и тестирования часто возникает задача зайти в настройки виртуального устройства Android, запущенного в среде эмулятора, через браузер хост-системы.</p>
+<p>Эмуляторы, такие как <em>Android Studio Emulator</em> или <em>Genymotion</em>, предоставляют веб-интерфейсы для управления экземплярами виртуальных устройств.</p>
+<p>Genymotion, например, имеет облачную версию и локальный веб-инфейс, где можно управлять параметрами виртуального смартфона, включая его настройки, GPS, батарею и сеть.</p>
+<p>Для доступа к настройкам внутри эмулятора через браузер хоста часто используется проброс портов ADB, позволяющий открыть веб-сервер, запущенный внутри гостевой ОС, на localhost хоста.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В эмуляторах Android Studio адрес localhost внутри виртуального устройства соответствует 10.0.2.2, что важно при настройке сетевых соединений для веб-интерфейсов.</p></aside>
+
+<p>Существует также возможность использования WebView для отладки гибридных приложений, где через <code>chrome://inspect</code> можно модифицировать настройки приложения на лету.</p>
+<p>Изменяя значения в LocalStorage или Cookie через браузерную консоль, можно симулировать различные состояния приложения, что эквивалентно изменению настроек внутри программы.</p>
+<p>Для системных настроек эмулятора чаще всего используется команда ADB, отправляемая через веб-терминал, если такой развернут в среде разработки.</p>
+<p>Примером может служить изменение плотности пикселей (DPI) через команду <code>wm density</code>, что требует доступа к shell-интерфейсу устройства.</p>
+
+<ol>
+<li>Запустите эмулятор Android и дождитесь полной загрузки системы.</li>
+<li>Откройте терминал на компьютере и выполните команду <code>adb devices</code> для проверки подключения.</li>
+<li>Используйте команду <code>adb shell settings put system screen_brightness 50</code> для изменения яркости через эмуляцию системных настроек.</li>
+<li>Для доступа к полному меню настроек через веб-интерфейс эмулятора (если доступно) перейдите по адресу, указанному в документации конкретного эмулятора.</li>
+</ol>
+
+<p>Такие манипуляции позволяют разработчикам тестировать поведение приложений при различных конфигурациях системы без необходимости физического переключения тумблеров на устройстве.</p>
+
+<h2 id="типичные-ошибки-и-проблемы-подключения">Типичные ошибки и проблемы подключения</h2>
+
+<p>При попытке организовать управление Android через браузер пользователи часто сталкиваются с типовыми ошибками, связанными с настройкой сети и прав доступа.</p>
+<p>Ниже приведен список наиболее распространенных проблем и способы их решения.</p>
+
+<ol>
+<li><strong>Ошибка «Device not found» в chrome://inspect</strong> — проблема заключается в отсутствии установленных драйверов ADB или неактивированной отладке по USB; необходимо установить драйверы производителя и переподключить кабель.</li>
+<li><strong>Недоступность локального веб-сервера</strong> — если сервер запущен на телефоне, но не доступен с ПК, проверьте настройки брандмауэра и убедитесь, что устройства находятся в одной Wi-Fi сети или используйте проброс портов через USB.</li>
+<li><strong>Отсутствие прав на выполнение команд</strong> — попытки изменить системные настройки через ADB без прав Root приводят к ошибке «Permission denied»; в таком случае можно менять только пользовательские настройки, префикс которых начинается с <code>system</code> или <code>secure</code>, но не <code>global</code> без рута.</li>
+<li><strong>Задержка и лаги при удаленном управлении</strong> — использование Wi-Fi для трансляции экрана вместо USB-кабеля значительно увеличивает пинг; для плавной работы рекомендуется использовать кабель USB 3.0 и короткую длину соединения.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду `adb tcpip 5555` для перехода на беспроводную отладку по Wi-Fi, что позволит отключить кабель и управлять устройством по сети, но первичная настройка требует провода.</p></aside>
+
+
+<p>После завершения сеанса отладки рекомендуется отключать режим отладки по USB и закрывать открытые порты.</p>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+
+<p>Организация доступа к настройкам Android через браузер является сложной технической задачей, не имеющей единого стандартного решения для всех устройств.</p>
+<p>Наиболее эффективным и безопасным методом для рядового пользователя остается использование инструмента Chrome Remote Debugging, который позволяет управлять интерфейсом устройства с компьютера.</p>
+<p>Для продвинутых сценариев, требующих изменения глубоких системных параметров, необходимо использование ADB-команд, проброс портов или получение Root-прав для запуска полноценных VNC-серверов.</p>
+<p>В любом случае, такая конфигурация требует предварительной подготовки устройства и понимания принципов работы сетевых протоколов и прав доступа в операционной системе Android.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sdelat-skrinshot-na-telefone-xiaomi-redmi-note-13-pro.html" class="pb-related-card">
+                <span class="pb-related-title">Скриншот на Xiaomi Redmi Note 13 Pro: все методы</span>
+                <span class="pb-related-desc">Полная инструкция по созданию скриншотов на Redmi Note 13 Pro. Комбинации кнопок, жесты, голосовое у</span>
+            </a><a href="/articles/k/ka/kak-obnovit-drajvery-na-knopochnom-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить драйверы на кнопочном телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по обновлению ПО и драйверов на кнопочных телефонах. Методы для Nokia, Samsung</span>
+            </a><a href="/articles/f/fu/fullscreen-android-yandex-browser.html" class="pb-related-card">
+                <span class="pb-related-title">Полноэкранный режим Яндекс Браузера на Android: настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по активации полноэкранного режима в Яндекс Браузере на Android. Устранение чер</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-bezopasnyj-rezhim-na-telefone-nokia-1029.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить безопасный режим на Nokia 1029: Полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по выходу из безопасного режима на Nokia 1029. Эффективные методы перезагрузки,</span>
+            </a><a href="/articles/s/sy/system-launcher-chto-eto-za-programma-na-android-i-nuzhna-li-ona.html" class="pb-related-card">
+                <span class="pb-related-title">System Launcher на Android: что это и можно ли удалить</span>
+                <span class="pb-related-desc">Полный разбор системного лаунчера Android. Зачем нужен System Launcher, как его отключить, выбор аль</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-bystrye-soobshcheniya-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить быстрые сообщения: инструкция для Android и iOS</span>
+                <span class="pb-related-desc">Подробное руководство по отключению быстрых ответов и уведомлений на смартфонах. Решаем проблему слу</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

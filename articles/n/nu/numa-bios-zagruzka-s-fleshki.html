@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>NUMA BIOS загрузка с флешки: настройка серверов и ПК — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по настройке NUMA в BIOS для загрузки с USB. Разбор UEFI, Legacy режимов и оптимизации памяти.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/n/nu/numa-bios-zagruzka-s-fleshki.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NUMA BIOS загрузка с флешки: настройка серверов и ПК">
+    <meta property="og:description" content="Подробная инструкция по настройке NUMA в BIOS для загрузки с USB. Разбор UEFI, Legacy режимов и оптимизации памяти.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">NUMA BIOS загрузка с флешки: настройка серверов и ПК</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#понимание-архитектуры-numa-и-её-влияние-на-загрузку">Понимание архитектуры NUMA и её влияние на загрузку</a></li><li><a href="#доступ-к-расширенным-настройкам-bios-и-подготовка-среды">Доступ к расширенным настройкам BIOS и подготовка среды</a></li><li><a href="#конфигурация-параметров-numa-и-usb-в-bios">Конфигурация параметров NUMA и USB в BIOS</a></li><li><a href="#порядок-загрузки-и-приоритеты-устройств">Порядок загрузки и приоритеты устройств</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#завершение-и-итоговые-рекомендации">Завершение и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/n/nu/numa-bios-kak-ustanovit-windows-10.html">Настройка NUMA BIOS для Windows 10: Полная инструкция</a></li><li><a href="/articles/w/wi/windows-foto-ne-listaet-v-prilozhenii-fotografii.html">Фото не листаются в приложении Фотографии Windows: решение</a></li><li><a href="/articles/i/ir/irbis-vojti-v-bios-na-planshete.html">Как войти в BIOS на планшете Irbis: полная инструкция</a></li><li><a href="/articles/k/ka/kak-otklyuchit-klaviaturu-na-noutbuke.html">Как отключить клавиатуру на ноутбуке: методы и инструкции</a></li><li><a href="/articles/d/dh/dhcp-server-windows-10-ustanovka.html">DHCP сервер Windows 10: Установка и настройка роли</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка NUMA BIOS: загрузка с флешки и оптимизация памяти</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#понимание-архитектуры-numa-и-её-влияние-на-загрузку">Понимание архитектуры NUMA и её влияние на загрузку</a></li><li><a href="#доступ-к-расширенным-настройкам-bios-и-подготовка-среды">Доступ к расширенным настройкам BIOS и подготовка среды</a></li><li><a href="#конфигурация-параметров-numa-и-usb-в-bios">Конфигурация параметров NUMA и USB в BIOS</a></li><li><a href="#порядок-загрузки-и-приоритеты-устройств">Порядок загрузки и приоритеты устройств</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#завершение-и-итоговые-рекомендации">Завершение и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка запустить серверную операционную систему или специализированный дистрибутив Linux на многопроцессорной машине часто заканчивается ошибкой загрузки или критическим падением производительности, если не учтена архитектура памяти.</p>
+<p>Ситуация осложняется, когда стандартная загрузочная флешка игнорируется системой, а в логах POST появляются сообщения о неравномерном распределении ресурсов между узлами процессора.</p>
+<p>Решение кроется в корректной конфигурации параметров NUMA в BIOS/UEFI, что требует понимания взаимодействия между контроллером памяти, портами USB и загрузчиком.</p>
+
+<h2 id="понимание-архитектуры-numa-и-её-влияние-на-загрузку">Понимание архитектуры NUMA и её влияние на загрузку</h2>
+
+<p>На практике взаимодействие процессора и оперативной памяти в современных серверных платформах строится по принципу Non-Uniform Memory Access, что напрямую влияет на скорость отклика периферийных устройств при старте системы.</p>
+<p>Если у вас установлен многопроцессорный сервер или рабочая станция на базе AMD EPYC или Intel Xeon Scalable, каждый процессор имеет свой собственный контроллер памяти, создавая локальные домены.</p>
+<p>Загрузчик, записанный на USB-накопитель, должен быть правильно адресован к конкретному узлу NUMA, иначе возможны задержки при инициализации драйверов или полный отказ в определении носителя.</p>
+<p>Допустим, система пытается считать данные с флешки, подключенной к порту, физически относящемуся к первому процессору, в то время как ядро загрузки инициировано вторым, что вызывает конфликты прерываний.</p>
+<p><strong>Критически важно</strong> понимать, что режим работы памяти определяет, как будут распределены буферы ввода-вывода для USB-контроллера на этапе Pre-OS.</p>
+
+<p>В некоторых сценариях требуется принудительное включение или выключение режим interleaving для обеспечения совместимости со старыми загрузчиками, не поддерживающими сложную топологию памяти.</p>
+<p>Настройка этих параметров осуществляется до передачи управления операционной системе, непосредственно в firmware интерфейсе материнской платы.</p>
+
+<h3>Различия между режимами Node Interleaving и Channel Interleaving</h3>
+
+<p>Режим Node Interleaving объединяет память всех процессоров в единое адресное пространство, что упрощает загрузку, но может снизить производительность в специфических задачах.</p>
+<p>Channel Interleaving работает внутри одного процессора, распределяя данные по каналам памяти для увеличения пропускной способности, что менее критично для самого процесса загрузки, но важно для стабильности.</p>
+<p>Для успешной загрузки с флешки на гетерогенных системах часто предпочтительнее режим без интерливинга узлов, чтобы четко разделить ресурсы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим Node Interleaving</th>
+<th>Режим No Interleaving (NUMA)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Адресация памяти</td>
+<td>Единое пространство (UMA)</td>
+<td>Разделенное по узлам</td>
+</tr>
+<tr>
+<td>Совместимость с USB Boot</td>
+<td>Высокая (старые ОС)</td>
+<td>Требует поддержки ACPI в загрузчике</td>
+</tr>
+<tr>
+<td>Производительность</td>
+<td>Средняя для многопоточности</td>
+<td>Максимальная для локализованных задач</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На материнских платах Supermicro и ASUS серверного класса эти настройки часто скрыты в глубоких подменю Advanced North Bridge.</p></aside>
+
+<h2 id="доступ-к-расширенным-настройкам-bios-и-подготовка-среды">Доступ к расширенным настройкам BIOS и подготовка среды</h2>
+
+<p>Вход в интерфейс настройки базовой системы ввода-вывода на серверном оборудовании требует внимательности, так как тайминги нажатия клавиш могут быть сокращены ради ускорения POST.</p>
+<p>Сразу после включения питания необходимо многократно нажимать клавишу <code>Delete</code> или <code>F2</code>, однако на некоторых платформах Dell или HP требуется сочетание <code>F10</code> или <code>F12</code> для входа в Setup.</p>
+<p>Если у вас включена опция Fast Boot, окно возможности входа в BIOS может пролетать слишком быстро, поэтому рекомендуется временно отключить её через <code>Boot Configuration</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Вход в BIOS</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите кнопку питания сервера</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Сразу начните часто нажимать Del или F2</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Дождитесь появления логотипа производителя</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Если загрузилась ОС, перезагрузитесь и повторите</span></div></div>
+
+<p>После попадания в интерфейс нужно переключиться в расширенный режим, часто обозначаемый как <code>Advanced Mode</code> или доступный по клавише <code>F7</code>.</p>
+<p>Стандартный интерфейс EzMode обычно не содержит необходимых настроек NUMA и управления портами USB, поэтому переход в Advanced обязателен.</p>
+<p>Навигация осуществляется стрелками клавиатуры, так как поддержка мыши в предзагрузочных меню серверов реализована не всегда.</p>
+<p>Стоит проверить версию BIOS, так как в старых ревизиях прошивки нужные опции могут отсутствовать или работать некорректно.</p>
+<p><strong>Обновление BIOS</strong> до последней стабильной версии часто решает проблемы с распознаванием USB 3.0 накопителей в режиме UEFI.</p>
+
+<h3>Подготовка загрузочного носителя для NUMA-систем</h3>
+
+<p>Флешка должна быть отформатирована в файловой системе, поддерживаемой firmware, обычно это FAT32 для UEFI или NTFS для Legacy BIOS с дополнительными драйверами.</p>
+<p>Для серверов с включенным режимом Secure Boot загрузочный сектор должен быть подписан цифровым сертификатом, иначе старт будет блокирован политикой безопасности.</p>
+<p>Используйте утилиты вроде Rufus или Ventoy, выбирая схему разделов GPT для систем с UEFI и MBR для старых Legacy BIOS.</p>
+
+<pre><code>diskpart
+<p>list disk</p>
+<p>select disk 1</p>
+<p>clean</p>
+<p>convert gpt</p>
+<p>create partition efi</p>
+<p>format fs=fat32 quick</p>
+<p>assign letter=Z</p>
+<p>exit</code></pre></p>
+
+<p>Эта последовательность команд подготовит чистый накопитель с правильной таблицей разделов для современной загрузки.</p>
+<p>Размещение файлов загрузчика в корне раздела ensures, что firmware без проблем найдет путь к исполняемым файлам <code>.efi</code>.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Форматирование флешки уничтожит все данные на ней. Убедитесь, что сохранили важные файлы перед очисткой.</p></aside>
+
+<h2 id="конфигурация-параметров-numa-и-usb-в-bios">Конфигурация параметров NUMA и USB в BIOS</h2>
+
+<p>Переход к непосредственной настройке требует перехода в раздел <code>Advanced</code> или <code>Chipset Configuration</code>, где скрыты параметры работы процессора и памяти.</p>
+<p>Здесь необходимо найти подраздел, связанный с <code>North Bridge</code> или <code>CPU Configuration</code>, так как контроллер памяти интегрирован непосредственно в процессор.</p>
+<p>Параметр <code>Node Interleaving</code> должен быть установлен в положение <code>Disabled</code> для активации полноценного режима NUMA, что важно для корректной работы современных ОС.</p>
+<p>Если же загрузка с флешки не происходит, попробуйте временно включить <code>Node Interleaving</code>, чтобы система вела себя как классическая UMA.</p>
+<p>В некоторых случаях требуется вручную указать распределение памяти, но для задачи загрузки достаточно глобального переключателя.</p>
+
+<h3>Настройка портов USB и XHCI Hand-off</h3>
+
+<p>Отдельного внимания требует раздел <code>USB Configuration</code>, где находятся настройки контроллеров Universal Serial Bus.</p>
+<p>Опция <code>XHCI Hand-off</code> должна быть включена (<code>Enabled</code>), чтобы операционная система могла самостоятельно управлять портами USB 3.0 после загрузки.</p>
+<p>Если эта опция выключена, могут возникнуть конфликты между BIOS и драйверами ОС, что приведет к зависанию при попытке чтения с флешки.</p>
+<p>Также проверьте, что порты USB не отключены в режиме <code>Port 60/64 Emulation</code>, если используется legacy-оборудование.</p>
+<p><strong>Legacy USB Support</strong> следует установить в <code>Auto</code> или <code>Enabled</code>, чтобы клавиатура и мышь работали в меню BIOS и на ранних этапах загрузки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Опция BIOS</th>
+<th>Рекомендуемое значение</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>XHCI Hand-off</td>
+<td>Enabled</td>
+<td>Передача управления USB 3.0 ОС</td>
+</tr>
+<tr>
+<td>Legacy USB Support</td>
+<td>Enabled</td>
+<td>Работа клавиатуры в BIOS/DOS</td>
+</tr>
+<tr>
+<td>USB Mass Storage Driver</td>
+<td>Enabled</td>
+<td>Поддержка накопителей</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте порты USB 2.0 (черные) для загрузки, если с портами 3.0 (синими/красными) возникают проблемы совместимости на этапе POST.</p></aside>
+
+<h2 id="порядок-загрузки-и-приоритеты-устройств">Порядок загрузки и приоритеты устройств</h2>
+
+<p>После настройки аппаратуры необходимо перейти в раздел <code>Boot</code>, чтобы указать системе приоритетное устройство для старта.</p>
+<p>В списке <code>Boot Option Priorities</code> ваша флешка должна стоять на первом месте, опережая жесткие диски и сетевые адаптеры PXE.</p>
+<p>Система может отображать накопитель дважды: как <code>UEFI: VendorName</code> и просто как <code>VendorName</code>.</p>
+<p>Выбирайте вариант с префиксом <code>UEFI</code>, если операционная система устанавливается в современном режиме, это обеспечит корректную работу GPT разделов.</p>
+<p>Если выбран вариант без префикса, система попытается загрузиться в режиме Legacy/CSM, что может не сработать при включенном Secure Boot.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка приоритета</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в меню Boot</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите Boot Option #1</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите вашу флешку (UEFI)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите F10 для сохранения и выхода</span></div></div>
+
+<p>Сохранение изменений производится клавишей <code>F10</code>, после чего система перезагрузится и попытается считать данные с указанного носителя.</p>
+<p>Если загрузка не началась, проверьте индикаторы на флешке: мигание светодиода свидетельствует о попытке чтения данных.</p>
+<p>Отсутствие реакции может указывать на неверную запись образа или несовместимость файловой системы с текущими настройками BIOS.</p>
+
+<h3>Использование Boot Menu для разовой загрузки</h3>
+
+<p>Вместо изменения постоянного порядка загрузки можно воспользоваться функцией <code>Boot Menu</code>, вызываемой клавишей <code>F11</code> или <code>F12</code> при старте.</p>
+<p>Это позволяет выбрать флешку только для текущего сеанса, не сбрасывая настройки основных жестких дисков.</p>
+<p>Данный метод удобен для администрирования и установки ОС, так как минимизирует риск случайной загрузки не с того устройства в будущем.</p>
+<p>В меню могут отображаться как физические порты, так и логические названия устройств, что требует внимательного выбора.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование Boot Menu (F11/F12) — самый безопасный способ разовой загрузки с флешки без изменения глобальных настроек BIOS.</p></aside>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+
+<p>Даже при правильной настройке могут возникать ситуации, когда система не видит загрузчик или выдает ошибки памяти.</p>
+<p>Часто проблема кроется в несовместимости версии протокола USB или повреждении загрузочного сектора.</p>
+<p>Логирование событий в BIOS (если доступно) или на экране монитора помогает идентифицировать конкретный этап сбоя.</p>
+<p>Проверка целостности образа ОС и пересоздание загрузочной флешки другим программным обеспечением — первый шаг troubleshooting.</p>
+<p><strong>Аппаратная совместимость</strong> также играет роль: некоторые серверные RAID-контроллеры могут блокировать загрузку с внешних USB-устройств до своей инициализации.</p>
+
+<ol>
+<li><strong>Ошибка "No bootable device found"</strong> — возникает, если флешка не отформатирована в FAT32 для UEFI или если Secure Boot блокирует неподписанный загрузчик; решение: пересоздать носитель или отключить Secure Boot.</li>
+<li><strong>Система зависает на логотипе производителя</strong> — часто вызвано конфликтом прерываний USB или включенным Fast Boot; решение: отключить Fast Boot и проверить XHCI Hand-off.</li>
+<li><strong>Ошибки памяти при загрузке ядра</strong> — следствие неправильной конфигурации NUMA, когда ОС не может корректно распараллелить процессы; решение: включить Node Interleaving для теста.</li>
+<li><strong>Флешка не определяется в списке устройств</strong> — возможно, порт USB отключен в BIOS или неисправен физически; решение: переключить порт и проверить статус USB Controller.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Режим NUMA</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая производительность в многопроцессорных системах</li><li>✅ Оптимальное использование каналов памяти</li><li>✅ Масштабируемость</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность настройки</li><li>❌ Возможные проблемы совместимости со старым ПО</li><li>❌ Требует поддержки ОС</li></ul></div>
+</div></div>
+
+<h2 id="завершение-и-итоговые-рекомендации">Завершение и итоговые рекомендации</h2>
+
+<p>Правильная настройка NUMA в BIOS является фундаментом для стабильной работы серверов и высокопроизводительных рабочих станций.</p>
+<p>Загрузка с флешки в такой среде требует согласованности настроек памяти, портов USB и режима загрузки UEFI/Legacy.</p>
+
+<p>Игнорирование параметров интерливинга или неправильный выбор приоритета устройств могут привести к значительному снижению производительности или невозможности запуска системы.</p>
+<p>Всегда проверяйте документацию к материнской плате, так как названия пунктов меню могут отличаться в зависимости от производителя BIOS (AMI, Award, Phoenix).</p>
+<p>Регулярное обновление микрокода и прошивок BIOS обеспечивает поддержку нового оборудования и исправляет известные ошибки совместимости.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>После установки операционной системы убедитесь, что в ней также включена поддержка NUMA для максимального эффекта от настроек BIOS.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/n/nu/numa-bios-kak-ustanovit-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка NUMA BIOS для Windows 10: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по активации NUMA в BIOS для Windows 10. Оптимизация многопроцессорных систем,</span>
+            </a><a href="/articles/w/wi/windows-foto-ne-listaet-v-prilozhenii-fotografii.html" class="pb-related-card">
+                <span class="pb-related-title">Фото не листаются в приложении Фотографии Windows: решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению зависания прокрутки в приложении Фотографии Windows. Сброс, переу</span>
+            </a><a href="/articles/i/ir/irbis-vojti-v-bios-na-planshete.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS на планшете Irbis: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по входу в BIOS планшетов Irbis. Комбинации клавиш, отладка по USB, настройка U</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-klaviaturu-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить клавиатуру на ноутбуке: методы и инструкции</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению клавиатуры ноутбука. Методы через Диспетчер устройств, командную </span>
+            </a><a href="/articles/d/dh/dhcp-server-windows-10-ustanovka.html" class="pb-related-card">
+                <span class="pb-related-title">DHCP сервер Windows 10: Установка и настройка роли</span>
+                <span class="pb-related-desc">Подробная инструкция по установке и настройке DHCP сервера на Windows 10. Решите проблему с автомати</span>
+            </a><a href="/articles/a/ac/acer-nitro-5-an515-54-ne-zakhodit-v-bios.html" class="pb-related-card">
+                <span class="pb-related-title">Acer Nitro 5 AN515-54 не входит в BIOS: решение проблемы</span>
+                <span class="pb-related-desc">Подробная инструкция для Acer Nitro 5 AN515-54. Решения, если ноутбук не заходит в BIOS. Сброс EC, н</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

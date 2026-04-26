@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Ввод Windows 10 Home в домен: обход ограничений системы — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по подключению Windows 10 Home к домену Active Directory. Обход редакционных ограничений, использование gpedit и реестра.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/windows-10-home-vvod-v-domen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Ввод Windows 10 Home в домен: обход ограничений системы">
+    <meta property="og:description" content="Подробная инструкция по подключению Windows 10 Home к домену Active Directory. Обход редакционных ограничений, использование gpedit и реестра.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Ввод Windows 10 Home в домен: обход ограничений системы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-редакционных-ограничений-и-архитектурные-различия">Анализ редакционных ограничений и архитектурные различия</a></li><li><a href="#метод-активации-через-установку-пакета-групповых-политик">Метод активации через установку пакета групповых политик</a></li><li><a href="#прямое-подключение-через-командную-строку-и-утилиты">Прямое подключение через командную строку и утилиты</a></li><li><a href="#модификация-реестра-для-обхода-проверки-версии">Модификация реестра для обхода проверки версии</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/n/na/nand-usb2disk-usb-device-net-nositelya.html">Ошибка USB: нет носителя. Решение для NAND и контроллеров</a></li><li><a href="/articles/k/ka/kak-zapustit-kazaki-2-na-windows-10.html">Запуск Казаки 2 на Windows 10: Полное руководство по настройке</a></li><li><a href="/articles/w/wi/windows-10-podklyuchit-k-time-capsule-hdd.html">Как подключить Windows 10 к Time Capsule HDD: полная инструкция</a></li><li><a href="/articles/l/la/lagaet-wot-blitz-na-pk-windows-10.html">Лагает WoT Blitz на Windows 10: решение проблем с FPS и пингом</a></li><li><a href="/articles/u/us/ustanovka-windows-10-na-ssd-m2-nvme.html">Установка Windows 10 на SSD M.2 NVMe: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Подключение Windows 10 Home к домену: технические решения</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-редакционных-ограничений-и-архитектурные-различия">Анализ редакционных ограничений и архитектурные различия</a></li><li><a href="#метод-активации-через-установку-пакета-групповых-политик">Метод активации через установку пакета групповых политик</a></li><li><a href="#прямое-подключение-через-командную-строку-и-утилиты">Прямое подключение через командную строку и утилиты</a></li><li><a href="#модификация-реестра-для-обхода-проверки-версии">Модификация реестра для обхода проверки версии</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда корпоративная политика безопасности требует подключения ноутбука к домену Active Directory, а на устройстве установлена домашняя редакция операционной системы, встречается довольно часто. Пользователь сталкивается с невозможностью найти поле для ввода доменного имени в стандартном интерфейсе, так как функционал <code>System Properties</code> заблокирован разработчиками для редакции <em>Home</em>. Это создает критический тупик, если требуется централизованное управление учетными записями или применение групповых политик.</p>
+<p>Проблема усугубляется тем, что прямая кнопка «Изменить» в разделе настроек системы либо полностью отсутствует, либо неактивна, что делает стандартный сценарий присоединения невозможным без применения специализированных методов обхода. В отличие от версий <em>Pro</em> и <em>Enterprise</em>, домашняя редакция изначально не содержит клиентских служб для полноценной интеграции в корпоративную сеть Microsoft.</p>
+<p>Тем не менее, существуют проверенные технические приемы, позволяющие активировать скрытый функционал или эмулировать процесс авторизации, используя встроенные средства самой операционной системы. Ниже представлен детальный алгоритм действий, позволяющий решить задачу без покупки лицензии или переустановки ОС.</p>
+
+<h2 id="анализ-редакционных-ограничений-и-архитектурные-различия">Анализ редакционных ограничений и архитектурные различия</h2>
+<p>Фундаментальное различие между редакциями Windows заключается в наборе предустановленных компонентов и доступных служб. В версии <em>Home</em> искусственно отключен компонент <strong>Client for Microsoft Networks</strong> в том виде, в котором он необходим для полной интеграции с контроллером домена. Это сделано для сегментации рынка, чтобы стимулировать бизнес-клиентов приобретать более дорогие лицензии.</p>
+<p>На практике это означает, что даже при наличии правильных учетных данных и сетевой связности, система просто не имеет программного модуля, который бы инициировал handshake-процедуру с контроллером домена. Попытка ввести имя домена через стандартные интерфейсы приводит к ошибке или игнорированию введенных данных.</p>
+<p>Важно понимать, что полное превращение <em>Home</em> в <em>Pro</em> требует замены ключа активации и установки пакетов обновлений, что не всегда возможно в условиях жесткого контроля ИТ-отдела. Поэтому рассматриваются методы, работающие на уровне существующей конфигурации.</p>
+
+<h3>Сравнение функционала редакций</h3>
+<p>Для понимания масштаба ограничений стоит рассмотреть таблицу, демонстриющую разницу в возможностях сетевой интеграции между доступными версиями операционной системы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Функция</th>
+<th>Windows 10 Home</th>
+<th>Windows 10 Pro / Enterprise</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Присоединение к домену AD</td>
+<td>Нет (блокировано)</td>
+<td>Есть</td>
+</tr>
+<tr>
+<td>Групповые политики (gpedit.msc)</td>
+<td>Отсутствует</td>
+<td>Присутствует</td>
+</tr>
+<tr>
+<td>BitLocker (полный)</td>
+<td>Ограничен</td>
+<td>Полная поддержка</td>
+</tr>
+<tr>
+<td>Удаленный рабочий стол (хост)</td>
+<td>Нет</td>
+<td>Есть</td>
+</tr>
+</tbody>
+</table>
+
+<p>Отсутствие редактора локальной групповой политики является вторичным, но существенным препятствием, так как многие доменные настройки требуют именно этого инструмента для предварительной конфигурации. Однако, как будет показано далее, этот компонент можно добавить вручную.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Архитектурно ядро системы (kernel) у всех редакций одинаковое, различия заключаются только в лицензионном ключе и наборе активируемых функций.</p></aside>
+
+<h2 id="метод-активации-через-установку-пакета-групповых-политик">Метод активации через установку пакета групповых политик</h2>
+<p>Наиболее безопасным и «чистым» с точки зрения архитектуры способом является установка отсутствующего компонента групповых политик. Этот метод не меняет редакцию системы, но добавляет необходимый функционал для настройки сетевых параметров, скрытых по умолчанию.</p>
+<p>Процесс заключается в создании специального скрипта, который копирует системные файлы-заглушки из резервной папки <code>C:\Windows\PolicyDefinitions</code> и регистрирует соответствующие службы. После выполнения этой процедуры в системе появляется возможность запускать <code>gpedit.msc</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка gpedit</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создайте текстовый файл с расширением.bat</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Вставьте код установки пакетов</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запустите файл от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь сообщения об успешном завершении</span></div></div>
+
+<p>Для реализации метода необходимо создать текстовый файл, например <code>install_gpedit.bat</code>, и поместить туда следующий код, который обращается к системным директориям:</p>
+
+<pre><code>@echo off
+<p>pushd"%~dp0"</p>
+<p>dir /b %SystemRoot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientExtensions-Package~3*.mum >List.txt</p>
+<p>dir /b %SystemRoot%\servicing\Packages\Microsoft-Windows-GroupPolicy-ClientTools-Package~3*.mum >>List.txt</p>
+<p>for /f %%n in ('"findstr /i. List.txt 2^>nul"') do dism /online /norestart /add-package:"%SystemRoot%\servicing\Packages\%%n"</p>
+<p>pause</code></pre></p>
+
+<p>Запуск этого скрипта требует прав администратора. После его выполнения и перезагрузки компьютера, вызов команды <code>gpedit.msc</code> через окно <code>Выполнить</code> (Win+R) должен открывать редактор. Это открывает доступ к веткам реестра, отвечающим за сетевую идентификацию.</p>
+<p>Стоит отметить, что данный метод работает на большинстве сборок <em>Windows 10 Home</em>, однако в некоторых случаях, особенно на OEM-версиях от производителей ноутбуков, файлы-заглушки могут быть удалены. В такой ситуации потребуется использование оригинального установочного образа системы для извлечения недостающих файлов.</p>
+
+<h3>Настройка параметров сети через gpedit</h3>
+<p>После успешной установки редактора групповых политик необходимо перейти по пути <code>Конфигурация компьютера → Административные шаблоны → Сеть → Диспетчер подключений</code>. Здесь следует найти параметр, разрешающий изменение сетевых настроек, и активировать его.</p>
+<p>Далее, в разделе <code>Система → Управление связью с сервером</code> могут появиться дополнительные опции, позволяющие указать адрес контроллера домена вручную. Это позволяет системе начать поиск доверенных отношений, даже если стандартный интерфейс скрыт.</p>
+<p>Если стандартные пути не дают результата, можно попробовать принудительно запустить мастер идентификации через командную строку, используя утилиту <code>netdom</code>, которая иногда присутствует в системе даже в домашней редакции, но скрыта от пользователя.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Внесение изменений в групповые политики может повлиять на стабильность работы сетевых адаптеров. Рекомендуется создать точку восстановления системы перед началом работ.</p></aside>
+
+<h2 id="прямое-подключение-через-командную-строку-и-утилиты">Прямое подключение через командную строку и утилиты</h2>
+<p>Если графический интерфейс полностью заблокирован, единственным вариантом остается использование командной строки. Существует метод, основанный на изменении типа сети и принудительном запуске службы Netlogon, который иногда позволяет обойти проверку редакции.</p>
+<p>Суть метода заключается в том, чтобы сначала подключить компьютер к домену как к рабочей группе с особыми параметрами, а затем перерегистрировать его. Для этого используется команда <code>netdom</code> или встроенная утилита <code>wmic</code>.</p>
+<p>Рассмотрим вариант с использованием <code>wmic</code>, который является более универсальным инструментом управления. Откройте командную строку от имени администратора и введите команду для присоединения к домену:</p>
+
+<pre><code>wmic /user:Администратор /password:Пароль path win32_computersystem where name="%computername%" call joindomain name="domain.local" user="admin" password="password"</code></pre>
+
+<p>В данном примере необходимо заменить параметры на актуальные данные вашей сети. Параметр <code>name</code> указывает имя целевого домена, а последующие аргументы передают учетные данные администратора домена.</p>
+<p>Важно понимать, что этот метод работает нестабильно на последних версиях <em>Windows 10</em>, так как Microsoft постепенно закрывает эти лазейки. Однако на системах версий 1809–2004 он часто показывает положительный результат.</p>
+
+<h3>Использование утилиты Netdom (если доступна)</h3>
+<p>Утилита <code>netdom</code> входит в состав пакета RSAT (Remote Server Administration Tools), но иногда её базовая версия присутствует в системе. Если она доступна, синтаксис будет следующим:</p>
+<ol>
+ <li>Откройте командную строку с правами администратора.</li>
+ <li>Введите команду: <code>netdom join %computername% /domain:domain.local /userd:admin /passwordd:password</code>.</li>
+ <li>Перезагрузите компьютер по запросу системы.</li>
+</ol>
+<p>Успешное выполнение команды приведет к появлению компьютера в списке объектов Active Directory на сервере. Если система выдаст ошибку «Команда не найдена», значит, компонент действительно отсутствует и требуется метод с реестром.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Убедитесь, что DNS-адреса сетевой карты настроены на адрес контроллера домена, иначе ни один из методов не сработает из-за невозможности_resolve_ имени.</p></aside>
+
+<h2 id="модификация-реестра-для-обхода-проверки-версии">Модификация реестра для обхода проверки версии</h2>
+<p>Наиболее радикальным, но часто единственно работающим методом является прямая правка системного реестра. Этот способ заставляет систему «поверить», что она является версией <em>Professional</em>, что разблокирует соответствующие меню.</p>
+<p>Для начала необходимо открыть редактор реестра, введя <code>regedit</code> в окне <code>Выполнить</code>. Найдите ветку <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion</code>. Здесь нас интересуют параметры <code>ProductName</code> и <code>EditionID</code>.</p>
+<p>Измените значение <code>ProductName</code> на <code>Windows 10 Pro</code>, а <code>EditionID</code> на <code>Professional</code>. Не переименовывайте ключи, меняйте только их строковые значения. После этого требуется перезагрузка.</p>
+
+<h3>Настройка сетевого профиля</h3>
+<p>Параллельно с изменением идентификаторов версии, стоит проверить настройки сетевого профиля. Перейдите в раздел <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\NetworkList\Profiles</code>.</p>
+<p>Здесь для активного подключения необходимо изменить параметр <code>Category</code> на значение <code>1</code> (Частная сеть) или <code>2</code> (Общественная), но в контексте домена критически важно, чтобы сеть не была помечена как изолированная. Иногда смена типа сети с общественной на частную разблокирует возможность обнаружения домена.</p>
+<p>После внесения всех правок в реестр и перезагрузки, стандартное окно свойств системы должно отобразить кнопку изменения параметров. Если этого не произошло, запустить мастер настройки, введя <code>sysdm.cpl</code> в строку выполнения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Правка реестра</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите regedit</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите к CurrentVersion</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Измените ProductName на Windows 10 Pro</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите ПК</span></div></div>
+
+<p>Стоит учитывать, что после обновления системы через <em>Windows Update</em> эти изменения могут быть отброшены, так как обновитель проверяет целостность лицензионных файлов. В таком случае процедуру придется повторить.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе выполнения технических манипуляций пользователи часто сталкиваются с повторяющимися проблемами. Понимание причин этих ошибок позволяет быстрее найти решение и избежать потери времени.</p>
+
+<ol>
+ <li><strong>Ошибка «Не удается связаться с контроллером домена»</strong> — чаще всего проблема кроется в DNS-настройках. Убедитесь, что в свойствах IPv4 в качестве основного DNS-сервера прописан IP-адрес контроллера домена, а не роутера провайдера.</li>
+ <li><strong>Ошибка «Доступ запрещен» при вводе пароля</strong> — может возникать, если время на компьютере и сервере различается более чем на 5 минут. Протокол Kerberos, используемый в домене, крайне чувствителен к рассинхронизации времени. Выровняйте время вручную или через <code>w32tm</code>.</li>
+ <li><strong>Откат изменений после перезагрузки</strong> — если реестр возвращается в исходное состояние, это значит, что работает механизм защиты целостности системы или антивирус. Попробуйте выполнить правку в безопасном режиме.</li>
+ <li><strong>Отсутствие кнопки «Изменить» даже после правок</strong> — в некоторых сборках <em>Home</em> интерфейс урезан глубже, чем просто ключи реестра. В этом случае поможет только создание нового пользователя с правами администратора или использование сторонних утилит для правки системных файлов.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы обхода</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Работает без переустановки ОС</li><li>✅ Сохраняет личные данные</li><li>✅ Не требует покупки лицензии</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует технических знаний</li><li>❌ Возможен откат после обновлений</li><li>❌ Риск нарушения стабильности системы</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+<p>Подведение итогов показывает, что ввод <em>Windows 10 Home</em> в домен возможен, но требует обхода искусственных ограничений, заложенных производителем. Наиболее надежным методом является установка пакета групповых политик, так как он не нарушает целостность системных файлов, а лишь добавляет недостающие компоненты.</p>
+<p>Использование реестра и командной строки дает более быстрый результат, но несет в себе риски нестабильной работы системы после крупных обновлений. В корпоративной среде, где важна предсказуемость работы ПО, эти методы стоит рассматривать как временное решение до момента апгрейда лицензии.</p>
+<p>Главное условие успеха — наличие права голоса со стороны ИТ-отдела организации, так как подключение несанкционированного устройства к домену может нарушать политики безопасности компании. Все действия выполняются на страх и риск пользователя.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ввод Windows 10 Home в домен возможен через установку gpedit или правку реестра, но требует осторожности и настройки DNS.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/n/na/nand-usb2disk-usb-device-net-nositelya.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка USB: нет носителя. Решение для NAND и контроллеров</span>
+                <span class="pb-related-desc">Подробный разбор ошибки&#x27;нет носителя&#x27; на USB-устройствах с NAND. Диагностика контроллера, прошивка, </span>
+            </a><a href="/articles/k/ka/kak-zapustit-kazaki-2-na-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Запуск Казаки 2 на Windows 10: Полное руководство по настройке</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску стратегии Казаки 2 на Windows 10. Решение проблем с разрешением, Dir</span>
+            </a><a href="/articles/w/wi/windows-10-podklyuchit-k-time-capsule-hdd.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Windows 10 к Time Capsule HDD: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке доступа к жесткому диску Apple Time Capsule на Windows 10. Решени</span>
+            </a><a href="/articles/l/la/lagaet-wot-blitz-na-pk-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Лагает WoT Blitz на Windows 10: решение проблем с FPS и пингом</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению лагов в World of Tanks Blitz на Windows 10. Настройка графики, др</span>
+            </a><a href="/articles/u/us/ustanovka-windows-10-na-ssd-m2-nvme.html" class="pb-related-card">
+                <span class="pb-related-title">Установка Windows 10 на SSD M.2 NVMe: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по инсталляции Windows 10 на быстрый NVMe диск. Настройка BIOS, разметка разде</span>
+            </a><a href="/articles/p/pa/packard-bell-easynote-te11hc-bios-update.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление BIOS Packard Bell EasyNote TE11HC: Полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по обновлению BIOS для ноутбука Packard Bell EasyNote TE11HC. Скачать прошивку</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

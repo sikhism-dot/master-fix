@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Tor Server на Tizen OS: Инструкция по настройке и запуску — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по развертыванию Tor Server на устройствах Tizen. Настройка прокси, обход блокировок и оптимизация производительности системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/t/to/torserver-tizen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tor Server на Tizen OS: Инструкция по настройке и запуску">
+    <meta property="og:description" content="Техническое руководство по развертыванию Tor Server на устройствах Tizen. Настройка прокси, обход блокировок и оптимизация производительности системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Tor Server на Tizen OS: Инструкция по настройке и запуску</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-архитектурных-ограничений-и-выбор-стратегии-развертывания">Анализ архитектурных ограничений и выбор стратегии развертывания</a></li><li><a href="#настройка-серверной-части-tor-на-внешнем-шлюзе">Настройка серверной части Tor на внешнем шлюзе</a></li><li><a href="#интеграция-tizen-устройства-в-сеть-tor">Интеграция Tizen устройства в сеть Tor</a></li><li><a href="#оптимизация-производительности-и-устранение-проблем">Оптимизация производительности и устранение проблем</a></li><li><a href="#типичные-ошибки-при-настройке">Типичные ошибки при настройке</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vk/vkhod-lnb-in-pristavki-trikolor-remont.html">Ремонт входа LNB IN на приставках Триколор: диагностика и устранение</a></li><li><a href="/articles/k/ka/kak-uznat-na-kogo-trikolor-zaregistrirovan.html">Как узнать владельца Триколор: проверка регистрации</a></li><li><a href="/articles/b/by/byl-provajder-dom-ru-i-pristavka-ikh-movekh.html">Провайдер Дом.ру и приставка Movix: настройка и замена</a></li><li><a href="/articles/i/in/instruktsiya-podklyucheniya-resivera-dv3t8000.html">Инструкция подключения DVB-T2 8000: настройка цифровых каналов</a></li><li><a href="/articles/k/ka/kak-proverit-rabotosposobnost-resivera-trikolor-bez-tarelki-pri-pokupke.html">Проверка ресивера Триколор без антенны: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Развертывание Tor Server на платформе Tizen: Полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-архитектурных-ограничений-и-выбор-стратегии-развертывания">Анализ архитектурных ограничений и выбор стратегии развертывания</a></li><li><a href="#настройка-серверной-части-tor-на-внешнем-шлюзе">Настройка серверной части Tor на внешнем шлюзе</a></li><li><a href="#интеграция-tizen-устройства-в-сеть-tor">Интеграция Tizen устройства в сеть Tor</a></li><li><a href="#оптимизация-производительности-и-устранение-проблем">Оптимизация производительности и устранение проблем</a></li><li><a href="#типичные-ошибки-при-настройке">Типичные ошибки при настройке</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка организовать стабильный и анонимный выход в интернет на умных телевизорах Samsung с операционной системой Tizen часто сталкивается с жесткими ограничениями встроенного программного обеспечения. Владельцы устройств обнаруживают, что стандартные браузеры не поддерживают установку расширений для изменения прокси, а системные настройки сети лишены функционала для тонкой маршрутизации трафика через узлы Tor.</p>
+<p>Необходимость обеспечения конфиденциальности данных или обхода региональных блокировок контента требует внедрения сторонних решений, которые не предусмотрены производителем по умолчанию. Прямая установка полноценного сервера Tor на устройство с архитектурой ARM и закрытой файловой системой Tizen представляет собой сложную инженерную задачу, требующую глубокого понимания работы сетевых протоколов.</p>
+<p>Вместо прямой инсталляции, которая технически невозможна без перепрошивки ядра, эффективным решением становится использование промежуточного шлюза или эмуляции среды выполнения. Это позволяет перенаправить трафик телевизора через внешний узел, обеспечивая необходимый уровень анонимности без нарушения гарантии на устройство.</p>
+
+<h2 id="анализ-архитектурных-ограничений-и-выбор-стратегии-развертывания">Анализ архитектурных ограничений и выбор стратегии развертывания</h2>
+
+<p>Платформа Tizen, базирующаяся на Linux-подобном ядре, формально поддерживает сетевые утилиты, однако доступ пользователя к системным бинарным файлам строго ограничен политиками безопасности Samsung. Прямая компиляция и запуск демона tor на устройстве невозможна из-за отсутствия пакетного менеджера для пользовательских приложений и цифровой подписи исполняемых файлов.</p>
+<p>На практике применяется метод эмуляции или проброса портов, когда роль сервера берет на себя внешнее устройство, находящееся в той же локальной сети. Телевизор в данной схеме выступает лишь как клиент, трафик которого принудительно направляется на шлюз, где и происходит шифрование и маршрутизация через сеть Tor.</p>
+<p>Если у вас имеется компьютер с операционной системой Linux или маршрутизатор с поддержкой OpenWrt, именно на них целесообразнее развернуть сервис Tor. Это снимает нагрузку с процессора телевизора, который часто не обладает достаточной вычислительной мощностью для обработки криптографических алгоритмов в реальном времени без потери качества видеопотока.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка root-доступа к Tizen через методы типа SamyGO может привести к необратимому повреждению прошивки и потере гарантии. Рекомендуется использовать внешние шлюзы.</p></aside>
+
+<h3>Сравнение методов организации туннелирования</h3>
+
+<p>Существует два основных подхода к реализации задачи: программная эмуляция на ПК и аппаратное решение на роутере. Первый вариант более доступен для тестирования, так как не требует покупки дополнительного оборудования, но требует постоянного включения компьютера.</p>
+<p>Второй вариант обеспечивает автономность работы всей домашней сети, однако требует наличия совместимого маршрутизатора и навыков администрирования сетевых устройств. Выбор конкретного метода зависит от инфраструктуры пользователя и требований к постоянству доступа.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Внешний ПК (Linux/Windows)</th>
+<th>Роутер (OpenWrt)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сложность настройки</td>
+<td>Средняя</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Влияние на скорость TV</td>
+<td>Минимальное</td>
+<td>Отсутствует</td>
+</tr>
+<tr>
+<td>Необходимость включения ПК</td>
+<td>Обязательно</td>
+<td>Нет</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для моделей Tizen 4.0 и новее (2019-2023 гг.) прямое изменение системных файлов практически невозможно без специализированных инструментов отладки Samsung.</p></aside>
+
+<h2 id="настройка-серверной-части-tor-на-внешнем-шлюзе">Настройка серверной части Tor на внешнем шлюзе</h2>
+
+<p>Организация точки входа в сеть Tor требует установки соответствующего программного обеспечения на компьютер с ОС Linux или совместимый роутер. В дистрибутивах на базе Debian или Ubuntu процесс установки стандартизирован через репозитории, что минимизирует риски ошибок при сборке зависимостей.</p>
+<p>Первым шагом является установка пакетов торрента и ключей репозитория для обеспечения актуальности версии ПО. После установки базового пакета необходимо произвести конфигурацию файла <code>torrc</code>, указав параметры, которые разрешат входящие соединения из локальной сети, где находится телевизор.</p>
+<p>Важно правильно настроить параметры <code>ControlPort</code> и <code>HTTPTunnelPort</code>, если планируется использование специфических приложений, хотя для простого проброса трафика достаточно корректной настройки SOCKS5 прокси. Стандартный порт для SOCKS в Tor — 9050, его необходимо открыть для локальной подсети.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовая установка Tor на Linux</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите пакет tor через apt или yum</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Отредактируйте файл /etc/tor/torrc</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Раскомментируйте строку HTTPTunnelPort 8118</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезапустите сервис командой systemctl restart tor</span></div></div>
+
+<h3>Конфигурирование файла torrc для локального доступа</h3>
+
+<p>Файл конфигурации <code>torrc</code> является центральным элементом настройки, определяющим поведение демона. Для работы в качестве шлюза для Tizen-устройства необходимо явно разрешить прослушивание сетевого интерфейса, а не только localhost.</p>
+<p>Добавление строки <code>HTTPProxyPort</code> или настройка <code>SocksPort</code> с указанием IP-адреса локальной сети (например, 192.168.1.0/24) позволит телевизору подключиться к прокси. Без этого шага демон Tor будет отвергать все входящие соединения извне, считая их потенциальной атакой.</p>
+<p>Также стоит обратить внимание на параметр <code>DataDirectory</code>, убедившись, что у пользователя, от имени которого запущен сервис, есть права на запись в указанную папку. Это особенно актуально при запуске Tor в контейнере или на системах с ограниченным доступом к файловой системе.</p>
+
+<pre><code># Пример конфигурации для доступа из локальной сети
+<p>SocksPort 192.168.1.100:9050</p>
+<p>HTTPProxyPort 192.168.1.100:8118</p>
+<p>AllowInvalidNodes middle,exit</p>
+</code></pre>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректная настройка torrc с указанием конкретного IP-адреса шлюза — критический этап, без которого подключение телевизора невозможно.</p></aside>
+
+<h2 id="интеграция-tizen-устройства-в-сеть-tor">Интеграция Tizen устройства в сеть Tor</h2>
+
+<p>После подготовки серверной части необходимо настроить сам телевизор или приставку на работу через созданный прокси. Поскольку в стандартном интерфейсе Tizen отсутствует глобальная настройка прокси-сервера для всех приложений, решение зависит от типа используемого программного обеспечения.</p>
+<p>Для встроенного браузера Samsung Internet или других нативных приложений часто единственным выходом является настройка прокси непосредственно в параметрах Wi-Fi соединения. Однако, многие приложения игнорируют системные настройки прокси, полагаясь на прямое соединение.</p>
+<p>В таких случаях требуется использование специализированных приложений-оболочек или настройка маршрутизации на уровне роутера. Если роутер поддерживает перенаправление всего трафика определенного устройства (по MAC-адресу) на SOCKS5 прокси, это будет наиболее надежным методом.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На телевизорах Samsung серий M, Q и LS (2020-2026) меню настройки прокси для Wi-Fi может быть скрыто в разделе «Дополнительные настройки» при ручном вводе IP.</p></aside>
+
+<h3>Настройка прокси в параметрах сети телевизора</h3>
+
+<p>Если выбран метод настройки на уровне устройства, необходимо перейти в меню сетевых подключений. В списке доступных сетей следует выбрать текущую точку доступа и изменить параметры с автоматических на ручные.</p>
+<p>В полях настройки потребуется ввести IP-адрес компьютера или роутера, на котором запущен Tor, и соответствующий порт (обычно 9050 для SOCKS или 8118 для HTTP). Важно точно указать тип прокси, так как несоответствие типа приведет к ошибке соединения.</p>
+<p>После сохранения настроек рекомендуется выполнить проверку IP-адреса через встроенный браузер, посетив специализированный ресурс. Если отображается адрес узла выхода Tor, а не реальный IP провайдера, конфигурация выполнена успешно.</p>
+
+<ol>
+<li>Откройте <code>Настройки</code> на главном экране Tizen.</li>
+<li>Перейдите в раздел <code>Общие</code> → <code>Сеть</code>.</li>
+<li>Выберите активное соединение и нажмите <code>Настройки IP</code>.</li>
+<li>Введите IP шлюза и порт в соответствующие поля прокси.</li>
+<li>Сохраните изменения и выполните тест подключения.</li>
+</ol>
+
+<h2 id="оптимизация-производительности-и-устранение-проблем">Оптимизация производительности и устранение проблем</h2>
+
+<p>Использование сети Tor неизбежно вносит задержки в передачу данных, что может негативно сказаться на воспроизведении видеоконтента высокой четкости. Буферизация потокового видео требует стабильного канала с высокой пропускной способностью, что противоречит архитектуре анонимной сети.</p>
+<p>Для минимизации лагов рекомендуется выбирать узлы выхода, географически близкие к источнику контента, если конфигурация Tor позволяет управлять путем (через файл <code>torrc</code> параметром <code>ExitNodes</code>). Однако это частично снижает уровень анонимности.</p>
+<p>Также стоит учитывать, что процессоры телевизоров Samsung не отличаются высокой производительностью при декодировании тяжелых кодеков, и дополнительная нагрузка по обработке сетевых пакетов может вызвать подтормаживание интерфейса.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация Tor на Tizen</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокий уровень анонимности</li><li>✅ Обход блокировок контента</li><li>✅ Защита от слежения провайдера</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Снижение скорости интернета</li><li>❌ Возможные задержки при стриминге</li><li>❌ Сложность настройки для новичков</li></ul></div>
+</div></div>
+
+<h3>Диагностика соединений и логирование</h3>
+
+<p>При возникновении проблем с подключением первичным источником информации служат логи демона Tor на серверной стороне. Анализ записей в реальном времени позволяет определить, поступает ли запрос от телевизора и на каком этапе происходит разрыв соединения.</p>
+<p>Частой проблемой является блокировка соединения межсетевым экраном (firewall) на компьютере или роутере. Необходимо убедиться, что порты, указанные в конфигурации, открыты для входящих соединений из локальной подсети.</p>
+<p>Если телевизор теряет соединение через определенные интервалы времени, это может указываться на нестабильность выбранного узла Tor или таймауты DNS. В таких случаях помогает изменение настроек DNS на устройстве Tizen на публичные серверы (например, 1.1.1.1 или 8.8.8.8).</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Вероятная причина</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ошибка «Нет интернета»</td>
+<td>Неверный IP шлюза</td>
+<td>Проверить IP компьютера в локальной сети</td>
+</tr>
+<tr>
+<td>Таймаут соединения</td>
+<td>Блокировка Firewall</td>
+<td>Добавить правило для порта 9050</td>
+</tr>
+<tr>
+<td>Медленная загрузка</td>
+<td>Перегруженный узел Tor</td>
+<td>Изменить цепочку узлов или время суток</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте утилиту tcpdump на сервере для анализа проходящих пакетов, если стандартные логи не дают полной картины происходящего.</p></aside>
+
+<h2 id="типичные-ошибки-при-настройке">Типичные ошибки при настройке</h2>
+
+<p>В процессе настройки пользователи часто сталкиваются с повторяющимися проблемами, связанными с невнимательностью к деталям конфигурации или misunderstanding архитектуры сети. Понимание этих ошибок позволяет сократить время наладки системы.</p>
+
+<ol>
+<li><strong>Использование localhost (127.0.0.1) в настройках телевизора</strong> — адрес localhost указывает на само устройство; в поле IP прокси на телевизоре необходимо указывать реальный IP-адрес компьютера или роутера в локальной сети.</li>
+<li><strong>Блокировка портов антивирусом</strong> — даже при правильной настройке Tor, встроенный брандмауэр Windows или антивирусное ПО могут блокировать входящие соединения; требуется создать исключение для порта 9050.</li>
+<li><strong>Несоответствие типа прокси</strong> — попытка настроить SOCKS5 прокси в поле для HTTP/HTTPS приведет к невозможности установления соединения; протоколы не являются взаимозаменяемыми без дополнительной конвертации.</li>
+<li><strong>Динамический IP адрес шлюза</strong> — если IP-адрес компьютера меняется после перезагрузки роутера, настройки на телевизоре перестанут работать; рекомендуется закрепить IP за устройством-шлюзом в настройках DHCP.</li>
+</ol>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Организация работы Tor на устройствах с операционной системой Tizen требует комплексного подхода, так как прямая установка ПО на телевизор технически ограничена. Наиболее эффективным и безопасным методом является использование внешнего шлюза, который берет на себя функции шифрования и маршрутизации трафика.</p>
+<p>Правильная настройка файла конфигурации и сетевых параметров позволяет обеспечить высокий уровень конфиденциальности при просмотре контента. Несмотря на возможные компромиссы в скорости соединения, данная схема остается единственным рабочим решением для современных смарт-ТВ Samsung.</p>
+<p>Регулярное обновление программного обеспечения Tor и мониторинг сетевой активности гарантируют стабильную работу системы в долгосрочной перспективе. Соблюдение правил цифровой гигиены при использовании анонимных сетей является обязательным условием безопасности.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vk/vkhod-lnb-in-pristavki-trikolor-remont.html" class="pb-related-card">
+                <span class="pb-related-title">Ремонт входа LNB IN на приставках Триколор: диагностика и устранение</span>
+                <span class="pb-related-desc">Подробная инструкция по восстановлению сигнала спутникового ресивера. Диагностика разъема LNB IN, пр</span>
+            </a><a href="/articles/k/ka/kak-uznat-na-kogo-trikolor-zaregistrirovan.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать владельца Триколор: проверка регистрации</span>
+                <span class="pb-related-desc">Пошаговая инструкция: как узнать, на кого зарегистрирован ресивер Триколор. Проверка через ЛК, паспо</span>
+            </a><a href="/articles/b/by/byl-provajder-dom-ru-i-pristavka-ikh-movekh.html" class="pb-related-card">
+                <span class="pb-related-title">Провайдер Дом.ру и приставка Movix: настройка и замена</span>
+                <span class="pb-related-desc">Техническая инструкция по настройке, замене и troubleshooting приставки Movix от провайдера Дом.ру. </span>
+            </a><a href="/articles/i/in/instruktsiya-podklyucheniya-resivera-dv3t8000.html" class="pb-related-card">
+                <span class="pb-related-title">Инструкция подключения DVB-T2 8000: настройка цифровых каналов</span>
+                <span class="pb-related-desc">Подробное руководство по настройке ресивера DVB-T2 8000. Поиск каналов, настройка антенны, устранени</span>
+            </a><a href="/articles/k/ka/kak-proverit-rabotosposobnost-resivera-trikolor-bez-tarelki-pri-pokupke.html" class="pb-related-card">
+                <span class="pb-related-title">Проверка ресивера Триколор без антенны: полная инструкция</span>
+                <span class="pb-related-desc">Как проверить работоспособность ресивера Триколор без спутниковой тарелки. Диагностика через Wi-Fi, </span>
+            </a><a href="/articles/v/vi/vidzhet-kinopab-na-tizen-instruktsiya.html" class="pb-related-card">
+                <span class="pb-related-title">Виджет Кинопаб на Tizen: установка и настройка виджета</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке виджета Кинопаб на Tizen OS. Решения для Samsung TV 2016-2026 годо</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

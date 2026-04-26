@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>MikroTik CCR режет скорость: диагностика и настройка — Мастер Фикс</title>
+    <meta name="description" content="Почему MikroTik CCR режет скорость интернета? Полный гайд по диагностике, настройке FastTrack, очередям и аппаратным ограничениям.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/m/mi/mikrotik-ccr-rezhet-skorost-interneta.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="MikroTik CCR режет скорость: диагностика и настройка">
+    <meta property="og:description" content="Почему MikroTik CCR режет скорость интернета? Полный гайд по диагностике, настройке FastTrack, очередям и аппаратным ограничениям.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">MikroTik CCR режет скорость: диагностика и настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-загрузки-процессора-и-архитектуры-потоков">Анализ загрузки процессора и архитектуры потоков</a></li><li><a href="#оптимизация-firewall-и-механизм-fasttrack">Оптимизация Firewall и механизм FastTrack</a></li><li><a href="#настройка-очередей-и-ограничение-трафика">Настройка очередей и ограничение трафика</a></li><li><a href="#аппаратные-ограничения-и-настройки-интерфейсов">Аппаратные ограничения и настройки интерфейсов</a></li><li><a href="#типичные-ошибки-при-настройке-производительности">Типичные ошибки при настройке производительности</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vyklyuchit-lte-na-planshete.html">Как отключить LTE на планшете: полная инструкция</a></li><li><a href="/articles/i/in/internet-kod-oshibki-137-chto-oznachaet.html">Ошибка 137 в интернете: что означает и как исправить</a></li><li><a href="/articles/k/ka/kak-proshit-pristavku-rostelekom-na-novyj-ajpi.html">Как прошить Ростелеком приставку: смена IP и прошивки</a></li><li><a href="/articles/k/ka/kak-podklyuchit-internet-rozetku-k-kabelyu-8-zhil-skhema-podklyucheniya-werkel.html">Подключение интернет-розетки Werkel: схема и порядок действий</a></li><li><a href="/articles/k/ka/kak-podklyuchit-k-internetu-pristavku-orbita-911.html">Подключение приставки Орбита 911 к интернету: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Диагностика и устранение низкой скорости на MikroTik CCR</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-загрузки-процессора-и-архитектуры-потоков">Анализ загрузки процессора и архитектуры потоков</a></li><li><a href="#оптимизация-firewall-и-механизм-fasttrack">Оптимизация Firewall и механизм FastTrack</a></li><li><a href="#настройка-очередей-и-ограничение-трафика">Настройка очередей и ограничение трафика</a></li><li><a href="#аппаратные-ограничения-и-настройки-интерфейсов">Аппаратные ограничения и настройки интерфейсов</a></li><li><a href="#типичные-ошибки-при-настройке-производительности">Типичные ошибки при настройке производительности</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда дорогостоящий маршрутизатор уровня Carrier Class, такой как серия MikroTik CCR, не выдает заявленную пропускную способность канала, вызывает закономерное недоумение у администраторов сетей. Вместо ожидаемых 1 Гбит/с или 10 Гбит/с тесты показывают едва ли 300-400 Мбит/с, а загрузка процессора при этом может быть минимальной или, наоборот, критической. Проблема часто кроется не в аппаратной неисправности, а в конфигурационных нюансах, которые блокируют аппаратное ускорение пакетов.</p>
+
+<p>На практике снижение скорости наблюдается сразу после внедрения сложных правил фаервола, включении детального логирования или активации сервисов, обрабатываемых программно. Понимание архитектуры RouterOS и принципа работы потоков обработки данных является ключевым фактором для восстановления нормальной производительности. Игнорирование порядка правил и типа трафика приводит к тому, что пакеты вместо быстрой трассы попадают в медленный программный конвейер.</p>
+
+<p>Если у вас наблюдается подобная картина, первым шагом должна стать не замена оборудования, а глубокий аудит текущей конфигурации. Необходимо проанализировать загрузку центрального процессора, проверить статус интерфейсов и убедиться в корректности работы механизмов ускорения. Часто достаточно одного неверного параметра в цепочке фильтрации, чтобы весь трафик начал обрабатываться в режиме single-core, drastically снижая общую пропускную способность.</p>
+
+<h2 id="анализ-загрузки-процессора-и-архитектуры-потоков">Анализ загрузки процессора и архитектуры потоков</h2>
+
+<p>Первичная диагностика всегда начинается с мониторинга ресурсов системы, так как именно CPU является основным узким местом при программной обработке пакетов. В отличие от потребительских роутеров, устройства серии <em>Cloud Core Router</em> имеют многоядерную архитектуру, где распределение нагрузки зависит от типа трафика и настроек прерываний. Если вы видите, что одно ядро загружено на 100%, а остальные простаивают, это прямой признак того, что трафик не распараллеливается.</p>
+
+<p>Допустим, на интерфейсе <code>ether1</code> входящий поток данных обрабатывается только нулевым ядром процессора. В этом случае максимальная скорость будет ограничена производительностью одного ядра, независимо от общей мощности устройства. Для проверки текущей загрузки необходимо использовать встроенные инструменты мониторинга, которые показывают распределение процессов по ядрам в реальном времени.</p>
+
+<p>Важно различать нагрузку от системных процессов и нагрузку от обработки сетевых пакетов. Высокая загрузка может быть вызвана фоновыми задачами, такими как сбор статистики, обновление списков или работа скриптов. Если же проблема именно в проходящем трафике, следует обратить внимание на механизм прерываний IRQ.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях CCR с процессорами TILE и ARM распределение прерываний настраивается по-разному, но принцип многопоточности един для всех.</p></aside>
+
+<p>Для детального анализа используйте команду в терминале, которая выведет статистику по прерываниям и их привязке к ядрам. Это позволит увидеть, какой именно сетевой адаптер «висит» на одном ядре.</p>
+
+<pre><code>/system resource irq print</code></pre>
+
+<p>После получения списка прерываний необходимо перераспределить их вручную, чтобы задействовать все доступные ядра. Это делается через установку параметра <code>affinity</code> для каждого прерывания, соответствующего сетевому интерфейсу. Правильное распределение позволяет линейно масштабировать производительность при росте числа подключений.</p>
+
+<h3>Настройка affininity для сетевых интерфейсов</h3>
+
+<p>Ручная настройка привязки прерываний требует понимания нумерации ядер и текущей загрузки. Если на устройстве 16 ядер, а трафик идет только через один порт, имеет смысл распределить прерывания этого порта на несколько ядер, если драйвер и версия <em>RouterOS</em> поддерживают такую балансировку, либо закрепить за ним отдельное ядро, освободив остальные для системных задач.</p>
+
+<p>В случае, если автоматическое распределение не работает корректно, применяется ручной метод. Сначала отключается автоматическое распределение, затем каждому прерыванию назначается конкретное ядро или группа ядер. Это особенно актуально для версий <em>RouterOS v7</em>, где изменилась модель работы с многопоточностью.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка многопоточности</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал и введите /system resource irq print</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите строки с названием вашего интерфейса (например, ether1)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните команду set affinity=0,1,2,3 numbers=X для распределения на 4 ядра</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте загрузку CPU при нагрузке каналом</span></div></div>
+
+<p>Стоит помнить, что изменение параметров прерываний на работающей системе может вызвать кратковременный разрыв соединений или скачок пинга. Поэтому подобные манипуляции лучше проводить в техническое окно или на резервном канале, если такая возможность имеется.</p>
+
+<h2 id="оптимизация-firewall-и-механизм-fasttrack">Оптимизация Firewall и механизм FastTrack</h2>
+
+<p>Основной причиной, по которой <strong>MikroTik CCR режет скорость</strong>, является отключение механизма FastTrack из-за особенностей конфигурации правил фаервола. Технология FastTrack позволяет помечать соединения, которые уже были проверены правилами фильтрации, и передавать их напрямую, минуя дальнейшую обработку процессором. Если пакет не помечен как fasttrack-кандидат, он проходит полный цикл проверки, что значительно увеличивает нагрузку на CPU.</p>
+
+<p>Для работы FastTrack необходимо выполнение нескольких условий: правило должно находиться в цепи <code>forward</code>, действовать на установленные соединения (<code>connection-state=established,related</code>) и иметь действие <code>fasttrack-connection</code>. Критически важно, чтобы это правило стояло в списке выше, чем правила, которые могут DROP или REJECT пакеты, но ниже правил, которые должны блокировать доступ (например,).</p>
+
+<p>Если в конфигурации присутствуют сложные правила, использующие <code>layer7-protocol</code>, <code>content</code> или <code>src-mac-address</code> в цепочке forward, FastTrack для таких потоков работать не будет. Пакеты, требующие глубокой инспекции, всегда будут обрабатываться программно. Поэтому архитектура правил должна быть построена так, чтобы основной объем легитимного трафика попадал под ускорение.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр правила</th>
+<th>Влияние на FastTrack</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connection State</td>
+<td>Должен быть established, related</td>
+<td>Обязательно для ускорения</td>
+</tr>
+<tr>
+<td>Action</td>
+<td>fasttrack-connection</td>
+<td>Ставить перед accept</td>
+</tr>
+<tr>
+<td>Layer7 Protocol</td>
+<td>Отключает ускорение</td>
+<td>Использовать только для исключений</td>
+</tr>
+</tbody>
+</table>
+
+<p>Проверьте порядок правил в <code>IP → Firewall → Filter Rules</code>. Если правило FastTrack стоит в конце списка или отсутствует, скорость будет ограничена производительностью одного ядра на обработку каждого бита информации. В современных версиях <em>RouterOS</em> это правило часто создается автоматически, но может быть удалено или изменено пользователем.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Правило fasttrack-connection должно стоять перед правилом accept в цепи forward, но после всех правил блокировки нежелательного трафика.</p></aside>
+
+<h3>Конфликты правил и порядок обработки</h3>
+
+<p>Частой ошибкой является размещение правил, блокирующих торренты или соцсети, после правила ускорения. В таком случае блокировка не сработает для уже ускоренных соединений. Правильная структура выглядит так: сначала правила DROP для и блокировок, затем правило FastTrack для остального трафика, и в конце общее правило ACCEPT.</p>
+
+<p>Если вам необходимо применять ограничение скорости (Queue Simple) или проброс портов, убедитесь, что эти функции совместимы с FastTrack. В некоторых версиях ПО проброс портов (NAT) и FastTrack могут конфликтовать, если не настроены корректно. В <em>RouterOS v7</em> эта проблема решена лучше, но требует проверки конфигурации NAT.</p>
+
+<p>Для диагностики того, работает ли ускорение, можно использовать счетчики правил фаервола. Если счетчик правила FastTrack растет, а счетчики последующих правил <code>accept</code> стоят на месте или растут медленно, значит, механизм работает. Если же основной трафик идет через обычные правила принятия, ускорение не эффективно.</p>
+
+<h2 id="настройка-очередей-и-ограничение-трафика">Настройка очередей и ограничение трафика</h2>
+
+<p>Использование очередей (Queues) — мощный инструмент управления полосой пропускания, но он является одним из самых ресурсоемких процессов в <em>RouterOS</em>. Когда включается Simple Queue или Queue Tree, пакеты перестают проходить по быстрому пути и начинают обрабатываться программно, что может снизить общую пропускную способность канала в разы, особенно на больших скоростях.</p>
+
+<p>Если на маршрутизаторе настроено ограничение скорости для каждого клиента, необходимо оценить, действительно ли нужны такие детальные настройки на граничном роутере. Для каналов выше 500 Мбит/с применение сложных деревьев очередей на CCR может стать. В таких случаях рекомендуется использовать более простые методы или аппаратные ограничители, если они поддерживаются конкретным железом.</p>
+
+<p>Проверьте конфигурацию очередей в разделе <code>Queues</code>. Если используется <code>Queue Tree</code>, убедитесь, что правила не дублируют друг друга и не создают лишних циклов обработки. Избыточное количество правил в дереве очередей напрямую влияет на задержку (latency) и джиттер, даже если CPU загружен не полностью.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование очередей</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Возможность гибкого управления трафиком</li><li>✅ Приоритизация важного трафика (VoIP, игры)</li><li>✅ Контроль за отдельными пользователями</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сильное снижение общей пропускной способности</li><li>❌ Высокая нагрузка на CPU</li><li>❌ Увеличение задержек при переполнении буферов</li></ul></div>
+</div></div>
+
+<h3>Simple Queue против Queue Tree</h3>
+
+<p>Выбор между простой очередью и деревом очередей зависит от топологии сети. <code>Simple Queue</code> легче в настройке и менее требовательна к ресурсам для простых сценариев «один клиент — одно правило». <code>Queue Tree</code> позволяет строить сложную иерархию, группировать пользователей и применять правила к целым подсетям, но требует более тонкой настройки и мощного CPU.</p>
+
+<p>Если скорость режется именно при включении очередей, попробуйте оптимизировать их работу. Например, используйте <code>global-total</code> вместо <code>global</code> для ограничения суммы всех клиентов, чтобы не создавать отдельную ветку обработки для каждого. Также стоит отключить лишние счетчики и логи внутри правил очередей.</p>
+
+<p>В некоторых случаях эффективным решением является вынос функции шейпинга трафика на отдельное устройство или использование механизмов уровня L2, если коммутаторы поддерживают ограничители скорости. Это разгрузит центральный процессор CCR для выполнения его основной задачи — маршрутизации.</p>
+
+<h2 id="аппаратные-ограничения-и-настройки-интерфейсов">Аппаратные ограничения и настройки интерфейсов</h2>
+
+<p>Не стоит забывать о физических ограничениях оборудования. Хотя серия <em>CCR</em> позиционируется как carrier-class, разные модели имеют разную архитектуру. Например, модели на базе процессоров <em>TILE</em> (старые CCR1xxx) имеют отличную производительность на множество потоков, но могут уступать в single-core производительности новым моделям на <em>ARM</em> (CCR2xxx). Важно понимать, какую именно модель вы используете.</p>
+
+<p>Проверьте настройки сетевых интерфейсов. Автоматическое определение скорости и дуплекса (<code>auto-negotiation</code>) иногда работает некорректно с определенными моделями оптических модулей или провайдерским оборудованием. Если линк поднят на 1 Гбит/с вместо 10 Гбит/с или работает в полудуплексе, скорость будет ограничена физически.</p>
+
+<p>В терминале выполните команду <code>/interface ethernet print</code> и обратите внимание на поля <code>rate</code> и <code>full-duplex</code>. Также проверьте наличие ошибок (<code>rx-error</code>, <code>tx-error</code>). Рост счетчиков ошибок указывает на проблемы с кабелем, SFP-модулем или электромагнитными наводками, что приводит к ретрансляции пакетов и падению полезной скорости.</p>
+
+<table>
+<thead>
+<tr>
+<th>Модель CCR</th>
+<th>Архитектура</th>
+<th>Макс. throughput (typical)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CCR1036</td>
+<td>TILE (36 core)</td>
+<td>~100+ Гбит/с (с FastPath)</td>
+</tr>
+<tr>
+<td>CCR2004</td>
+<td>ARM 64bit</td>
+<td>~40-60 Гбит/с</td>
+</tr>
+<tr>
+<td>CCR2116</td>
+<td>ARM 64bit</td>
+<td>~80+ Гбит/с</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Проблемы с SFP и оптическими модулями</h3>
+
+<p>Использование несовместимых или дешевых SFP-модулей — распространенная причина нестабильной работы линков на высоких скоростях. MikroTik может не распознавать модуль или принудительно снижать скорость соединения. В логах (<code>/log print</code>) могут появляться сообщения о линк-даун/ап событиях.</p>
+
+<p>Для исключения проблем с оптикой рекомендуется заменять патч-корды, проверять уровень сигнала (dBm) в интерфейсе и, при возможности, тестировать канал с использованием сертифицированных модулей. Иногда помогает фиксация скорости и дуплекса вручную, отключив авто-негосиацию, если оборудование на другой стороне тоже это позволяет.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду /interface ethernet monitor [interface-name] once для получения мгновенной статистики по уровню сигнала и статусу линка без постоянного опроса.</p></aside>
+
+<h2 id="типичные-ошибки-при-настройке-производительности">Типичные ошибки при настройке производительности</h2>
+
+<p>Анализ тысяч конфигураций позволяет выделить ряд повторяющихся ошибок, которые гарантированно приводят к снижению скорости на оборудовании MikroTik. Избегание этих pitfalls поможет сохранить производительность сети на высоком уровне.</p>
+
+<ol>
+<li><strong>Отсутствие правила FastTrack или его неправильное положение</strong> — самая частая ошибка, при которой весь трафик идет через медленный путь обработки; правило должно быть в начале цепи forward после правил безопасности.</li>
+<li><strong>Включение логирования (Logging) для всего трафика</strong> — запись логов каждого пакета или соединения в диск или память создает огромную нагрузку на дисковую подсистему и процессор, мгновенно «душа» канал.</li>
+<li><strong>Использование Layer7 протоколов на скоростях выше 100 Мбит/с</strong> — глубокая инспекция пакетов требует больших вычислительных ресурсов и не масштабируется на гигабитных каналах, лучше использовать списки адресов или TLS хосты.</li>
+<li><strong>Некорректная настройка MTU и MSS</strong> — если MTU на интерфейсе WAN меньше, чем на LAN, и не настроено клamping MSS, крупные пакеты будут фрагментироваться или теряться, что снизит эффективную скорость TCP-соединений.</li>
+</ol>
+
+<p>Кроме того, часто администраторы забывают обновлять прошивку. В новых версиях <em>RouterOS</em> постоянно улучшаются драйверы сетевых карт и оптимизируется работа сетевого стека. Работа на старой версии ПО может означать наличие известных багов, влияющих на производительность.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Соблюдение правил построения фаервола и отказ от ресурсоемких функций на граничном роутере гарантируют стабильную скорость.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Восстановление полной скорости на MikroTik CCR требует системного подхода, начиная от проверки физических линков и заканчивая тонкой настройкой программных очередей. Ключевым моментом является обеспечение работы механизма FastTrack и правильное распределение прерываний по ядрам процессора. Игнорирование этих аспектов превращает мощное оборудование в узкое горлышко сети.</p>
+
+<p>Регулярный мониторинг загрузки CPU, анализ правил фаервола и своевременное обновление программного обеспечения позволят поддерживать сеть в оптимальном состоянии. Помните, что любое правило, добавляемое в конфигурацию, должно быть обосновано с точки зрения влияния на производительность, особенно в цепочках обработки основного трафика.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vyklyuchit-lte-na-planshete.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить LTE на планшете: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению LTE на планшетах Android и iPad. Настройка режимов сети, экономи</span>
+            </a><a href="/articles/i/in/internet-kod-oshibki-137-chto-oznachaet.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка 137 в интернете: что означает и как исправить</span>
+                <span class="pb-related-desc">Подробный разбор кода ошибки 137. Причины появления NetBIOS Name Conflict, диагностика сети и пошаго</span>
+            </a><a href="/articles/k/ka/kak-proshit-pristavku-rostelekom-na-novyj-ajpi.html" class="pb-related-card">
+                <span class="pb-related-title">Как прошить Ростелеком приставку: смена IP и прошивки</span>
+                <span class="pb-related-desc">Подробная инструкция по перепрошивке STB приставок Ростелеком. Смена IP-адреса, установка ADB, загру</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-internet-rozetku-k-kabelyu-8-zhil-skhema-podklyucheniya-werkel.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение интернет-розетки Werkel: схема и порядок действий</span>
+                <span class="pb-related-desc">Подробная инструкция по обжиму и подключению интернет-розетки Werkel 8 жил. Цветовые схемы, инструме</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-k-internetu-pristavku-orbita-911.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение приставки Орбита 911 к интернету: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке Wi-Fi и LAN на спутниковом ресивере Орбита 911. Решения проблем с</span>
+            </a><a href="/articles/k/ka/kak-zapretit-vykhod-v-internet-halo-2-wars.html" class="pb-related-card">
+                <span class="pb-related-title">Как запретить Halo 2 доступ в интернет: Полное руководство</span>
+                <span class="pb-related-desc">Техническая инструкция по блокировке сетевого трафика Halo 2. Настройка брандмауэра, отключение обно</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

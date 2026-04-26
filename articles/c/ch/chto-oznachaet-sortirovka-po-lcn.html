@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Сортировка по LCN: что это значит в NTFS и как работает — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор сортировки по LCN в файловых системах NTFS. Что такое Logical Cluster Number, влияние на дефрагментацию и производительность диска.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/c/ch/chto-oznachaet-sortirovka-po-lcn.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Сортировка по LCN: что это значит в NTFS и как работает">
+    <meta property="og:description" content="Подробный разбор сортировки по LCN в файловых системах NTFS. Что такое Logical Cluster Number, влияние на дефрагментацию и производительность диска.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/prilozheniya-servisy/">Приложения и Сервисы</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Сортировка по LCN: что это значит в NTFS и как работает</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#фундаментальные-основы-адресации-в-ntfs">Фундаментальные основы адресации в NTFS</a></li><li><a href="#механизм-и-цели-сортировки-по-lcn">Механизм и цели сортировки по LCN</a></li><li><a href="#технические-аспекты-и-алгоритмы">Технические аспекты и алгоритмы</a></li><li><a href="#практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</a></li><li><a href="#типичные-ошибки-и-заблуждения">Типичные ошибки и заблуждения</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vklyuchit-5g-mts-iphone.html">Как включить 5G на iPhone МТС: полная инструкция</a></li><li><a href="/articles/v/vk/vk-kak-vernut-stenu-v-vk.html">Как вернуть стену ВКонтакте: полное руководство по восстановлению</a></li><li><a href="/articles/g/gl/glo-air-pri-vklyuchenii-vibriruet-i-otklyuchaetsya.html">glo air вибрирует и выключается: причины и устранение</a></li><li><a href="/articles/k/ka/kak-vklyuchit-tsifrovuyu-pristavku-bez-pulta.html">Как включить приставку без пульта: 5 способов управления</a></li><li><a href="/articles/9/96/96-max-rk3318-ne-vklyuchaetsya.html">Ремонт 96 max rk3318: не включается, диагностика и решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Сортировка по LCN: принцип работы и влияние на файловую систему</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#фундаментальные-основы-адресации-в-ntfs">Фундаментальные основы адресации в NTFS</a></li><li><a href="#механизм-и-цели-сортировки-по-lcn">Механизм и цели сортировки по LCN</a></li><li><a href="#технические-аспекты-и-алгоритмы">Технические аспекты и алгоритмы</a></li><li><a href="#практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</a></li><li><a href="#типичные-ошибки-и-заблуждения">Типичные ошибки и заблуждения</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь, запустивший специализированную утилиту для дефрагментации или анализа диска, часто сталкивается с непонятным параметром «Сортировка по LCN» в логах или настройках процесса.</p>
+<p>Вместо ожидаемого упорядочивания файлов по именам или датам, программа начинает перемещать данные, опираясь на физические адреса на поверхности жесткого диска, что вызывает вопросы о целесообразности и безопасности таких действий.</p>
+<p>Игнорирование этого параметра может привести к неэффективной работе системы, особенно на механических накопителях, где физическое расположение кластеров напрямую влияет на скорость чтения данных.</p>
+<p>Понимание механики Logical Cluster Number необходимо для грамотного обслуживания файловой системы NTFS и оптимизации быстродействия хранилища.</p>
+
+<h2 id="фундаментальные-основы-адресации-в-ntfs">Фундаментальные основы адресации в NTFS</h2>
+<p>Файловая система NTFS, являющаяся стандартом для современных операционных систем семейства Windows, использует сложную структуру адресации для управления данными на физическом носителе.</p>
+<p>В отличие от логической структуры, видимой пользователю в виде папок и файлов, физический диск представляет собой последовательность секторов, объединенных в кластеры.</p>
+<p>Каждому кластеру присваивается уникальный номер, который и называется Logical Cluster Number или сокращенно LCN.</p>
+<p>Этот номер является абсолютным адресом кластера относительно начала тома, начиная с нуля.</p>
+
+<h3>Различие между VCN и LCN</h3>
+<p>Для корректного понимания процессов сортировки важно различать два типа нумерации кластеров.</p>
+<p>Virtual Cluster Number (VCN) — это относительный номер кластера внутри конкретного файла, где первый кластер файла имеет номер 0, второй — 1 и так далее.</p>
+<p>LCN же указывает, где именно этот кластер физически расположен на диске в глобальном пространстве тома.</p>
+<p>Таблица MFT (Master File Table) хранит соответствия между VCN файла и его LCN, позволяя файловой системе находить данные.</p>
+<p><strong>Сортировка по LCN</strong> означает физическое перемещение данных так, чтобы их адреса на диске шли в возрастающем порядке.</p>
+
+<h3>Роль Master File Table</h3>
+<p>Центральным элементом файловой системы NTFS является главная файловая таблица MFT.</p>
+<p>Именно в записях MFT хранятся атрибуты файлов, включая списки запущенных кластеров (Runlists), которые связывают VCN с LCN.</p>
+<p>При выполнении операции сортировки по LCN утилиты часто работают непосредственно с этими записями или перемещают данные, чтобы обновить эти связи.</p>
+<p>Если файл фрагментирован, его VCN могут соответствовать разбросанным LCN, что и требует вмешательства для оптимизации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На твердотельных накопителях (SSD) физическая сортировка по LCN менее критична из-за отсутствия движущихся частей, но важна для выравнивания износа и работы контроллера.</p></aside>
+
+<p>Понимание разницы между логической и физической адресацией позволяет осознанно подходить к выбору методов оптимизации дискового пространства.</p>
+
+<h2 id="механизм-и-цели-сортировки-по-lcn">Механизм и цели сортировки по LCN</h2>
+<p>Основная цель сортировки данных по LCN заключается в минимизации времени доступа к информации на механических жестких дисках (HDD).</p>
+<p>Когда файлы расположены в порядке возрастания их физических адресов, считывающей головке требуется совершать минимальное количество перемещений.</p>
+<p>Это снижает латентность позиционирования и увеличивает последовательную скорость чтения больших объемов данных.</p>
+<p>Процесс сортировки часто путают с обычной дефрагментацией, однако это более глубокое вмешательство в структуру размещения данных.</p>
+
+<h3>Влияние на производительность HDD</h3>
+<p>На механических дисках скорость вращения шпинделя и скорость перемещения головок являются узким местом.</p>
+<p>Если данные отсортированы по LCN, операционная система может считывать их практически без остановки диска.</p>
+<p><strong>Последовательное чтение</strong> значительно быстрее случайного доступа, который возникает при хаотичном расположении кластеров.</p>
+<p>Сортировка по LCN также помогает объединить свободное пространство вные области, что ускоряет запись новых файлов.</p>
+<p>Это особенно важно для системных файлов и файлов подкачки, которые обращаются постоянно.</p>
+
+<h3>Процесс перемещения данных</h3>
+<p>Технически сортировка по LCN требует чтения данных из одного места диска и записи их в другое, более подходящее место.</p>
+<p>Операционная система должна обновить указатели в MFT, чтобы новые LCN соответствовали содержимому файла.</p>
+<p>Этот процесс ресурсоемок и требует свободного места на диске для временного буферизования данных.</p>
+<p>Современные утилиты используют драйверы файловой системы для безопасного перемещения кластеров без потери данных.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс оптимизации</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Анализ карты кластеров</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выявление фрагментов</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Расчет оптимального LCN</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перемещение данных в свободные зоны</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Обновление MFT</span></div></div>
+
+<p>Важно отметить, что полная сортировка всего тома по LCN встречается редко, чаще оптимизируются отдельные критические области.</p>
+
+<h2 id="технические-аспекты-и-алгоритмы">Технические аспекты и алгоритмы</h2>
+<p>Реализация сортировки по LCN требует точного знания структуры диска и использования низкоуровневых API операционной системы.</p>
+<p>В Windows для работы с файловой системой на таком уровне используется интерфейс WinAPI, в частности функции вроде <code>DeviceIoControl</code>.</p>
+<p>Алгоритм сортировки должен учитывать зарезервированные области диска,ые сектора и системные ограничения.</p>
+<p>Не все файлы могут быть перемещены, например, открытые системные файлы блокируются ядром ОС.</p>
+
+<h3>Использование дефрагментатора Windows</h3>
+<p>Встроенный инструмент дефрагментации Windows частично выполняет функции сортировки по LCN.</p>
+<p>Он анализирует карту кластеров и пытается расположить файлы ближе друг к другу, что косвенно сортирует их по LCN.</p>
+<p>Для ручного запуска анализа можно использовать командную строку с правами администратора.</p>
+<p>Команда для анализа выглядит следующим образом:</p>
+<pre><code>defrag C: /A /V</code></pre>
+<p>Параметр <code>/V</code> выводит подробный отчет, где можно увидеть процент фрагментации и состояние свободных областей.</p>
+
+<h3>Сторонние утилиты и глубокая оптимизация</h3>
+<p>Специализированный софт, такой как Defraggler или MyDefrag, предлагает более агрессивные алгоритмы сортировки.</p>
+<p>Они могут сортировать файлы по LCN внутри папок, сортировать сами папки или выполнять полную дефрагментацию свободного пространства.</p>
+<p>Некоторые программы позволяют задавать собственные правила сортировки, например, помещая часто используемые файлы в начало диска (Zone Bit Recording).</p>
+<p><strong>Алгоритмы эвристической сортировки</strong> учитывают частоту доступа к файлам, а не только их имена или размер.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Стандартная дефрагментация</th>
+<th>Сортировка по LCN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Цель</td>
+<td>Сборка фрагментов файла</td>
+<td>Физическое упорядочивание кластеров</td>
+</tr>
+<tr>
+<td>Влияние на HDD</td>
+<td>Умеренное</td>
+<td>Максимальное</td>
+</tr>
+<tr>
+<td>Влияние на SSD</td>
+<td>Минимальное (только TRIM)</td>
+<td>Не рекомендуется (износ)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Проведение полной сортировки по LCN на SSD-накопителях может сократить срок их службы из-за ограниченного ресурса циклов перезаписи.</p></aside>
+
+<p>Выбор метода оптимизации должен базироваться на типе установленного накопителя и характере выполняемых задач.</p>
+
+<h2 id="практическое-применение-и-сценарии-использования">Практическое применение и сценарии использования</h2>
+<p>В повседневном использовании обычного пользователя сортировка по LCN происходит автоматически фоновыми службами Windows.</p>
+<p>Однако в специфических сценариях, таких как подготовка сервера баз данных или восстановление после сбоя, может потребоваться ручное вмешательство.</p>
+<p>Понимание того, когда и как применять эти методы, помогает избежать проблем с производительностью.</p>
+<p>Рассмотрим конкретные случаи, когда контроль над LCN становится важным.</p>
+
+<h3>Оптимизация баз данных и серверов</h3>
+<p>Серверы баз данных, такие как Microsoft SQL Server или Oracle, критически зависят от скорости дискового ввода-вывода.</p>
+<p>Для них часто выполняется предварительная форматирование и создание файлов данных с учетом физической структуры диска.</p>
+<p>Сортировка по LCN в этом контексте означает размещение файлов журналов транзакций и данных в наиболее быстрых зонах диска.</p>
+<p>Это позволяет минимизировать задержки при обработке тысяч запросов в секунду.</p>
+<p>Администраторы часто используют скрипты для дефрагментации в периоды низкой нагрузки.</p>
+
+<h3>Восстановление после сбоев файловой системы</h3>
+<p>При повреждении файловой системы или некорректном завершении работы структура LCN может нарушиться.</p>
+<p>Утилиты восстановления, такие как <code>chkdsk</code>, пытаются исправить логические ошибки, но не всегда оптимизируют физическое расположение.</p>
+<p>После восстановления данных рекомендуется провести полную дефрагментацию для упорядочивания LCN.</p>
+<p>Это ensures, что исправленные файлы будут читаться эффективно.</p>
+<p>Если игнорировать этот шаг, система может работать медленно даже после устранения ошибок.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Действия после восстановления</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запуск chkdsk /f</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Анализ состояния диска</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Полная дефрагментация тома</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверка целостности данных</span></div></div>
+
+<p>Регулярное обслуживание дисковой подсистемы является частью стратегии обеспечения отказоустойчивости IT-инфраструктуры.</p>
+
+<h2 id="типичные-ошибки-и-заблуждения">Типичные ошибки и заблуждения</h2>
+<p>При работе с низкоуровневой структурой диска пользователи часто допускают ошибки, которые могут привести к обратному эффекту.</p>
+<p>Непонимание различий между типами накопителей и файловыми системами приводит к нецелесообразным действиям.</p>
+<p>Рассмотрим наиболее распространенные misconceptions.</p>
+
+<ol>
+<li><strong>Попытка сортировки LCN на SSD</strong> — это бесполезная операция, которая только расходует ресурс перезаписи ячеек памяти, так как время доступа к любым ячейкам SSD одинаково.</li>
+<li><strong>Ожидание мгновенного результата</strong> — сортировка по LCN на больших объемах данных (терабайты) может занимать часы, и прерывание процесса может привести к фрагментации.</li>
+<li><strong>Игнорирование системных файлов</strong> — многие утилиты не могут переместить открытые файлы Windows, создавая иллюзию выполненной работы, тогда как критические зоны остались фрагментированными.</li>
+<li><strong>Использование устаревших алгоритмов</strong> — старые программы дефрагментации могут не учитывать современные особенности файловой системы NTFS, такие как MFT Zone reservation.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Эффективность оптимизации</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Скорость чтения последовательных данных</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск износа SSD</li><li>❌ Длительность процесса</li><li>❌ Необходимость перезагрузки</li></ul></div>
+</div></div>
+
+<p>Критический подход к выбору инструмента и понимание ограничений оборудования позволяют избежать этих pitfalls.</p>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Сортировка по LCN представляет собой фундаментальный механизм оптимизации физического расположения данных на жестких дисках.</p>
+<p>Понимание принципа работы Logical Cluster Number позволяет эффективно управлять производительностью дисковой подсистемы Windows.</p>
+<p>Для механических HDD это критически важная процедура, продлевающая жизнь оборудованию и ускоряющая работу системы.</p>
+
+<p>В современных условиях, с массовым переходом на SSD, акцент смещается с физической сортировки на логическую целостность и команду TRIM.</p>
+<p>Тем не менее, знание основ адресации кластеров остается важным навыком для системных администраторов и продвинутых пользователей.</p>
+<p>Грамотное использование встроенных средств Windows и специализированного софта обеспечивает стабильную и быструю работу компьютера.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Сортировка по LCN оптимизирует физическое расположение данных на HDD, ускоряя чтение, но не требуется для SSD.</p></aside>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для поддержания здоровья диска достаточно еженедельного запуска стандартной оптимизации через встроенный планировщик Windows.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vklyuchit-5g-mts-iphone.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить 5G на iPhone МТС: полная инструкция</span>
+                <span class="pb-related-desc">Узнайте, как активировать 5G на iPhone в сети МТС. Проверка тарифа, настройка APN и устранение непол</span>
+            </a><a href="/articles/v/vk/vk-kak-vernut-stenu-v-vk.html" class="pb-related-card">
+                <span class="pb-related-title">Как вернуть стену ВКонтакте: полное руководство по восстановлению</span>
+                <span class="pb-related-desc">Подробная инструкция, как вернуть стену в ВК на Android, iOS и ПК. Решение проблем с исчезновением п</span>
+            </a><a href="/articles/g/gl/glo-air-pri-vklyuchenii-vibriruet-i-otklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">glo air вибрирует и выключается: причины и устранение</span>
+                <span class="pb-related-desc">Устройство glo air вибрирует и отключается? Подробное руководство по диагностике, сбросу и ремонту с</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-tsifrovuyu-pristavku-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить приставку без пульта: 5 способов управления</span>
+                <span class="pb-related-desc">Полная инструкция: как запустить ТВ-приставку без пульта через HDMI CEC, смартфон, USB-клавиатуру ил</span>
+            </a><a href="/articles/9/96/96-max-rk3318-ne-vklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Ремонт 96 max rk3318: не включается, диагностика и решение</span>
+                <span class="pb-related-desc">Техническая инструкция по ремонту ТВ-приставок 96 max на чипе rk3318. Диагностика, если устройство н</span>
+            </a><a href="/articles/r/rj/rj11-raspinovka-dlya-garnitury-na-aux.html" class="pb-related-card">
+                <span class="pb-related-title">Распиновка RJ11 для гарнитуры: схемы и адаптеры для AUX</span>
+                <span class="pb-related-desc">Техническая инструкция по распиновке RJ11 для гарнитур. Схемы подключения, адаптеры, цветовая кодиро</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

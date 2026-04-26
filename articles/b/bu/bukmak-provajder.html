@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Букмекерский провайдер: API-интеграция и настройка — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по подключению букмекерского провайдера. Настройка API, маппинг событий и обработка ошибок в спортивных ставках.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bu/bukmak-provajder.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Букмекерский провайдер: API-интеграция и настройка">
+    <meta property="og:description" content="Техническое руководство по подключению букмекерского провайдера. Настройка API, маппинг событий и обработка ошибок в спортивных ставках.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Букмекерский провайдер: API-интеграция и настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-подключения-и-протоколы-передачи-данных">Архитектура подключения и протоколы передачи данных</a></li><li><a href="#маппинг-событий-и-нормализация-данных">Маппинг событий и нормализация данных</a></li><li><a href="#обработка-лайв-событий-в-реальном-времени">Обработка лайв-событий в реальном времени</a></li><li><a href="#безопасность-и-мониторинг-интеграции">Безопасность и мониторинг интеграции</a></li><li><a href="#типичные-ошибки-при-интеграции">Типичные ошибки при интеграции</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/b/bq/bq-2006-comfort-kak-izmenit-gromkost.html">Как изменить громкость на BQ 2006 Comfort: инструкция</a></li><li><a href="/articles/v/vi/vindovs-11-parametry-zagruzki.html">Параметры загрузки Windows 11: Полная инструкция</a></li><li><a href="/articles/z/zn/znachok-in-eto-chto.html">Значок IN на экране: что это и как отключить</a></li><li><a href="/articles/k/ka/kak-pomenyat-parol-v-prilozhenii-ivi.html">Как сменить пароль в ivi: инструкция для всех устройств</a></li><li><a href="/articles/j/jo/joys-d20-drajver.html">Драйвер Joys D20: Установка, настройка и устранение ошибок</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Интеграция букмекерского провайдера: архитектура и протоколы</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-подключения-и-протоколы-передачи-данных">Архитектура подключения и протоколы передачи данных</a></li><li><a href="#маппинг-событий-и-нормализация-данных">Маппинг событий и нормализация данных</a></li><li><a href="#обработка-лайв-событий-в-реальном-времени">Обработка лайв-событий в реальном времени</a></li><li><a href="#безопасность-и-мониторинг-интеграции">Безопасность и мониторинг интеграции</a></li><li><a href="#типичные-ошибки-при-интеграции">Типичные ошибки при интеграции</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внедрение нового поставщика спортивных данных часто сталкивается с критической проблемой рассинхронизации событий: в момент высокой нагрузки сервер получает противоречивые статусы матчей, что приводит к блокировке ставок и финансовым потерям.</p>
+<p>Если у вас отсутствует четкая стратегия обработки очередей сообщений, система может принять гол, который еще не был официально засчитан, или пропустить красную карточку из-за задержки в канале передачи данных.</p>
+<p>На практике это означает, что базовая настройка endpoint-ов недостаточна для обеспечения стабильной работы платформы в реальном времени.</p>
+
+<h2 id="архитектура-подключения-и-протоколы-передачи-данных">Архитектура подключения и протоколы передачи данных</h2>
+
+<p>Современные букмекерские провайдеры отказываются от устаревших методов опроса (polling) в пользу потоковой передачи данных через WebSocket.</p>
+<p>Допустим, вы используете REST API для получения коэффициентов; в таком случае задержка между изменением линии на стороне провайдера и её отображением у вас может достигать нескольких секунд, что недопустимо для лайв-ставок.</p>
+<p>Для обеспечения минимального latency необходимо реализовать постоянное соединение, которое позволяет провайдеру самостоятельно «пушить» обновления в вашу систему.</p>
+
+<h3>Настройка WebSocket соединения</h3>
+
+<p>Первичное рукопожатие требует передачи валидного API-ключа в заголовках авторизации.</p>
+<p>Если у вас <em>Linux-сервер</em>, для тестирования канала можно использовать утилиту <code>wscat</code>, которая позволяет эмулировать клиентское подключение и прослушивать входящий поток JSON-объектов.</p>
+<p>Важно реализовать механизм автоматического переподключения (reconnect) с экспоненциальной задержкой, чтобы избежать блокировки IP-адреса при временных сбоях сети.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Публичные WebSocket endpoints часто имеют лимиты на количество одновременных подключений. Используйте отдельные сокеты для разных типов данных (например, один для футбола, другой для тенниса), чтобы не превышать квоты.</p></aside>
+
+<p>Структура входящего сообщения обычно содержит заголовок с меткой времени и тело с payload данных.</p>
+<p>В коде это может выглядеть как проверка сигнатуры сообщения перед его постановкой в очередь обработки.</p>
+
+<pre><code>if (message.timestamp < last_processed_timestamp) {
+<p>discard_message();</p>
+<p>} else {</p>
+<p>process_event(message);</p>
+<p>}</code></pre></p>
+
+<p>Обратите внимание, что порядок прихода сообщений не всегда гарантирован, поэтому сортировка по временной метке внутри пакета является обязательной.</p>
+
+<h3>REST API для исторических данных</h3>
+
+<p>Для загрузки расписания матчей на неделю вперед или архивных результатов используется классический HTTP запрос.</p>
+<p>Перейдите в документацию провайдера и найдите раздел <code>Fixture List</code>, где описаны параметры фильтрации по лигам и датам.</p>
+<p>На практике рекомендуется кэшировать статические данные, такие как названия команд и логотипы лиг, чтобы не запрашивать их при каждом обновлении страницы пользователя.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Тип данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sport_id</code></td>
+<td>Идентификатор вида спорта</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td><code>date_from</code></td>
+<td>Начало периода выборки</td>
+<td>ISO 8601</td>
+</tr>
+<tr>
+<td><code>limit</code></td>
+<td>Максимальное кол-во записей</td>
+<td>Integer</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование пагинации позволяет разбить большой объем данных на manageable chunks, снижая нагрузку на базу данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Некоторые провайдеры используют UNIX timestamp в миллисекундах, другие — в секундах. Внимательно проверяйте спецификацию, чтобы избежать ошибок в 1000 раз при расчете времени.</p></aside>
+
+<h2 id="маппинг-событий-и-нормализация-данных">Маппинг событий и нормализация данных</h2>
+
+<p>Каждый букмекерский провайдер использует собственную номенклатуру для обозначения рынков и исходов.</p>
+<p>Если у вас в базе данных исход «Победа хозяев» обозначен как <code>1</code>, а провайдер присылает код <code>HOME_WIN</code> или <code>1X2_1</code>, необходима промежуточная слой трансформации.</p>
+<p>На практике создание единого справочника событий (Unified Event Model) является фундаментом для подключения нескольких провайдеров одновременно.</p>
+
+<h3>Стандартизация рынков ставок</h3>
+
+<p>Процесс маппинга начинается с анализа XML или JSON схем, предоставляемых поставщиком данных.</p>
+<p>Вам потребуется создать таблицу соответствий, где ключом будет внутренний ID рынка, а значением — внешний ID провайдера.</p>
+<p>Допустим, рынок «Тотал больше 2.5» у одного провайдера может называться «Over 2.5 Goals», а у другого — «Total Goals Over».</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм маппинга</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Получите полный список рынков от провайдера</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Сопоставьте их с внутренними ID вашей платформы</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запишите соответствия в таблицу конфигурации</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Реализуйте функцию-конвертер для входящих данных</span></div></div>
+
+<p>Особое внимание стоит уделить handicap-ам (форам), где формат представления может отличаться (например, азиатская фора против европейской).</p>
+<p>В коде конвертация часто реализуется через словарь (dictionary) или switch-case конструкцию для быстрого доступа.</p>
+
+<h3>Идентификация матчей и команд</h3>
+
+<p>Самая сложная часть интеграции — это сопоставление матчей, особенно когда названия команд написаны по-разному.</p>
+<p>Если у вас «Манчестер Юнайтед», а провайдер присылает «Man Utd» или «Manchester United FC», автоматический поиск может дать сбой.</p>
+<p>Решением является использование уникальных идентификаторов лиг и команд, если провайдер их предоставляет в справочниках.</p>
+
+<p>Для новых матчей, которых нет в вашей базе, необходим механизм «зеркалирования»: создание новой записи с привязкой к ID провайдера.</p>
+<p>Важно отслеживать изменения в расписании, так как время начала матча может быть смещено провайдером без уведомления.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип сущности</th>
+<th>Стратегия маппинга</th>
+<th>Риск ошибки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Лига</td>
+<td>Строгий справочник ID</td>
+<td>Низкий</td>
+</tr>
+<tr>
+<td>Команда</td>
+<td>Словарь синонимов + ID</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>Игрок</td>
+<td>Точное совпадение имени</td>
+<td>Высокий</td>
+</tr>
+</tbody>
+</table>
+
+<p>Регулярная сверка справочников позволяет выявлять новые команды или переименования лиг до начала сезона.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте fuzzy matching (нечеткое сравнение строк) на этапе первоначальной настройки для автоматического предложения соответствий между названиями команд.</p></aside>
+
+<h2 id="обработка-лайв-событий-в-реальном-времени">Обработка лайв-событий в реальном времени</h2>
+
+<p>Лайв-беттинг требует обработки тысяч событий в секунду с гарантированной доставкой.</p>
+<p>Если у вас происходит всплеск активности, например, во время финала Чемпионата мира, очередь сообщений может переполниться.</p>
+<p>На практике это решается использованием брокеров сообщений вроде RabbitMQ или Apache Kafka, которые буферизируют входящий поток.</p>
+
+<h3>Управление очередями и latency</h3>
+
+<p>Критически важным параметром является время обработки сообщения от момента его получения до записи в БД.</p>
+<p>Допустим, ваша система тратит 200 мс на парсинг JSON и еще 100 мс на SQL-запрос; при высокой нагрузке это создаст лаг.</p>
+<p>Оптимизация включает в себя использование in-memory хранилищ (Redis) для хранения текущих коэффициентов и состояния матча.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Запись каждого обновления коэффициента в основную базу данных (Disk I/O) приведет к быстрому исчерпанию ресурсов. Используйте Redis для оперативных данных и асинхронно пишите в SQL для истории.</p></aside>
+
+<p>Механизм дедупликации событий предотвращает двойную обработку одного и того же гола или карточки.</p>
+<p>Для этого каждое событие должно иметь уникальный sequence ID или хэш, который проверяется перед исполнением логики.</p>
+
+<h3>Валидация состояний матча</h3>
+
+<p>Логика перехода матча из статуса «Перерыв» в «Второй тайм» должна быть строго регламентирована.</p>
+<p>Если провайдер прислал статус «Finished», но счет не обновился, система должна запросить актуальное состояние принудительно.</p>
+<p>В коде это реализуется через машину состояний (State Machine), которая запрещает переходы, не соответствующие правилам вида спорта.</p>
+
+<p>Например, невозможно перейти из статуса «Не начался» сразу в «Завершен», минуя игровое время.</p>
+<p>Такая логическая проверка служит дополнительным фильтром против ошибочных данных от провайдера.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование брокеров сообщений и in-memory кэширования является обязательным стандартом для обработки лайв-данных с минимальной задержкой.</p></aside>
+
+<h2 id="безопасность-и-мониторинг-интеграции">Безопасность и мониторинг интеграции</h2>
+
+<p>Доступ к API провайдера должен быть защищен не менее строго, чем доступ к банковским транзакциям.</p>
+<p>Если у вас украдут API-ключи, злоумышленники могут получить доступ к prémium данным или, в худшем случае, манипулировать вашими линиями.</p>
+<p>На практике ключи должны храниться в переменных окружения или специализированных vault-х, но никогда в исходном коде.</p>
+
+<h3>Аутентификация и шифрование</h3>
+
+<p>Большинство провайдеров требуют использования HTTPS для всех запросов и подписи запросов через HMAC.</p>
+<p>Вам необходимо генерировать хэш-сумму запроса, используя секретный ключ, и передавать её в заголовке <code>X-Signature</code>.</p>
+<p>Допустим, вы используете PHP или Node.js; существуют готовые библиотеки для криптографической подписи запросов.</p>
+
+<ol>
+<li>Сформируйте строку запроса (метод, путь, timestamp).</li>
+<li>Вычислите HMAC-SHA256 хэш строки, используя Secret Key.</li>
+<li>Кодируйте результат в Base64.</li>
+<li>Добавьте полученную строку в заголовок HTTP-запроса.</li>
+</ol>
+
+<p>Регулярная ротация ключей доступа снижает риск компрометации в долгосрочной перспективе.</p>
+
+<h3>Мониторинг здоровья канала</h3>
+
+<p>Непрерывный контроль качества данных (Data Quality) позволяет обнаруживать проблемы до жалоб пользователей.</p>
+<p>Если у вас пропал поток данных по определенному чемпионату, система должна автоматически отправить алерт дежурному инженеру.</p>
+<p>На практике создаются дашборды, отображающие latency, количество ошибок и частоту обновлений в реальном времени.</p>
+
+<ul>
+<li>Мониторинг HTTP кодов ответов (4xx, 5xx).</li>
+<li>Проверка актуальности timestamp последнего полученного события.</li>
+<li>Сравнение коэффициентов с другими провайдерами на предмет аномалий.</li>
+<li>Контроль заполненности очередей сообщений.</li>
+</ul>
+
+<p>Логирование всех входящих и исходящих запросов помогает при отладке инцидентов и разборе претензий.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Мониторинг интеграции</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Мгновенное выявление сбоев</li><li>✅ Исторический анализ стабильности</li><li>✅ Автоматизация реакции</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует ресурсов сервера</li><li>❌ Необходимость настройки порогов</li><li>❌ Риск ложных срабатываний</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-при-интеграции">Типичные ошибки при интеграции</h2>
+
+<p>В процессе внедрения даже опытные разработчики допускают ряд системных ошибок, которые могут стоить компании репутации.</p>
+<p>Избежание этих ловушек сэкономит время на отладку и обеспечит стабильность платформы.</p>
+
+<ol>
+<li><strong>Игнорирование часовых поясов</strong> — провайдер может слать время в UTC, а ваша система конвертирует его в локальное время сервера, что сдвигает матчи; всегда храните время в UTC и конвертируйте только на фронтенде.</li>
+<li><strong>Отсутствие обработки «висячих» матчей</strong> — если матч был прерван и возобновлен на следующий день, система должна корректно обрабатывать разрыв в датах, не закрывая рынок prematurely.</li>
+<li><strong>Блокирующий ввод-вывод</strong> — выполнение тяжелых SQL запросов в основном потоке обработки WebSocket сообщений приведет к остановке всего приложения; используйте асинхронные драйверы.</li>
+<li><strong>Неверная интерпретация статусов</strong> — статус «Postponed» (отложен) часто путают с «Cancelled» (отменен), что ведет к неправильному расчету ставок и возврату средств там, где матч просто перенесен.</li>
+</ol>
+
+<p>Тщательное тестирование на тестовых окружений (staging) с эмуляцией различных сценариев поведения провайдера минимизирует риски.</p>
+<p>Стоит запросить у провайдера доступ к sandbox-режиму, где можно искусственно вызывать ошибки и задержки.</p>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Интеграция букмекерского провайдера — это сложный инженерный процесс, требующий глубокого понимания сетевых протоколов и архитектуры распределенных систем.</p>
+<p>Успех проекта зависит не только от качества API поставщика, но и от грамотности реализации клиентской части, включая механизмы очередей, кэширования и отказоустойчивости.</p>
+<p>Соблюдение описанных стандартов безопасности и маппинга данных позволит создать надежную платформу, способную выдерживать высокие нагрузки и обеспечивать актуальность информации для пользователей.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/b/bq/bq-2006-comfort-kak-izmenit-gromkost.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить громкость на BQ 2006 Comfort: инструкция</span>
+                <span class="pb-related-desc">Полная инструкция по настройке громкости BQ 2006 Comfort. Решение проблем с тихим звуком, настройка </span>
+            </a><a href="/articles/v/vi/vindovs-11-parametry-zagruzki.html" class="pb-related-card">
+                <span class="pb-related-title">Параметры загрузки Windows 11: Полная инструкция</span>
+                <span class="pb-related-desc">Как войти в параметры загрузки Windows 11 через настройки или cmd. Сброс пароля, безопасный режим и </span>
+            </a><a href="/articles/z/zn/znachok-in-eto-chto.html" class="pb-related-card">
+                <span class="pb-related-title">Значок IN на экране: что это и как отключить</span>
+                <span class="pb-related-desc">Подробный разбор значка IN на экране телефона. Почему горит индикатор, как убрать на Android и iPhon</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-parol-v-prilozhenii-ivi.html" class="pb-related-card">
+                <span class="pb-related-title">Как сменить пароль в ivi: инструкция для всех устройств</span>
+                <span class="pb-related-desc">Подробная инструкция, как поменять пароль в ivi. Сброс доступа через email, смену данных в профиле и</span>
+            </a><a href="/articles/j/jo/joys-d20-drajver.html" class="pb-related-card">
+                <span class="pb-related-title">Драйвер Joys D20: Установка, настройка и устранение ошибок</span>
+                <span class="pb-related-desc">Полная техническая инструкция по установке драйвера Joys D20. Настройка эмуляции, калибровка джойсти</span>
+            </a><a href="/articles/3/32/32pfs6401-60-kak-rasshirit-pamyat.html" class="pb-related-card">
+                <span class="pb-related-title">Как расширить память Philips 32PFS6401/60: полная инструкция</span>
+                <span class="pb-related-desc">Увеличьте объем памяти телевизора Philips 32PFS6401/60. Установка приложений, очистка кэша, работа с</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

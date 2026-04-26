@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Настройка NUMA BIOS для Windows 10: Полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по активации NUMA в BIOS для Windows 10. Оптимизация многопроцессорных систем, настройка UEFI и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/n/nu/numa-bios-kak-ustanovit-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Настройка NUMA BIOS для Windows 10: Полная инструкция">
+    <meta property="og:description" content="Подробное руководство по активации NUMA в BIOS для Windows 10. Оптимизация многопроцессорных систем, настройка UEFI и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Настройка NUMA BIOS для Windows 10: Полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-numa-и-влияние-на-производительность-windows-10">Принципы работы NUMA и влияние на производительность Windows 10</a></li><li><a href="#подготовка-biosuefi-перед-установкой-операционной-системы">Подготовка BIOS/UEFI перед установкой операционной системы</a></li><li><a href="#процесс-установки-windows-10-с-учетом-топологии-numa">Процесс установки Windows 10 с учетом топологии NUMA</a></li><li><a href="#верификация-настройки-и-диагностика-через-командную-строку">Верификация настройки и диагностика через командную строку</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/as/asus-vivobook-nachat-rabotat.html">Как начать работать на Asus Vivobook: настройка и запуск</a></li><li><a href="/articles/u/ua/ua32h1200-proshivka-usb.html">Прошивка Samsung UA32H1200 через USB: Полный гид</a></li><li><a href="/articles/k/ka/kak-vosstanovit-zagruzchik-windows-7-pri-pomoshchi-live-cd.html">Восстановление загрузчика Windows 7 через LiveCD: полная инструкция</a></li><li><a href="/articles/w/wi/windows-10-ltsb-vs-windows-7.html">Windows 10 LTSC против Windows 7: Сравнение для бизнеса</a></li><li><a href="/articles/a/as/asus-zenbook-kak-zatyanut-petli.html">Регулировка петель ноутбука ASUS ZenBook: инструкция и советы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка NUMA в BIOS для установки и работы Windows 10</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-numa-и-влияние-на-производительность-windows-10">Принципы работы NUMA и влияние на производительность Windows 10</a></li><li><a href="#подготовка-biosuefi-перед-установкой-операционной-системы">Подготовка BIOS/UEFI перед установкой операционной системы</a></li><li><a href="#процесс-установки-windows-10-с-учетом-топологии-numa">Процесс установки Windows 10 с учетом топологии NUMA</a></li><li><a href="#верификация-настройки-и-диагностика-через-командную-строку">Верификация настройки и диагностика через командную строку</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда серверная материнская плата или высокопроизводительная рабочая станция с несколькими процессорами работает неэффективно под управлением операционной системы, часто вызывает недоумение у администраторов.</p>
+<p>Вместо ожидаемого линейного прироста производительности при добавлении второго или четвертого процессора, наблюдается рассинхронизация потоков, высокие задержки памяти и нестабильность в задачах, чувствительных к времени отклика.</p>
+<p>Причиной подобных аномалий нередко становится некорректная конфигурация архитектуры памяти в базовой системе ввода-вывода, а именно отсутствие или неправильная настройка режима NUMA.</p>
+<p>Если система работает в режиме UMA (Uniform Memory Access), все процессоры обращаются к общей памяти через единую шину, что создает узкое место и снижает общую пропускную способность канала.</p>
+<p>Для раскрытия потенциала современных многоядерных систем, особенно построенных на платформах <em>AMD EPYC</em> или <em>Intel Xeon</em> последних поколений, требуется ручная активация соответствующих параметров в прошивке материнской платы перед установкой операционной системы.</p>
+
+<h2 id="принципы-работы-numa-и-влияние-на-производительность-windows-10">Принципы работы NUMA и влияние на производительность Windows 10</h2>
+
+<p>Архитектура NUMA (Non-Uniform Memory Access) предполагает, что каждый процессор или группа ядер имеют собственную локальную память, доступ к которой осуществляется с минимальной задержкой.</p>
+<p>Когда операционная система, такая как <em>Windows 10 Pro for Workstations</em> или <em>Windows Server</em>, корректно определяет топологию NUMA, она старается распределять потоки процессов так, чтобы они исполнялись на ядрах, имеющих физический доступ к той памяти, в которой размещены данные этого процесса.</p>
+<p>Если в BIOS включен режим UMA, память становится унифицированной, и любой процессор может обратиться к любому участку RAM с одинаковой, но более высокой латентностью, что критично для баз данных и систем виртуализации.</p>
+<p>В операционных системах семейства Windows поддержка NUMA встроена на уровне ядра, однако для корректной работы планировщика задач необходимо, чтобы Firmware (BIOS/UEFI) передавала актуальную информацию о топологии узлов через таблицы ACPI.</p>
+<p><strong>Ключевым моментом</strong> является то, что изменение этого параметра после установки ОС может привести к непредсказуемому поведению драйверов или требовать полной переустановки системы для перераспределения системных файлов.</p>
+
+<h3>Различия между режимами UMA и NUMA</h3>
+
+<p>В режиме UMA все процессоры видят единое адресное пространство памяти, что упрощает программирование, но создает конкуренцию за каналы передачи данных при высокой нагрузке.</p>
+<p>Режим NUMA делит память на узлы (nodes), привязанные к конкретным сокетами или группам ядер, что позволяет распараллелить обращение к памяти и значительно увеличить общую пропускную способность.</p>
+<p>Для Windows 10 важно правильно идентифицировать эти узлы, иначе планировщик может перемещать потоки между узлами чаще, чем это необходимо, вызывая явление, известное как "NUMA thrashing".</p>
+<p>Современные версии BIOS от производителей вроде <em>Supermicro</em>, <em>ASUS</em> и <em>Gigabyte</em> часто имеют автоматический режим, который может ошибочно выбирать UMA для максимальной совместимости со старым ПО.</p>
+<p>Принудительное включение NUMA в BIOS гарантирует, что ОС получит правильную карту ресурсов и сможет оптимизировать размещение данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На серверных платформах изменение настроек памяти может занять несколько минут при загрузке из-за тренировки модулей RAM.</p></aside>
+
+<h2 id="подготовка-biosuefi-перед-установкой-операционной-системы">Подготовка BIOS/UEFI перед установкой операционной системы</h2>
+
+<p>Перед началом процесса инсталляции Windows 10 необходимо войти в интерфейс настройки BIOS, обычно вызываемый клавишей <code>F2</code>, <code>Del</code> или <code>F10</code> при старте системы.</p>
+<p>В современных интерфейсах UEFI навигация может быть сложной, поэтому стоит заранее ознакомиться с документацией к материнской плате, чтобы найти раздел, отвечающий за конфигурацию процессора и памяти.</p>
+<p>Часто искомые настройки скрыты в подразделах с названиями <code>Advanced</code>, <code>Chipset</code> или <code>Processor Configuration</code>.</p>
+<p>Важно убедиться, что версия BIOS актуальна, так как производители часто выпускают обновления, исправляющие ошибки в таблицах ACPI, которые критичны для корректной работы NUMA в Windows.</p>
+<p>Если используется RAID-контроллер, его настройки также стоит проверить до начала установки, чтобы избежать конфликтов прерываний между узлами NUMA.</p>
+
+<h3>Поиск параметров конфигурации памяти</h3>
+
+<p>В меню <code>Advanced</code> следует искать пункты, содержащие ключевые слова <em>Node Interleaving</em>, <em>Memory Interleaving</em> или непосредственно <em>NUMA</em>.</p>
+<p>На платформах <em>AMD</em> параметр часто называется <code>Node Interleaving</code>, и его состояние <code>Disabled</code> как раз и включает режим NUMA (каждый сокет — отдельный узел).</p>
+<p>Для процессоров <em>Intel</em> настройка может называться <code>Cluster on Die</code> (COD) или <code>Sub-NUMA Clustering</code> (SNC), и ее активация дробит процессор на дополнительные логические узлы.</p>
+<p>Необходимо проявить внимательность, так как логика именования у разных вендоров может отличаться: там, где ожидается включение, иногда требуется выключение функции интерливинга.</p>
+<p>После внесения изменений обязательно выполняется сохранение параметров через пункт <code>Save & Exit</code> и перезагрузка системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка Node Interleaving</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Войдите в BIOS/UEFI</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Advanced -> Chipset/North Bridge</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите параметр Node Interleaving</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите значение Disabled (для включения NUMA)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Сохраните и перезагрузитесь</span></div></div>
+
+<p>Если параметр <code>Node Interleaving</code> установлен в <code>Enabled</code>, система работает в режиме UMA, что нежелательно для высокопроизводительных задач.</p>
+<p>Установка значения <code>Disabled</code> для интерливинга фактически активирует разделение памяти по узлам, позволяя ОС видеть отдельные банки памяти для каждого процессора.</p>
+
+<h2 id="процесс-установки-windows-10-с-учетом-топологии-numa">Процесс установки Windows 10 с учетом топологии NUMA</h2>
+
+<p>Установка Windows 10 на систему с настроенным NUMA практически не отличается от стандартной процедуры, однако требует внимательного отношения к выбору диска и разделов.</p>
+<p>Операционная система при первой загрузке сканирует ACPI-таблицы, полученные от BIOS, и строит карту узлов, которую затем использует планировщик задач.</p>
+<p>Важно использовать дистрибутив Windows 10 версии <em>1809</em> или новее, либо специализированные редакции <em>Pro for Workstations</em> и <em>Enterprise</em>, которые лучше адаптированы для многопроцессорных конфигураций.</p>
+<p>В процессе установки, на этапе выбора диска, система может отображать накопители, подключенные к разным контроллерам, которые физически могут быть привязаны к разным узлам NUMA.</p>
+<p>Рекомендуется устанавливать систему на диск, подключенный к тому контроллеру (и, следовательно, узлу NUMA), где будет находиться основная нагрузка, или использовать RAID-массив, охватывающий все узлы.</p>
+
+<h3>Выбор редакции и разметка диска</h3>
+
+<p>Домашняя версия Windows 10 также поддерживает NUMA, но редакции <em>Pro</em> и выше обладают более продвинутыми механизмами управления группами процессоров.</p>
+<p>При ручной разметке диска стоит оставить небольшой зарезервированный раздел для системных файлов, чтобы избежать фрагментации системных структур на стыке узлов.</p>
+<p>Если используется UEFI, диск должен быть отформатирован в стиле разделов <em>GPT</em>, что обеспечивает корректную работу с большими объемами памяти и современными функциями безопасности.</p>
+<p>В некоторых случаях, при установке на серверное железо, может потребоваться предварительная загрузка драйверов контроллера хранения через меню <code>Load Driver</code>.</p>
+<p>После завершения установки и первой загрузки система автоматически применит оптимальные настройки распределения потоков на основе данных из BIOS.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение режима NUMA после установки Windows может потребовать переустановки ОС для корректного распределения системных файлов и реестра.</p></aside>
+
+<p>Проверка успешности установки и активации NUMA производится через встроенные средства диагностики операционной системы.</p>
+<p>Открыв диспетчер задач (<code>Ctrl + Shift + Esc</code>) и перейдя на вкладку <code>Производительность</code>, можно увидеть график использования ЦП.</p>
+<p>Если NUMA активен и распознается, в некоторых представлениях или при использовании утилиты <code>Resource Monitor</code> будет видно разделение памяти по узлам.</p>
+<p>Более детальную информацию предоставляет утилита командной строки, которая выводит точную карту узлов, процессоров и объемов локальной памяти.</p>
+
+<h2 id="верификация-настройки-и-диагностика-через-командную-строку">Верификация настройки и диагностика через командную строку</h2>
+
+<p>Для подтверждения того, что Windows 10 корректно видит топологию NUMA, определенную в BIOS, используется встроенная утилита <code>wmic</code> или команда <code>systeminfo</code>.</p>
+<p>Наиболее информативным инструментом является команда <code>wmic numa</code>, которая позволяет получить детализированный отчет о состоянии узлов.</p>
+<p>Запуск этой команды в командной строке с правами администратора покажет количество узлов (Nodes) и распределение процессорных ядер между ними.</p>
+<p>Если система видит только один узел, несмотря на наличие нескольких процессоров, это указывает на то, что в BIOS все еще активен режим интерливинга (UMA) или драйверы чипсета установлены некорректно.</p>
+<p>Также стоит обратить внимание на распределение памяти: в идеале каждый узел должен иметь доступ к своему локальному объему RAM с минимальной задержкой.</p>
+
+<h3>Использование утилиты WMIC и Resource Monitor</h3>
+
+<p>Для получения сводной информации о узлах NUMA в командной строке (<code>cmd</code>) вводится следующая команда:</p>
+<pre><code>wmic numa get node, processors, memory</code></pre>
+<p>Эта команда выведет список узлов, количество процессоров в каждом узле и объем доступной памяти.</p>
+<p>Альтернативный способ — использование монитора ресурсов, который можно запустить через команду <code>resmon</code> в диалоговом окне <code>Win + R</code>.</p>
+<p>Во вкладке <code>ЦП</code> монитора ресурсов можно увидеть гистограмму, где потоки распределены по узлам NUMA, если такая информация доступна от системы.</p>
+<p>Наличие нескольких строк в выводе команды <code>wmic</code> подтверждает, что BIOS настроен правильно и ОС использует многоузловую архитектуру.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для детального анализа латентности памяти между узлами можно использовать утилиту numactl из состава Windows SDK или сторонние бенчмарки.</p></aside>
+
+<p>Сравнение показателей до и после включения NUMA часто показывает снижение задержек при работе с большими массивами данных.</p>
+<p>В задачах рендеринга или компиляции кода, где важно локальное размещение данных, прирост производительности может составлять от 10% до 30%.</p>
+<p>Однако в некоторых сценариях, например при работе с однопоточными legacy-приложениями, разница может быть практически незаметна.</p>
+<p>Важно понимать, что сама по себе активация NUMA не ускоряет систему магическим образом, а лишь позволяет ей работать более предсказуемо под нагрузкой.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки и эксплуатации систем с NUMA пользователи часто сталкиваются с рядом характерных проблем, связанных с несовместимостью ПО или ошибочной конфигурацией.</p>
+<p>Одной из самых распространенных ситуаций является игнорирование обновлений BIOS, что приводит к некорректному отображению узлов в операционной системе.</p>
+<p>Также проблемы могут возникать при использовании старого программного обеспечения, которое не умеет работать с многоузловой архитектурой и принудительно размещает все процессы на одном узле.</p>
+<p>Неверная интерпретация параметров BIOS, когда пользователь включает интерливинг вместо его отключения, также приводит к ожидаемому, но обратному результату.</p>
+
+<ol>
+<li><strong>Windows видит только один узел NUMA</strong> — чаще всего это означает, что в BIOS параметр <code>Node Interleaving</code> установлен в <code>Enabled</code> (нужно <code>Disabled</code>) или устарела версия микрокода процессора.</li>
+<li><strong>Снижение производительности в играх или старых приложениях</strong> — некоторые программы плохо справляются с распределением памяти по узлам; в таких случаях можно временно отключить NUMA или использовать утилиты для привязки процессов.</li>
+<li><strong>Ошибки BSOD (Синий экран) после смены настроек</strong> — резкое изменение топологии памяти может вызвать конфликт драйверов; рекомендуется выполнить чистую установку Windows после изменения настроек BIOS.</li>
+<li><strong>Неравномерное распределение памяти</strong> — если один узел загружен памятью на 100%, а другой свободен, возможно, приложение жестко привязано к конкретному ядру или узлу через настройки совместимости.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкость настройки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Повышение пропускной способности</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Масштабируемость</li></ul></div>
+</div></div>
+
+<p>Таблица ниже демонстрирует сравнение характеристик работы системы в разных режимах конфигурации памяти.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим UMA (Интерливинг вкл.)</th>
+<th>Режим NUMA (Интерливинг выкл.)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Доступ к памяти</td>
+<td>Равномерный, но медленнее</td>
+<td>Локальный быстрый, удаленный медленный</td>
+</tr>
+<tr>
+<td>Совместимость ПО</td>
+<td>Максимальная</td>
+<td>Требует поддержки ОС</td>
+</tr>
+<tr>
+<td>Пропускная способность</td>
+<td>Ограничена шиной</td>
+<td>Суммируется по узлам</td>
+</tr>
+</tbody>
+</table>
+
+<p>Дополнительная таблица показывает зависимость настройки BIOS от производителя платформы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Параметр BIOS</th>
+<th>Значение для NUMA</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AMD EPYC/Ryzen</td>
+<td>Node Interleaving</td>
+<td>Disabled</td>
+</tr>
+<tr>
+<td>Intel Xeon</td>
+<td>Sub-NUMA Clustering</td>
+<td>Enabled</td>
+</tr>
+</tbody>
+</table>
+
+<p>Понимание различий в терминологии помогает избежать путаницы при настройке серверов на базе разных архитектур.</p>
+<p>Всегда проверяйте документацию к конкретной материнской плате, так как названия пунктов могут варьироваться даже в рамках одного производителя.</p>
+<p>Корректная настройка NUMA является фундаментом для построения высокопроизводительной системы на базе Windows 10.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильная настройка NUMA в BIOS и последующая переустановка Windows 10 гарантируют максимальную производительность многопроцессорных систем.</p></aside>
+
+<p>В заключение стоит подчеркнуть, что управление архитектурой памяти — это задача, требующая внимательного подхода на этапе первоначальной сборки и настройки оборудования.</p>
+<p>Игнорирование параметров NUMA может превратить мощную серверную платформу в неэффективную систему с высокими задержками.</p>
+<p>Своевременная активация соответствующих режимов в BIOS и использование современных версий Windows 10 позволяет полностью раскрыть аппаратный потенциал компьютера.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/as/asus-vivobook-nachat-rabotat.html" class="pb-related-card">
+                <span class="pb-related-title">Как начать работать на Asus Vivobook: настройка и запуск</span>
+                <span class="pb-related-desc">Пошаговая инструкция по первому включению, настройке BIOS, установке драйверов и оптимизации ноутбук</span>
+            </a><a href="/articles/u/ua/ua32h1200-proshivka-usb.html" class="pb-related-card">
+                <span class="pb-related-title">Прошивка Samsung UA32H1200 через USB: Полный гид</span>
+                <span class="pb-related-desc">Подробная инструкция по обновлению ПО телевизора Samsung UA32H1200 через USB. Скачать прошивку, устр</span>
+            </a><a href="/articles/k/ka/kak-vosstanovit-zagruzchik-windows-7-pri-pomoshchi-live-cd.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление загрузчика Windows 7 через LiveCD: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по восстановлению загрузчика Windows 7 с помощью LiveCD. Разбор команд Bootrec</span>
+            </a><a href="/articles/w/wi/windows-10-ltsb-vs-windows-7.html" class="pb-related-card">
+                <span class="pb-related-title">Windows 10 LTSC против Windows 7: Сравнение для бизнеса</span>
+                <span class="pb-related-desc">Полный технический анализ Windows 10 LTSC и Windows 7. Сравнение производительности, безопасности, с</span>
+            </a><a href="/articles/a/as/asus-zenbook-kak-zatyanut-petli.html" class="pb-related-card">
+                <span class="pb-related-title">Регулировка петель ноутбука ASUS ZenBook: инструкция и советы</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению люфта и скрипа петель в ноутбуках ASUS ZenBook. Разбор моделей, и</span>
+            </a><a href="/articles/k/ka/kak-otkryt-moj-kompyuter-cherez-cmd.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть Мой компьютер через CMD: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по запуску Проводника и папки пользователя через командную строку. Команды exp</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

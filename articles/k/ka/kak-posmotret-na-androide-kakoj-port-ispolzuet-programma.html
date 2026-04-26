@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как посмотреть порты на Андроиде: полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по проверке активных портов на Android. Использование ADB, Netstat, Wireshark и анализ трафика для диагностики сети.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-posmotret-na-androide-kakoj-port-ispolzuet-programma.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как посмотреть порты на Андроиде: полная инструкция">
+    <meta property="og:description" content="Подробное руководство по проверке активных портов на Android. Использование ADB, Netstat, Wireshark и анализ трафика для диагностики сети.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как посмотреть порты на Андроиде: полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-командной-строки-adb-для-анализа-соединений">Использование командной строки ADB для анализа соединений</a></li><li><a href="#применение-специализированных-приложений-для-мониторинга">Применение специализированных приложений для мониторинга</a></li><li><a href="#анализ-сетевого-трафика-с-снифферами">Анализ сетевого трафика с снифферами</a></li><li><a href="#диагностика-через-логи-системы-и-отладчика">Диагностика через логи системы и отладчика</a></li><li><a href="#типичные-ошибки-при-диагностике-портов">Типичные ошибки при диагностике портов</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-igrat-v-robloks-bez-interneta-na-android.html">Как играть в Roblox без интернета на Андроид: мифы и методы</a></li><li><a href="/articles/k/ka/kak-delayut-foto-3d-stikery-na-telefon.html">Как создать 3D стикеры на телефон: полная инструкция</a></li><li><a href="/articles/m/mi/microsoft-word-android-bez-podpiski.html">Microsoft Word на Android бесплатно: функции и установка</a></li><li><a href="/articles/v/ve/veb-prilozhenie-alfa-bank-dlya-kkompyutera.html">Веб-приложение Альфа-Банк для ПК: полная инструкция по установке</a></li><li><a href="/articles/k/ka/kak-ubrat-v-nastrojkakh-na-telefona-shrift-brajlya.html">Как отключить шрифт Брайля на Android и iPhone</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как посмотреть порты на Андроиде: полная инструкция</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-командной-строки-adb-для-анализа-соединений">Использование командной строки ADB для анализа соединений</a></li><li><a href="#применение-специализированных-приложений-для-мониторинга">Применение специализированных приложений для мониторинга</a></li><li><a href="#анализ-сетевого-трафика-с-снифферами">Анализ сетевого трафика с снифферами</a></li><li><a href="#диагностика-через-логи-системы-и-отладчика">Диагностика через логи системы и отладчика</a></li><li><a href="#типичные-ошибки-при-диагностике-портов">Типичные ошибки при диагностике портов</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда запущенное приложение начинает некорректно работать или блокировать сетевую активность, часто требует детальной диагностики сетевых соединений. Пользователь может столкнуться с невозможностью подключения к локальному серверу, конфликтом портов при разработке или подозрением на утечку данных в фоновом режиме. Стандартные инструменты интерфейса операционной системы редко предоставляют информацию о том, какой именно порт занимает конкретный процесс, что создает необходимость использования более глубоких методов анализа.</p>
+
+<p>В операционной системе Android, базирующейся на ядре Linux, сетевой стек функционирует по тем же принципам, что и на десктопных дистрибутивах, однако доступ к системным таблицам соединений по умолчанию ограничен правами суперпользователя. Для решения задачи мониторинга портов необходимо задействовать специализированные утилиты командной строки или инструменты отладки, которые способны запросить и отобразить содержимое таблиц маршрутизации и активных сокетов. Понимание того, как именно приложение взаимодействует с сетью, является критически важным для администрирования и обеспечения безопасности.</p>
+
+<p>Существует несколько проверенных подходов к получению этой информации, каждый из которых имеет свои ограничения и сферу применения. Выбор конкретного метода зависит от наличия root-прав на устройстве, возможности подключения к компьютеру через USB и уровня технической подготовки пользователя. В некоторых случаях достаточно будет установки специализированного приложения из магазина, в других — потребуется использование отладочного моста Android Debug Bridge.</p>
+
+<h2 id="использование-командной-строки-adb-для-анализа-соединений">Использование командной строки ADB для анализа соединений</h2>
+
+<p>Наиболее универсальным и распространенным способом диагностики сетевой активности является использование отладочного моста Android Debug Bridge (ADB). Этот инструмент позволяет отправлять команды непосредственно в оболочку операционной системы устройства с компьютера, обходя ограничения графического интерфейса. Для начала работы необходимо установить платформенные инструменты на ПК и включить режим отладки по USB на самом смартфоне в меню <code>Настройки → Для разработчиков → Отладка по USB</code>.</p>
+
+<p>После подключения устройства к компьютеру и авторизации ключей RSA, пользователь получает доступ к системной оболочке через команду <code>adb shell</code>. Внутри этой оболочки можно запустить утилиту <code>netstat</code> или более современную <code>ss</code>, которые отображают таблицу активных сетевых соединений. Команда <code>netstat -tuln</code> выведет список всех слушающих портов TCP и UDP, однако она не всегда показывает привязку к конкретному процессу (PID) без наличия root-прав.</p>
+
+<p>Если устройство имеет права суперпользователя, команда <code>netstat -tulnp</code> или <code>ss -tulnp</code> отобразит столбец <code>Program name</code>, где будет указано имя процесса, использующего порт. Без root-прав вывод часто ограничивается звездочками или пустыми значениями в колонке процесса, что делает анализ затруднительным. В таком случае можно попробовать использовать фильтр <code>grep</code> для поиска конкретного порта, например: <code>netstat -an | grep:8080</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Запуск анализа через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите ADB на компьютер и включите отладку по USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите устройство и выполните команду adb shell</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите netstat -an для просмотра всех соединений</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Используйте grep для фильтрации по номеру порта</span></div></div>
+
+<p>Для более детального анализа можно использовать команду <code>lsof</code> (list open files), которая в Linux-системах, включая Android, показывает открытые файлы и сетевые сокеты. Команда <code>lsof -i</code> потребует обязательного наличия root-прав, так как она обращается к системным таблицам процессов. Результатом выполнения станет список, где четко видно, какой PID и какое приложение занимают конкретный порт, что незаменимо при отладке серверных приложений.</p>
+
+<h3>Особенности работы с разными версиями Android</h3>
+
+<p>На устройствах под управлением старых версий Android, таких как <em>Android 6.0 Marshmallow</em> или <em>7.0 Nougat</em>, утилита <code>netstat</code> часто включена в базовую комплектациюBusyBox или системного. Синтаксис команд в этих версиях может незначительно отличаться от современных стандартов, принятых в <em>Android 10+</em> и <em>11+</em>, где акцент смещается на использование <code>ss</code> и <code>ip</code>. Пользователям legacy-устройств может потребоваться установка дополнительного ПО для получения полного списка параметров.</p>
+
+<p>В современных версиях операционной системы, начиная с <em>Android 9 Pie</em>, политики безопасности стали значительно строже. Доступ к процессам других приложений через <code>proc</code> или системные вызовы ограничен даже для ADB-шелла без повышенных привилегий. Это означает, что стандартная команда <code>adb shell</code> без root-прав покажет только системные процессы и процессы самого ADB, скрывая информацию о сторонних приложениях из Google Play.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На Android 12 и новее доступ к сетевой статистике через ADB без root-прав может быть полностью заблокирован производителем устройства. В таких случаях остается только анализ трафика или использование специальных API для разработчиков.</p></aside>
+
+<p>Стоит учитывать, что некоторые производители, такие как <em>Xiaomi</em>, <em>Huawei</em> или <em>Samsung</em>, могут модифицировать стандартный набор консольных улит. В их прошивках команда <code>netstat</code> может быть заменена на проприетарный аналог или требовать указания полных путей к исполняемым файлам, например <code>/system/bin/netstat</code>. Если стандартный вызов не работает, имеет смысл проверить наличие бинарников в директории <code>/system/bin/</code>.</p>
+
+<h2 id="применение-специализированных-приложений-для-мониторинга">Применение специализированных приложений для мониторинга</h2>
+
+<p>Для пользователей, которые не хотят или не могут использовать командную строку и подключение к ПК, существуют нативные приложения, разработанные специально для мониторинга сетевой активности. Такие программы, как <em>NetGuard</em>, <em>Packet Capture</em> или <em>Termux</em>, берут на себя роль посредника, создавая локальный VPN-туннель для перехвата и анализа проходящих данных. Это позволяет визуализировать соединения без необходимости получения root-прав, хотя функциональность может быть ограничена по сравнению с системными утилитами.</p>
+
+<p>Приложение <em>Termux</em> представляет собой эмулятор терминала, который позволяет установить полноценный набор Linux-утилит прямо на телефон. После установки пакетов <code>net-tools</code> или <code>procps</code> через встроенный менеджер пакетов <code>pkg</code>, пользователь получает доступ к командам <code>netstat</code>, <code>ss</code> и другим инструментам анализа. Однако стоит помнить, что Termux работает в изолированном пространстве (sandbox) и без root-прав не сможет увидеть процессы других приложений, только свои собственные.</p>
+
+<p>Приложения-фаерволы, такие как <em>NetGuard</em>, работают на уровне блокировки соединений и предоставляют подробный журнал всех попыток доступа к сети. В логах таких программ можно увидеть IP-адреса, порты и имена приложений, инициировавших соединение. Этот метод является косвенным, но крайне эффективным для понимания того, куда и через какой порт пытается «постучаться» программа. Интерфейс таких улит обычно содержит вкладки для фильтрации по приложению или по порту.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Приложения, создающие локальный VPN для анализа трафика, могут снижать скорость интернет-соединения и увеличивать расход батареи. Кроме того, они технически имеют доступ ко всем вашим незашифрованным данным, поэтому доверять стоит только проверенным разработчикам с открытым исходным кодом.</p></aside>
+
+<h3>Сравнение методов получения информации</h3>
+
+<p>Выбор между использованием ADB, root-утилит и сторонних приложений зависит от конкретных целей диагностики. ADB дает прямой доступ к системе, но требует компьютера и настройки. Сторонние приложения удобны, но могут не показывать полные технические детали или требовать создания VPN-подключения, что меняет сетевую конфигурацию устройства.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Требует Root</th>
+<th>Требует ПК</th>
+<th>Детализация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB Shell</td>
+<td>Нет (частично)</td>
+<td>Да</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Termux (без root)</td>
+<td>Нет</td>
+<td>Нет</td>
+<td>Низкая (только свои процессы)</td>
+</tr>
+<tr>
+<td>NetGuard / Фаерволы</td>
+<td>Нет</td>
+<td>Нет</td>
+<td>Средняя (логирование)</td>
+</tr>
+<tr>
+<td>Системный netstat (root)</td>
+<td>Да</td>
+<td>Нет</td>
+<td>Полная</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важным аспектом является интерпретация полученных данных. В то время как ADB покажет сырые данные о сокетах, приложения-анализаторы часто предоставляют графическую привязку доменных имен к IP-адресам, что упрощает понимание, какому сервису принадлежит порт. Однако для точной технической диагностики, например, проверки listening-портов сервера, запущенного на устройстве, графические интерфейсы могут быть избыточны или недостаточно информативны.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Удобство использования на ходу</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Не требует подключения к компьютеру</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Графический интерфейс понятен новичкам</li></ul></div>
+</div></div>
+
+<h2 id="анализ-сетевого-трафика-с-снифферами">Анализ сетевого трафика с снифферами</h2>
+
+<p>Если задача состоит не просто в просмотре списка портов, а в понимании того, какие данные передаются через них, используется метод сниффинга трафика. Для этого на Android часто применяется связка приложений, создающих локальный прокси или VPN, и перенаправляющих трафик для анализа. Популярным решением является использование связки <em>PCAPdroid</em> или <em>HttpCanary</em>, которые позволяют захватывать пакеты и видеть порты источника и назначения в реальном времени.</p>
+
+<p>В отличие от простого просмотра таблицы соединений, снифферы показывают динамику: когда именно открывается порт, сколько данных передается и как долго соединение остается активным. Это особенно полезно для выявления фоновой активности, когда приложение «будит» устройство для передачи телеметрии. В логах сниффера можно отфильтровать трафик по конкретному UID приложения и увидеть все используемые им порты, включая ephemeral (временные) порты.</p>
+
+<p>Для профессионального анализа часто используется метод перенаправления трафика на внешний компьютер с установленной программой <em>Wireshark</em>. Для этого на Android настраивается прокси-сервер или используется <code>adb</code> с ключом <code>reverse</code>. Команда <code>adb reverse tcp:8080 tcp:8080</code> позволяет перенаправить порт с устройства на компьютер, где запущен сниффер. Это дает наиболее полную картину без установки сомнительного ПО непосредственно на телефон.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для анализа HTTPS трафика в снифферах часто требуется установка пользовательского корневого сертификата (CA) в хранилище доверенных сертификатов Android. На версиях Android 7.0 и выше приложения по умолчанию игнорируют пользовательские сертификаты, поэтому для глубокого анализа HTTPS может потребоваться патчинг APK или использование специальных модулей Xposed.</p></aside>
+
+<h3>Интерпретация данных в снифферах</h3>
+
+<p>При работе с захваченными пакетами внимание следует обращать на колонки Source Port и Destination Port. Source Port часто является случайным высоким номером (выше 1024), в то время как Destination Port указывает на конкретный сервис (например, 443 для HTTPS, 80 для HTTP, 53 для DNS). Анализ этих данных позволяет понять, является ли соединение инициированным приложением или ответом сервера.</p>
+
+<p>Сложность может вызвать идентификация зашифрованного трафика. В этом случае номер порта остается единственным явным признаком типа сервиса, хотя современные протоколы часто используют нестандартные порты или технику порто-хоппинга. Снифферы позволяют экспортировать логи в формате <code>.pcap</code> для дальнейшего изучения на ПК, где инструменты анализа мощнее.</p>
+
+<h2 id="диагностика-через-логи-системы-и-отладчика">Диагностика через логи системы и отладчика</h2>
+
+<p>Операционная система Android ведет подробные логи своей работы, которые могут содержать информацию о сетевой активности. Доступ к этим логам осуществляется через команду <code>logcat</code> в ADB. Хотя <code>logcat</code> в первую очередь предназначен для вывода сообщений приложений, системные компоненты часто логируют события открытия и закрытия сетевых сокетов, особенно если в работе сети возникают ошибки.</p>
+
+<p>Для поиска relevant записей можно использовать фильтры по тегу. Например, тег <code>NetworkManagement</code> или <code>ConnectivityService</code> может содержать информацию о изменениях состояния сети. Команда <code>adb logcat | grep -i"port"</code> позволит отфильтровать все сообщения, содержащие слово «port». Однако этот метод является косвенным и требует умения читать системные логи, так как информация подается в разрозненном виде.</p>
+
+<p>Более эффективным является использование отладчика <code>dumpsys</code>. Команда <code>dumpsys connectivity</code> выдает огромный объем информации о состоянии сетевых интерфейсов, NAT, маршрутизации и активных соединениях. В этом дампе можно найти таблицы, аналогичные <code>iptables</code>, где прописаны правила проброса портов. Поиск по ключевым словам <code>uid</code> (идентификатор пользователя/приложения) помогает связать сетевую активность с конкретным установленным приложением.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Анализ через dumpsys</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство по ADB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните команду adb shell dumpsys connectivity > conn.txt</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Откройте полученный файл conn.txt на ПК</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Найдите раздел Netd или Iptables для просмотра правил портов</span></div></div>
+
+<h3>Использование procfs для прямого доступа</h3>
+
+<p>Файловая система <code>/proc</code> в Linux-подобных системах, к которым относится Android, предоставляет интерфейс к данным ядра. Директория <code>/proc/net/tcp</code> содержит таблицу всех активных TCP-соединений в шестнадцатеричном формате. Прочитав этот файл (командой <code>cat /proc/net/tcp</code>), можно получить список всех сокетов, однако информация там представлена в виде hex-кодов адресов и портов, что требует дополнительной конвертации для человеческого восприятия.</p>
+
+<p>Преимущество метода работы с <code>/proc</code> заключается в том, что он работает даже на устройствах с минимальным набором утилит, лишь бы был доступ к shell. Для конвертации hex-порта в десятичный формат можно использовать калькулятор или простые скрипты. Например, порт <code>1F90</code> в hex равен <code>8080</code> в десятичной системе. Столбец <code>inode</code> в этом файле можно связать с процессом, имеющим открытый файловый дескриптор на этот сокет, но это требует перебора всех процессов в <code>/proc/[pid]/fd/</code>.</p>
+
+<p>Этот метод является наиболее низкоуровневым и подходит для сценариев, когда стандартные утилиты <code>netstat</code> или <code>ss</code> отсутствуют в системе или повреждены. Он также демонстрирует фундаментальный принцип работы сети в Android: все соединения представлены как файлы в виртуальной файловой системе.</p>
+
+<h2 id="типичные-ошибки-при-диагностике-портов">Типичные ошибки при диагностике портов</h2>
+
+<p>В процессе анализа сетевых соединений пользователи часто сталкиваются с рядом типичных заблуждений и технических ошибок, которые приводят к неверным выводам. Понимание этих нюансов позволяет избежать ложных тревог и правильно интерпретировать данные.</p>
+
+<ol>
+<li><strong>Игнорирование разницы между Listening и Established</strong> — пользователи часто пугаются, видя множество портов в статусе LISTEN, однако это лишь означает, что приложение готово принять соединение, а не то, что оно прямо сейчас передает данные. Активные соединения имеют статус ESTABLISHED или TIME_WAIT.</li>
+<li><strong>Путаница с локальным и удаленным портом</strong> — при просмотре таблицы соединений важно не перепутать Local Address (порт на вашем устройстве) и Foreign Address (порт на сервере). Программа может использовать случайный локальный порт для подключения к стандартному порту 443 удаленного сервера.</li>
+<li><strong>Ожидание видимости без root-прав</strong> — попытка узнать, какой порт использует чужое приложение (например, Facebook или Telegram), через стандартный ADB shell без root-прав обречена на неудачу из-за изоляции процессов. В выводе будет стоять вопросительный знак или тире.</li>
+<li><strong>Неверная интерпретация IPv6</strong> — современные устройства активно используют IPv6. В таблицах <code>netstat</code> адреса могут отображаться в формате <code>::ffff:192.168.1.1</code> или полностью в hex-формате, что может сбить с толку неподготовленного пользователя, ищущего привычные IPv4 адреса.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключевым моментом в диагностике портов на Android является понимание ограничений безопасности: без root-полномочий увидеть чужие процессы невозможно, и для полного анализа требуется либо ADB, либо специализированные приложения с правами VPN.</p></aside>
+
+<h2 id="резюме-и-заключение">Резюме и заключение</h2>
+
+<p>Процесс определения портов, используемых программами на Android, варьируется от простого визуального наблюдения в приложениях-фаерволах до глубокого анализа системных логов через ADB. Выбор метода напрямую зависит от наличия root-прав и целей исследования: для обычной проверки безопасности достаточно приложений вроде NetGuard, тогда как разработчикам и системным администраторам потребуется полный арсенал консольных утилит Linux, доступных через отладочный мост.</p>
+
+<p> Поэтому любые попытки «заглянуть под капот» без соответствующих привилегий будут сталкиваться с ограничениями ядра. Грамотное использование комбинации инструментов — ADB, анализ дампов памяти и специализированного софта — позволяет получить исчерпывающую картину сетевой активности любого устройства.</p>
+
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Лучшее применение</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB + Netstat</td>
+<td>Точная диагностика, разработка</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Termux</td>
+<td>Работа в терминале без ПК</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>NetGuard</td>
+<td>Контроль доступа и мониторинг</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-igrat-v-robloks-bez-interneta-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как играть в Roblox без интернета на Андроид: мифы и методы</span>
+                <span class="pb-related-desc">Технический разбор возможности запуска Roblox офлайн. Реальные способы, работающие с эмуляторами, кэ</span>
+            </a><a href="/articles/k/ka/kak-delayut-foto-3d-stikery-na-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Как создать 3D стикеры на телефон: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по созданию объемных стикеров из фото. Программы, методы съемки и обработка дл</span>
+            </a><a href="/articles/m/mi/microsoft-word-android-bez-podpiski.html" class="pb-related-card">
+                <span class="pb-related-title">Microsoft Word на Android бесплатно: функции и установка</span>
+                <span class="pb-related-desc">Подробная инструкция по использованию Microsoft Word на Android без платной подписки. Узнайте, какие</span>
+            </a><a href="/articles/v/ve/veb-prilozhenie-alfa-bank-dlya-kkompyutera.html" class="pb-related-card">
+                <span class="pb-related-title">Веб-приложение Альфа-Банк для ПК: полная инструкция по установке</span>
+                <span class="pb-related-desc">Подробная техническая инструкция по использованию веб-версии Альфа-Банка на компьютере. Решение проб</span>
+            </a><a href="/articles/k/ka/kak-ubrat-v-nastrojkakh-na-telefona-shrift-brajlya.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить шрифт Брайля на Android и iPhone</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению шрифта Брайля и голосового управления на смартфонах. Решение проб</span>
+            </a><a href="/articles/h/ho/honor-brg-561-drajver-wi-fi.html" class="pb-related-card">
+                <span class="pb-related-title">Honor BRG-561: Драйвер Wi-Fi, поиск и установка модуля</span>
+                <span class="pb-related-desc">Техническая инструкция по поиску драйвера Honor BRG-561 для Wi-Fi. Настройка роутера, обновление про</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

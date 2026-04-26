@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>ESP8266 HamRadio: создание APRS iGate и Digi — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по сборке APRS iGate на базе ESP8266. Настройка TNC, работа с частотами 144.800 МГц и интеграция с aprs.fi.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/e/es/esp8266-hamradio.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="ESP8266 HamRadio: создание APRS iGate и Digi">
+    <meta property="og:description" content="Техническое руководство по сборке APRS iGate на базе ESP8266. Настройка TNC, работа с частотами 144.800 МГц и интеграция с aprs.fi.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">ESP8266 HamRadio: создание APRS iGate и Digi</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-системы-и-выбор-оборудования">Архитектура системы и выбор оборудования</a></li><li><a href="#программная-настройка-и-прошивка-tnc">Программная настройка и прошивка TNC</a></li><li><a href="#сборка-аппаратного-интерфейса-sound-card-interface">Сборка аппаратного интерфейса (Sound Card Interface)</a></li><li><a href="#типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</a></li><li><a href="#интеграция-в-сеть-и-мониторинг">Интеграция в сеть и мониторинг</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/u/ud/udalit-kontinent-ap-4-utilita.html">Как удалить Континент АП 4: полная инструкция</a></li><li><a href="/articles/s/sv/sven-programmnoe-obespechenie-dlya-myshi-na-russkom.html">SVEN программное обеспечение: установка и настройка мыши</a></li><li><a href="/articles/d/dr/drajvera-ritmix-gp-005.html">Драйвера Ritmix GP-005: установка и настройка GPS-приемника</a></li><li><a href="/articles/d/di/dispetcher-zvuka-gigabyte.html">Gigabyte Smart Sound: настройка, драйверы и устранение проблем</a></li><li><a href="/articles/k/ka/kak-na-vinks-smotret-yutub-2025.html">Как смотреть YouTube на Винкс: Инструкция 2026</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Организация APRS iGate на базе ESP8266 для радиосвязи</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-системы-и-выбор-оборудования">Архитектура системы и выбор оборудования</a></li><li><a href="#программная-настройка-и-прошивка-tnc">Программная настройка и прошивка TNC</a></li><li><a href="#сборка-аппаратного-интерфейса-sound-card-interface">Сборка аппаратного интерфейса (Sound Card Interface)</a></li><li><a href="#типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</a></li><li><a href="#интеграция-в-сеть-и-мониторинг">Интеграция в сеть и мониторинг</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда радиоприёмник фиксирует сигналы с локального ретранслятора, но на карте APRS эти данные не отображаются, знакома многим радиолюбителям. Отсутствие интернет-шлюза в зоне уверенного приёма часто становится причиной того, что треки мобильных станций обрываются, не доходя до глобальной сети.</p>
+
+<p>Решение проблемы часто кроется в создании собственного узла (iGate) на базе доступных микроконтроллеров, таких как ESP8266. Использование дешёвых плат позволяет организовать передачу пакетов в сеть aprs.fi без необходимости покупки дорогостоящего специализированного оборудования.</p>
+
+<p>На практике реализация такого проекта требует чёткого понимания архитектуры передачи данных и настройки радиомодема. Важно сразу определить, что микроконтроллер будет выполнять функцию TNC (Terminal Node Controller), декодируя аудиосигнал с приёмника и передавая его в интернет.</p>
+
+<p>Если у вас есть базовые навыки пайки и работы с командной строкой, сборка устройства займёт немного времени. Ключевым моментом является правильная коммутация аудиовыхода трансивера с аналоговым входом микроконтроллера.</p>
+
+<h2 id="архитектура-системы-и-выбор-оборудования">Архитектура системы и выбор оборудования</h2>
+
+<p>Основой системы выступает одноплатный компьютер или микроконтроллер, способный обрабатывать аудиопоток в реальном времени. Для любительской радиосвязи стандартом де-факто стало использование чипов ESP8266 или ESP32 в связке с программным обеспечением, эмулирующим TNC.</p>
+
+<h3>Требования к микроконтроллеру</h3>
+<p>Выбор платы зависит от доступных интерфейсов и требований к стабильности работы. Модель <em>NodeMCU v3</em> или <em>Wemos D1 Mini</em> демонстрируют отличные результаты при работе с APRS-протоколом благодаря наличию встроенного Wi-Fi модуля.</p>
+
+<p>Важно учитывать, что для декодирования AFSK-сигнала требуется достаточно быстрый АЦП (аналого-цифровой преобразователь). Хотя ESP8266 имеет ограниченные ресурсы по сравнению с Raspberry Pi, оптимизированные библиотеки позволяют эффективно обрабатывать поток данных на частоте 1200 бод.</p>
+
+<p>Стабильность тактирования критична для корректного декодирования. Дешёвые clones плат могут иметь погрешность кварцевого резонатора, что приведёт к потере пакетов. В таких случаях программная коррекция частоты в прошивке становится обязательной.</p>
+
+<h3>Интерфейсы подключения к трансиверу</h3>
+<p>Подключение к радиостанции осуществляется через разъем микрофона или отдельный разъем для подключения TNC. Сигнал с динамика трансивера подается на вход A0 (или аналоговый пин) контроллера.</p>
+
+<p>Уровень сигнала должен быть согласован, чтобы не повредить вход контроллера. Обычно требуется делитель напряжения, снижающий уровень с вольт до безопасных 1 вольт. Для передачи (PTT) используется любой свободный цифровой пин, управляющий ключом.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На многих современных трансиверах Yaesu и Kenwood уровень сигнала на разъеме DATA составляет около 100-200 мВ, что требует дополнительного усиления перед подачей на ESP8266.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Функция в системе</th>
+<th>Требования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP8266 (NodeMCU)</td>
+<td>Обработка звука, Wi-Fi, логика TNC</td>
+<td>Стабильное питание 3.3В</td>
+</tr>
+<tr>
+<td>Аудио-интерфейс</td>
+<td>Согласование уровней сигнала</td>
+<td>Делитель напряжения, фильтр НЧ</td>
+</tr>
+<tr>
+<td>PTT ключ</td>
+<td>Управление передачей</td>
+<td>Опторазвязка или транзистор</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильный выбор платы и согласование уровней сигнала являются фундаментом стабильной работы APRS iGate.</p></aside>
+
+<h2 id="программная-настройка-и-прошивка-tnc">Программная настройка и прошивка TNC</h2>
+
+<p>После сборки аппаратной части необходимо выбрать программное обеспечение. Наиболее распространённым решением является прошивка <em>ESP32-APRS-iGate</em> (совместимая и с ESP8266) или специализированные скетчи для Arduino IDE.</p>
+
+<h3>Конфигурация сети и радиоканала</h3>
+<p>Первым шагом является настройка параметров подключения к локальной сети Wi-Fi. В конфигурационном файле или через веб-интерфейс (если поддерживается) прописываются SSID и пароль роутера.</p>
+
+<p>Далее следует критически важный этап — настройка радиочастотных параметров. Необходимо указать рабочую частоту, обычно это <code>144.800</code> МГц для Европы и <code>144.390</code> МГц для США. Ошибка в одну герц может привести к тому, что шлюз будет глухим.</p>
+
+<p>Для работы в качестве iGate требуется валидный позывной и PASS-код. Эти данные получают на сайте aprs.fi после регистрации. Без них uploading пакетов в интернет будет невозможен.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка ПО</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите плату к ПК по USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте Arduino IDE или PlatformIO</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Загрузите скетч с базовыми настройками</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Откройте Serial Monitor для проверки логов</span></div></div>
+
+<h3>Калибровка уровня сигнала</h3>
+<p>Программное обеспечение часто предоставляет возможность мониторинга уровня входного сигнала. Через последовательный порт можно наблюдать за значением RSSI или уровнем шума.</p>
+
+<p>Оптимальным считается уровень, при котором шумовая дорожка занимает примерно 30-40% шкалы, а полезный сигнал пробивает её уверенно. Слишком высокий уровень приведёт к клиппингу (искажениям), слишком низкий — к потере слабых станций.</p>
+
+<p>Некоторые прошивки позволяют регулировать чувствительность программно. Если аппаратная регулировка невозможна, стоит поэкспериментировать с параметром <code>SQUELCH</code> в конфигурации.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При калибровке уровня сигнала убедитесь, что напряжение на аналоговом входе не превышает 1.0В, иначе вы рискуете вывести микроконтроллер из строя.</p></aside>
+
+<h2 id="сборка-аппаратного-интерфейса-sound-card-interface">Сборка аппаратного интерфейса (Sound Card Interface)</h2>
+
+<p>Самодельный интерфейс между трансивером и ESP8266 представляет собой простую схему, состоящую из делителей напряжения и, опционально, фильтров. Основная задача — передать звук без искажений и обеспечить управление передачей.</p>
+
+<h3>Схема подключения аудио</h3>
+<p>Для приёма сигнала используется делитель из двух резисторов. Если трансивер выдаёт 1В, а вход ESP8266 рассчитан на 1В, делитель может не понадобиться, но для универсальности лучше использовать коэффициент 1:5 или 1:10.</p>
+
+<p>Схема подключения к пину A0 включает резистор на землю и резистор на сигнал. Параллельно входу часто ставят конденсатор ёмкостью 0.1 мкФ для фильтрации высокочастотных помех, которые могут вносить цифровые наводки от самого Wi-Fi модуля.</p>
+
+<p>Цепь передачи (PTT) реализуется через транзистор или оптопару. При подаче логической единицы на пин управления, транзистор открывает цепь, замыкая контакты тангенты микрофона трансивера на землю.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Использование оптопары для PTT предпочтительнее, так как она обеспечивает полную гальваническую развязку и защищает компьютер от бросков напряжения в радиостанции.</p></aside>
+
+<h3>Фильтрация и экранирование</h3>
+<p>Wi-Fi модуль является мощным источником помех в диапазоне 2.4 ГГц, но его гармоники могут попадать и в диапазон 144 МГц. Качественное экранирование платы ESP8266 фольгой или металлическим корпусом значительно улучшает чувствительность.</p>
+
+<p>Провода, соединяющие плату с трансивером, должны быть максимально короткими и экранированными. Длинные «хвосты» работают как антенны, принимая собственный шум контроллера и забивая полезный сигнал.</p>
+
+<p>Если наблюдается сильное влияние Wi-Fi на приём, можно попробовать снизить мощность передатчика Wi-Fi в коде или программно, если драйвер позволяет. Также помогает изменение частоты Wi-Fi канала на более удалённый от гармоник.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Уровень сигнала (Audio In)</td>
+<td>0.5 - 0.8 В (p-p)</td>
+<td>Зависит от конкретного АЦП</td>
+</tr>
+<tr>
+<td>Сопротивление делителя</td>
+<td>10кОм + 2кОм</td>
+<td>Пример для 5В логики</td>
+</tr>
+<tr>
+<td>Частота среза ФНЧ</td>
+<td>~3-4 кГц</td>
+<td>Отсекает ВЧ шум</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-методы-диагностики">Типичные ошибки и методы диагностики</h2>
+
+<p>В процессе эксплуатации самодельных шлюзов радиолюбители часто сталкиваются с рядом повторяющихся проблем. Понимание их природы позволяет быстро восстановить работоспособность узла.</p>
+
+<ol>
+<li><strong>Отсутствие декодирования пакетов</strong> — чаще всего вызвано неправильным уровнем аудиосигнала или сдвигом частоты. Необходимо проверить осциллографом или программно уровень сигнала на входе A0 и убедиться, что частота в прошивке точно соответствует частоте трансивера.</li>
+<li><strong>Обрывы связи Wi-Fi</strong> — возникают из-за недостаточного питания. ESP8266 в момент передачи по Wi-Fi потребляет ток до 300мА, и слабый USB-порт или тонкие провода могут вызывать просадки напряжения и перезагрузки.</li>
+<li><strong>«Слепота» iGate</strong> — ситуация, когда шлюз видит пакеты, но не передаёт их в интернет. Обычно это проблема с PASS-кодом или блокировка (firewall) портов 14580 или 10102 на роутере.</li>
+<li><strong>Интерференция от Wi-Fi</strong> — если шлюз перестал слышать слабые станции после включения Wi-Fi, требуется улучшить экранирование корпуса или физически разнести антенну Wi-Fi и входной каскад приёмника.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Достоинства ESP8266</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Низкая стоимость</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Малое энергопотребление</li></ul></div>
+</div></div>
+
+<h2 id="интеграция-в-сеть-и-мониторинг">Интеграция в сеть и мониторинг</h2>
+
+<p>После успешной отправки первого пакета данные должны появиться на сайте aprs.fi. В личном кабинете пользователя можно отслеживать статистику работы шлюза, количество принятых пакетов и список слышимых позывных.</p>
+
+<p>Для постоянного контроля стоит настроить логирование. Логи позволяют анализировать, какие именно пакеты были потеряны и по какой причине. Анализ временных меток помогает выявить периоды пропадания сигнала.</p>
+
+<p>Если планируется установка шлюза в удалённом месте (на даче или в поле), следует предусмотреть автономное питание. Литий-ионный аккумулятор ёмкостью 2000 мАч способен обеспечить работу системы в течение нескольких суток в спящем режиме с периодическими пробуждениями.</p>
+
+<p>Регулярное обновление прошивки позволяет устранять баги и улучшать алгоритмы декодирования. Разработчики периодически выпускают патчи, повышающие стабильность работы в условиях зашумлённого эфира.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка работы шлюза</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Включите трансивер на частоте 144.800</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Дождитесь появления пакетов в логе Serial Monitor</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте статус на aprs.fi</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сравните количество принятых и отправленных пакетов</span></div></div>
+
+<p>В заключение, создание APRS iGate на базе ESP8266 является отличным проектом для радиолюбителя, позволяющим глубже понять принципы цифровой радиосвязи. Несмотря на простоту аппаратной части, система требует внимательной настройки радиоканала.</p>
+
+<p>Грамотно собранный и установленный шлюз становится надёжным элементом инфраструктуры любительской радиосвязи, помогая другим операторам быть «видимыми» в глобальной сети. Техническая реализация доступна даже начинающим, а результат приносит практическую пользу всему сообществу.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/u/ud/udalit-kontinent-ap-4-utilita.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Континент АП 4: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по удалению Континент АП 4 с Windows. Утилиты для полной очистки, работа с реес</span>
+            </a><a href="/articles/s/sv/sven-programmnoe-obespechenie-dlya-myshi-na-russkom.html" class="pb-related-card">
+                <span class="pb-related-title">SVEN программное обеспечение: установка и настройка мыши</span>
+                <span class="pb-related-desc">Полная инструкция по установке драйверов и ПО Sven для мышей. Настройка кнопок, DPI, макросов и устр</span>
+            </a><a href="/articles/d/dr/drajvera-ritmix-gp-005.html" class="pb-related-card">
+                <span class="pb-related-title">Драйвера Ritmix GP-005: установка и настройка GPS-приемника</span>
+                <span class="pb-related-desc">Подробное руководство по поиску, установке драйверов и устранению проблем с GPS-модулем Ritmix GP-00</span>
+            </a><a href="/articles/d/di/dispetcher-zvuka-gigabyte.html" class="pb-related-card">
+                <span class="pb-related-title">Gigabyte Smart Sound: настройка, драйверы и устранение проблем</span>
+                <span class="pb-related-desc">Полный гид по диспетчеру звука Gigabyte. Установка Realtek, настройка эквалайзера, работа с микрофон</span>
+            </a><a href="/articles/k/ka/kak-na-vinks-smotret-yutub-2025.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть YouTube на Винкс: Инструкция 2026</span>
+                <span class="pb-related-desc">Подробное руководство по запуску YouTube на смартфонах Winx 2026. Настройка приложений, обход ограни</span>
+            </a><a href="/articles/z/za/zapis-drobi-v-vorde.html" class="pb-related-card">
+                <span class="pb-related-title">Как написать дробь в Ворде: все способы и горячие клавиши</span>
+                <span class="pb-related-desc">Подробная инструкция по вводу дробей в MS Word. Коды символов, редактор формул, автосмена и решение </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

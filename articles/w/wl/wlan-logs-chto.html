@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>WLAN Logs: что это и как читать логи Wi-Fi — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор файлов журналов WLAN. Что такое WLAN logs, где они находятся, как расшифровать коды ошибок и использовать для диагностики сети.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wl/wlan-logs-chto.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="WLAN Logs: что это и как читать логи Wi-Fi">
+    <meta property="og:description" content="Подробный разбор файлов журналов WLAN. Что такое WLAN logs, где они находятся, как расшифровать коды ошибок и использовать для диагностики сети.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">WLAN Logs: что это и как читать логи Wi-Fi</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#природа-и-назначение-журналов-беспроводной-сети">Природа и назначение журналов беспроводной сети</a></li><li><a href="#локализация-и-извлечение-данных-в-различных-ос">Локализация и извлечение данных в различных ОС</a></li><li><a href="#анализ-кодов-ошибок-и-событий-деаутентификации">Анализ кодов ошибок и событий деаутентификации</a></li><li><a href="#диагностика-проблем-с-драйверами-и-оборудованием">Диагностика проблем с драйверами и оборудованием</a></li><li><a href="#типичные-ошибки-при-анализе-и-их-устранение">Типичные ошибки при анализе и их устранение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/in/internet-na-ajfone-znachok.html">Пропал интернет на iPhone: что значат значки и как исправить</a></li><li><a href="/articles/k/ka/kak-ubrat-s-plansheta-khuavej-beluyu-tochku-kogda-kasaeshsya-ekrana-ili-provodish-kak-god-izhevsk.html">Белая точка на экране Huawei: причины и методы устранения</a></li><li><a href="/articles/k/ka/kak-otklyuchit-uslugu-roditelskij-kontrol-ot-rostelekom.html">Как отключить Родительский контроль Ростелеком: полная инструкция</a></li><li><a href="/articles/k/ka/kak-nastroit-perekhodnik-dlya-interneta-qts1081b.html">Настройка QTS1081B: Полный гид по USB Ethernet адаптеру</a></li><li><a href="/articles/k/ka/kak-podklyuchit-internet-k-monobloku.html">Как подключить интернет к моноблоку: пошаговая инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>WLAN Logs: что это такое, где находятся и как читать</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#природа-и-назначение-журналов-беспроводной-сети">Природа и назначение журналов беспроводной сети</a></li><li><a href="#локализация-и-извлечение-данных-в-различных-ос">Локализация и извлечение данных в различных ОС</a></li><li><a href="#анализ-кодов-ошибок-и-событий-деаутентификации">Анализ кодов ошибок и событий деаутентификации</a></li><li><a href="#диагностика-проблем-с-драйверами-и-оборудованием">Диагностика проблем с драйверами и оборудованием</a></li><li><a href="#типичные-ошибки-при-анализе-и-их-устранение">Типичные ошибки при анализе и их устранение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапное обрывание соединения в разгар видеоконференции или невозможность загрузить страницу на смартфоне при полной шкале сигнала — сценарии, знакомые многим пользователям беспроводных сетей. В такие моменты стандартные методы диагностики, такие как перезагрузка роутера или переподключение устройства, часто оказываются бессильны, оставляя причину сбоя скрытой в глубине системных процессов. Именно здесь на первый план выходят системные журналы, известные как WLAN logs, которые фиксируют каждое событие, происходящее в беспроводном интерфейсе.</p>
+
+<p>Анализ этих записей позволяет перейти от гадания о причинах проблем к точному определению источника неисправности, будь то аппаратный сбой, программный конфликт или внешние помехи. Понимание структуры и содержимого логов становится ключевым навыком для системных администраторов и продвинутых пользователей, стремящихся обеспечить стабильность сетевой инфраструктуры.</p>
+
+<p>Рассмотрение технических деталей работы протоколов и механизмов логирования требует внимательного подхода к изучению конкретных записей, которые могут выглядеть как бессвязный набор символов для неподготовленного глаза. Однако за этими строками скрывается полная хронология взаимодействия клиентского устройства с точкой доступа, включая этапы сканирования, аутентификации и передачи данных. Разбор этих данных открывает возможности для глубокой оптимизации сети.</p>
+
+<h2 id="природа-и-назначение-журналов-беспроводной-сети">Природа и назначение журналов беспроводной сети</h2>
+
+<p>Файлы журналов WLAN представляют собой текстовые записи, создаваемые операционной системой или драйвером сетевого адаптера в реальном времени. Каждое действие, связанное с беспроводным соединением, от попытки сканирования эфира до разрыва связи из-за потери сигнала, помечается временной меткой и кодом события. <strong>Основная цель таких логов</strong> заключается в предоставлении разработчикам оборудования и системным администраторам детальной информации для отладки драйверов и диагностики сетевых аномалий.</p>
+
+<p>В операционных системах семейства Windows эти данные часто агрегируются в системные журналы событий, доступные через стандартные утилиты управления. В отличие от простых индикаторов состояния, которые показывают лишь факт подключения, логи содержат уровни серьезности событий: информационные сообщения, предупреждения и критические ошибки. Это позволяет отфильтровать фоновый шум и сосредоточиться на моментах, когда система столкнулась с реальной проблемой.</p>
+
+<p>На уровне драйверов логи могут записывать технические детали, такие как RSSI (уровень принимаемого сигнала), SNR (отношение сигнал/шум) и конкретные коды причин деаутентификации. Эти параметры критически важны при проектировании корпоративных сетей, где необходимо учитывать влияние соседних точек доступа и физических препятствий. Без детального логирования выявление таких проблем занимало бы часы ручных тестов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В современных версиях Windows 10 и 11 сбор детальных логов Wi-Fi по умолчанию может быть ограничен для экономии ресурсов, поэтому для глубокой диагностики часто требуется включение расширенного протоколирования.</p></aside>
+
+<p>Стоит понимать, что объем записываемой информации может варьироваться в зависимости от настроек системы. В обычном режиме работы хранятся только критические ошибки, тогда как в режиме отладки фиксируется каждый пакет управляющих кадров. <em>Чрезмерное логирование</em> может привести к быстрому заполнению дискового пространства, поэтому активировать его следует только на время проведения диагностики.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Журналы WLAN фиксируют детализированную историю всех событий беспроводного адаптера, позволяя выявлять скрытые причины сбоев, невидимые при стандартном использовании.</p></aside>
+
+<h2 id="локализация-и-извлечение-данных-в-различных-ос">Локализация и извлечение данных в различных ОС</h2>
+
+<p>Поиск и извлечение файлов журналов существенно различается в зависимости от используемой операционной системы и версии драйверов. В среде Windows наиболее эффективным инструментом является встроенная утилита командной строки, которая позволяет экспортировать сводный отчет о состоянии беспроводной сети. Этот отчет содержит не только текущие настройки, но и историю подключений за последние дни.</p>
+
+<ol>
+<li>Откройте командную строку с правами администратора, введя <code>cmd</code> в поиске и выбрав соответствующий пункт.</li>
+<li>Введите команду <code>netsh wlan show wlanreport</code> для генерации HTML-отчета или <code>netsh wlan show drivers</code> для проверки статуса поддержки журналирования.</li>
+<li>Найдите сгенерированный файл по пути <code>C:\ProgramData\Microsoft\Windows\WlanReport\wlan-report-latest.html</code>.</li>
+<li>Для получения сырых логов в текстовом формате используйте команду <code>netsh wlan show networks mode=bssid</code>.</li>
+</ol>
+
+<p>В операционных системах на базе Linux, таких как Ubuntu или Debian, логи обычно интегрированы в общую систему журналирования <em>syslog</em> или <em>journald</em>. Доступ к ним осуществляется через терминал с использованием утилит просмотра логов. </p>
+
+<pre><code>sudo journalctl -u NetworkManager | grep wlan
+<p>dmesg | grep firmware</code></pre></p>
+
+<p>Пользователи macOS могут найти информацию о беспроводных соединениях через консольные утилиты или специализированные отчеты системы. В отличие от Windows, где отчет формируется в виде одного файла, в macOS данные часто разбросаны по различным логам системы, и для их агрегации удобнее использовать встроенный инструмент «Мониторинг системы» или команду <code>log</code> с фильтрами по процессу <em>kernel</em> и подсистеме Wi-Fi.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Генерация отчета в Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите cmd от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите netsh wlan show wlanreport</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Перейдите в папку C:\ProgramData\Microsoft\Windows\WlanReport</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Откройте файл wlan-report-latest.html в браузере</span></div></div>
+
+<p>При работе с корпоративными роутерами и точками доступа, например, от <em>MikroTik</em> или <em>Ubiquiti</em>, логи хранятся непосредственно на устройстве. Доступ к ним осуществляется через веб-интерфейс или SSH-соединение. В меню роутера обычно есть раздел <code>System -> Log</code> или <code>Wireless -> Debug</code>, где можно включить запись пакетов или просмотреть историю ассоциаций клиентов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Операционная система</th>
+<th>Метод доступа</th>
+<th>Ключевая команда/Путь</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Windows 10/11</td>
+<td>Netsh / Event Viewer</td>
+<td><code>netsh wlan show wlanreport</code></td>
+</tr>
+<tr>
+<td>Linux (Ubuntu)</td>
+<td>Journalctl / Syslog</td>
+<td><code>journalctl -f</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>Console App</td>
+<td>Фильтр по "wifi" или "airport"</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При экспорте логов с корпоративных устройств убедитесь, что вы не нарушаете политику безопасности компании, так как в логах могут содержаться MAC-адреса и имена пользователей.</p></aside>
+
+<h2 id="анализ-кодов-ошибок-и-событий-деаутентификации">Анализ кодов ошибок и событий деаутентификации</h2>
+
+<p>Наиболее ценной частью журналов WLAN являются коды ошибок, которые объясняют причину разрыва соединения. Протокол IEEE 802.11 определяет стандартный набор кодов причин (Reason Codes), которые точка доступа отправляет клиенту перед разрывом связи. Понимание этих кодов позволяет мгновенно определить, на чьей стороне возникла проблема: на стороне клиента, роутера или из-за внешних факторов.</p>
+
+<p>Один из самых распространенных кодов — <strong>Reason Code 2 (Previous authentication no longer valid)</strong>. Он указывает на то, что время действия ключа шифрования истекло или сессия была сброшена одной из сторон. Часто это происходит при нестабильном питании точки доступа или при смене пароля Wi-Fi без переподключения устройства. В логах это событие выглядит как резкий обрыв без предварительных предупреждений о плохом сигнале.</p>
+
+<p>Код <em>Reason Code 3 (Deauthenticated because sending station is leaving BSS)</em> часто вводит в заблуждение, так как формально означает, что устройство покидает зону покрытия. Однако на практике этот код часто генерируется драйверами при переключении между диапазонами 2.4 ГГц и 5 ГГц или при переходе в режим энергосбережения. Если такие записи появляются часто, стоит проверить настройки роуминга и мощность передатчика.</p>
+
+<ul>
+<li>Код 4: Неактивность (Inactivity) — соединение разорвано из-за отсутствия трафика в течение заданного времени.</li>
+<li>Код 5: Переполнение очереди (Too many stations) — точка доступа не может обслужить нового клиента.</li>
+<li>Код 8: Неверный пароль или несоответствие методов шифрования (Disassociated because sending station is leaving BSS).</li>
+<li>Код 15: Отказ в ассоциации из-за отсутствия поддержки короткого интервала (Short slot time).</li>
+</ul>
+
+<p>В логах Windows эти коды могут отображаться в шестнадцатеричном формате или в виде текстовых описаний в HTML-отчете. Раздел «События» в отчете <em>wlan-report-latest.html</em> содержит временную шкалу, где красным цветом выделены критические ошибки. Анализируя время возникновения ошибки и предшествующие ей события, можно восстановить цепочку причинно-следственных связей.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Анализ кодов ошибок</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Точное определение источника сбоя</li><li>✅ Возможность автоматизации мониторинга</li><li>✅ Понимание поведения роуминга</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует знания спецификации 802.11</li><li>❌ Коды могут быть неочевидны без документации</li><li>❌ Не все драйверы пишут полные логи</li></ul></div>
+</div></div>
+
+<p>Для глубокого анализа можно использовать снифферы пакетов, такие как <em>Wireshark</em>, в связке с логами системы. Сопоставление временных меток в логах ОС и в захваченных пакетах позволяет увидеть полную картину обмена кадрами управления. Это особенно полезно при диагностике проблем с WPA3 или Enterprise-аутентификацией, где handshake может прерываться на разных этапах.</p>
+
+<table>
+<thead>
+<tr>
+<th>Код ошибки</th>
+<th>Описание</th>
+<th>Вероятная причина</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>Auth No Longer Valid</td>
+<td>Сбой таймера, перезагрузка AP</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Leaving BSS</td>
+<td>Энергосбережение, роуминг</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Disassociated</td>
+<td>Неверный пароль, mismatch шифрования</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-проблем-с-драйверами-и-оборудованием">Диагностика проблем с драйверами и оборудованием</h2>
+
+<p>Значительная часть проблем с беспроводным соединением кроется не в настройках сети, а в некорректной работе драйверов сетевого адаптера. Журналы событий Windows (<em>Event Viewer</em>) содержат специализированный раздел <code>Applications and Services Logs -> Microsoft -> Windows -> WLAN-AutoConfig</code>, где фиксируются ошибки уровня драйвера. Если в логах присутствуют сообщения об остановке службы или сбоях инициализации, проблема, скорее всего, программная.</p>
+
+<p>Частой причиной нестабильности является конфликт версий драйверов с обновлениями операционной системы. В логах это может проявляться как циклические попытки переподключения или сообщения о таймаутах при отправке управляющих кадров. <strong>Решением</strong> в таких случаях становится откат драйвера к предыдущей версии или установка бета-версии с сайта производителя адаптера, например, <em>Intel</em>, <em>Realtek</em> или <em>Qualcomm Atheros</em>.</p>
+
+<p>Аппаратные проблемы, такие как перегрев модуля Wi-Fi или неисправность антенны, также находят отражение в логах. Они характеризуются резкими падениями уровня сигнала (RSSI) до минимальных значений (-90 dBm и ниже) без изменения положения устройства. В логах драйвера могут появляться специфические коды ошибок оборудования, указывающие на невозможность чтения регистров чипа.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте утилиту производителя адаптера (например, Intel PROSet) для проведения аппаратного теста беспроводного модуля, если стандартные средства диагностики не выявляют проблем.</p></aside>
+
+<p>Для устранения программных конфликтов рекомендуется полностью удалить драйвер устройства через диспетчер устройств, выбрав опцию «Удалить программы драйверов для этого устройства», и затем выполнить чистую установку. Это позволяет избавиться от остаточных файлов конфигурации, которые могли повредиться в процессе предыдущих обновлений.</p>
+
+<ol>
+<li>Нажмите <code>Win + X</code> и выберите «Диспетчер устройств».</li>
+<li>Раскройте ветку «Сетевые адаптеры» и найдите ваш Wi-Fi модуль.</li>
+<li>Кликните правой кнопкой мыши, выберите «Удалить устройство» и поставьте галочку удаления драйвера.</li>
+<li>Перезагрузите компьютер для автоматической переустановки или установите драйвер вручную.</li>
+</ol>
+
+<h2 id="типичные-ошибки-при-анализе-и-их-устранение">Типичные ошибки при анализе и их устранение</h2>
+
+<p>Процесс чтения и интерпретации логов WLAN сопряжен с рядом типичных ошибок, которые могут привести к неверным выводам и пустой трате времени. Новички часто игнорируют временные метки или неправильно трактуют предупреждения, считая их критическими сбоями. Понимание этих нюансов позволяет значительно ускорить процесс troubleshooting.</p>
+
+<ol>
+<li><strong>Игнорирование часового пояса и синхронизации времени</strong> — если время на клиентском устройстве и сервере (или роутере) не синхронизировано, сопоставление логов становится невозможным. Всегда проверяйте настройку автоматической синхронизации времени (NTP) перед началом анализа.</li>
+<li><strong>Путаница между предупреждениями и ошибками</strong> — многие записи в логах помечены как «Warning», но носят информационный характер (например, временное снижение скорости из-за помех). Фокусироваться следует на записях уровня «Error» или «Critical».</li>
+<li><strong>Неверная интерпретация RSSI</strong> — значения уровня сигнала отрицательные, и чем они ближе к нулю, тем лучше. Ошибкой считается попытка найти максимальное положительное число. Сигнал -40 dBm лучше, чем -80 dBm.</li>
+<li><strong>Отсутствие контекста</strong> — анализ одной строки лога без учета предшествующих событий бесполезен. Всегда изучайте последовательность из 10-20 строк, предшествующих ошибке, чтобы понять цепочку событий.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При анализе логов корпоративной сети всегда сверяйтесь с документацией используемого оборудования, так как вендоры (Cisco, Aruba, Ruckus) могут использовать собственные расширения стандартных кодов ошибок.</p></aside>
+
+<p>В заключение, грамотное использование WLAN logs превращает хаотичный набор данных в мощный инструмент диагностики. Регулярный мониторинг и умение читать эти журналы позволяют предотвращать серьезные сбои в работе сети, обеспечивая стабильное соединение для всех пользователей. Освоение этих навыков является обязательным требованием для любого специалиста, занимающегося поддержкой сетевой инфраструктуры.</p>
+
+<p>Помните, что ни один инструмент диагностики не дает 100% гарантии решения проблемы с первого раза. Комплексный подход, сочетающий анализ логов, проверку физического оборудования и тестирование в разных условиях, является наиболее эффективным способом обеспечения бесперебойной работы беспроводной сети.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/in/internet-na-ajfone-znachok.html" class="pb-related-card">
+                <span class="pb-related-title">Пропал интернет на iPhone: что значат значки и как исправить</span>
+                <span class="pb-related-desc">Разбор значков интернета на iPhone, устранение ошибок подключения, настройка сотовой сети и Wi-Fi. П</span>
+            </a><a href="/articles/k/ka/kak-ubrat-s-plansheta-khuavej-beluyu-tochku-kogda-kasaeshsya-ekrana-ili-provodish-kak-god-izhevsk.html" class="pb-related-card">
+                <span class="pb-related-title">Белая точка на экране Huawei: причины и методы устранения</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению курсора касания на планшетах Huawei. Решение проблем с белым круг</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-uslugu-roditelskij-kontrol-ot-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Родительский контроль Ростелеком: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по деактивации Родительского контроля Ростелеком. Сброс пароля, отключение через Личны</span>
+            </a><a href="/articles/k/ka/kak-nastroit-perekhodnik-dlya-interneta-qts1081b.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка QTS1081B: Полный гид по USB Ethernet адаптеру</span>
+                <span class="pb-related-desc">Техническая инструкция по установке драйверов и настройке адаптера QTS1081B. Решение проблем с подкл</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-internet-k-monobloku.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить интернет к моноблоку: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке проводного и беспроводного интернета на моноблоке. Решение пробле</span>
+            </a><a href="/articles/a/aq/aquarius-ne-vidit-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">Aquarius не видит Wi-Fi: причины и методы решения</span>
+                <span class="pb-related-desc">Почему планшет Aquarius не подключается к Wi-Fi? Полный гид по устранению ошибок роутера, драйверов </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

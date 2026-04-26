@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление диска Windows Server 2016 по сети: инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по настройке PXE и iSCSI для восстановления Windows Server 2016 через сеть. Решения для системных администраторов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/windows-server-2016-vosstanovlenie-diska-po-seti.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление диска Windows Server 2016 по сети: инструкция">
+    <meta property="og:description" content="Подробное руководство по настройке PXE и iSCSI для восстановления Windows Server 2016 через сеть. Решения для системных администраторов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление диска Windows Server 2016 по сети: инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-сервера-pxe">Подготовка сетевой инфраструктуры и сервера PXE</a></li><li><a href="#организация-доступа-к-хранилищу-через-iscsi">Организация доступа к хранилищу через iSCSI</a></li><li><a href="#процесс-восстановления-системы-и-данных">Процесс восстановления системы и данных</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-целостности">Завершение работ и проверка целостности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-na-khiomi-22-pochistit-yusbi-nakopitel.html">Как почистить USB на Xiaomi TV Box S 2nd Gen: полная инструкция</a></li><li><a href="/articles/z/za/zabyla-parol-ot-noutbuka-lenovo-chto-delat.html">Забыла пароль от ноутбука Lenovo: пошаговая инструкция</a></li><li><a href="/articles/a/ap/app-server-driver.html">App Server Driver: Настройка, ошибки и решения</a></li><li><a href="/articles/k/ka/kak-igrat-iz-neigrovogo-noutbuka.html">Как играть на слабом ноутбуке: настройка и облачные сервисы</a></li><li><a href="/articles/v/va/vaio-pcg-31111v.html">VAIO PCG-31111V: Характеристики, драйверы и ремонт</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Сетевое восстановление дисков Windows Server 2016</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-сервера-pxe">Подготовка сетевой инфраструктуры и сервера PXE</a></li><li><a href="#организация-доступа-к-хранилищу-через-iscsi">Организация доступа к хранилищу через iSCSI</a></li><li><a href="#процесс-восстановления-системы-и-данных">Процесс восстановления системы и данных</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-целостности">Завершение работ и проверка целостности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда критически важный сервер с операционной системой <em>Windows Server 2016</em> перестает загружаться из-за повреждения системного диска, является одной из самых стрессовых для системного администратора. Физический доступ к оборудованию может быть ограничен, а замена жесткого диска и последующая переустановка всех служб займут часы простоя, что недопустимо для бизнеса.</p>
+<p>В таких случаях единственным эффективным решением становится восстановление образа системы или загрузка с сетевого хранилища без физического вмешательства в дисковую подсистему сервера. Использование сетевых протоколов позволяет развернуть рабочую среду или восстановить данные удаленно, минимизируя риски потери информации и сокращая время на ремонт.</p>
+<p>Данная методика опирается на использование технологий PXE для начальной загрузки и протокола iSCSI для проброса дисковых массивов, что является стандартом в корпоративных инфраструктурах. Правильная настройка этих компонентов позволяет администратору работать с сервером так, будто локальный диск физически подключен и исправен.</p>
+
+<h2 id="подготовка-сетевой-инфраструктуры-и-сервера-pxe">Подготовка сетевой инфраструктуры и сервера PXE</h2>
+<p>Для начала процесса восстановления необходимо обеспечить наличие в сети сервера, способного отвечать на запросы PXE-клиентов. В роли такого сервера чаще всего выступает контроллер домена с развернутыми службами DHCP и TFTP, либо специализированное устройство. Без корректно настроенного DHCP-сервера клиентская машина не получит IP-адрес и адрес загрузчика.</p>
+<p>В конфигурации DHCP необходимо прописать опции, указывающие клиенту, где искать загрузочный файл. Обычно это опции 066 (IP-адрес сервера) и 067 (имя файла загрузчика), хотя в новых версиях <em>Windows Server 2016</em> предпочтительнее использовать классы vendor для разделения IPv4 и IPv6 клиентов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неправильная настройка DHCP-опций может нарушить работу всей сети, если сервер DHCP не является авторитетным или конфликтует с другими роутерами.</p></aside>
+
+<p>Файлы загрузки, такие как <code>pxeboot.com</code> или <code>wdsnbp.com</code>, должны быть размещены в корне TFTP-директории. Важно проверить права доступа к этим файлам, так как TFTP-протокол не имеет механизмов аутентификации и полагается только на доступность файла по пути.</p>
+<p>Если используется <em>Windows Deployment Services (WDS)</em>, процесс упрощается, так как служба автоматически управляет загрузочными образами. В консоли управления WDS следует добавить образы загрузки для архитектуры x64, соответствующие версии ОС на целевом сервере.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Функция</th>
+<th>Порт (по умолчанию)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DHCP Server</td>
+<td>Выдача IP и пути к загрузчику</td>
+<td>67/68 (UDP)</td>
+</tr>
+<tr>
+<td>TFTP Server</td>
+<td>Передача загрузочных файлов</td>
+<td>69 (UDP)</td>
+</tr>
+<tr>
+<td>WDS Server</td>
+<td>Управление образами и PXE</td>
+<td>4011 (UDP)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка ролей в Windows Server</h3>
+<p>При установке роли WDS на сервере <em>Windows Server 2016</em> необходимо выбрать режим работы «Автономный сервер» или «Интеграция с Active Directory». Для большинства сценариев восстановления внутри домена подходит интеграция, что позволяет использовать существующие учетные записи для авторизации клиентов.</p>
+<p>После установки роли требуется добавить образы загрузки через контекстное меню в оснастке <code>WDS</code>. Следует выбрать файл <code>boot.wim</code> из установочного ISO-образа Windows Server 2016. Этот файл содержит среду предустановки Windows (WinPE), необходимую для запуска процесса восстановления.</p>
+<p>Для обеспечения стабильности передачи больших объемов данных рекомендуется использовать гигабитную сеть и, по возможности, выделенный VLAN для трафика восстановления. Это предотвратит таймауты при загрузке образа системы через сеть.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка WDS</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите роль Windows Deployment Services</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Добавьте образ boot.wim из ISO</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Разрешите ответ на запросы клиентов</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте работу DHCP опций</span></div></div>
+
+<h2 id="организация-доступа-к-хранилищу-через-iscsi">Организация доступа к хранилищу через iSCSI</h2>
+<p>Протокол iSCSI позволяет передавать команды SCSI через IP-сеть, создавая иллюзию локально подключенного диска. Для восстановления сервера необходимо, чтобы целевой диск (LUN) с образом системы или данными находился на iSCSI-хранилище (SAN или программный таргет).</p>
+<p>В среде <em>Windows Server 2016</em> роль iSCSI Target Server позволяет превратить любой сервер с дисковым пространством в хранилище для клиентов. Создание виртуального диска и его публикация как целевого объекта (Target) — первый шаг в подготовке инфраструктуры.</p>
+<p>При настройке целевого объекта важно правильно выставить права доступа (IQN initiators), чтобы только авторизованные серверы могли подключиться к диску. Это критически важно для безопасности, так как данные на уровне блока могут быть прочитаны любым, кто имеет доступ к LUN.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте отдельные сети или VLAN для трафика iSCSI, чтобы изолировать его от пользовательского трафика и повысить производительность дисковой подсистемы.</p></aside>
+
+<p>Клиентская часть, то есть восстанавливаемый сервер, должна поддерживать загрузку с iSCSI. В BIOS/UEFI современных серверов есть встроенный iSCSI Initiator, который позволяет указать IP-адрес таргета, порт и имя цели для прямой загрузки без использования локального диска.</p>
+<p>Если загрузка с iSCSI через BIOS невозможна, используется цепочка PXE -> WinPE -> Подключение iSCSI. В этом случае в среде WinPE запускается скрипт или используется утилита <code>iscsicli.exe</code> для монтирования удаленного тома перед запуском восстановления.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target Name</td>
+<td>Уникальное имя цели iSCSI</td>
+<td>iqn.2016-05.com.example:target1</td>
+</tr>
+<tr>
+<td>LUN ID</td>
+<td>Идентификатор логического устройства</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Portal IP</td>
+<td>Адрес интерфейса хранилища</td>
+<td>192.168.10.50</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка инициатора в среде восстановления</h3>
+<p>После загрузки в среду WinPE через PXE, следующим шагом является подключение к iSCSI-таргету. Это можно сделать вручную через командную строку или автоматически с помощью скрипта запуска. Команда <code>iscsicli qaddtargetportal</code> добавляет адрес хранилища в список известных порталов.</p>
+<p>Для подключения используется команда <code>iscsicli qlogintarget</code> с указанием имени цели. После успешного выполнения диск появится в системе как локальный, и с ним можно будет работать стандартными утилитами управления дисками или восстановления.</p>
+<p>Важно убедиться, на сетевом адаптере в среде WinPE установлен правильный драйвер и настроен статический IP, если DHCP не выдает адрес автоматически. Без сетевого подключения инициатор не сможет обнаружить хранилище.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкость размещения данных</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Не требует физического доступа к диску</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокая скорость восстановления</li></ul></div>
+</div></div>
+
+<h2 id="процесс-восстановления-системы-и-данных">Процесс восстановления системы и данных</h2>
+<p>Непосредственное восстановление данных начинается после того, как целевой диск успешно смонтирован через iSCSI или когда сервер загрузился с сетевого образа. На этом этапе используется стандартный инструментарий Windows, такой как <code>wbadmin</code> или графический интерфейс «Восстановление Windows».</p>
+<p>Если используется резервная копия, созданная средством Backup Windows Server, процесс запускается через <code>wbadmin start recovery</code>. Необходимо указать версию резервной копии, которую можно идентифицировать по временной метке, и целевой диск, который в данном случае является сетевым iSCSI-томом.</p>
+<p>В ходе процесса восстановления система перезапишет сектора на удаленном диске данными из бэкапа. Скорость этого процесса напрямую зависит от пропускной способности сети и производительности дисковой подсистемы хранилища.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прерывание сетевого соединения во время восстановления может привести к полной потере данных на целевом томе. Используйте источники бесперебойного питания и надежные каналы связи.</p></aside>
+
+<p>После завершения копирования файлов и восстановления системных секторов, необходимо проверить целостность загрузчика. Часто требуется выполнить команды <code>bootrec /fixmbr</code> и <code>bootrec /rebuildbcd</code>, чтобы система могла корректно загрузиться с восстановленного состояния.</p>
+<p>В некоторых случаях, особенно при восстановлении на отличающееся железо или виртуальную машину, может потребоваться инъекция драйверов сетевой карты в восстановленную систему, чтобы она могла снова подключиться к сети после перезагрузки.</p>
+
+<ol>
+<li>Запустите командную строку в среде восстановления.</li>
+<li>Выполните команду <code>wbadmin get versions -backupTarget:\\iSCSIDisk</code> для поиска доступных точек восстановления.</li>
+<li>Инициируйте восстановление командой <code>wbadmin start recovery -version:ID_версии -itemsToRestore:C:</code>.</li>
+<li>Дождитесь завершения процесса и проверьте журналы событий на наличие ошибок.</li>
+</ol>
+
+<h3>Использование PowerShell для автоматизации</h3>
+<p>Для опытных администраторов предпочтительнее использовать PowerShell, так как он предоставляет более гибкие инструменты управления. Модуль <code>WBSnapShot</code> позволяет управлять резервными копиями, а встроенные cmdlet iSCSI упрощают подключение хранилищ.</p>
+<p>Скрипт восстановления может быть предварительно написан и размещен на сетевом ресурсе, доступном из WinPE. Это позволяет стандартизировать процесс и исключить человеческий фактор при вводе команд.</p>
+<p>Пример команды для подключения таргета в PowerShell: <code>Connect-IscsiTarget -NodeName "iqn.name" -TargetPortalAddress "192.168.1.10"</code>. После подключения диск становится доступен для дальнейших операций файловой системы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Сохраняйте скрипты восстановления на надежном сетевом ресурсе с контролем версий, чтобы всегда иметь актуальную инструкцию по действиям в аварийной ситуации.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе сетевого восстановления часто возникают специфические проблемы, связанные с конфигурацией сети, правами доступа и совместимостью оборудования. Понимание природы этих ошибок позволяет быстро локализовать и устранить неисправность.</p>
+<p>Одной из частых причин неудачи является рассинхронизация времени между клиентом и сервером, особенно если используется Kerberos для аутентификации iSCSI. Разница во времени более 5 минут приведет к отказу в доступе.</p>
+<p>Также часто встречается проблема с MTU (Maximum Transmission Unit). Если на пути следования пакетов jumbo frames (MTU 9000) настроены не на всех устройствах, это приведет к фрагментации пакетов и резкому падению скорости или разрыву соединения iSCSI.</p>
+
+<ol>
+<li><strong>Ошибка «Target not found» при подключении iSCSI</strong> — проверьте правильность IQN имени, доступность порта 3260 и настройки брандмауэра на стороне таргета.</li>
+<li><strong>Таймаут PXE загрузки</strong> — убедитесь, что DHCP-сервер отвечает, файл загрузчика существует по указанному пути и TFTP-сервер не блокируется фаерволом.</li>
+<li><strong>Отказ в доступе к LUN</strong> — проверьте настройки Masking на хранилище и убедитесь, что Initiator ID клиента добавлен в список разрешенных.</li>
+<li><strong>Синий экран (BSOD) при загрузке с сети</strong> — вероятен конфликт драйверов сетевой карты в среде WinPE или несовместимость версии загрузчика с оборудованием.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех сетевого восстановления зависит от тщательной подготовки инфраструктуры PXE и iSCSI, а также от проверки целостности резервных копий до наступления аварийной ситуации.</p></aside>
+
+<h2 id="завершение-работ-и-проверка-целостности">Завершение работ и проверка целостности</h2>
+<p>После успешного восстановления данных и перезагрузки сервера критически важно провести комплексную проверку работоспособности всех служб. Следует убедиться, что операционная система видит диск как локальный (если использовалась технология MPIO или постоянный iSCSI) или что данные доступны по сети.</p>
+<p>Необходимо проверить журналы событий Windows (<code>Event Viewer</code>) на наличие ошибок, связанных с дисковой подсистемой или сетевыми подключениями. Особое внимание стоит уделить разделам «System» и «Application».</p>
+<p>Финальным этапом является тестирование бизнес-приложений, размещенных на сервере. Только подтверждение их корректной работы можно считать успешным завершением операции по восстановлению диска по сети.</p>
+<p>Рекомендуется сразу после восстановления создать новую полную резервную копию системы, чтобы зафиксировать восстановленное состояние. Это позволит в будущем откатиться к этому моменту, если в процессе восстановления были допущены скрытые ошибки.</p>
+<p>Документирование всех выполненных действий и изменений в конфигурации сети поможет в будущем быстрее реагировать на инциденты и улучшит общую отказоустойчивость ИТ-инфраструктуры организации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-na-khiomi-22-pochistit-yusbi-nakopitel.html" class="pb-related-card">
+                <span class="pb-related-title">Как почистить USB на Xiaomi TV Box S 2nd Gen: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по очистке USB-накопителя на Xiaomi Mi Box S 2nd Gen. Удаление мусора, форматирование</span>
+            </a><a href="/articles/z/za/zabyla-parol-ot-noutbuka-lenovo-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Забыла пароль от ноутбука Lenovo: пошаговая инструкция</span>
+                <span class="pb-related-desc">Что делать, если забыли пароль от ноутбука Lenovo. Подробные методы сброса Windows 10/11, использова</span>
+            </a><a href="/articles/a/ap/app-server-driver.html" class="pb-related-card">
+                <span class="pb-related-title">App Server Driver: Настройка, ошибки и решения</span>
+                <span class="pb-related-desc">Полный гид по драйверам сервера приложений: диагностика ошибок подключения, установка компонентов и </span>
+            </a><a href="/articles/k/ka/kak-igrat-iz-neigrovogo-noutbuka.html" class="pb-related-card">
+                <span class="pb-related-title">Как играть на слабом ноутбуке: настройка и облачные сервисы</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску современных игр на офисном ноутбуке. Настройка графики, облачный гей</span>
+            </a><a href="/articles/v/va/vaio-pcg-31111v.html" class="pb-related-card">
+                <span class="pb-related-title">VAIO PCG-31111V: Характеристики, драйверы и ремонт</span>
+                <span class="pb-related-desc">Технический обзор ноутбука VAIO PCG-31111V. Спецификации, установка ОС, решение проблем с драйверами</span>
+            </a><a href="/articles/h/hp/hp-p1102s-ne-vidit-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">HP LaserJet P1102s не видит Windows 10: решение</span>
+                <span class="pb-related-desc">Подробная инструкция: HP P1102s не определяется в Windows 10. Решение проблем с драйверами, портами </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

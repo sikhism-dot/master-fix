@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Wi-Fi Handshake на Android: анализ и устранение проблем — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор процесса рукопожатия Wi-Fi на Android. Диагностика ошибок 4-way handshake, анализ логов и методы решения проблем с подключением.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/wifi-handshake-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Wi-Fi Handshake на Android: анализ и устранение проблем">
+    <meta property="og:description" content="Подробный разбор процесса рукопожатия Wi-Fi на Android. Диагностика ошибок 4-way handshake, анализ логов и методы решения проблем с подключением.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Wi-Fi Handshake на Android: анализ и устранение проблем</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-процесса-рукопожатия-в-android">Архитектура процесса рукопожатия в Android</a></li><li><a href="#диагностика-сбоев-через-логи-и-adb">Диагностика сбоев через логи и ADB</a></li><li><a href="#настройка-параметров-роутера-для-совместимости">Настройка параметров роутера для совместимости</a></li><li><a href="#сброс-и-конфигурация-сетевого-стека-android">Сброс и конфигурация сетевого стека Android</a></li><li><a href="#типичные-ошибки-при-подключении">Типичные ошибки при подключении</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-proverit-rabotosposobnost-telefona-bez-displeya.html">Проверка телефона без дисплея: методы диагностики и восстановления</a></li><li><a href="/articles/x/xi/xiaomi-12-pro-vyletaet-usb-modem.html">Xiaomi 12 Pro: решение проблемы с вылетом USB-модема</a></li><li><a href="/articles/s/so/sony-kdl-32wd603-kak-ustanovit-prilozhenie.html">Sony KDL-32WD603: как установить приложения и сторонний софт</a></li><li><a href="/articles/q/qu/quman-prilozhenie-skachat-chasy.html">Как скачать приложение Quman для умных часов: полная инструкция</a></li><li><a href="/articles/k/ka/kak-vyklyuchit-yandeks-navigator-na-android.html">Как выключить Яндекс Навигатор на Андроид: полные способы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Анализ и отладка Wi-Fi Handshake на Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-процесса-рукопожатия-в-android">Архитектура процесса рукопожатия в Android</a></li><li><a href="#диагностика-сбоев-через-логи-и-adb">Диагностика сбоев через логи и ADB</a></li><li><a href="#настройка-параметров-роутера-для-совместимости">Настройка параметров роутера для совместимости</a></li><li><a href="#сброс-и-конфигурация-сетевого-стека-android">Сброс и конфигурация сетевого стека Android</a></li><li><a href="#типичные-ошибки-при-подключении">Типичные ошибки при подключении</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь сталкивается с ситуацией, когда смартфон зависает на этапе «Получение IP-адреса» или бесконечно циклически пытается соединиться с известной точкой доступа. Экран мигает индикатором подключения, но желаемый доступ в интернет так и не появляется, создавая ощущение программной неисправности устройства.</p>
+<p>Подобное поведение часто указывает на сбой в процедуре аутентификации, известной как Wi-Fi handshake. В этот момент устройство и роутер обмениваются критически важными ключами шифрования, и любой разрыв пакетов или несовпадение параметров приводит к разрыву соединения еще до начала передачи пользовательских данных.</p>
+<p>Понимание внутренней механики этого процесса позволяет не просто перезагружать роутер наугад, а применять целенаправленные методы диагностики. Глубокий анализ логов и настроек безопасности помогает выявить корень проблемы, будь то конфликт протоколов шифрования или аппаратная несовместимость модулей.</p>
+
+<h2 id="архитектура-процесса-рукопожатия-в-android">Архитектура процесса рукопожатия в Android</h2>
+<p>Процесс установления соединения в операционной системе <em>Android</em> базируется на стандартах IEEE 802.11, где ключевую роль играет процедура четырехэтапного рукопожатия (4-Way Handshake). Именно на этом этапе происходит подтверждение наличия общего пароля (PSK) без его прямой передачи по воздуху, что обеспечивает базовый уровень безопасности сети.</p>
+<p>С технической точки зрения, <strong>Android Wi-Fi Manager</strong> инициирует обмен EAPOL-кадрами сразу после успешной ассоциации с точкой доступа. Если на этом этапе возникает рассинхронизация таймеров или потеря пакетов, система прерывает попытку подключения, фиксируя ошибку в логах ядра.</p>
+<p>Важно учитывать, что современные версии Android, начиная с <em>Android 10</em>, внедрили рандомизацию MAC-адресов по умолчанию, что добавляет дополнительный слой сложности в процесс идентификации устройства на стороне роутера. Это может приводить к ситуациям, когда фильтр по MAC-адресам блокирует завершение рукопожатия, даже если пароль введен верно.</p>
+
+<h3>Влияние версий Android на протокол безопасности</h3>
+<p>Различные версии операционной системы по-разному обрабатывают handshake, особенно в контексте поддержки новых стандартов шифрования. Например, <em>Android 12</em> и новее требуют обязательной поддержки WPA3 для сертификации новых устройств, что может вызывать конфликты со старыми роутерами, работающими только в режиме WPA2.</p>
+<p>Если устройство пытается форсировать использование WPA3-Transition, а точка доступа некорректно обрабатывает запросы этого типа, цикл рукопожатия будет разрываться на втором или третьем этапе. В таких случаях система часто сообщает об ошибке «Неверный пароль», хотя фактически проблема кроется в несовместимости протоколов.</p>
+<p>Для диагностики текущей конфигурации и поддерживаемых протоколов можно использовать команды через <code>adb shell</code>, которые выводят информацию о текущем состоянии интерфейса. Это позволяет точно определить, на каком именно этапе происходит сбой.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с кастомными прошивками (LineageOS, Pixel Experience) драйверы Wi-Fi могут работать нестабильно при использовании проприетарных blobs от старых версий Android.</p></aside>
+
+<p>Стоит также отметить, что некоторые производители, такие как <em>Samsung</em> или <em>Xiaomi</em>, внедряют собственные надстройки в сетевой стек, которые могут агрессивно управлять энергопотреблением модуля Wi-Fi. Это приводит к тому, что модуль может не успевать завершить полный цикл handshake перед переходом в энергосберегающий режим.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Диагностика состояния Wi-Fi</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал или ADB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду dumpsys wifi</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите строку SupplicantState</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте статус COMPLETED или SCANNING</span></div></div>
+
+<h2 id="диагностика-сбоев-через-логи-и-adb">Диагностика сбоев через логи и ADB</h2>
+<p>Наиболее эффективным способом выявления причин сбоя handshake является анализ системных логов в реальном времени. Инструментарий <code>adb</code> (Android Debug Bridge) предоставляет доступ к логам <code>wpa_supplicant</code> и <code>kernel</code>, где фиксируются все детали взаимодействия с точкой доступа.</p>
+<p>Для начала работы необходимо подключить устройство к компьютеру и запустить режим отладки по USB в меню <code>Настройки → Для разработчика</code>. После этого выполняется команда мониторинга, которая выводит потоковое логогирование сетевых событий непосредственно в консоль ПК.</p>
+<p>Ключевым моментом является поиск записей, содержащих ключевые слова <strong>WPA: 4-WAY HANDSHAKE</strong> или <code>CTRL-EVENT-DISCONNECTED</code>. Эти строки указывают на то, что процесс аутентификации был начат, но не завершен успешно, и часто сопровождаются кодами причин отключения.</p>
+
+<h3>Анализ кодов отключения (Deauth codes)</h3>
+<p>В логах часто встречаются сообщения о деаутентификации с указанием числового кода причины, например, «reason=3» или «reason=2». Код 3 обычно означает, что точка доступа сама разорвала соединение из-за истечения времени ожидания или локальной ошибки, что часто случается при перегрузке канала.</p>
+<p>Код 2 указывает на то, что предыдущая авторизация стала недействительной, что может происходить при смене пароля на роутере без забытия сети на телефоне. Понимание этих кодов позволяет сузить круг поиска проблемы до настроек роутера или кэша сетей на устройстве.</p>
+<p>Для получения подробного лога используется следующая команда, которую следует выполнять в момент попытки подключения:</p>
+<pre><code>adb logcat -s wpa_supplicant:V Wifi:V</code></pre>
+<p>Полученный вывод следует анализировать на наличие повторяющихся циклов сканирования и попыток ассоциации. Если циклы повторяются слишком часто, это может указывать на аппаратную проблему модуля или критический конфликт драйверов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Постоянный цикл переподключений может быстро разрядить аккумулятор и вызвать нагрев устройства. При проведении длительных тестов рекомендуется держать смартфон на зарядке.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Код причины</th>
+<th>Описание</th>
+<th>Вероятная причина</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Reason 2</td>
+<td>Previous authentication no longer valid</td>
+<td>Смена пароля или ключа на роутере</td>
+</tr>
+<tr>
+<td>Reason 3</td>
+<td>Deauthenticated because sending station is leaving</td>
+<td>Таймаут или перегрузка точки доступа</td>
+</tr>
+<tr>
+<td>Reason 8</td>
+<td>Disassociated because sending station is leaving</td>
+<td>Проблемы с сигналом или роумингом</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно обращать внимание на временные метки в логах, так как они позволяют коррелировать события на телефоне с событиями на роутере. Синхронизация времени на обоих устройствах упрощает кросс-анализ логов, если есть доступ к админ-панели роутера.</p>
+
+<h2 id="настройка-параметров-роутера-для-совместимости">Настройка параметров роутера для совместимости</h2>
+<p>Часто проблема handshake кроется не в самом смартфоне, а в конфигурации точки доступа, которая использует параметры, некорректно обрабатываемые мобильным клиентом. В первую очередь стоит проверить режимы работы беспроводного модуля и стандарты шифрования.</p>
+<p>Использование смешанных режимов, таких как <code>802.11 b/g/n/ac/ax mixed</code>, иногда приводит к тому, что Android-устройство выбирает менее стабильный протокол или не может договориться о параметрах модуляции. Принудительное выставление режима <code>802.11 n/ac</code> (или только <em>ax</em> для новых устройств) часто стабилизирует соединение.</p>
+<p>Особое внимание следует уделить настройкам ширины канала. Если на роутере установлена ширина <strong>80 MHz</strong> или <strong>160 MHz</strong> в зашумленном эфире, пакетная потеря при handshake может достигать критических значений. Снижение ширины до 20 или 40 МГц повышает надежность установления связи.</p>
+
+<h3>Проблемы с WPA3 и SAE</h3>
+<p>Протокол WPA3 использует метод аутентификации SAE (Simultaneous Authentication of Equals), который заменяет традиционное четырехэтапное рукопожатие на более безопасный обмен. Однако старые устройства или устройства с buggy драйверами могут некорректно поддерживать этот переходный режим.</p>
+<p>Если в логах наблюдаются постоянные таймауты при использовании WPA3, рекомендуется временно переключить безопасность сети на <code>WPA2-PSK (AES)</code>. Это позволит исключить проблемы совместимости алгоритмов шифрования как причину сбоя.</p>
+<p>Также стоит проверить настройки PMF (Protected Management Frames). Если на роутере стоит режим «Required» (Обязательно), а смартфон не поддерживает PMF или поддерживает его частично, подключение будет блокироваться на уровне управления кадрами.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация настроек роутера</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Стабильное соединение в зашумленном эфире</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Снижение максимальной теоретической скорости</li></ul></div>
+</div></div>
+
+<p>В некоторых случаях помогает изменение интервала передачи маячковых кадров (Beacon Interval). Стандартное значение — 100 мс, но его увеличение до 200-300 мс может снизить нагрузку на эфир и дать клиенту больше времени на обработку управляющих кадров.</p>
+
+<table>
+<thead>
+<p>tr></p>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Комментарий</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Security Mode</td>
+<td>WPA2-PSK (AES)</td>
+<td>Максимальная совместимость</td>
+</tr>
+<tr>
+<td>Channel Width</td>
+<td>20/40 MHz</td>
+<td>Для диапазона 2.4 ГГц</td>
+</tr>
+<tr>
+<td>DTIM Interval</td>
+<td>1-3</td>
+<td>Влияет на энергосбережение</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте приложения-анализаторы Wi-Fi (например, Wi-Fi Analyzer) для выбора свободного канала перед внесением изменений в настройки роутера.</p></aside>
+
+<h2 id="сброс-и-конфигурация-сетевого-стека-android">Сброс и конфигурация сетевого стека Android</h2>
+<p>Если настройки роутера корректны, проблема может крыться в накопленном мусоре или ошибочных конфигурациях в сетевом стеке самого Android. Операционная система хранит профили сетей, сертификаты и временные ключи, которые могут конфликтовать при обновлении прошивки или смене оборудования.</p>
+<p>Первым шагом должна стать процедура «Забыть сеть», которая удаляет сохраненный профиль и все ассоциированные с ним ключи безопасности. После этого требуется полная перезагрузка устройства для очистки оперативной памяти модуля Wi-Fi.</p>
+<p>В более сложных случаях, когда простые методы не помогают, применяется сброс настроек сети. Эта операция возвращает все сетевые параметры (Wi-Fi, Bluetooth, мобильные данные) к заводским значениям, не затрагивая личные файлы пользователя.</p>
+
+<h3>Использование инженерного меню и скрытых настроек</h3>
+<p>На устройствах с процессорами <em>MediaTek</em> или <em>Qualcomm</em> существуют скрытые инженерные меню, доступные через набор специальных кодов в телефоне или через ADB. Там можно найти расширенные настройки Wi-Fi, такие как <code>Tx Power</code> или выбор конкретного NVRAM файла.</p>
+<p>Изменение параметров в инженерном меню без должной квалификации может привести к полной неработоспособности беспроводного модуля. Например, неправильная калибровка мощности передатчика может вызвать перегрев или юридические проблемы из-за нарушения норм излучения.</p>
+<p>Для продвинутых пользователей доступен режим «Wi-Fi Verbose Logging» в меню для разработчиков. Его активация позволяет системе записывать детализированные отчеты о каждом пакете, что полезно для глубокого анализа, но может снизить производительность системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Полный сброс сети</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Система → Сброс</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Сброс настроек Wi-Fi, мобильной сети и Bluetooth»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подтвердите действие кнопкой «Сбросить настройки»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Заново введите пароль от Wi-Fi</span></div></div>
+
+<p>Существуют также сторонние приложения, требующие root-права, которые позволяют напрямую редактировать файл <code>wpa_supplicant.conf</code>. Это дает возможность вручную прописать параметры handshake, такие как протоколы (<code>proto</code>), пары ключей (<code>pairwise</code>) и группы шифрования (<code>group</code>).</p>
+<p>Пример ручной конфигурации в файле может выглядеть следующим образом, где явно указывается использование CCMP для групповых и попарных ключей:</p>
+<pre><code>network={
+<p>ssid="MyNetwork"</p>
+<p>psk="password"</p>
+<p>proto=RSN</p>
+<p>pairwise=CCMP</p>
+<p>group=CCMP</p>
+<p>key_mgmt=WPA-PSK</p>
+<p>}</code></pre></p>
+
+<h2 id="типичные-ошибки-при-подключении">Типичные ошибки при подключении</h2>
+<p>В процессе устранения проблем с handshake пользователи часто совершают типичные ошибки, которые только усугубляют ситуацию или вводят в заблуждение при диагностике. Понимание этих ошибок позволяет сэкономить время и избежать лишних действий.</p>
+<ol>
+<li><strong>Игнорирование времени системы</strong> — если дата и время на устройстве сбиты, это может вызывать ошибки при проверке сертификатов (особенно в корпоративных сетях EAP-TLS), что приводит к разрыву handshake. Всегда проверяйте синхронизацию времени.</li>
+<li><strong>Попытка «лечения» перезагрузкой роутера без анализа</strong> — частые перезагрузки без выяснения причины (например, перегрев или сбой прошивки роутера) не решают проблему, а лишь временно маскируют её. Необходимо смотреть логи.</li>
+<li><strong>Использование спецсимволов в пароле</strong> — некоторые старые реализации supplicant на Android могут некорректно экранировать определенные спецсимволы в пароле, воспринимая их как управляющие команды. Попробуйте сменить пароль на alphanumeric.</li>
+<li><strong>Конфликт статического IP</strong> — если в сохраненном профиле сети прописан статический IP-адрес, который уже занят другим устройством или выходит за пределы DHCP-пула роутера, handshake может проходить успешно, но дальнейшая связь не установится.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство проблем с Wi-Fi handshake решаются сбросом профиля сети на телефоне или переключением роутера в режим совместимости WPA2/AES.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Процесс Wi-Fi handshake на Android является критически важным этапом, обеспечивающим безопасность и стабильность беспроводного соединения. Понимание его механики, от обмена ключами до финальной ассоциации, позволяет эффективно диагностировать и устранять большинство проблем с подключением без обращения в сервисный центр.</p>
+<p>Использование инструментов логирования через ADB, грамотная настройка параметров роутера и своевременный сброс сетевых конфигураций на устройстве составляют базу для поддержания стабильной работы сети. При возникновении сложных случаев всегда стоит начинать с исключения программных конфликтов и проверки совместимости протоколов безопасности.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-proverit-rabotosposobnost-telefona-bez-displeya.html" class="pb-related-card">
+                <span class="pb-related-title">Проверка телефона без дисплея: методы диагностики и восстановления</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке работоспособности смартфона при разбитом или негорящем экране. Испо</span>
+            </a><a href="/articles/x/xi/xiaomi-12-pro-vyletaet-usb-modem.html" class="pb-related-card">
+                <span class="pb-related-title">Xiaomi 12 Pro: решение проблемы с вылетом USB-модема</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению сбоев USB-модема на Xiaomi 12 Pro. Настройка MIUI, драйверов ADB,</span>
+            </a><a href="/articles/s/so/sony-kdl-32wd603-kak-ustanovit-prilozhenie.html" class="pb-related-card">
+                <span class="pb-related-title">Sony KDL-32WD603: как установить приложения и сторонний софт</span>
+                <span class="pb-related-desc">Полная инструкция по установке приложений на Sony KDL-32WD603. Настройка Google Play, установка APK </span>
+            </a><a href="/articles/q/qu/quman-prilozhenie-skachat-chasy.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать приложение Quman для умных часов: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по установке приложения Quman на Android и iOS. Настройка Bluetooth, синхронизация дан</span>
+            </a><a href="/articles/k/ka/kak-vyklyuchit-yandeks-navigator-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как выключить Яндекс Навигатор на Андроид: полные способы</span>
+                <span class="pb-related-desc">Подробная инструкция, как остановить, закрыть или отключить Яндекс Навигатор на Android. Решение про</span>
+            </a><a href="/articles/k/ka/kak-smenit-yazyk-v-brauzere-yandeks-na-telefone-s-anglijskogo-na-russkij.html" class="pb-related-card">
+                <span class="pb-related-title">Как сменить язык в Яндекс Браузере на телефоне: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по переключению языка интерфейса в Яндекс Браузере на Android и iOS. Решение п</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

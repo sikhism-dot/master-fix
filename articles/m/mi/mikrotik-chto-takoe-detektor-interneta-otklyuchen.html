@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Mikrotik: детектор интернета отключен – причины и решение — Мастер Фикс</title>
+    <meta name="description" content="Почему Mikrotik пишет, что детектор интернета отключен? Полный разбор причин сбоя Netwatch, настройки Ping-мониторинга и скриптов Failover.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/m/mi/mikrotik-chto-takoe-detektor-interneta-otklyuchen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Mikrotik: детектор интернета отключен – причины и решение">
+    <meta property="og:description" content="Почему Mikrotik пишет, что детектор интернета отключен? Полный разбор причин сбоя Netwatch, настройки Ping-мониторинга и скриптов Failover.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Mikrotik: детектор интернета отключен – причины и решение</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#механизмы-определения-доступности-в-routeros">Механизмы определения доступности в RouterOS</a></li><li><a href="#основные-причины-ложных-срабатываний-и-сбоев">Основные причины ложных срабатываний и сбоев</a></li><li><a href="#диагностика-с-помощью-netwatch-и-логов">Диагностика с помощью Netwatch и Логов</a></li><li><a href="#настройка-надежного-мониторинга-и-failover">Настройка надежного мониторинга и Failover</a></li><li><a href="#сравнение-методов-детектирования">Сравнение методов детектирования</a></li><li><a href="#решение-проблем-со-скриптами-и-автоматизацией">Решение проблем со скриптами и автоматизацией</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/d/de/deskjet-2320-podklyuchit-cherez-wifi.html">HP DeskJet 2320: подключение через Wi-Fi Direct и WPS</a></li><li><a href="/articles/d/dl/dlya-zheny-pozhelanie-parnya-dlya-utekh-zvonit-v-vatsap-v-lyuboe-vremya-moskvy.html">Как настроить звонки WhatsApp в любое время: Инструкция</a></li><li><a href="/articles/b/bl/bluestacks-vashe-internet-soedinenie-nestabilno.html">BlueStacks: ошибка нестабильного соединения — полное руководство</a></li><li><a href="/articles/s/sb/sb527-kak-podklyuchit-k-internetu.html">Как подключить роутер SB527 к интернету: пошаговая настройка</a></li><li><a href="/articles/k/ka/kak-podklyuchit-internet-tsentr-jota-2.html">Как подключить роутер Yota 2: настройка Wi-Fi и интернета</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Mikrotik: почему отключен детектор интернета и как это исправить</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#механизмы-определения-доступности-в-routeros">Механизмы определения доступности в RouterOS</a></li><li><a href="#основные-причины-ложных-срабатываний-и-сбоев">Основные причины ложных срабатываний и сбоев</a></li><li><a href="#диагностика-с-помощью-netwatch-и-логов">Диагностика с помощью Netwatch и Логов</a></li><li><a href="#настройка-надежного-мониторинга-и-failover">Настройка надежного мониторинга и Failover</a></li><li><a href="#сравнение-методов-детектирования">Сравнение методов детектирования</a></li><li><a href="#решение-проблем-со-скриптами-и-автоматизацией">Решение проблем со скриптами и автоматизацией</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда роутер MikroTik неожиданно сообщает, что <strong>детектор интернета отключен</strong> или не может определить доступность сети, часто застаёт администраторов врасплох. Это сообщение в логах или статусе интерфейса может означать как банальный обрыв кабеля провайдера, так и тонкую настройку механизмов мониторинга, которые перестали корректно отражать реальность. Понимание того, как работает встроенная система проверки доступности, критически важно для построения отказоустойчивых каналов связи.</p>
+
+<p>В операционной системе RouterOS нет единой кнопки"Детектор интернета", за которую отвечает один конкретный сервис. <em>Netwatch</em>, <strong>Ping-мониторинг</strong>, <strong>скрипты CheckGateway</strong> — все эти инструменты могут быть использованы для определения состояния канала. Когда система рапортует об отключении детектора, это чаще всего свидетельствует о том, что настроенный механизм проверки перестал получать ответы от целевых узлов или был принудительно остановлен логикой скрипта.</p>
+
+<p>Разберёмся, какие именно компоненты отвечают за эту функцию и почему они могут давать сбой. Важно не просто перезагрузить устройство, а проанализировать логику работы <strong>Failover</strong> (резервирования каналов). Ошибка в конфигурации может привести к ложным срабатываниям, когда интернет есть, но роутер считает, что его нет, и переключает трафик на резервный, менее качественный канал.</p>
+
+<h2 id="механизмы-определения-доступности-в-routeros">Механизмы определения доступности в RouterOS</h2>
+
+<p>Первым шагом к решению проблемы является понимание того, какой именно инструмент используется в вашей конфигурации для детектирования. В большинстве случаев администраторы полагаются на стандартный механизм проверки шлюза, который активируется параметром <code>check-gateway</code> в маршрутах. Если этот параметр установлен, роутер периодически отправляет ICMP-запросы (ping) к шлюзу или указанному хосту.</p>
+
+<p>Однако, более сложные сценарии требуют использования утилиты <em>Netwatch</em>. Этот инструмент позволяет мониторить состояние любого TCP/UDP/ICMP сервиса и выполнять действия при изменении статуса. Именно <strong>Netwatch</strong> часто называют"детектором", и если он показывает статус"down" или"disabled", значит, условия мониторинга перестали выполняться.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Если вы используете скрипты для автоматического переключения каналов, убедитесь, что интервал проверки (interval) не слишком мал. Частые запросы могут быть расценены провайдером как атака или привести к блокировке ICMP-пакетов, что вызовет ложное срабатывание детектора.</p>
+</blockquote>
+
+<p>Также стоит упомянуть о функции <strong>Tracking</strong> в меню IP Route. Это современный аналог старых методов, позволяющий привязывать статус маршрута к доступности удаленного хоста. Если трекер переходит в состояние unreachable, маршрут помечается как неактивный, что и воспринимается системой как"отключение интернета".</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте разные целевые хосты для проверки: один локальный шлюз провайдера и один внешний (например, 8.8.8.8), чтобы отличать проблемы на линии от проблем у провайдера с выходом в глобальную сеть.</p></aside>
+
+<h2 id="основные-причины-ложных-срабатываний-и-сбоев">Основные причины ложных срабатываний и сбоев</h2>
+
+<p>Почему же исправно работающая система вдруг начинает сообщать об отсутствии connectivity? Первая и самая распространенная причина — блокировка ICMP-протокола. Многие провайдеры и корпоративные сети ограничивают прохождения Ping-запросов для защиты от сканирования. Если ваш <strong>детектор</strong> полагается исключительно на ICMP, он будет показывать ошибку, даже если веб-серфинг и другие сервисы работают нормально.</p>
+
+<p>Вторая причина кроется в высокой загрузке процессора роутера. Если CPU загружен на 100% из-за тяжелого <strong>Firewall</strong>, Queue или активного скачивания, таймеры проверки доступности могут просто не успевать отрабатывать. В результате накопления таймаутов система делает вывод о недоступности сети. Это особенно актуально для моделей серии <em>hAP</em> или <em>RB</em> начального уровня при больших объемах трафика.</p>
+
+<p>Третья причина — нестабильность самого канала связи. Кратковременные разрывы (flapping) могут приводить к тому, что детектор не успевает зафиксировать восстановление, переходя в состояние ошибки. Также стоит проверить настройки MTU; если пакеты проверки целостности имеют размер больше разрешенного, они будут теряться, создавая иллюзию обрыва.</p>
+
+<ul>
+<li>🚫 Блокировка ICMP-ответов на стороне провайдера или промежуточных узлов.</li>
+<li>📉 Высокая загрузка CPU,ющая пропуску таймеров проверки (watchdog timer).</li>
+<li>🔌 Физические проблемы с кабелем или портом, вызывающие микро-разрывы соединения.</li>
+<li>⚙️ Некорректная настройка интервалов проверки (слишком короткий интервал при высоком пинге).</li>
+</ul>
+
+<div class="pb-poll" id="poll-248f26d3"><div class="pb-poll-question">📊 Как вы мониторите доступность интернета?</div><div class="pb-poll-option" data-poll="248f26d3" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Только Ping до шлюза</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="248f26d3" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Netwatch до 8.8.8.8</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="248f26d3" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Скрипт с проверкой HTTP</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="248f26d3" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Не мониторю, жду звонков от пользователей</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="диагностика-с-помощью-netwatch-и-логов">Диагностика с помощью Netwatch и Логов</h2>
+
+<p>Для глубокой диагностики необходимо обратиться к логам системы. Перейдите в меню <code>Log</code> и отфильтруйте сообщения по теме <strong>error</strong> или <em>netwatch</em>. Именно здесь можно найти точную причину, почему детектор перешел в состояние"отключен". Ищите записи вида"host is down" или"gateway unreachable".</p>
+
+<p>Инструмент <strong>Torch</strong> также может быть полезен для анализа трафика в реальном времени. Запустив его на интерфейсе WAN, вы сможете увидеть, уходят ли ваши ping-запросы и приходят ли ответы. Если запросы уходят, но ответов нет (или приходят ответы"Destination Unreachable"), проблема находится за пределами вашего роутера.</p>
+
+<pre><code>/log print where message~"netwatch|gateway|unreachable"</code></pre>
+
+<p>Важно проверить историю состояний в самом <em>Netwatch</em>. В колонке"History" отображается график доступности. Если вы видите частые переходы из up в down, это указывает на нестабильность канала, а не на полную потерю связи. В таких случаях рекомендуется увеличить порог срабатывания (up/down count) в настройках наблюдения.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Не полагайтесь слепо на логи, если время на роутере сбито. Убедитесь, что настроен NTP-клиент (<code>/system ntp client</code>), иначе анализ временных меток в логах будет невозможен, и вы не сможете сопоставить события с действиями провайдера.</p>
+</blockquote>
+
+<h2 id="настройка-надежного-мониторинга-и-failover">Настройка надежного мониторинга и Failover</h2>
+
+<p>Чтобы избежать ситуаций, когда детектор интернета ложно отключается, необходимо грамотно настроить параметры проверки. Ключевым моментом является выбор правильного целевого хоста. Не используйте IP-адрес шлюза провайдера, если он может быть недоступен при загрузке оборудования провайдера. Лучше использовать надежные публичные DNS, такие как <code>1.1.1.1</code> или <code>8.8.8.8</code>.</p>
+
+<p>Настройка интервалов также требует баланса. Слишком частая проверка (например, каждые 2 секунды) создает лишнюю нагрузку и чувствительна к кратковременным всплескам пинга. Оптимальным считается интервал в 10-30 секунд для основных каналов. Для критически важных линий можно использовать более агрессивные настройки, но с умом.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Чек-лист настройки мониторинга</h4><label class="check-item"><input type="checkbox"><span>Выбрать 2-3 надежных хоста для пинга:Установить интервал проверки 10-30 секунд:Настроить порог срабатывания (count) не менее 3:Проверить работу скрипта переключения в ручном режиме</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 1</div></div>
+
+<p>Рассмотрим пример настройки простого мониторинга через командную строку, который можно адаптировать под свои нужды. Этот скрипт проверяет доступность и логирует событие.</p>
+
+<pre><code>/tool netwatch add host=8.8.8.8 interval=10s timeout=2s \
+<p>up-script="log message \"Internet UP\"" \</p>
+<p>down-script="log message \"Internet DOWN - Detector Triggered\""</code></pre></p>
+
+<p>В конфигурации с резервированием каналов (Failover) важно правильно настроить дистанцию (distance) маршрутов. Основной канал должен иметь меньшую дистанцию, а резервный — большую. Детектор (через check-gateway или скрипт) должен динамически изменять дистанцию или отключать маршрут при потере связи.</p>
+
+<h2 id="сравнение-методов-детектирования">Сравнение методов детектирования</h2>
+
+<p>Выбор метода мониторинга зависит от ваших задач и архитектуры сети. Ниже приведена таблица, сравнивающая основные подходы, используемые в MikroTik для определения доступности интернета.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Протокол</th>
+<th>Нагрузка на CPU</th>
+<th>Надежность</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ping (ICMP)</strong></td>
+<td>ICMP</td>
+<td>Низкая</td>
+<td>Средняя (может блокироваться)</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td><em>HTTP Check</em></td>
+<td>TCP/HTTP</td>
+<td>Средняя</td>
+<td>Высокая (проверяет реальный веб-доступ)</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td><strong>ARP Monitoring</strong></td>
+<td>ARP</td>
+<td>Очень низкая</td>
+<td>Высокая (только для локального шлюза)</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td><em>Scripting</em></td>
+<td>Любой</td>
+<td>Зависит от скрипта</td>
+<td>Максимальная (гибкая логика)</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Как видно из таблицы, простой <strong>Ping</strong> не всегда является лучшим выбором. Использование HTTP-проверки (попытка загрузить небольшой файл или проверить заголовок) дает более точную картину реальной работоспособности интернета, хотя и создает большую нагрузку. <mark>Для критической инфраструктуры рекомендуется комбинировать ARP-мониторинг шлюза и HTTP-проверку внешнего ресурса.</mark></p>
+
+<details class="pb-accordion"><summary>Секреты HTTP мониторинга</summary><div class="pb-accordion-body"><p>Для HTTP проверок используйте легкие ресурсы, например, страницу поиска Google или специализированные endpoint-ы для аптайма, чтобы минимизировать трафик и время ответа.</p></div></details>
+
+<h2 id="решение-проблем-со-скриптами-и-автоматизацией">Решение проблем со скриптами и автоматизацией</h2>
+
+<p>Часто фраза"детектор отключен" возникает в контексте работы пользовательских скриптов. Если вы используете сложные скрипты для Failover, проверьте переменные и логику условий. Ошибка может крыться в том, что скрипт не сбрасывает флаг ошибки после восстановления связи, оставляя систему в состоянии"аварии".</p>
+
+<p>Убедитесь, что у скрипта есть права на выполнение необходимых действий. В RouterOS существует система пользователей и групп. Если скрипт запускается от имени пользователя с ограниченными правами, он не сможет изменить настройки маршрутизации или интерфейса, что приведет к ошибке выполнения и сообщению о сбое детектора.</p>
+
+<p>Также стоит проверить размер буфера логов. Если роутер активно пишет логи о попытках проверки, буфер может переполниться, и важные сообщения о реальном состоянии будут потеряны. Настройте удаленный лог-сервер (<code>/system logging action</code>) для сохранения истории событий.</p>
+
+<ul>
+<li>🔍 Проверьте права доступа (Policies) для пользователя, запускающего скрипт мониторинга.</li>
+<li>🗑️ Очистите старые логи или настройте их выгрузку, чтобы не потерять критические ошибки.</li>
+<li>🔄 Добавьте процедуру сброса состояния (reset) в скрипт при успешной проверке после периода простоя.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: При отладке скриптов используйте команду <code>/log action=memory</code> с повышенным уровнем детализации, но не забудьте после тестов вернуть стандартные настройки, чтобы не переполнить оперативную память роутера логами.</p>
+</blockquote>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Стабильность работы детектора интернета зависит не только от настройки таймеров, но и от правильности прав доступа скриптов и отсутствия блокировок ICMP на пути следования пакетов.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Почему MikroTik пишет"no route to host" при проверке детектора?</summary>
+<p>Это означает, что в таблице маршрутизации нет пути к целевому хосту, который вы пытаетесь пропинговать. Проверьте, установлен ли шлюз по умолчанию (Default Gateway) и активен ли интерфейс, через который должен идти трафик. Возможно, маршрут был удален или деактивирован предыдущим действием скрипта.</p>
+</details>
+
+<details>
+<summary>Можно ли использовать TCP вместо ICMP для детектора?</summary>
+<p>Да, в <em>Netwatch</em> можно указать протокол TCP и порт (например, 80 или 443). Это более надежный способ, так как TCP-порты реже блокируются полностью, чем ICMP. Однако это создает чуть больше накладных расходов на установление соединения.</p>
+</details>
+
+<details>
+<summary>Как часто должен опрашиваться детектор интернета?</summary>
+<p>Оптимальный интервал составляет от 10 до 60 секунд. Интервал менее 5 секунд может создать нагрузку на канал и CPU, а также повысить риск ложных срабатываний при кратковременных задержках в сети провайдера.</p>
+</details>
+
+<details>
+<summary>Что делать, если детектор работает нестабильно на беспроводном канале (LTE/5G)?</summary>
+<p>Для беспроводных соединений характерны скачки пинга и периодические потери пакетов. В этом случае необходимо увеличить параметр"failure-count" (количество неудачных попыток перед срабатыванием) и увеличить интервал проверки. Также рекомендуется использовать несколько целевых хостов для исключения ложной positives.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/d/de/deskjet-2320-podklyuchit-cherez-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">HP DeskJet 2320: подключение через Wi-Fi Direct и WPS</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке беспроводной печати HP DeskJet 2320. Настройка Wi-Fi Direct, WPS, </span>
+            </a><a href="/articles/d/dl/dlya-zheny-pozhelanie-parnya-dlya-utekh-zvonit-v-vatsap-v-lyuboe-vremya-moskvy.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить звонки WhatsApp в любое время: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке уведомлений и звонков WhatsApp. Решение проблем с блокировкой зво</span>
+            </a><a href="/articles/b/bl/bluestacks-vashe-internet-soedinenie-nestabilno.html" class="pb-related-card">
+                <span class="pb-related-title">BlueStacks: ошибка нестабильного соединения — полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки нестабильного интернет-соединения в BlueStacks. Методы сбр</span>
+            </a><a href="/articles/s/sb/sb527-kak-podklyuchit-k-internetu.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить роутер SB527 к интернету: пошаговая настройка</span>
+                <span class="pb-related-desc">Полная инструкция по настройке и подключению модема SB527 к сети провайдера. Решение проблем с досту</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-internet-tsentr-jota-2.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить роутер Yota 2: настройка Wi-Fi и интернета</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению роутера Yota 2. Настройка Wi-Fi, вход в веб-интерфейс, смена пар</span>
+            </a><a href="/articles/k/ka/kak-snyat-zamok-s-plansheta-pro.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять блокировку с планшета Pro: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по разблокировке планшетов Pro. Сброс пароля, графического ключа, использование ADB и </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

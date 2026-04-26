@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Diskpart не видит диск: исправление ошибки в BIOS и Windows — Мастер Фикс</title>
+    <meta name="description" content="Почему diskpart не видит жесткий диск, а BIOS его определяет? Полное руководство по драйверам VMD, режимам SATA и разделам GPT/MBR.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/di/diskpart-ne-vidit-zhestkij-disk-a-bios-vidit.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Diskpart не видит диск: исправление ошибки в BIOS и Windows">
+    <meta property="og:description" content="Почему diskpart не видит жесткий диск, а BIOS его определяет? Полное руководство по драйверам VMD, режимам SATA и разделам GPT/MBR.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Diskpart не видит диск: исправление ошибки в BIOS и Windows</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#настройки-bios-и-режимы-работы-контроллера-sata">Настройки BIOS и режимы работы контроллера SATA</a></li><li><a href="#интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</a></li><li><a href="#работа-с-утилитой-diskpart-и-очистка-диска">Работа с утилитой Diskpart и очистка диска</a></li><li><a href="#диагностика-физического-подключения-и-видимости">Диагностика физического подключения и видимости</a></li><li><a href="#типичные-ошибки-при-работе-с-diskpart">Типичные ошибки при работе с Diskpart</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/b/bi/bios-zvukovye-nastrojki-na-vindovs-7.html">Настройка звука в BIOS для Windows 7: Полное руководство</a></li><li><a href="/articles/i/ir/iru-515alc-vojti-v-bios.html">Как войти в BIOS на Iru 515ALC: полная инструкция</a></li><li><a href="/articles/a/ac/acer-nitro-5-ne-vidit-ssd-pri-ustanovke-windows.html">Acer Nitro 5 не видит SSD: решение проблемы при установке Windows</a></li><li><a href="/articles/a/ac/acer-n16q15-kharakteristiki-noutbuk.html">Acer N16Q15: характеристики, спецификации и диагностика ноутбука</a></li><li><a href="/articles/k/ka/kak-otkryt-porty-v-brandmauere-windows-10-varfrejm.html">Как открыть порты для Warframe в Windows 10: полная настройка брандмауэра</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Решение проблемы: Diskpart не видит диск, хотя BIOS его определяет</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#настройки-bios-и-режимы-работы-контроллера-sata">Настройки BIOS и режимы работы контроллера SATA</a></li><li><a href="#интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</a></li><li><a href="#работа-с-утилитой-diskpart-и-очистка-диска">Работа с утилитой Diskpart и очистка диска</a></li><li><a href="#диагностика-физического-подключения-и-видимости">Диагностика физического подключения и видимости</a></li><li><a href="#типичные-ошибки-при-работе-с-diskpart">Типичные ошибки при работе с Diskpart</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда система BIOS или UEFI корректно отображает подключенный накопитель, но утилита diskpart в среде установки Windows или командной строке его игнорирует, является распространенной проблемой при развертывании операционных систем. Пользователь сталкивается с этим чаще всего в момент, когда необходимо выполнить чистую установку ОС, разбить диск на разделы или восстановить структуру разделов, а список доступных дисков в окне выбора остается пустым или содержит только флешку с дистрибутивом.</p>
+<p>На практике это означает, что физический контакт есть, контроллер работает, но логический уровень взаимодействия между операционной системой и оборудованием нарушен. Чаще всего причина кроется в отсутствии необходимых драйверов контроллера хранилища в образе установщика, несовместимости режима работы SATA-портов или специфических настройках Intel RST/VMD на современных материнских платах.</p>
+<p>Игнорирование накопителя утилитой diskpart делает невозможным выполнение базовых операций, таких как создание разделов, форматирование или очистка атрибутов. Ниже приведены детальные методы диагностики и решения, охватывающие программные настройки BIOS, работу с драйверами и ручное управление разделами через командную строку.</p>
+
+<h2 id="настройки-bios-и-режимы-работы-контроллера-sata">Настройки BIOS и режимы работы контроллера SATA</h2>
+<p>Первым шагом в устранении неисправности должна стать проверка конфигурации firmware материнской платы. Если BIOS видит диск, это подтверждает исправность физического подключения, однако операционная система может не иметь доступа к устройству из-за выбранного режима эмуляции или работы контроллера.</p>
+<p>В современных системах с процессорами Intel часто активирована технология <em>Intel VMD (Volume Management Device)</em>, которая берет на себя управление дисками NVMe и SATA. При включенном VMD стандартные драйверы Windows могут не распознавать накопители, так как они ожидают прямого доступа, а не доступа через виртуальный контроллер.</p>
+<p>Допустим, в системе установлен современный ноутбук с процессором 11-го или 12-го поколения. В таком случае необходимо войти в BIOS, найти раздел <code>Advanced</code> или <code>System Configuration</code> и locate параметр <code>VMD Controller</code>. Его отключение переводит контроллер в стандартный режим AHCI, что часто делает диск видимым для установщика без дополнительных драйверов.</p>
+<p>Если отключение VMD невозможно или нежелательно, следует обратить внимание на параметр <code>SATA Mode</code>. Он может иметь значения <code>IDE</code>, <code>AHCI</code> или <code>RAID</code>. Для корректной работы современных версий Windows, таких как <em>Windows 10</em> или <em>Windows 11</em>, рекомендуется режим <code>AHCI</code>. Режим <code>RAID</code> (часто называемый <code>RST</code>) требует наличия специфических драйверов, без которых diskpart не сможет инициировать устройство.</p>
+
+<h3>Сравнение режимов работы SATA контроллера</h3>
+<p>Выбор правильного режима работы контроллера критически важен для совместимости с операционной системой. Разные режимы предлагают различный уровень производительности и совместимости со старым оборудованием.</p>
+<p>Режим IDE является эмуляцией и используется для совместимости с очень старыми системами, он не поддерживает очередь команд NCQ и ограничивает скорость работы дисков. Режим AHCI является стандартом для современных систем, позволяя использовать горячую замену и технологию NCQ для оптимизации доступа к данным. Режим RAID позволяет объединять диски в массивы, но требует драйверов даже для одиночного диска в конфигурации Intel RST.</p>
+<table>
+<thead>
+<tr>
+<th>Режим</th>
+<th>Совместимость</th>
+<th>Требует драйверов</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IDE / Legacy</td>
+<td>Старые ОС (XP и ранее)</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>AHCI</td>
+<td>Windows 7 и новее, Linux</td>
+<td>Стандартные (встроены)</td>
+</tr>
+<tr>
+<td>RAID / RST</td>
+<td>Все ОС с драйверами</td>
+<td>Да (F6 драйверы)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Изменение режима SATA с RAID на AHCI на уже установленной системе может привести к ошибке INACCESSIBLE_BOOT_DEVICE при загрузке. Требуется предварительная подготовка реестра или безопасный режим.</p></aside>
+
+<h2 id="интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</h2>
+<p>Наиболее частой причиной, по которой diskpart не видит жесткий диск на ноутбуках последних лет выпуска, является отсутствие в дистрибутиве Windows драйверов для контроллера хранилища. Это особенно актуально для платформ Intel с включенной технологией VMD или RAID.</p>
+<p>Для решения проблемы необходимо загрузить драйвер с официального сайта производителя ноутбука или материнской платы. Искомый файл обычно имеет название <em>Intel Rapid Storage Technology (IRST)</em> или <em>VMD Driver</em>. Важно скачать именно драйвер для установки (F6 Floppy), а не исполняемый файл установки программы.</p>
+<p>После загрузки архива его необходимо распаковать. Если драйвер представлен в виде исполняемого файла <code>.exe</code>, его можно распаковать через командную строку с ключом <code>-extract</code> или использовать архиватор вроде <em>7-Zip</em>. Файлы драйвера должны содержать расширения <code>.inf</code>, <code>.sys</code> и <code>.cat</code>.</p>
+<p>Распакованные файлы следует поместить на ту же флешку, с которой производится установка Windows. В процессе установки, на этапе выбора диска, где список пуст, нужно нажать кнопку «Загрузить драйвер» (Load Driver) и указать путь к папке с драйвером. После успешной установки драйвера диск станет виден утилите diskpart и установщику.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка драйвера при установке Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите «Загрузить драйвер» в окне выбора диска</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите путь к папке с распакованными файлами драйвера (.inf)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите подходящий драйвер из списка и нажмите «Далее»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь установки и появления списка разделов</span></div></div>
+
+<h3>Поиск и подготовка драйверов для разных вендоров</h3>
+<p>Процесс поиска драйверов может отличаться в зависимости от производителя оборудования. Для ноутбуков <em>HP</em>, <em>Dell</em>, <em>Lenovo</em> драйверы часто находятся в разделе «Storage» или «SATA» на странице поддержки конкретной модели.</p>
+<p>В случае использования материнских плат <em>ASUS</em>, <em>Gigabyte</em> или <em>MSI</em>, драйверы контроллера могут называться «Intel VMD Driver» или «RST Driver». Для процессоров AMD с чипсетами серии 5000 и новее может потребоваться драйвер <em>NVMe/RAID Driver</em>.</p>
+<p>Важно обращать внимание на версию операционной системы, для которой предназначен драйвер. Драйвер для <em>Windows 10</em> может не подойти для <em>Windows 11</em> или <em>Server 2019</em>, хотя в большинстве случаев драйверы IRST обратно совместимы в пределах одного поколения ОС.</p>
+
+<h2 id="работа-с-утилитой-diskpart-и-очистка-диска">Работа с утилитой Diskpart и очистка диска</h2>
+<p>Если диск появился в BIOS, но в списке разделов Windows он отображается как «Неизвестный» или имеет ошибки структуры, требуется использование консольной утилиты <code>diskpart</code>. Этот инструмент позволяет выполнять низкоуровневые операции с дисковой подсистемой.</p>
+<p>Для запуска утилиты необходимо открыть командную строку с правами администратора. В среде установки Windows это делается комбинацией клавиш <code>Shift + F10</code>, после чего вводится команда <code>diskpart</code>. В запущенной ОС достаточно ввести <code>cmd</code> в поиске, выбрать запуск от имени администратора и ввести команду.</p>
+<p>После запуска утилиты первой командой должна быть <code>list disk</code>. Она выводит список всех физических дисков, доступных системе. Если диск не отображается даже здесь, хотя в BIOS он виден, проблема кроется глубже уровня ОС (драйверы, кабель, порт).</p>
+<p>Если диск в списке есть, но имеет неверную разметку или ошибки, его можно полностью очистить. Команда <code>select disk N</code> (где N — номер диска) выбирает целевое устройство. Далее команда <code>clean</code> удаляет всю информацию о разделах и сигнатуру диска. Это действие необратимо удаляет все данные.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Команда clean полностью удаляет таблицу разделов. Все данные на выбранном диске будут утеряны без возможности простого восстановления. Убедитесь, что выбран правильный номер диска.</p></aside>
+
+<h3>Конвертация таблиц разделов MBR и GPT</h3>
+<p>Частой причиной конфликта является несоответствие стиля разделов диска режиму загрузки BIOS. Для режима <em>UEFI</em> требуется таблица разделов <code>GPT</code>, а для режима <em>Legacy BIOS</em> — <code>MBR</code>.</p>
+<p>Если попытаться установить Windows в режиме UEFI на диск с разметкой MBR, установщик выдаст ошибку. Аналогично, при попытке загрузить Legacy-систему с GPT-диска возникнут проблемы. Утилита diskpart позволяет конвертировать стили, но только после очистки диска.</p>
+<p>Для конвертации в GPT используется команда <code>convert gpt</code>, а для MBR — <code>convert mbr</code>. Перед выполнением конвертации диск обязательно должен быть очищен командой <code>clean</code>, иначе операция будет прервана сообщением об ошибке.</p>
+
+<pre><code>list disk
+<p>select disk 1</p>
+<p>clean</p>
+<p>convert gpt</p>
+<p>create partition primary</p>
+<p>format fs=ntfs quick</p>
+<p>assign</p>
+<p>exit</code></pre></p>
+
+<h2 id="диагностика-физического-подключения-и-видимости">Диагностика физического подключения и видимости</h2>
+<p>В случаях, когда программные методы не помогают, следует рассмотреть вероятность физических неисправностей или проблем с портами. Даже если BIOS показывает наличие устройства, оно может быть недоступно для ОС из-за нестабильного сигнала или повреждения файловой системы на низком уровне.</p>
+<p>Стоит проверить, отображается ли диск в диспетчере устройств. Для этого в работающей Windows нужно открыть <code>devmgmt.msc</code> и перейти в раздел «Дисковые устройства». Если диск там есть, но помечен восклицательным знаком, проблема в драйвере. Если диска нет ни в разделе «Дисковые устройства», ни в «Контроллеры», возможно, он отключен на уровне чипсета.</p>
+<p>Иногда диск виден в BIOS, но не определяется в Windows из-за конфликта букв или скрытых разделов восстановления. В этом случае поможет утилита «Управление дисками» (<code>diskmgmt.msc</code>). Если диск отображается там как «Не распределен» или «Не проинициализирован», его можно привести в рабочее состояние графическим интерфейсом.</p>
+<p>Для пользователей ноутбуков со съемными аккумуляторами эффективным методом является полный сброс статического напряжения. Необходимо отключить питание, извлечь батарею (если возможно), зажать кнопку включения на 30 секунд и затем включить устройство. Это перезапускает контроллеры питания и SATA.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Попробуйте подключить диск к другому SATA-порту на материнской плате. Порты, управляемые сторонними чипсетами (например, ASMedia), могут требовать отдельных драйверов, в отличие от нативных портов Intel/AMD.</p></aside>
+
+<h2 id="типичные-ошибки-при-работе-с-diskpart">Типичные ошибки при работе с Diskpart</h2>
+<p>В процессе устранения неполадок пользователи часто допускают ошибки, которые усложняют диагностику или приводят к потере данных. Понимание этих ошибок позволяет избежать распространенных ловушек.</p>
+<ol>
+<li><strong>Выбор неправильного диска</strong> — выполнение команды <code>select disk</code> без предварительной проверки объема накопителей часто приводит к системного диска вместо целевого. Всегда сверяйте размер диска в колонке «Размер».</li>
+<li><strong>Попытка конвертации без очистки</strong> — команда <code>convert</code> не работает, если на диске есть разделы. Необходимо сначала выполнить <code>clean</code>, что приведет к потере данных, о чем часто забывают.</li>
+<li><strong>Игнорирование режима BIOS/UEFI</strong> — создание разделов MBR для системы, загружаемой в режиме UEFI, делает диск не загрузочным. Всегда проверяйте текущий режим загрузки перед разметкой.</li>
+<li><strong>Неверная файловая система</strong> — форматирование системного раздела в FAT32 вместо NTFS для Windows 10/11 приведет к ошибке установки, так как FAT32 не поддерживает файлы размером более 4 ГБ и необходимые атрибуты безопасности.</li>
+</ol>
+
+<h3>Сравнение методов решения проблемы</h3>
+<p>Существует несколько подходов к решению проблемы видимости диска. Выбор метода зависит от наличия под рукой дополнительных устройств и критичности данных на диске.</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Риск потери данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Загрузка драйверов (F6)</td>
+<td>Средняя</td>
+<td>Нет (данные сохраняются)</td>
+</tr>
+<tr>
+<td>Смена режима SATA в BIOS</td>
+<td>Низкая</td>
+<td>Нет (но ОС может не загрузиться)</td>
+</tr>
+<tr>
+<td>Команда Clean в Diskpart</td>
+<td>Низкая</td>
+<td>Высокий (полное удаление)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Метод загрузки драйверов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Сохранение данных на диске</li><li>✅ Официальный способ поддержки</li><li>✅ Работает на любом железе</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует наличия второго ПК для скачивания</li><li>❌ Нужно искать точную версию драйвера</li><li>❌ Увеличивает время установки</li></ul></div>
+</div></div>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Проблема решается либо интеграцией драйверов контроллера, либо изменением настроек SATA в BIOS, либо полной переразметкой диска через diskpart.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+<p>Отсутствие видимости жесткого диска в утилите diskpart при его наличии в BIOS является решаемой проблемой, связанной преимущественно с программной конфигурацией. Ключевыми факторами успеха являются правильный выбор режима работы контроллера SATA в BIOS и наличие актуальных драйверов хранилища в дистрибутиве операционной системы.</p>
+<p>Использование командной строки diskpart предоставляет мощный инструмент для принудительной инициализации и разметки накопителей, однако требует осторожности при вводе команд. Понимание различий между таблицами разделов MBR и GPT, а также умение интегрировать драйверы IRST/VMD, позволяет успешно устанавливать Windows на любое современное оборудование.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/b/bi/bios-zvukovye-nastrojki-na-vindovs-7.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка звука в BIOS для Windows 7: Полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по активации и настройке аудиоконтроллера в BIOS/UEFI для стабильной работы зву</span>
+            </a><a href="/articles/i/ir/iru-515alc-vojti-v-bios.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS на Iru 515ALC: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по входу в BIOS ноутбука Iru 515ALC. Решения проблем с клавишами, Fast Boot и </span>
+            </a><a href="/articles/a/ac/acer-nitro-5-ne-vidit-ssd-pri-ustanovke-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Acer Nitro 5 не видит SSD: решение проблемы при установке Windows</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если Acer Nitro 5 не видит SSD при установке Windows. Настройка VM</span>
+            </a><a href="/articles/a/ac/acer-n16q15-kharakteristiki-noutbuk.html" class="pb-related-card">
+                <span class="pb-related-title">Acer N16Q15: характеристики, спецификации и диагностика ноутбука</span>
+                <span class="pb-related-desc">Подробный технический анализ ноутбука Acer N16Q15. Полные характеристики, совместимость компонентов,</span>
+            </a><a href="/articles/k/ka/kak-otkryt-porty-v-brandmauere-windows-10-varfrejm.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть порты для Warframe в Windows 10: полная настройка брандмауэра</span>
+                <span class="pb-related-desc">Подробная инструкция по пробросу портов для Warframe на Windows 10. Решение ошибок подключения, наст</span>
+            </a><a href="/articles/a/as/asus-fx506-net-podsvetki-na-displee.html" class="pb-related-card">
+                <span class="pb-related-title">ASUS FX506 нет подсветки: причины и устранение</span>
+                <span class="pb-related-desc">Почему на ASUS FX506 нет подсветки экрана. Подробный разбор аппаратных и программных сбоев, методы д</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

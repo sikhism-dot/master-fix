@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Включение сетевого обнаружения Server 19: Руководство — Мастер Фикс</title>
+    <meta name="description" content="Пошаговая инструкция по активации сетевых профилей и служб обнаружения в Windows Server 19. Настройка брандмауэра и PowerShell.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vk/vklyuchenie-setevogo-obnaruzheniya-server-19.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Включение сетевого обнаружения Server 19: Руководство">
+    <meta property="og:description" content="Пошаговая инструкция по активации сетевых профилей и служб обнаружения в Windows Server 19. Настройка брандмауэра и PowerShell.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/prilozheniya-servisy/">Приложения и Сервисы</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Включение сетевого обнаружения Server 19: Руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-текущих-профилей-сети-и-состояния-служб">Анализ текущих профилей сети и состояния служб</a></li><li><a href="#активация-функций-через-оснастку-брандмауэра">Активация функций через оснастку брандмауэра</a></li><li><a href="#использование-powershell-для-автоматизации-настройки">Использование PowerShell для автоматизации настройки</a></li><li><a href="#конфигурация-через-реестр-и-групповые-политики">Конфигурация через реестр и групповые политики</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-финальные-рекомендации">Резюме и финальные рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/d/du/dust-settle-kak-vklyuchit-vip.html">Как включить VIP в Dust Settles: полная инструкция</a></li><li><a href="/articles/k/ka/kak-vernut-v-vk-izbrannoe.html">Как вернуть в ВК избранное: полное руководство</a></li><li><a href="/articles/k/ka/kak-vklyuchit-jyc-rx-e5c-bez-pulta.html">Как включить JYC RX E5C без пульта: полная инструкция</a></li><li><a href="/articles/l/la/last-light-mobajl-problema-s-vkhodom-13062025.html">Last Light Mobile: решение проблем входа 13.06.2026</a></li><li><a href="/articles/k/ka/kak-skachat-na-sharp-aquosnet-kinopoisk.html">Как установить Кинопоиск на Sharp Aquos Net+: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка сетевого обнаружения в Windows Server 19</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-текущих-профилей-сети-и-состояния-служб">Анализ текущих профилей сети и состояния служб</a></li><li><a href="#активация-функций-через-оснастку-брандмауэра">Активация функций через оснастку брандмауэра</a></li><li><a href="#использование-powershell-для-автоматизации-настройки">Использование PowerShell для автоматизации настройки</a></li><li><a href="#конфигурация-через-реестр-и-групповые-политики">Конфигурация через реестр и групповые политики</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-финальные-рекомендации">Резюме и финальные рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>После установки операционной системы Windows Server 19 на новый физический сервер или виртуальную машину администратор часто сталкивается с ситуацией, когда узел не виден в списке сетевых ресурсов «Сети» на других компьютерах домена.</p>
+<p>В отличие от клиентских версий Windows, серверные редакции по умолчанию имеют жестко ограниченный профиль безопасности, который блокирует входящие запросы на обнаружение, делая машину невидимой для административных консолей.</p>
+<p>Если у вас отсутствует возможность использовать инструменты централизованного управления вроде Active Directory Users and Computers для первоначальной настройки, локальное включение служб становится критически важным шагом для дальнейшей интеграции сервера в инфраструктуру.</p>
+
+<h2 id="анализ-текущих-профилей-сети-и-состояния-служб">Анализ текущих профилей сети и состояния служб</h2>
+
+<p>Первым этапом диагностики является определение текущего сетевого профиля, так как именно от него зависят применяемые правила брандмауэра и доступность служб обнаружения.</p>
+<p>На практике сетевой профиль «Общественная сеть» (Public) блокирует большинство входящих соединений, включая протоколы LLMNR и NetBIOS, необходимые для отображения сервера в окружении.</p>
+<p>Для проверки текущего статуса можно воспользоваться оснасткой PowerShell, выполнив команду <code>Get-NetConnectionProfile</code>, которая покажет имя интерфейса, его индекс и категорию сети.</p>
+<p>Если профиль помечен как Public, необходимо изменить его на Private, чтобы активировать менее строгие правила фильтрации трафика, характерные для доверенных корпоративных сетей.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение сетевого профиля на «Частный» допустимо только в защищенных корпоративных сетях. В публичных сетях это действие может подвергнуть сервер атакам извне.</p></aside>
+
+<p>Допустим, что профиль уже изменен, но сервер все равно не обнаруживается — в этом случае стоит проверить статус критически важных служб, отвечающих за публикацию ресурсов.</p>
+
+<h3>Проверка зависимостей служб SSDP и UPnP</h3>
+<p>Служба обнаружения SSDP (Simple Service Discovery Protocol) играет ключевую роль в обнаружении сетевых устройств и служб с использованием протокола универсального plug and play (UPnP).</p>
+<p>В серверной среде эта служба часто остановлена и имеет тип запуска «Отключено», что требует ручного вмешательства администратора для корректной работы сетевых функций.</p>
+<p>Для активации следует открыть консоль управления службами через команду <code>services.msc</code> и найти службу <em>SSDP Discovery</em>.</p>
+<p>Двойной клик по службе позволяет изменить тип запуска на «Автоматический» и запустить её немедленно, что является обязательным условием для работы многих сетевых компонентов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка служб</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте services.msc</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите SSDP Discovery</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите тип запуска «Автоматически»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите службу</span></div></div>
+
+<h2 id="активация-функций-через-оснастку-брандмауэра">Активация функций через оснастку брандмауэра</h2>
+
+<p>Основным инструментом управления правилами доступа в Windows Server 19 является оснастка «Брандмауэр Windows в режиме повышенной безопасности», доступная через меню администрирования.</p>
+<p>Именно здесь сосредоточены правила, разрешающие или запрещающие входящие пакеты для протоколов сетевого обнаружения, таких как WSD (Web Services for Devices).</p>
+<p>Для включения обнаружения необходимо перейти в раздел «Правила для входящих подключений» и найти группу правил, связанную с сетевым обнаружением.</p>
+<p>В списке следует искать правила с префиксом «Сетевое обнаружение» (Network Discovery), которые могут быть помечены как отключенные для текущего активного профиля.</p>
+<p>Выделение нужных правил и выбор опции «Включить правило» в контекстном меню или правой панели позволяет мгновенно применить изменения без перезагрузки системы.</p>
+
+<h3>Настройка правил для профилей Домен и Частный</h3>
+<p>Важно учитывать, что правила могут быть разделены по типам профилей, и активация только для одного из них может не дать желаемого результата.</p>
+<p>Необходимо убедиться, что правила включены как для профиля «Домен», так и для профиля «Частный», если сервер работает в гибридной среде или профиль определен неверно.</p>
+<p>Использование фильтрации в правой части окна оснастки по слову «Discovery» помогает быстрее найти все необходимые компоненты среди сотен стандартных правил.</p>
+<p>После включения правил рекомендуется выполнить команду <code>gpupdate /force</code> для принудительного обновления групповых политик, которые могут перекрывать локальные настройки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых сборках Windows Server 19 правила могут называться «Основное сетевое обнаружение» (Core Network Discovery), что соответствует той же функциональности.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Тип правила</th>
+<th>Протокол</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сетевое обнаружение</td>
+<td>UDP 3702</td>
+<td>Обнаружение устройств WSD</td>
+</tr>
+<tr>
+<td>Основное обнаружение</td>
+<td>UDP 5355</td>
+<td>Разрешение имен LLMNR</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="использование-powershell-для-автоматизации-настройки">Использование PowerShell для автоматизации настройки</h2>
+
+<p>Для системных администраторов, управляющих множеством серверов, графический интерфейс может быть неэффективным, поэтому использование командной строки PowerShell является предпочтительным методом.</p>
+<p>Модуль <em>NetSecurity</em> предоставляет широкие возможности для управления брандмауэром и сетевыми профилями без необходимости открытия тяжелых графических оснасток.</p>
+<p>Выполнение скриптов позволяет стандартизировать процесс настройки и исключить человеческий фактор, связанный с пропуском отдельных шагов в меню.</p>
+<p>Команды PowerShell выполняются мгновенно и могут быть завернуты в скрипты конфигурации для развертывания на новых серверах сразу после установки ОС.</p>
+
+<h3>Команды для включения обнаружения и изменения профиля</h3>
+<p>Для изменения сетевого профиля с общественного на частный используется команда <code>Set-NetConnectionProfile</code> с указанием имени интерфейса или его индекса.</p>
+<p>Пример команды для смены профиля: <code>Set-NetConnectionProfile -Name "Ethernet" -NetworkCategory Private</code>, где Ethernet — имя адаптера.</p>
+<p>Для включения правил обнаружения применяется команда <code>Enable-NetFirewallRule</code>, которая активирует необходимые порты и протоколы в брандмауэре.</p>
+<p>Можно использовать wildcard-маски для включения всей группы правил, связанных с обнаружением, одной строкой кода, что значительно ускоряет процесс.</p>
+
+<pre><code>Enable-NetFirewallRule -DisplayName "*Network Discovery*" -Profile Private, Domain</code></pre>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Скрипт PowerShell</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите PowerShell от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду смены профиля</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните команду включения правил</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте результат через Get-NetFirewallRule</span></div></div>
+
+<p>Если у вас настроено удаленное управление, эти команды можно выполнять удаленно через сеанс PSSession, что позволяет настраивать серверы без физического доступа к консоли.</p>
+
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование PowerShell позволяет массово применять настройки сетевого обнаружения и обеспечивает повторяемость конфигурации на всех серверах.</p></aside>
+
+<h2 id="конфигурация-через-реестр-и-групповые-политики">Конфигурация через реестр и групповые политики</h2>
+
+<p>В случаях, когда стандартные методы не работают или требуется жесткое закрепление настроек через GPO, можно обратиться к веткам системного реестра.</p>
+<p>Параметры сетевого обнаружения хранятся в ключе <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\lanmanworkstation\parameters</code> и смежных разделах.</p>
+<p>Изменение значений реестра требует осторожности, так как некорректные правки могут привести к нестабильной работе сетевых компонентов операционной системы.</p>
+<p>Перед внесением изменений настоятельно рекомендуется создать точку восстановления или экспортировать ветку реестра для возможности отката.</p>
+
+<h3>Параметры функционального обнаружения</h3>
+<p>Ключевым параметром является <code>EnableFunctionalDiscovery</code>, значение которого должно быть установлено в <code>1</code> для активации механизма обнаружения.</p>
+<p>Также стоит проверить параметр <code>DisableDiscovery</code>, который при значении <code>1</code> принудительно блокирует все попытки сервера заявить о себе в сети.</p>
+<p>Для применения изменений реестра может потребоваться перезапуск службы «Рабочая станция» (Workstation) или полная перезагрузка сервера.</p>
+<p>Групповые политики позволяют централизованно управлять этими ключами реестра на уровне домена, переопределяя локальные настройки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прямое редактирование реестра без резервного копирования может привести к невозможности загрузки системы или потере сетевой связности.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Тип</th>
+<th>Значение для включения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EnableFunctionalDiscovery</td>
+<td>DWORD</td>
+<td>1</td>
+</tr>
+<tr>
+<td>DisableDiscovery</td>
+<td>DWORD</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>На практике использование групповых политик является наиболее масштабируемым решением для крупных инфраструктур с десятками и сотнями серверов.</p>
+<p>Создание отдельного объекта GPO и линковка его на организационное подразделение с серверами позволяет применять настройки выборочно и контролируемо.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте групповые политики предпочтения (GPP) для настройки реестра, так как они позволяют обновлять только конкретные значения, не затрагивая другие ключи.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Несмотря на кажущуюся простоту процедуры, администраторы часто сталкиваются с ситуациями, когда формально включенные настройки не приводят к ожидаемому результату.</p>
+<p>Анализ наиболее частых проблем позволяет сократить время диагностики и быстро вернуть сервер в строй.</p>
+<p>Ниже приведен список распространенных ошибок, которые блокируют сетевое обнаружение в Windows Server 19.</p>
+
+<ol>
+<li><strong>Неверный сетевой профиль</strong> — сервер остается в профиле «Общественная сеть», где правила обнаружения жестко заблокированы и не могут быть изменены локально без смены категории.</li>
+<li><strong>Блокировка сторонним антивирусом</strong> — установленные решения безопасности могут иметь собственный брандмауэр, который игнорирует настройки Windows и блокирует порты UDP 3702 и 5355.</li>
+<li><strong>Отключенная служба Workstation</strong> — без активной службы «Рабочая станция» (LanmanWorkstation) механизм обнаружения файлов и принтеров не функционирует, даже если брандмауэр открыт.</li>
+<li><strong>Конфликт IP-адресов или подсетей</strong> — если сервер и клиент находятся в разных подсетях без настроенного маршрутизатора или ретранслятора, широковещательные пакеты обнаружения не достигнут получателя.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Диагностика проблем</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Возможность точного контроля настроек</li><li>✅ Гибкость выбора методов (GUI/CLI)</li><li>✅ Глубокая интеграция с ОС</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует внимательности к деталям</li><li>❌ Риск ошибки при ручном вводе команд</li><li>❌ Необходимость перезагрузки служб</li></ul></div>
+</div></div>
+
+<p>Решение проблемы часто кроется в комплексной проверке всех уровней: от физического подключения кабеля до настроек групповых политик домена.</p>
+<p>Логирование событий брандмауэра Windows может предоставить детальную информацию о том, какие именно пакеты отбрасываются системой.</p>
+
+<h2 id="резюме-и-финальные-рекомендации">Резюме и финальные рекомендации</h2>
+
+<p>Включение сетевого обнаружения на Windows Server 19 является базовой, но критически важной задачей для обеспечения видимости сервера в корпоративной инфраструктуре.</p>
+<p>Наиболее эффективным и безопасным методом является использование PowerShell в сочетании с проверкой сетевых профилей, что позволяет быстро стандартизировать настройки.</p>
+<p>Грамотная конфигурация брандмауэра и служб гарантирует не только видимость сервера, но и сохранение необходимого уровня безопасности периметра.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/d/du/dust-settle-kak-vklyuchit-vip.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить VIP в Dust Settles: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по активации VIP-статуса в игре Dust Settles. Разбор методов оплаты, преимущес</span>
+            </a><a href="/articles/k/ka/kak-vernut-v-vk-izbrannoe.html" class="pb-related-card">
+                <span class="pb-related-title">Как вернуть в ВК избранное: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по восстановлению списка «Избранное» ВКонтакте. Решение проблем с исчезновением</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-jyc-rx-e5c-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить JYC RX E5C без пульта: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по управлению и включению вспышки JYC RX E5C без пульта. Разбор настроек, режим</span>
+            </a><a href="/articles/l/la/last-light-mobajl-problema-s-vkhodom-13062025.html" class="pb-related-card">
+                <span class="pb-related-title">Last Light Mobile: решение проблем входа 13.06.2026</span>
+                <span class="pb-related-desc">Подробный гайд по устранению ошибки входа в Last Light Mobile от 13.06.2026. Проверка серверов, очис</span>
+            </a><a href="/articles/k/ka/kak-skachat-na-sharp-aquosnet-kinopoisk.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить Кинопоиск на Sharp Aquos Net+: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по установке приложения Кинопоиск на телевизоры Sharp Aquos Net+. Решение пробл</span>
+            </a><a href="/articles/k/ka/kak-pristavku-yasen-t-8000-podklyuchit-k-vajfayu.html" class="pb-related-card">
+                <span class="pb-related-title">Ясень Т-8000: инструкция по подключению к Wi-Fi и настройке сети</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению приставки Ясень Т-8000 к Wi-Fi. Настройка статического IP, DNS, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

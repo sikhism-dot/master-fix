@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>FIDO UAF Client на Android: что это, функции и настройка — Мастер Фикс</title>
+    <meta name="description" content="Полный технический разбор FIDO UAF Client на Android. Зачем нужен системный процесс, как работает биометрическая авторизация и решение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/f/fi/fido-uaf-client-chto-eto-za-programma-na-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="FIDO UAF Client на Android: что это, функции и настройка">
+    <meta property="og:description" content="Полный технический разбор FIDO UAF Client на Android. Зачем нужен системный процесс, как работает биометрическая авторизация и решение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">FIDO UAF Client на Android: что это, функции и настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-протокола-fido-uaf-и-роль-клиента">Архитектура протокола FIDO UAF и роль клиента</a></li><li><a href="#функциональные-возможности-и-сценарии-использования">Функциональные возможности и сценарии использования</a></li><li><a href="#управление-процессом-и-настройка-в-android">Управление процессом и настройка в Android</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#сравнение-с-альтернативными-методами-аутентификации">Сравнение с альтернативными методами аутентификации</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-udalit-huawei-koshelek-s-telefona.html">Как удалить Huawei кошелек: полная инструкция и очистка данных</a></li><li><a href="/articles/m/ml/mlp-android.html">Настройка MLP Android: Инструкция по интеграции и работе</a></li><li><a href="/articles/a/ax/axa-games-chto-eto-v-androide.html">AXA Games в Android: что это за приложение и можно ли удалить?</a></li><li><a href="/articles/u/uv/uvc-android.html">UVC Android: Настройка внешних веб-камер и эндоскопов</a></li><li><a href="/articles/k/ka/kak-v-get-kontakt-izmenit-nomer-telefona-privyazannyj.html">Как в GetContact изменить номер: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>FIDO UAF Client на Android: назначение и настройка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-протокола-fido-uaf-и-роль-клиента">Архитектура протокола FIDO UAF и роль клиента</a></li><li><a href="#функциональные-возможности-и-сценарии-использования">Функциональные возможности и сценарии использования</a></li><li><a href="#управление-процессом-и-настройка-в-android">Управление процессом и настройка в Android</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#сравнение-с-альтернативными-методами-аутентификации">Сравнение с альтернативными методами аутентификации</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто замечают в списке запущенных процессов или в разделе «Использование батареи» неизвестный системный компонент под названием <em>FIDO UAF Client</em>, что вызывает вопросы о безопасности и необходимости его работы. Появление этого процесса не является признаком вирусной активности, а свидетельствует о корректной работе современных протоколов аутентификации.</p>
+<p>Ситуация, когда на экране всплывает запрос биометрических данных для входа в банковское приложение или веб-сервис, напрямую связана с функционалом данного модуля. Понимание принципов его работы позволяет эффективно управлять доступом к конфиденциальным данным и устранять сбои при входе.</p>
+<p>Техническая грамотность в вопросах мобильной безопасности требует четкого разграничения между пользовательскими приложениями и системными службами, к которым относится рассматриваемый клиент. Ниже представлен детальный анализ архитектуры, функционала и методов управления этим компонентом операционной системы.</p>
+
+<h2 id="архитектура-протокола-fido-uaf-и-роль-клиента">Архитектура протокола FIDO UAF и роль клиента</h2>
+<p>Протокол FIDO (Fast Identity Online) разработан альянсом FIDO Alliance для стандартизации методов аутентификации без использования паролей. В основе архитектуры лежит разделение ролей между клиентом, сервером и устройством пользователя, где <strong>FIDO UAF Client</strong> выступает ключевым посредником. Этот программный модуль отвечает за взаимодействие между биометрическими сенсорами смартфона и приложениями, требующими подтверждения личности владельца.</p>
+<p>Основная задача компонента заключается в реализации спецификации UAF (Universal Authentication Framework), которая позволяет использовать локальные механизмы, такие как сканер отпечатка пальца, распознавание лица или голосовые команды. При попытке входа в приложение, поддерживающее стандарт, именно этот клиент инициирует запрос к защищенному хранилищу ключей и управляет диалоговым окном ввода биометрии.</p>
+<p>Важно отметить, что сам по себе клиент не хранит биометрические шаблоны. Эти данные остаются в изолированном окружении <em>TEE (Trusted Execution Environment)</em> или <em>Secure Element</em>. Клиент лишь получает криптографический токен подтверждения, который передается удаленному серверу для завершения сеанса связи.</p>
+
+<h3>Принцип работы криптографических ключей</h3>
+<p>Функционирование системы строится на использовании пар ключей: открытого и закрытого. Закрытый ключ генерируется и хранится исключительно на устройстве пользователя, никогда не покидая его пределов. Открытый ключ регистрируется на сервере службы во время первичной настройки аккаунта.</p>
+<p>Когда пользователь пытается войти в сервис, сервер отправляет запрос (challenge). <strong>FIDO UAF Client</strong> получает этот запрос, активирует биометрический сенсор и, после успешной проверки личности, подписывает запрос закрытым ключом. Результат подписи отправляется обратно, подтверждая право доступа без передачи пароля по сети.</p>
+<p>Такой подход исключает возможность перехвата учетных данных злоумышленниками, так как даже при компрометации сервера украсть нечего — там хранятся только открытые ключи, бесполезные без физического доступа к устройству и биометрии владельца.</p>
+
+<p><aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с Android 10 и новее компонент интегрирован глубже в систему безопасности Google Play Services, что обеспечивает более стабильную работу с банковскими приложениями.</p></aside></p>
+
+<h2 id="функциональные-возможности-и-сценарии-использования">Функциональные возможности и сценарии использования</h2>
+<p>Основное назначение <em>FIDO UAF Client</em> — обеспечение бесшовного и безопасного входа в приложения и веб-ресурсы. В повседневной эксплуатации пользователь сталкивается с работой этого модуля каждый раз, когда разблокирует телефон для подтверждения платежа или входа в личный кабинет. Процесс происходит фоновом режиме и часто остается незаметным, кроме момента запроса биометрии.</p>
+<p>Система поддерживает множественную регистрацию устройств для одного аккаунта. Это означает, что пользователь может настроить вход через отпечаток пальца на смартфоне и через распознавание лица на планшете, и <strong>FIDO UAF Client</strong> будет управлять ключами независимо для каждого устройства. При утере одного гаджета ключи на нем можно удаленно отозвать, не затрагивая доступ с других устройств.</p>
+<p>Кроме биометрии, стандарт допускает использование PIN-кодов устройства или графических ключей как фактора аутентификации, если биометрические сенсоры недоступны или не настроены. Клиент адаптируется к доступным на устройстве средствам, выбирая наиболее подходящий метод согласно политике безопасности приложения.</p>
+
+<h3>Интеграция с банковским сектором и госуслугами</h3>
+<p>Наиболее активно протокол используется финансовыми учреждениями. Банковские приложения <em>SberBank, Tinkoff, Alfa-Bank</em> и другие внедряют поддержку FIDO для авторизации в мобильном приложении и подтверждения транзакций. Это позволяет отказаться от SMS-кодов, которые уязвимы для атак типа SIM-swapping.</p>
+<p>Порталы государственных услуг также переходят на биометрическую идентификацию через единую биометрическую систему. В этом сценарии <em>FIDO UAF Client</em> гарантирует, что доступ к личному кабинету получит именно владелец устройства, прошедший проверку по лицу или голосу.</p>
+
+<p><div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка биометрического входа в приложении</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте настройки приложения</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите раздел «Безопасность» или «Вход»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Активируйте пункт «Вход по отпечатку» или «Face ID»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Пройдите процедуру сканирования для привязки ключа</span></div></div></p>
+
+<h2 id="управление-процессом-и-настройка-в-android">Управление процессом и настройка в Android</h2>
+<p>Поскольку <em>FIDO UAF Client</em> является системным компонентом, он не предназначен для удаления пользователем. Попытки деинсталляции могут привести к неработоспособности функций безопасности и сбою в работе приложений, зависящих от биометрии. Управление процессом осуществляется через стандартные настройки операционной системы.</p>
+<p>Для проверки статуса работы компонента следует перейти в раздел настроек устройства. Здесь можно увидеть версию компонента, объем потребляемой памяти и историю активности. В большинстве случаев процесс находится в спящем режиме и активируется только по запросу приложений.</p>
+<p>Если наблюдаются проблемы с работой биометрии, может потребоваться очистка кэша или сброс настроек биометрических данных. Это действие заставит <strong>FIDO UAF Client</strong> заново зарегистрировать ключи для поддерживаемых приложений, что часто решает проблемы с «зависанием» запросов на вход.</p>
+
+<h3>Настройка биометрических данных</h3>
+<p>Корректная работа клиента напрямую зависит от качества зарегистрированных биометрических образцов. Рекомендуется добавлять несколько отпечатков пальцев (например, большой и указательный палец обеих рук) для повышения удобства использования. На устройствах <em>Samsung Galaxy, Xiaomi, Huawei</em> настройки находятся в меню безопасности.</p>
+<p>Необходимо регулярно обновлять биометрические данные, особенно если меняются условия эксплуатации (например, появление царапин на пальцах или изменение внешности). Перерегистрация ключей происходит автоматически при добавлении нового биометрического образца в систему.</p>
+
+<p><aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Сброс настроек биометрии приведет к необходимости заново настраивать вход во всех приложениях, использующих FIDO UAF. Убедитесь, что помните пароли от аккаунтов.</p></aside></p>
+
+<h3>Проверка совместимости приложений</h3>
+<p>Не все приложения поддерживают стандарт FIDO UAF. Для проверки можно воспользоваться официальным инструментом от Google или проверить настройки конкретного приложения. Если в приложении нет опции входа по отпечатку, значит, разработчик не интегрировал соответствующий API.</p>
+<p>Совместимость также зависит от версии операционной системы. На старых версиях Android (ниже 7.0) полноценная поддержка протокола может отсутствовать или работать нестабильно. В таких случаях система может fallback-ить на использование паролей или SMS.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Требование</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Версия Android</td>
+<td>Минимальная версия ОС</td>
+<td>Android 7.0 и выше</td>
+</tr>
+<tr>
+<td>Биометрия</td>
+<td>Наличие сенсора</td>
+<td>Сканер отпечатка, Face ID или ИК-камера</td>
+</tr>
+<tr>
+<td>Google Play Services</td>
+<td>Версия сервиса</td>
+<td>Актуальная версия из магазина</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+<p>В процессе эксплуатации могут возникать ситуации, когда <em>FIDO UAF Client</em> перестает корректно обрабатывать запросы. Это может проявляться в бесконечном ожидании ответа, ошибке «Не удалось выполнить биометрическую проверку» или отказе приложения принимать отпечаток пальца. Причины могут крыться как в программных сбоях, так и в конфликтах версий.</p>
+<p>Частой причиной сбоев является рассинхронизация времени на устройстве. Поскольку протокол использует временные метки для защиты от повторного использования токенов (replay attack), сильное отклонение часов смартфона от реального времени блокирует процесс аутентификации.</p>
+<p>Также проблемы могут возникать после обновления операционной системы или самого приложения-клиента. В этом случае старые криптографические ключи могут стать невалидными, требуя повторной регистрации устройства в сервисах.</p>
+
+<h3>Алгоритм устранения неполадок</h3>
+<p>Первым шагом при возникновении ошибок должна быть проверка обновлений. Необходимо убедиться, что операционная система, Google Play Services и проблемное приложение обновлены до последних версий. Часто исправления безопасности и совместимости приходят именно с обновлениями.</p>
+<p>Если обновление не помогло, следует очистить данные компонента. Это не удалит личные файлы, но сбросит настройки биометрической авторизации для приложений. После этого потребуется заново войти в аккаунты, используя основной пароль, и разрешить использование биометрии.</p>
+
+<p><aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой диагностики попробуйте разблокировать телефон через «Настройки» → «Безопасность». Если там биометрия работает, проблема в конкретном приложении, а не в системе.</p></aside></p>
+
+<ol>
+<li><strong>Ошибка «Биометрические данные не найдены»</strong> — возникает, если в системе не зарегистрирован ни один отпечаток или лицо. Необходимо добавить биометрический шаблон в настройках безопасности устройства.</li>
+<li><strong>Ошибка «Сертификат недействителен»</strong> — часто связана с истекшим сроком действия ключей или сбоем времени. Проверьте дату и время, а также попробуйте перепривязать устройство в настройках аккаунта.</li>
+<li><strong>Циклический запрос подтверждения</strong> — приложение постоянно запрашивает вход, но не пускает. Решение: удалите приложение, перезагрузите смартфон, установите приложение заново и заново настройте биометрию.</li>
+<li><strong>Конфликт версий UAF и U2F</strong> — некоторые сервисы используют смешанные протоколы. Убедитесь, что в приложении выбран правильный метод входа (UAF для мобильных устройств, U2F для внешних ключей).</li>
+</ol>
+
+<h2 id="сравнение-с-альтернативными-методами-аутентификации">Сравнение с альтернативными методами аутентификации</h2>
+<p>Для понимания места FIDO UAF в экосистеме безопасности полезно сравнить его с другими распространенными методами. Основным конкурентом является классическая связка логин-пароль и двухфакторная аутентификация по SMS. В отличие от паролей, которые пользователь должен помнить и которые могут быть украдены фишингом, ключи FIDO физически привязаны к устройству.</p>
+<p>Другим стандартом является FIDO U2F (Universal 2nd Factor), который часто используется с физическими ключами безопасности (например, YubiKey). UAF ориентирован на мобильные устройства и использует встроенные сенсоры, тогда как U2F чаще требует наличия внешнего носителя. Однако современные реализации часто объединяют оба подхода.</p>
+
+<p><div class="pb-proscons">
+<h4 class="pb-proscons-title">Высокая безопасность (ключи не покидают устройство)</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Удобство (не нужно помнить пароли)</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Защита от фишинга</li></ul></div>
+</div></div></p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Безопасность</th>
+<th>Удобство</th>
+<th>Риски</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FIDO UAF</td>
+<td>Высокая</td>
+<td>Очень высокое</td>
+<td>Потеря устройства</td>
+</tr>
+<tr>
+<td>Пароль + SMS</td>
+<td>Средняя</td>
+<td>Среднее</td>
+<td>Фишинг, SIM-свопинг</td>
+</tr>
+<tr>
+<td>Только пароль</td>
+<td>Низкая</td>
+<td>Низкое</td>
+<td>Кража пароля, брутфорс</td>
+</tr>
+</tbody>
+</table>
+
+<p><aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>FIDO UAF Client — это критически важный системный модуль для безопасной биометрической авторизации, который нельзя удалять, но можно и нужно настраивать для комфортной работы.</p></aside></p>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p><em>FIDO UAF Client</em> представляет собой фундаментальный элемент современной мобильной безопасности, обеспечивающий защиту данных посредством биометрической верификации. Его присутствие в системе является нормой для любого современного смартфона под управлением Android, начиная с версии 7.0. Понимание принципов работы этого компонента позволяет пользователям эффективно использовать возможности быстрого и безопасного входа в приложения, минимизируя риски утечки учетных данных.</p>
+<p>Вместо того чтобы опасаться неизвестных процессов, стоит убедиться в их актуальности и правильной настройке. Регулярное обновление системы, использование качественных биометрических данных и знание базовых методов диагностики позволяют поддерживать высокий уровень защиты персональной информации. Игнорирование обновлений безопасности или попытки принудительного отключения системных модулей могут снизить общую защищенность устройства.</p>
+<p>Технологии аутентификации продолжают развиваться, и стандарт FIDO становится индустриальной нормой, вытесняя уязвимые пароли. Грамотное использование возможностей <strong>FIDO UAF Client</strong> сегодня — это залог безопасности цифрового профиля пользователя в будущем.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-udalit-huawei-koshelek-s-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Huawei кошелек: полная инструкция и очистка данных</span>
+                <span class="pb-related-desc">Подробное руководство по удалению Huawei Wallet. Методы для EMUI и HarmonyOS, очистка следов через A</span>
+            </a><a href="/articles/m/ml/mlp-android.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка MLP Android: Инструкция по интеграции и работе</span>
+                <span class="pb-related-desc">Полное руководство по установке, конфигурации и отладке MLP-протоколов на Android. Решение проблем с</span>
+            </a><a href="/articles/a/ax/axa-games-chto-eto-v-androide.html" class="pb-related-card">
+                <span class="pb-related-title">AXA Games в Android: что это за приложение и можно ли удалить?</span>
+                <span class="pb-related-desc">Подробный разбор AXA Games на Android. Узнайте, что это за процесс, почему он появился, как отключит</span>
+            </a><a href="/articles/u/uv/uvc-android.html" class="pb-related-card">
+                <span class="pb-related-title">UVC Android: Настройка внешних веб-камер и эндоскопов</span>
+                <span class="pb-related-desc">Полная инструкция по подключению UVC-камер к Android. Обзор драйверов, совместимости USB-OTG, настро</span>
+            </a><a href="/articles/k/ka/kak-v-get-kontakt-izmenit-nomer-telefona-privyazannyj.html" class="pb-related-card">
+                <span class="pb-related-title">Как в GetContact изменить номер: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по смене привязанного номера в GetContact. Смена сим-карты, перенос тегов, ошибки вход</span>
+            </a><a href="/articles/k/ka/kak-perezapustit-prilozhenie-vk.html" class="pb-related-card">
+                <span class="pb-related-title">Как перезапустить приложение ВКонтакте: полные методы для iOS и Android</span>
+                <span class="pb-related-desc">Подробная инструкция по принудительному перезапуску приложения ВКонтакте на смартфонах и планшетах. </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

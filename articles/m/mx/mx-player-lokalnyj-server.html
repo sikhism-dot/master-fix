@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>MX Player и локальный сервер: полная настройка DLNA и SMB — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по подключению MX Player к локальному серверу через SMB, FTP и DLNA. Настройка сети, устранение ошибок и воспроизведение файлов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/m/mx/mx-player-lokalnyj-server.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="MX Player и локальный сервер: полная настройка DLNA и SMB">
+    <meta property="og:description" content="Инструкция по подключению MX Player к локальному серверу через SMB, FTP и DLNA. Настройка сети, устранение ошибок и воспроизведение файлов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">MX Player и локальный сервер: полная настройка DLNA и SMB</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-настройка-сервера">Подготовка сетевой инфраструктуры и настройка сервера</a></li><li><a href="#конфигурация-mx-player-для-сетевого-подключения">Конфигурация MX Player для сетевого подключения</a></li><li><a href="#использование-альтернативных-протоколов-ftp-и-http">Использование альтернативных протоколов FTP и HTTP</a></li><li><a href="#диагностика-проблем-и-устранение-ошибок-подключения">Диагностика проблем и устранение ошибок подключения</a></li><li><a href="#оптимизация-производительности-и-выводы">Оптимизация производительности и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-podklyuchit-naushniki-jbl-wave-200-tws-k-prilozheniyu.html">Как подключить JBL Wave 200 TWS к приложению: инструкция</a></li><li><a href="/articles/t/tr/trinity-player.html">Trinity Player: полная инструкция по настройке и устранению ошибок</a></li><li><a href="/articles/p/pr/programma-dlya-prosmotra-video-v-karplej.html">Видео в CarPlay: установка и настройка программ</a></li><li><a href="/articles/j/jb/jbl-vibe-300tws-nastrojka.html">JBL Vibe 300TWS: настройка, сопряжение и сброс</a></li><li><a href="/articles/k/ka/kak-perekhvatit-blyutuz-signal-jbl-kolonki.html">Анализ Bluetooth-соединения JBL: Диагностика и Настройка</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка MX Player для работы с локальным сервером</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-настройка-сервера">Подготовка сетевой инфраструктуры и настройка сервера</a></li><li><a href="#конфигурация-mx-player-для-сетевого-подключения">Конфигурация MX Player для сетевого подключения</a></li><li><a href="#использование-альтернативных-протоколов-ftp-и-http">Использование альтернативных протоколов FTP и HTTP</a></li><li><a href="#диагностика-проблем-и-устранение-ошибок-подключения">Диагностика проблем и устранение ошибок подключения</a></li><li><a href="#оптимизация-производительности-и-выводы">Оптимизация производительности и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Пользователь часто сталкивается с ситуацией, когда медиафайлы хранятся на компьютере или сетевом хранилище, а просмотреть их необходимо на телевизоре или планшете, используя приложение MX Player.</p>
+<p>Прямое копирование фильмов на мобильное устройство занимает время и расходует место в памяти, что делает использование сетевых протоколов единственным рациональным решением для комфортного стриминга.</p>
+<p>Однако автоматическое обнаружение устройств в локальной сети часто не работает из-за настроек безопасности операционных систем или особенностей роутера, требуя ручной конфигурации соединения.</p>
+
+<h2 id="подготовка-сетевой-инфраструктуры-и-настройка-сервера">Подготовка сетевой инфраструктуры и настройка сервера</h2>
+<p>На практике успешное соединение зависит от корректности настройки общего доступа к папкам на устройстве, выполняющем роль сервера.</p>
+<p>Если у вас операционная система Windows, необходимо перейти в центр управления сетями и изменить параметры общего доступа, активировав сетевое обнаружение.</p>
+<p>Важно отключить защиту паролем для локальных пользователей или создать отдельную учетную запись с правами доступа, чтобы избежать постоянных запросов авторизации при подключении.</p>
+<p>Для Linux-систем, таких как Ubuntu, потребуется установка и конфигурация пакета Samba, где в файле <code>smb.conf</code> прописываются пути к медиатеке и права доступа.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Убедитесь, что ваше устройство-клиент и сервер находятся в одной подсети. Если роутер раздает адреса через разные диапазоны (гостевая сеть), прямое соединение невозможно.</p></aside>
+
+<p>Современные роутеры могут блокировать широковещательные пакеты, необходимые для автоматического поиска, поэтому статическая IP-адресация значительно упрощает процесс.</p>
+<p>Стоит присвоить серверу постоянный IP-адрес в настройках DHCP или вручную в свойствах сетевого адаптера, чтобы адресация не менялась после перезагрузки оборудования.</p>
+
+<h3>Настройка общего доступа в Windows</h3>
+<p>Откройте панель управления и найдите пункт «Центр управления сетями и общим доступом», затем перейдите в раздел изменения дополнительных параметров.</p>
+<p>В профиле текущей сети выберите опцию «Включить сетевое обнаружение» и «Включить общий доступ к файлам и принтерам».</p>
+<p>Далее перейдите к папке с фильмами, откройте свойства, вкладку «Доступ» и добавьте пользователя «Все» с правами на чтение.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Активация SMB в Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте «Панель управления» → «Программы и компоненты»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Включение или отключение компонентов Windows»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите «Поддержка общего доступа к файлам SMB»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите галочки SMB 1.0 и SMB Direct и нажмите ОК</span></div></div>
+
+<h3>Использование NAS и роутеров с USB</h3>
+<p>Многие сетевые хранилища и роутеры с портом USB имеют встроенные серверы медиаконтента, которые активируются через веб-интерфейс.</p>
+<p>Достаточно подключить жесткий диск к устройству, зайти в настройки по IP-адресу шлюза и активировать службы DLNA или Samba.</p>
+<p>В этом случае файлы будут доступны по сети без необходимости держать включенным персональный компьютер.</p>
+
+<table>
+<thead>
+<tr>
+<th>Протокол</th>
+<th>Скорость передачи</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMB (Samba)</td>
+<td>Высокая</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>DLNA/UPnP</td>
+<td>Средняя</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>FTP</td>
+<td>Высокая</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="конфигурация-mx-player-для-сетевого-подключения">Конфигурация MX Player для сетевого подключения</h2>
+<p>После подготовки серверной части необходимо правильно настроить клиентское приложение для поиска и воспроизведения контента.</p>
+<p>Запустите MX Player и перейдите в главное меню, где следует выбрать опцию «Сеть» или значок глобальной сети.</p>
+<p>Если автоматический поиск не выдал результатов, потребуется создать новое соединение вручную, указав тип протокола и адрес.</p>
+<p>В поле имени пользователя и пароля вводятся данные учетной записи, созданной на сервере, либо используются гостевые доступы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В версии MX Player Pro функционал сети расширен и не содержит рекламы, однако базовые функции SMB доступны и в бесплатной версии.</p></aside>
+
+<p>При выборе протокола SMB важно учитывать версию: старые серверы могут требовать SMBv1, тогда как современные системы по умолчанию используют SMBv2 или SMBv3.</p>
+<p>Для переключения версии протокола в настройках сети приложения найдите соответствующий пункт и выберите требуемый стандарт.</p>
+<p>Кодировка имен файлов также может требовать ajustes, особенно если названия фильмов содержат кириллицу и отображаются кракозябрами.</p>
+
+<h3>Ручное добавление сетевого ресурса</h3>
+<p>Нажмите кнопку добавления нового сервера (обычно знак «+») в сетевом меню приложения.</p>
+<p>Введите IP-адрес сервера в формате <code>192.168.1.X</code>, где X — адрес вашего компьютера или хранилища.</p>
+<p>Укажите порт, если он отличается от стандартного (для SMB это обычно 445, для FTP — 21).</p>
+<p>Сохраните настройки и попробуйте открыть созданное подключение для проверки доступности папок.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Добавление сервера</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите «+» в меню Сеть</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите тип SMB или FTP</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите IP-адрес сервера</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите логин и пароль (если требуются)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Нажмите «Сохранить»</span></div></div>
+
+<h3>Настройка буфера и декодирования</h3>
+<p>Для предотвращения задержек при воспроизведении тяжелых файлов стоит увеличить размер сетевого буфера в настройках плеера.</p>
+<p>Перейдите в настройки MX Player, раздел «Декодер» и убедитесь, что активирован аппаратный декодер для снижения нагрузки на процессор.</p>
+<p>В некоторых случаях программное декодирование работает стабильнее при низкоскоростном соединении Wi-Fi.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Влияние</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Размер буфера</td>
+<td>Высокий / Авто</td>
+<td>Сглаживание рывков</td>
+</tr>
+<tr>
+<td>Декодер</td>
+<td>HW+ (Аппаратный)</td>
+<td>Энергопотребление</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="использование-альтернативных-протоколов-ftp-и-http">Использование альтернативных протоколов FTP и HTTP</h2>
+<p>Если протокол SMB работает нестабильно или блокируется антивирусом, целесообразно использовать FTP-сервер для трансляции медиа.</p>
+<p>Существует множество приложений для Android и Windows, которые превращают устройство в FTP-сервер за несколько секунд.</p>
+<p>MX Player отлично поддерживает этот протокол, позволяяеть файловую систему удаленно как локальную.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте протокол FTPS (FTP over SSL) если передаете конфиденциальные данные, хотя для фильмов в домашней сети достаточно обычного FTP.</p></aside>
+
+<p>HTTP-серверы также поддерживаются, но они менее удобны для навигации по сложной структуре папок с фильмами.</p>
+<p>Чаще всего HTTP используется для прямой трансляции потокового видео по ссылке, а не для browsing файловой системы.</p>
+<p>Для настройки FTP на ПК можно использовать FileZilla Server или встроенные средства IIS.</p>
+
+<h3>Запуск FTP сервера на Android для передачи файлов</h3>
+<p>Иногда требуется сделать доступным контент самого телефона для других устройств в сети.</p>
+<p>Установите файловый менеджер с поддержкой FTP или отдельное приложение-сервер.</p>
+<p>Запустите сервер, скопируйте отображенный адрес и введите его в MX Player на другом устройстве или компьютере.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества FTP</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость передачи</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Отсутствие проблем с кодировкой имен</li></ul></div>
+</div></div>
+
+<h3>Подключение через HTTP стриминг</h3>
+<p>Откройте меню сети в MX Player и выберите добавление HTTP URL.</p>
+<p>Вставьте прямую ссылку на видеофайл, оканчивающуюся на <code>.mp4</code> или <code>.mkv</code>.</p>
+<p>Воспроизведение начнется немедленно после буферизации начального сегмента потока.</p>
+
+<h2 id="диагностика-проблем-и-устранение-ошибок-подключения">Диагностика проблем и устранение ошибок подключения</h2>
+<p>Наиболее частой причиной неудачи является блокировка соединения брандмауэром Windows или антивирусным ПО.</p>
+<p>Необходимо добавить правило во входящие подключения, разрешающее трафик для портов SMB (445) или FTP (21).</p>
+<p>Также стоит проверить, не стоит ли галочка «Частная сеть» вместо «Домашняя» или «Доверенная» в профиле подключения.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отключение брандмауэра полностью открывает уязвимости в системе. Добавляйте только конкретные правила для локальной подсети.</p></aside>
+
+<p>Если устройство видно в списке, но при входе возникает ошибка авторизации, попробуйте очистить сохраненные пароли в настройках сети MX Player.</p>
+<p>Иногда помогает перезапуск службы «Сервер» (Server) в Windows через командную строку с правами администратора.</p>
+
+<h3>Типичные ошибки и способы их решения</h3>
+<ol>
+<li><strong>Ошибка «Не удалось подключиться к серверу»</strong> — проверьте, не блокирует ли антивирус входящие соединения, и убедитесь, что IP-адрес введен верно.</li>
+<li><strong>Видео тормозит или прерывается</strong> — снизьте качество потока если возможно, увеличьте буфер в настройках плеера или перейдите на кабельное подключение Ethernet.</li>
+<li><strong>Не отображаются русские названия файлов</strong> — в настройках подключения SMB смените кодировку на <code>UTF-8</code> или <code>Windows-1251</code>.</li>
+<li><strong>Требует пароль, хотя доступ гостевой</strong> — в Windows в свойствах папки снимите галочку «Разрешить доступ только с парольной защитой» в advanced sharing settings.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство проблем решаются проверкой профиля сети (должен быть частным) и правильностью ввода IP-адреса сервера.</p></aside>
+
+<h3>Проверка доступности портов</h3>
+<p>Для диагностики можно использовать утилиты сканирования сети на мобильном устройстве.</p>
+<p>Приложение покажет, открыт ли порт 445 на целевом IP-адресе.</p>
+<p>Если порт закрыт, проблема находится на стороне сервера или роутера.</p>
+
+<h2 id="оптимизация-производительности-и-выводы">Оптимизация производительности и выводы</h2>
+<p>Для достижения максимальной производительности рекомендуется использовать двухдиапазонный роутер и подключать устройства к сети 5 ГГц.</p>
+<p>Частота 2.4 ГГц часто бывает перегружена соседскими сетями, что вызывает потерю пакетов при стриминге тяжелого 4K контента.</p>
+<p>Регулярное обновление прошивки роутера и драйверов сетевой карты компьютера также способствует стабильности соединения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование кабеля Ethernet для сервера (ПК/NAS) является лучшим решением для исключения проблем с Wi-Fi сигналом.</p></aside>
+
+<p>В заключение, настройка локального сервера для MX Player позволяет создать единую медиатеку доступную со всех устройств в доме.</p>
+<p>Использование протокола SMB является золотым стандартом для домашних сетей Windows, обеспечивая баланс между скоростью и удобством.</p>
+<p>Грамотная настройка прав доступа и сетевых параметров гарантирует бесперебойный просмотр фильмов в высоком качестве без необходимости копирования файлов.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-podklyuchit-naushniki-jbl-wave-200-tws-k-prilozheniyu.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить JBL Wave 200 TWS к приложению: инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению наушников JBL Wave 200 TWS к приложению JBL Headphones. Решение </span>
+            </a><a href="/articles/t/tr/trinity-player.html" class="pb-related-card">
+                <span class="pb-related-title">Trinity Player: полная инструкция по настройке и устранению ошибок</span>
+                <span class="pb-related-desc">Подробный технический гайд по Trinity Player. Настройка потоков, работа с плейлистами, устранение пр</span>
+            </a><a href="/articles/p/pr/programma-dlya-prosmotra-video-v-karplej.html" class="pb-related-card">
+                <span class="pb-related-title">Видео в CarPlay: установка и настройка программ</span>
+                <span class="pb-related-desc">Техническое руководство по запуску видеоконтента через CarPlay. Методы установки приложений, настрой</span>
+            </a><a href="/articles/j/jb/jbl-vibe-300tws-nastrojka.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Vibe 300TWS: настройка, сопряжение и сброс</span>
+                <span class="pb-related-desc">Полная инструкция по настройке JBL Vibe 300TWS. Сопряжение, работа с приложением, сброс и устранение</span>
+            </a><a href="/articles/k/ka/kak-perekhvatit-blyutuz-signal-jbl-kolonki.html" class="pb-related-card">
+                <span class="pb-related-title">Анализ Bluetooth-соединения JBL: Диагностика и Настройка</span>
+                <span class="pb-related-desc">Инструкция по диагностике Bluetooth-сигнала колонок JBL. Анализ протоколов, устранение помех и настр</span>
+            </a><a href="/articles/j/jb/jbl-200-tws-sinkhronizirovat.html" class="pb-related-card">
+                <span class="pb-related-title">JBL 200 TWS: как синхронизировать наушники между собой и с телефоном</span>
+                <span class="pb-related-desc">Полная инструкция по синхронизации JBL Tune 200TWS. Настройка правого и левого наушника, сопряжение </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

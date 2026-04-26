@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Загрузка HP через EFI: полная инструкция по настройке Boot File — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по загрузке HP с помощью Boot from EFI File. Настройка UEFI, создание загрузочных разделов и решение ошибок старта системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-zagruzit-hp-s-pomoshchyu-boot-from-efi-file.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Загрузка HP через EFI: полная инструкция по настройке Boot File">
+    <meta property="og:description" content="Техническое руководство по загрузке HP с помощью Boot from EFI File. Настройка UEFI, создание загрузочных разделов и решение ошибок старта системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Загрузка HP через EFI: полная инструкция по настройке Boot File</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-загрузочного-носителя-и-структуры-разделов">Подготовка загрузочного носителя и структуры разделов</a></li><li><a href="#навигация-в-интерфейсе-biosuefi-ноутбуков-hp">Навигация в интерфейсе BIOS/UEFI ноутбуков HP</a></li><li><a href="#алгоритм-выбора-файла-bootx64efi-в-bios">Алгоритм выбора файла Bootx64.efi в BIOS</a></li><li><a href="#настройка-приоритетов-загрузки-и-secure-boot">Настройка приоритетов загрузки и Secure Boot</a></li><li><a href="#диагностика-и-устранение-типичных-ошибок">Диагностика и устранение типичных ошибок</a></li><li><a href="#завершение-настройки-и-сохранение-конфигурации">Завершение настройки и сохранение конфигурации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otklyuchit-rezhim-optimus.html">Как отключить NVIDIA Optimus: полное руководство</a></li><li><a href="/articles/v/v-/v-mobilnoj-versii-doks-otkryvaetsya-krivo.html">Почему документы открываются криво на телефоне: решение</a></li><li><a href="/articles/k/ka/kak-podklyuchit-mi-boks-k-kompyuteru-cherez-hdim.html">Подключение Mi Box к ПК через HDMI: подробная инструкция</a></li><li><a href="/articles/k/ka/kak-vyjti-s-yandeks-diska-na-kompyutere.html">Как выйти с Яндекс Диска на компьютере: полная инструкция</a></li><li><a href="/articles/g/gl/glo-tri-raza-vibriruet.html">Glo три раза вибрирует: причины и способы устранения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Загрузка HP через EFI: полная инструкция по настройке Boot File</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-загрузочного-носителя-и-структуры-разделов">Подготовка загрузочного носителя и структуры разделов</a></li><li><a href="#навигация-в-интерфейсе-biosuefi-ноутбуков-hp">Навигация в интерфейсе BIOS/UEFI ноутбуков HP</a></li><li><a href="#алгоритм-выбора-файла-bootx64efi-в-bios">Алгоритм выбора файла Bootx64.efi в BIOS</a></li><li><a href="#настройка-приоритетов-загрузки-и-secure-boot">Настройка приоритетов загрузки и Secure Boot</a></li><li><a href="#диагностика-и-устранение-типичных-ошибок">Диагностика и устранение типичных ошибок</a></li><li><a href="#завершение-настройки-и-сохранение-конфигурации">Завершение настройки и сохранение конфигурации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда операционная система не запускается автоматически после включения питания, а экран BIOS предлагает выбрать устройство или отображает сообщение «No Boot Device Found», часто ставит в тупик даже опытных пользователей. В современных ноутбуках и серверах HP, особенно корпоративных серий ProBook, EliteBook и ZBook, стандартный порядок загрузки может быть нарушен после обновления прошивки, замены жесткого диска или клонирования раздела системы.</p>
+<p>Проблема усуглубляется тем, что классический режим Legacy (CSM) постепенно уходит в прошлое, уступая место чистому UEFI, где загрузчик должен находиться на специальном разделе FAT32 с определенной структурой папок. Если путь к исполняемому файлу загрузчика не прописан в NVRAM материнской платы, компьютер просто не знает, куда передавать управление после прохождения POST-проверок.</p>
+<p>Решение кроется в ручной спецификации пути к файлу загрузчика через встроенную утилиту BIOS/UEFI. Этот метод позволяет обойти автоматическое определение и принудительно указать системе точное расположение файла <code>.efi</code> на диске. Ниже представлен детальный алгоритм действий, позволяющий восстановить работоспособность оборудования HP без использования сторонних загрузчиков.</p>
+
+<h2 id="подготовка-загрузочного-носителя-и-структуры-разделов">Подготовка загрузочного носителя и структуры разделов</h2>
+<p>Прежде чем обращаться к настройкам BIOS, необходимо убедиться, что на накопителе физически присутствует корректная структура EFI-раздела. Стандартная таблица разделов MBR в данном случае не подойдет; требуется GPT (GUID Partition Table), так как протокол UEFI работает исключительно с ней. Если диск новый или данные на нем не важны, рекомендуется выполнить полную переразметку.</p>
+<p>Ключевым элементом является создание скрытого раздела FAT32 объемом от 100 до 500 Мб, который часто маркируется как «System» или «EFI System Partition». Именно в корень этого раздела или в подпапку <code>EFI/Boot</code> должен быть помещен исполняемый файл. Для операционных систем семейства Windows это обычно <code>bootmgfw.efi</code>, а для Linux — <code>grubx64.efi</code> или <code>shim.efi</code>.</p>
+<p>Если загрузка производится с внешнего USB-накопителя, его также необходимо отформатировать в FAT32. NTFS не поддерживается нативными драйверами UEFI большинства материнских плат HP без включения дополнительных модулей совместимости, что может вызвать конфликты при secure boot. Запись образа должна производиться инструментами, сохраняющими структуру разделов, такими как Rufus в режиме GPT/UEFI или Media Creation Tool.</p>
+
+<h3>Особенности для серверов HP ProLiant и рабочих станций</h3>
+<p>В серверном сегменте HP, включая серии ProLiant Gen9 и Gen10, процесс может отличаться наличием расширенного меню Intelligent Provisioning. Здесь важно учитывать, что контроллеры RAID (Smart Array) могут скрывать физическую структуру дисков от BIOS, представляя виртуальный логический том. Загрузочный файл должен располагаться на логическом томе, помеченном как загрузочный в настройках контроллера.</p>
+<p>Для рабочих станций Z-серии характерно наличие функции «Fast Boot», которая сокращает время инициализации оборудования. При использовании ручного выбора EFI-файла эту опцию иногда требуется временно отключить, чтобы система успела опросить все подключенные накопители и отобразить их в списке доступных путей. Игнорирование этого нюанса приводит к тому, что нужный диск просто не появляется в списке выбора.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях 2018 года и новее раздел EFI должен быть отформатирован строго в FAT32 с размером кластера по умолчанию, иначе UEFI-прошивка может не распознать файловую систему.</p></aside>
+
+<p>Проверка целостности загрузочных файлов является критическим этапом. Поврежденный хэш-суммой файл загрузчика будет проигнорирован системой безопасности Secure Boot, даже если путь указан верно. В корпоративной среде часто используются собственные сертификаты, которые необходимо предварительно импортировать в ключи платформы (Platform Keys) через меню управления безопасностью BIOS.</p>
+
+<h2 id="навигация-в-интерфейсе-biosuefi-ноутбуков-hp">Навигация в интерфейсе BIOS/UEFI ноутбуков HP</h2>
+<p>Доступ к настройкам микропрограммы на устройствах HP осуществляется нажатием клавиши <code>F10</code> сразу после включения питания. На некоторых моделях бизнес-класса может потребоваться предварительное нажатие <code>Esc</code> для вызова стартового меню, где уже выбирается пункт «BIOS Setup». Интерфейс может быть графическим (GUI) или текстовым, в зависимости от года выпуска устройства и версии прошивки.</p>
+<p>Основная цель — найти раздел, отвечающий за порядок загрузки. В современных версиях HP BIOS он обычно находится во вкладке <code>Boot Options</code> или <code>Storage</code>. Старые версии могут скрывать эти настройки в глубине меню <code>Advanced</code>. Важно переключить режим загрузки в <code>UEFI</code>, если активирован <code>Legacy Support</code>, так как опция выбора конкретного EFI-файла становится доступной только в нативном режиме UEFI.</p>
+<p>Внутри меню загрузки следует искать пункт с названием «Boot from EFI File», «Add Boot Option» или «Specify Boot Device Path». Алгоритм действий может незначительно варьироваться, но логика остается единой: система предлагает браузер файловой системы, встроенный прямо в BIOS. Это позволяет «прощупать» подключенные диски без загрузки операционной системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Вход в меню выбора файла</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите F10 при загрузке</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в вкладку Boot Options</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите UEFI Boot Order</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Add Boot Option</span></div></div>
+
+<p>Стоит обратить внимание на состояние параметра <code>Secure Boot</code>. Если он включен, система позволит выбрать только те файлы, которые подписаны доверенными ключами. Для отладочных целей или при использовании нестандартных загрузчиков (например, для Linux-дистрибутивов или утилит восстановления) его часто приходится переводить в состояние <code>Disabled</code> или загружать собственные ключи.</p>
+
+<h3>Различия в меню для разных поколений ноутбуков</h3>
+<p>На устройствах с процессорами Intel Core 8-го поколения и новее интерфейс стал более визуально насыщенным, с поддержкой мыши. Здесь навигация упрощена: достаточно перетащить нужный пункт в начало списка. Однако функционал ручного добавления пути иногда скрыт в подменю <code>Boot Maintenance Manager</code>, что неочевидно для пользователя, привыкшего к линейной структуре.</p>
+<p>Модели на базе AMD Ryzen часто имеют слегка измененную структуру меню, где настройки хранилища вынесены в отдельный блок <code>System Configuration</code>. В таких случаях поиск пункта «Boot from EFI File» может занять больше времени. Рекомендуется использовать поиск по ключевым словам, если интерфейс BIOS поддерживает эту функцию, или внимательно изучать все подразделы вкладки Boot.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение настроек Secure Boot может привести к невозможности загрузки установленной операционной системы, если ее загрузчик не имеет действительной цифровой подписи Microsoft.</p></aside>
+
+<p>После нахождения нужного пункта система предложит выбрать устройство. Это может быть встроенный NVMe накопитель, SATA диск или внешний USB. Выбор устройства открывает доступ к файловой системе, где и нужно найти требуемый файл. Точность в выборе буквы диска (которая в BIOS может отличаться от той, что в Windows) крайне важна.</p>
+
+<h2 id="алгоритм-выбора-файла-bootx64efi-в-bios">Алгоритм выбора файла Bootx64.efi в BIOS</h2>
+<p>После активации функции добавления загрузочной опции открывается файловый браузер. Интерфейс обычно представляет собой список папок и файлов. Необходимо последовательно переходить по директориям, пока не будет найден исполняемый файл. Стандартный путь для Windows выглядит как <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>, но для универсальной загрузки часто используют <code>\EFI\Boot\bootx64.efi</code>.</p>
+<p>При навигации стоит учитывать, что BIOS видит только файлы с расширением <code>.efi</code>. Остальные файлы (.dll,.exe,.sys) могут не отображаться или быть неактивны для выбора. Если нужный файл не виден, возможно, раздел отформатирован в неправильной файловой системе или поврежден.</p>
+<p>Выбрав файл, система запросит подтверждение и предложить ввести имя для новой загрузочной записи. Это имя будет отображаться в главном меню загрузки. Рекомендуется давать понятные имена, например, «Windows 10 Main» или «Recovery USB», чтобы избежать путаницы в будущем.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение / Описание</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Файловая система</td>
+<td>FAT32</td>
+<td>Обязательно для совместимости с UEFI</td>
+</tr>
+<tr>
+<td>Имя файла</td>
+<td>bootx64.efi</td>
+<td>Стандартное имя для fallback-загрузки</td>
+</tr>
+<tr>
+<td>Путь</td>
+<td>/EFI/Boot/</td>
+<td>Корневой путь для внешних носителей</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если стандартный путь не работает, попробуйте скопировать загрузочный файл в корень раздела EFI и переименовать его в bootx64.efi — это универсальное имя, которое BIOS ищет по умолчанию.</p></aside>
+
+<p>После сохранения имени запись добавляется в список приоритетов загрузки. Однако она еще не активна. Необходимо перейти в меню «Boot Order» и переместить newly created entry (новую запись) на самую верхнюю позицию. Только после этого изменения вступят в силу при следующей перезагрузке.</p>
+
+<h3>Специфика работы с RAID-массивами и контроллерами</h3>
+<p>В конфигурациях с аппаратным RAID загрузочный файл должен находиться на логическом диске, созданном контроллером. В BIOS HP при выборе устройства могут отображаться как физические диски, так и логические тома. Ошибка выбора физического диска вместо логического приведет к сообщению об отсутствии файловой системы.</p>
+<p>Для серверов HP Smart Array необходимо убедиться, что драйверы контроллера корректно инициализированы до момента загрузки EFI-менеджера. В некоторых случаях требуется обновить прошивку самого RAID-контроллера, чтобы он корректно передавал информацию о структуре разделов в UEFI-среду.</p>
+
+<p>Финальным шагом является проверка конфигурации. Выйдите из BIOS с сохранением изменений (Save Changes and Exit). Система перезагрузится и, если все сделано правильно, сразу запустит выбранный загрузчик, минуя стандартный поиск. Если загрузка не пошла, стоит вернуться в BIOS и проверить, не сбросились ли настройки.</p>
+
+<h2 id="настройка-приоритетов-загрузки-и-secure-boot">Настройка приоритетов загрузки и Secure Boot</h2>
+<p>Безопасная загрузка (Secure Boot) является важным компонентом защиты, но часто становится препятствием при ручной настройке EFI. Она проверяет цифровую подпись загрузчика against базу доверенных ключей. Если вы загружаете стандартную Windows 10/11, проблем быть не должно, так как микрозагрузчик подписан ключом Microsoft.</p>
+<p>Однако, если используется кастомный загрузчик, Linux без подписанного Shim-загрузчика или утилиты восстановления, Secure Boot заблокирует запуск. В этом случае необходимо перейти в раздел <code>Security</code> → <code>Secure Boot Configuration</code> и отключить проверку или перейти в режим настройки (Setup Mode) для добавления своих ключей.</p>
+<p>Приоритет загрузки (Boot Order) определяет последовательность опроса устройств. Даже если файл указан вручную, но в приоритете стоит сетевая загрузка (PXE) или legacy-устройство, система может тратить время на их опрос. Рекомендуется очистить список от ненужных пунктов, оставив только нужные UEFI-записи.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкость настройки путей</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Сложность для новичков</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность загрузки с любых разделов</li></ul></div>
+</div></div>
+
+<p>Важно помнить о функции «Fast Boot». При ее включении BIOS может пропускать инициализацию некоторых контроллеров или не опрашивать USB-порты в поисках загрузочных устройств для ускорения старта. Если вы загружаетесь с внешнего накопителя, Fast Boot лучше временно отключить.</p>
+
+<h3>Управление загрузочными записями в UEFI</h3>
+<p>Менеджер загрузочных записей позволяет не только добавлять, но и удалять или переименовывать существующие пункты. Это полезно для очистки списка от остатков удаленных операционных систем. В HP BIOS это обычно делается через ту же утилиту, где создавалась запись, с опцией «Delete Boot Option».</p>
+<p>Некоторые версии BIOS позволяют экспортировать и импортировать конфигурацию загрузки. Это удобно для системных администраторов, развертывающих одинаковую конфигурацию на парке машин. Файл конфигурации содержит все NVRAM-записи и может быть применен.</p>
+
+<p>После всех манипуляций с приоритетами и безопасностью, обязательна финальная проверка. Сохраните настройки и проследите за процессом загрузки. Успешный вход в операционную систему подтверждает корректность пути к EFI-файлу и правильность настроек безопасности.</p>
+
+<h2 id="диагностика-и-устранение-типичных-ошибок">Диагностика и устранение типичных ошибок</h2>
+<p>Даже при точном следовании инструкции могут возникнуть ошибки. Чаще всего они связаны с человеческим фактором или несовместимостью версий прошивок. Понимание кодов ошибок и поведения системы в аварийных режимах позволяет быстро локализовать проблему.</p>
+<p>Одной из частых проблем является «Boot Loop» — циклическая перезагрузка. Это может происходить, если выбран неправильный файл (не загрузчик, а просто библиотека) или если файл поврежден. Система пытается передать управление, получает ошибку исполнения и перезагружается.</p>
+<p>Также встречается ситуация, когда BIOS просто игнорирует добавленную запись. Это может быть связано с переполнением NVRAM (памяти, где хранятся настройки BIOS). В таком случае требуется очистка старых, неиспользуемых загрузочных записей.</p>
+
+<ol>
+<li><strong>Ошибка «Selected boot image did not authenticate»</strong> — означает, что включен Secure Boot, но подпись файла не совпадает с ключами в базе. Решение: отключить Secure Boot или подписать файл правильным ключом.</li>
+<li><strong>Ошибка «File not found» или отсутствие файлов в браузере</strong> — скорее всего, раздел отформатирован в NTFS или exFAT, которые не читаются BIOS без специальных драйверов. Решение: переформатировать раздел в FAT32.</li>
+<li><strong>Система возвращается в BIOS после выбора файла</strong> — файл загрузчика поврежден или несовместим с архитектурой процессора (например, попытка загрузить 32-битный EFI на 64-битной системе). Решение: проверить целостность файла и архитектуру.</li>
+<li><strong>Отсутствие диска в списке устройств</strong> — диск не инициализирован, кабель неисправен или контроллер RAID не настроен. Решение: проверить физическое подключение и статус логического тома в контроллере.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная загрузка через EFI File зависит от трех факторов: правильная файловая система FAT32, корректный путь к файлу и отключенный или настроенный Secure Boot.</p></aside>
+
+<p>Для глубокой диагностики можно включить логирование загрузки (Boot Logging) в настройках BIOS, если такая опция доступна. Логи сохраняются на подключенный USB-накопитель и содержат подробный отчет о каждом этапе прохождения UEFI-стадии, указывая точное место сбоя.</p>
+<p>В корпоративной среде стоит использовать инструменты управления, такие как HP Image Assistant или SCCM, для автоматического восстановления загрузочных записей, что минимизирует необходимость ручной настройки на каждом устройстве.</p>
+
+<h2 id="завершение-настройки-и-сохранение-конфигурации">Завершение настройки и сохранение конфигурации</h2>
+<p>Финальный этап — это фиксация результатов. Убедитесь, что все изменения сохранены в энергонезависимой памяти. Выход из BIOS должен осуществляться только через пункт «Save Changes and Exit» или нажатием клавиши <code>F10</code> с подтверждением. Простое выключение питания может привести к потере настроек.</p>
+<p>После успешной загрузки операционной системы рекомендуется проверить журнал событий (Event Viewer в Windows) на наличие ошибок, связанных с загрузкой. Это позволит убедиться, что система работает штатно и не использует аварийные режимы.</p>
+<p>Регулярное обновление BIOS до последней версии, доступной на сайте поддержки HP, гарантирует совместимость с новыми стандартами UEFI и исправляет известные баги, связанные с определением загрузочных устройств. Поддержка актуальности прошивки — лучшая профилактика проблем с загрузкой в будущем.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otklyuchit-rezhim-optimus.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить NVIDIA Optimus: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция, как отключить технологию NVIDIA Optimus на ноутбуках. Настройка BIOS, Панели у</span>
+            </a><a href="/articles/v/v-/v-mobilnoj-versii-doks-otkryvaetsya-krivo.html" class="pb-related-card">
+                <span class="pb-related-title">Почему документы открываются криво на телефоне: решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению сдвигов верстки, разрывов строк и проблем с масштабированием DOCX</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-mi-boks-k-kompyuteru-cherez-hdim.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Mi Box к ПК через HDMI: подробная инструкция</span>
+                <span class="pb-related-desc">Руководство по подключению Xiaomi Mi Box к компьютеру через HDMI. Настройка вывода изображения, драй</span>
+            </a><a href="/articles/k/ka/kak-vyjti-s-yandeks-diska-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти с Яндекс Диска на компьютере: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выходу из аккаунта Яндекс Диска на ПК. Методы для браузера, десктопного при</span>
+            </a><a href="/articles/g/gl/glo-tri-raza-vibriruet.html" class="pb-related-card">
+                <span class="pb-related-title">Glo три раза вибрирует: причины и способы устранения</span>
+                <span class="pb-related-desc">Подробная инструкция: почему Glo трижды вибрирует при нагреве. Диагностика ошибок, очистка устройств</span>
+            </a><a href="/articles/n/ne/ne-rabotaet-pult-ot-zala.html" class="pb-related-card">
+                <span class="pb-related-title">Не работает пульт Zala: причины и способы устранения</span>
+                <span class="pb-related-desc">Пульт Zala не реагирует? Полный гид по диагностике: замена батареек, переподключение, сброс настроек</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Сохранение настроек в меню для разработчиков Android — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по фиксации параметров отладки, сбросу и восстановлению конфигурации системы через ADB и системные файлы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-sokhranit-nastrojki-v-menyu-dlya-razrabotchikov.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Сохранение настроек в меню для разработчиков Android">
+    <meta property="og:description" content="Техническое руководство по фиксации параметров отладки, сбросу и восстановлению конфигурации системы через ADB и системные файлы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Сохранение настроек в меню для разработчиков Android</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-хранения-системных-параметров-android">Архитектура хранения системных параметров Android</a></li><li><a href="#методы-экспорта-и-резервного-копирования-через-adb">Методы экспорта и резервного копирования через ADB</a></li><li><a href="#автоматизация-восстановления-конфигурации">Автоматизация восстановления конфигурации</a></li><li><a href="#сторонние-решения-и-профилирование">Сторонние решения и профилирование</a></li><li><a href="#типичные-ошибки-при-работе-с-настройками-разработчика">Типичные ошибки при работе с настройками разработчика</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-perklyuch-t-yazyk-v-bajdu.html">Как переключить язык в Baidu: полное руководство по настройке интерфейса</a></li><li><a href="/articles/k/ka/kak-udalit-profil-pochta-rossii-v-prilozhenii-v-ust-abakane.html">Удаление профиля Почты России в приложении: инструкция</a></li><li><a href="/articles/u/u8/u840-toshiba-ne-rabotayut-pgup-pgdn-klavishi.html">Не работают PgUp/PgDn на Toshiba Satellite U840: ремонт</a></li><li><a href="/articles/g/gd/gde-shagomer-v-vivo-29.html">Где шагомер в vivo Y29: поиск и настройка счетчика</a></li><li><a href="/articles/k/ka/kak-iznenit-v-lichnom-kabinete-rzhd-bankovskuyu-kartu-dlya-oplaty.html">Как изменить карту в ЛК РЖД: инструкция по замене и привязке</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Фиксация и сохранение параметров в меню для разработчиков</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-хранения-системных-параметров-android">Архитектура хранения системных параметров Android</a></li><li><a href="#методы-экспорта-и-резервного-копирования-через-adb">Методы экспорта и резервного копирования через ADB</a></li><li><a href="#автоматизация-восстановления-конфигурации">Автоматизация восстановления конфигурации</a></li><li><a href="#сторонние-решения-и-профилирование">Сторонние решения и профилирование</a></li><li><a href="#типичные-ошибки-при-работе-с-настройками-разработчика">Типичные ошибки при работе с настройками разработчика</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда после очередного обновления операционной системы или случайной перезагрузки сбрасываются критически важные параметры отладки, знакома многим администраторам мобильных устройств.</p>
+<p>Пользователь сталкивается с необходимостью заново активировать отладку по USB, включать режим отображения касаний или изменять лимиты фоновых процессов, что отнимает время и нарушает рабочий поток.</p>
+<p>Особенно остро проблема стоит при использовании парка корпоративных устройств, где требуется единая конфигурация для десятков гаджетов, а ручная настройка каждого из них становится неэффективной.</p>
+<p>Стандартный интерфейс Android не предоставляет прямой кнопки «Сохранить профиль настроек разработчика», что заставляет искать обходные пути через системные файлы, команды ADB или сторонние утилиты конфигурации.</p>
+
+<h2 id="архитектура-хранения-системных-параметров-android">Архитектура хранения системных параметров Android</h2>
+<p>Понимание того, где физически располагаются данные о настройках, является первым шагом к их надежному сохранению и восстановлению.</p>
+<p>В операционной системе Android большинство пользовательских и системных предпочтений, включая параметры из меню для разработчиков, хранятся в защищенной базе данных SQLite.</p>
+<p>Эта база данных известна как <code>SettingsProvider</code> и разделена на три основные таблицы: <code>system</code>, <code>secure</code> и <code>global</code>.</p>
+<p>Параметры меню для разработчиков, такие как анимации окон, скорость отладки или выборочная эмуляция местоположения, чаще всего reside в таблице <code>global</code>, так как они применяются ко всему устройству, а не к конкретному пользователю или приложению.</p>
+<p>Для доступа к этим данным требуются расширенные права, поскольку прямое редактирование файлов базы данных без соответствующих полномочий может привести к циклической перезагрузке устройства.</p>
+
+<h3>Локализация файлов конфигурации</h3>
+<p>Физический путь к базе данных настроек обычно находится по адресу <code>/data/data/com.android.providers.settings/databases/settings.db</code>.</p>
+<p>На устройствах с правами суперпользователя (Root) возможен прямой доступ к этому файлу через файловые менеджеры с поддержкой системного раздела.</p>
+<p>Однако, более безопасным и рекомендуемым методом является взаимодействие с базой данных через отладочный мост Android (ADB) без необходимости получения root-прав, используя команду <code>settings</code>.</p>
+<p>Эта утилита позволяет читать, записывать и удалять ключи из всех трех таблиц настроек, предоставляя полный контроль над конфигурацией среды разработки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип таблицы</th>
+<th>Область применения</th>
+<th>Пример параметра разработчика</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system</code></td>
+<td>Настройки, влияющие на поведение системы в целом</td>
+<td>Редко используется для dev-опций</td>
+</tr>
+<tr>
+<td><code>secure</code></td>
+<td>Конфиденциальные данные и настройки безопасности</td>
+<td>Разрешения USB-отладки по RSA</td>
+</tr>
+<tr>
+<td><code>global</code></td>
+<td>Глобальные настройки устройства</td>
+<td>Масштаб шрифта, скорость анимации</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно отметить, что структура ключей может различаться в зависимости от версии Android и оболочки производителя (MIUI, OneUI, ColorOS).</p>
+<p>Некоторые вендоры могут скрывать определенные параметры или использовать собственные префиксы для ключей в базе данных.</p>
+<p>При планировании стратегии сохранения настроек необходимо учитывать эту вариативность и тестировать команды на целевых устройствах.</p>
+
+<h2 id="методы-экспорта-и-резервного-копирования-через-adb">Методы экспорта и резервного копирования через ADB</h2>
+<p>Наиболее универсальным и надежным способом сохранения текущей конфигурации меню для разработчиков является использование инструментария Platform Tools.</p>
+<p>Командная строка ADB предоставляет мощные средства для выгрузки текущих значений параметров в текстовый файл, который впоследствии можно использовать для развертывания на других устройствах.</p>
+<p>Этот метод не требует root-прав и работает на большинстве устройств под управлением Android 4.0 и выше, что делает его стандартом де-факто для ИТ-специалистов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Экспорт настроек через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство и проверьте соединение</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните команду dumpsys settings</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Сохраните вывод в текстовый файл</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте файл на наличие ключей global</span></div></div>
+
+<h3>Использование команды dumpsys для полного дампа</h3>
+<p>Команда <code>dumpsys</code> позволяет получить подробную информацию о состоянии различных системных сервисов, включая сервис настроек.</p>
+<p>Для получения списка всех текущих параметров, включая скрытые флаги разработчика, используется команда <code>adb shell dumpsys settings</code>.</p>
+<p>Результатом выполнения будет объемный текстовый лог, содержащий разделы GLOBAL, SECURE и SYSTEM со списком ключей и их текущими значениями.</p>
+<p>Для удобства анализа и последующего использования рекомендуется перенаправить вывод команды в файл на компьютере:</p>
+<pre><code>adb shell dumpsys settings > dev_settings_backup.txt</code></pre>
+<p>В полученном файле необходимо найти секцию <code>GLOBAL</code>, где обычно располагаются ключи, начинающиеся с префиксов, таких как <code>development_settings_enabled</code>, <code>window_animation_scale</code> и других.</p>
+<p>Данный метод хорош для аудита, но для автоматического восстановления требует дополнительной обработки текста, так как формат вывода не является скриптом для прямого исполнения.</p>
+
+<h3>Точечный экспорт ключей через settings get</h3>
+<p>Более гибким подходом является использование команды <code>settings get</code> для получения значений конкретных ключей из глобальной таблицы.</p>
+<p>Зная названия необходимых параметров, можно составить скрипт, который последовательно опросит устройство и сохранит только нужные значения.</p>
+<p>Например, для получения текущего значения масштаба интерфейса используется конструкция:</p>
+<pre><code>adb shell settings get global window_animation_scale</code></pre>
+<p>Автоматизировать этот процесс можно с помощью простого shell-скрипта, который перебирает список известных ключей разработчика и записывает их в файл конфигурации формата JSON или INI.</p>
+<p>Такой подход позволяет создавать профили настроек для разных сценариев использования: «Профилирование», «Тестирование UI», «Отладка сети».</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Ключи в таблице global часто не имеют префикса 'development_', поэтому их поиск требует внимательного изучения документации или экспериментального метода.</p></aside>
+
+<p>При работе с ADB важно учитывать, что некоторые параметры могут быть динамическими и не сохраняться в базе данных, если они устанавливаются только на время сеанса.</p>
+<p>Однако, большинство настроек, доступных через графический интерфейс меню для разработчиков, являются персистентными и сохраняются в <code>settings.db</code>.</p>
+<p>Для массового развертывания конфигурации на множестве устройств можно использовать цикл в скрипте, который применяет сохраненные значения к каждому подключенному гаджету.</p>
+
+<h2 id="автоматизация-восстановления-конфигурации">Автоматизация восстановления конфигурации</h2>
+<p>После успешного экспорта параметров встает задача их быстрого и точного восстановления на целевом устройстве.</p>
+<p>Ручной ввод значений через графический интерфейс неэффективен и подвержен ошибкам, поэтому использование скриптов ADB является предпочтительным методом.</p>
+<p>Команда <code>settings put</code> позволяет записывать значения различных типов (строка, integer, long) непосредственно в базу данных настроек.</p>
+
+<h3>Синтаксис команд для записи параметров</h3>
+<p>Базовый синтаксис команды для изменения глобального параметра выглядит следующим образом: <code>adb shell settings put global [ключ] [значение]</code>.</p>
+<p>Важно правильно определять тип данных: если параметр числовой (например, масштаб анимации <code>0.5</code>), его можно передавать как есть, но для строковых значений кавычки могут потребоваться в зависимости от оболочки.</p>
+<p>Для активации самого меню разработчиков используется ключ <code>development_settings_enabled</code> со значением <code>1</code>.</p>
+<p>Пример скрипта для восстановления базового набора настроек разработчика:</p>
+<pre><code>adb shell settings put global development_settings_enabled 1
+<p>adb shell settings put global window_animation_scale 0.5</p>
+<p>adb shell settings put global transition_animation_scale 0.5</p>
+<p>adb shell settings put global animator_duration_scale 0.5</code></pre></p>
+<p>Выполнение такого скрипта занимает несколько секунд и гарантирует, что устройство будет настроено идентично эталонному образцу.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение системных параметров через ADB может привести к нестабильной работе устройства. Убедитесь, что вы понимаете назначение каждого изменяемого ключа.</p></aside>
+
+<h3>Использование профилей для разных сценариев</h3>
+<p>В профессиональной среде часто требуется переключаться между разными наборами настроек в зависимости от текущей задачи.</p>
+<p>Например, для тестирования производительности нужно отключить все анимации, а для демонстрации интерфейса клиенту — вернуть стандартные значения.</p>
+<p>Создание отдельных скриптов для каждого сценария (<code>dev_mode_on.sh</code>, <code>demo_mode.sh</code>, <code>perf_test.sh</code>) позволяет мгновенно менять конфигурацию устройства.</p>
+<p>Также возможно использование условной логики в скриптах: если подключен конкретный серийный номер устройства, применять специфичные для него настройки экранной плотности (DPI).</p>
+<p>Это особенно полезно при тестировании адаптивности приложений на устройствах с разными диагоналями и разрешениями экранов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр (Key)</th>
+<th>Тип значения</th>
+<th>Стандартное значение</th>
+<th>Значение для отладки</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>window_animation_scale</code></td>
+<td>float</td>
+<td>1.0</td>
+<td>0.0 или 0.5</td>
+</tr>
+<tr>
+<td><code>stay_on_while_plugged_in</code></td>
+<td>integer</td>
+<td>0</td>
+<td>7 (всегда включен)</td>
+</tr>
+<tr>
+<td><code>mock_location</code></td>
+<td>integer</td>
+<td>0</td>
+<td>1 (включено)</td>
+</tr>
+</tbody>
+</table>
+
+<p>При восстановлении настроек стоит учитывать порядок применения: некоторые параметры могут требовать перезагрузки интерфейса или самого устройства для вступления в силу.</p>
+<p>В таких случаях в конец скрипта восстановления можно добавить команду <code>adb shell svc power reboot</code> или <code>adb shell am restart</code>.</p>
+<p>Однако, перезагрузка — это радикальная мера, и по возможности следует стремиться к применению настроек «на лету».</p>
+
+<h2 id="сторонние-решения-и-профилирование">Сторонние решения и профилирование</h2>
+<p>Для пользователей, которые предпочитают графический интерфейс командной строке, существуют специализированные приложения для управления настройками системы.</p>
+<p>Эти утилиты часто обладают собственными базами данных ключей и позволяют сохранять профили настроек в облаке или локальном хранилище.</p>
+<p>Использование таких приложений упрощает процесс для тех, кто не хочет писать скрипты, но требует установки дополнительного ПО на устройство.</p>
+
+<h3>Приложения для управления настройками</h3>
+<p>Одним из популярных решений является приложение <em>Settings Database Editor</em>, которое требует root-доступа для полного функционала.</p>
+<p>Оно позволяет визуально редактировать таблицу <code>global</code>, экспортировать выбранные ключи в файл и импортировать их обратно.</p>
+<p>Другие приложения, такие как <em>SetEdit</em>, предоставляют аналогичный функционал, позволяя создавать, изменять и удалять записи в базе данных настроек.</p>
+<p>Преимуществом таких приложений является возможность быстро проверить, какой именно ключ за что отвечает, путем изменения значения и наблюдения за результатом.</p>
+<p>Однако, reliance на сторонние приложения несет риски: разработчик приложения может получить доступ к чувствительным данным или внедрить рекламу.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Приложения для настроек</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Визуальный интерфейс</li><li>✅ Возможность создания бэкапов</li><li>✅ Удобство использования</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требуют Root-прав</li><li>❌ Риск безопасности</li><li>❌ Зависимость от стороннего ПО</li></ul></div>
+</div></div>
+
+<h3>Ограничения и совместимость</h3>
+<p>Стоит помнить, что с выходом новых версий Android (особенно Android 10, 11 и новее) Google постепенно ограничивает доступ приложений к системным настройкам.</p>
+<p>Многие ключи, которые раньше можно было изменить без прав суперпользователя, теперь требуют подписи системы или наличия root-доступа.</p>
+<p>Приложения, работающие без root, могут видеть только ограниченный набор параметров или работать в режиме «только чтение» для критических секций.</p>
+<p>Поэтому метод с ADB остается наиболее стабильным и не зависящим от версии ОС способом управления конфигурацией разработчика.</p>
+<p>Кроме того, некоторые производители устройств блокируют возможность изменения определенных глобальных параметров даже через ADB без разблокировки загрузчика.</p>
+
+<h2 id="типичные-ошибки-при-работе-с-настройками-разработчика">Типичные ошибки при работе с настройками разработчика</h2>
+<p>В процессе сохранения и восстановления параметров пользователи часто допускают ряд характерных ошибок, которые могут свести усилия к нулю или привести к проблемам.</p>
+<p>Ниже приведен список наиболее распространенных проблем и способы их решения.</p>
+
+<ol>
+<li><strong>Изменение ключей в неправильной таблице</strong> — попытка записать глобальный параметр (например, масштаб анимации) в таблицу <code>system</code> или <code>secure</code> не даст результата. <em>Решение:</em> Всегда проверяйте префикс команды (<code>settings get global</code> vs <code>settings get system</code>) перед записью.</li>
+<li><strong>Неверный тип данных</strong> — передача строкового значения «true» вместо целочисленного <code>1</code> для булевых флагов может привести к тому, что система проигнорирует настройку. <em>Решение:</em> Используйте <code>1</code> или <code>0</code> для включенных/выключенных состояний, если не указано иное.</li>
+<li><strong>Отсутствие активации меню разработчика</strong> — попытка изменить настройки отладки, когда само меню разработчика скрыто (ключ <code>development_settings_enabled</code> равен <code>0</code>). <em>Решение:</em> Всегда начинайте скрипт восстановления с включения флага активации меню.</li>
+<li><strong>Игнорирование перезагрузки</strong> — ожидание мгновенного эффекта от изменений, требующих перезапуска системных сервисов. <em>Решение:</em> Для параметров, связанных с сетью или дисплеем, может потребоваться перезагрузка устройства или повторное подключение ADB.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Перед массовым применением скрипта настроек на рабочем устройстве, протестируйте его на эмуляторе или тестовом смартфоне, чтобы исключить риск блокировки.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Сохранение и восстановление настроек в меню для разработчиков является критически важной задачей для эффективной отладки и тестирования мобильных приложений.</p>
+<p>Наиболее надежным и гибким инструментом для решения этой задачи остается командная строка ADB, позволяющая точно контролировать значения параметров в системной базе данных.</p>
+<p>Использование скриптов для экспорта и импорта конфигурации экономит время, минизирует человеческий фактор и обеспечивает единообразие среды разработки на всех устройствах.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>ADB команды settings get/put являются стандартом для управления скрытыми параметрами Android без необходимости root-прав.</p></aside>
+
+<p>Понимание структуры таблиц <code>global</code>, <code>system</code> и <code>secure</code> позволяет не только сохранять настройки, но и глубоко настраивать поведение операционной системы под конкретные нужды.</p>
+<p>Регулярное резервное копирование удачной конфигурации позволяет быстро восстанавливать рабочее состояние устройства после сбросов или обновлений.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-perklyuch-t-yazyk-v-bajdu.html" class="pb-related-card">
+                <span class="pb-related-title">Как переключить язык в Baidu: полное руководство по настройке интерфейса</span>
+                <span class="pb-related-desc">Подробная инструкция по смене языка в Baidu Cloud, Translate и браузере. Решения для ПК и мобильных </span>
+            </a><a href="/articles/k/ka/kak-udalit-profil-pochta-rossii-v-prilozhenii-v-ust-abakane.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление профиля Почты России в приложении: инструкция</span>
+                <span class="pb-related-desc">Как удалить аккаунт Почты России на Android и iOS. Пошаговая инструкция по отвязке карты, выходу из </span>
+            </a><a href="/articles/u/u8/u840-toshiba-ne-rabotayut-pgup-pgdn-klavishi.html" class="pb-related-card">
+                <span class="pb-related-title">Не работают PgUp/PgDn на Toshiba Satellite U840: ремонт</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению неисправности клавиш PgUp и PgDn на ноутбуке Toshiba U840. Диагно</span>
+            </a><a href="/articles/g/gd/gde-shagomer-v-vivo-29.html" class="pb-related-card">
+                <span class="pb-related-title">Где шагомер в vivo Y29: поиск и настройка счетчика</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску шагомера в смартфоне vivo Y29. Настройка датчиков, виджетов на экране</span>
+            </a><a href="/articles/k/ka/kak-iznenit-v-lichnom-kabinete-rzhd-bankovskuyu-kartu-dlya-oplaty.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить карту в ЛК РЖД: инструкция по замене и привязке</span>
+                <span class="pb-related-desc">Подробное руководство по замене банковской карты в личном кабинете РЖД. Решения для ошибок оплаты, п</span>
+            </a><a href="/articles/s/so/soc-rcmp.html" class="pb-related-card">
+                <span class="pb-related-title">RCMP в SOC: Настройка, анализ и реагирование на инциденты</span>
+                <span class="pb-related-desc">Техническая инструкция по интеграции RCMP в SOC. Разбор протоколов, настройка парсеров, оптимизация </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

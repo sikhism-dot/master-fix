@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>SMB2 на Windows 2003: включение протокола и настройка безопасности — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция, как включить SMB2 на Windows Server 2003. Настройка реестра, установка патчей и устранение уязвимостей протокола.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-vklyuchit-smb2-windows-2003.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SMB2 на Windows 2003: включение протокола и настройка безопасности">
+    <meta property="og:description" content="Подробная инструкция, как включить SMB2 на Windows Server 2003. Настройка реестра, установка патчей и устранение уязвимостей протокола.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">SMB2 на Windows 2003: включение протокола и настройка безопасности</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#технические-особенности-протокола-smb-на-старых-системах">Технические особенности протокола SMB на старых системах</a></li><li><a href="#предварительная-подготовка-и-проверка-зависимостей">Предварительная подготовка и проверка зависимостей</a></li><li><a href="#пошаговая-инструкция-по-редактированию-реестра">Пошаговая инструкция по редактированию реестра</a></li><li><a href="#настройка-параметров-безопасности-и-портов">Настройка параметров безопасности и портов</a></li><li><a href="#диагностика-и-проверка-работоспособности">Диагностика и проверка работоспособности</a></li><li><a href="#известные-проблемы-и-методы-их-устранения">Известные проблемы и методы их устранения</a></li><li><a href="#альтернативные-решения-и-модернизация">Альтернативные решения и модернизация</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-rabotat-v-word-na-windows-11.html">Как работать в Word на Windows 11: полное руководство</a></li><li><a href="/articles/d/de/depo-noutbuk-kak-sbrosit-parol-v-biose.html">Сброс пароля BIOS на ноутбуке: универсальная инструкция</a></li><li><a href="/articles/a/ad/adapter-yusb-internet-router.html">USB-адаптер для роутера: Настройка 3G/4G модема через USB</a></li><li><a href="/articles/k/ka/kak-snyat-zaglushku-v-noutbuke-bez-cd-privoda.html">Как снять заглушку CD-привода в ноутбуке: полная инструкция</a></li><li><a href="/articles/d/da/datchik-kholla-noutbuka.html">Датчик Холла в ноутбуке: Диагностика, ремонт и проверка</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как включить и настроить SMB2 на Windows Server 2003</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#технические-особенности-протокола-smb-на-старых-системах">Технические особенности протокола SMB на старых системах</a></li><li><a href="#предварительная-подготовка-и-проверка-зависимостей">Предварительная подготовка и проверка зависимостей</a></li><li><a href="#пошаговая-инструкция-по-редактированию-реестра">Пошаговая инструкция по редактированию реестра</a></li><li><a href="#настройка-параметров-безопасности-и-портов">Настройка параметров безопасности и портов</a></li><li><a href="#диагностика-и-проверка-работоспособности">Диагностика и проверка работоспособности</a></li><li><a href="#известные-проблемы-и-методы-их-устранения">Известные проблемы и методы их устранения</a></li><li><a href="#альтернативные-решения-и-модернизация">Альтернативные решения и модернизация</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Многие системные администраторы сталкиваются с необходимостью обеспечить совместимость устаревших серверов с современными клиентами. Операционная система <em>Windows Server 2003</em> по умолчанию использует протокол SMB версии 1.0, который отличается низкой скоростью и критическими уязвимостями. Включение второй версии протокола позволяет значительно повысить производительность файлообмена и улучшить взаимодействие с новыми операционными системами, такими как Windows 10 или Windows Server 2019. Однако этот процесс требует осторожности, так как затрагивает низкоуровневые настройки системы.</p>
+
+<p>Прежде чем приступать к модификации реестра, необходимо осознать, что <strong>Windows 2003</strong> является продуктом с истекшим сроком поддержки. Это означает, что стандартными средствами графического интерфейса активировать SMB2 не получится. Вам потребуется вручную вносить изменения в системный реестр и, возможно, устанавливать дополнительные пакеты обновлений. Игнорирование требований к безопасности при работе с сетевыми протоколами может привести к компрометации всей корпоративной сети.</p>
+
+<p>В данной статье мы рассмотрим технически обоснованный метод активации протокола. Мы разберем создание необходимых ключей реестра, проверку зависимостей и тестирование соединения. Помните, что любые изменения в реестре должны производиться только после создания полной резервной копии системы. Неправильная настройка параметров SMB может привести к полной недоступности сервера по сети.</p>
+
+<h2 id="технические-особенности-протокола-smb-на-старых-системах">Технические особенности протокола SMB на старых системах</h2>
+
+<p>Протокол <strong>SMB (Server Message Block)</strong> является фундаментом для сетевого взаимодействия в среде Windows. Первая версия протокола, реализованная в Windows 2003, страдает от неэффективного использования и отсутствия поддержки крупных буферов чтения/записи. Внедрение SMB2 в архитектуру сервера позволяет увеличить размер передаваемых пакетов и уменьшить количество подтверждающих сигналов (acknowledgments), необходимых для передачи файлов.</p>
+
+<p>Важно понимать разницу между версиями протокола. Если SMB1 полагается на множество мелких запросов, то SMB2 объединяет их в цепочки, что снижает нагрузку на процессор и сеть. Для <em>Windows Server 2003</em> поддержка второй версии не встроена в базовую установку и требует наличия определенного уровня обновлений Service Pack. Без установки <strong>Service Pack 2</strong> попытки активации будут безуспешными.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Активация SMB2 на Windows 2003 не делает систему полностью безопасной по современным меркам. Протокол все еще может содержать уязвимости, не исправленные из-за прекращения поддержки вендором. Используйте сегментацию сети для изоляции таких серверов.</p>
+</blockquote>
+
+<p>Производительность файлового сервера напрямую зависит от выбранного диалекта SMB. При работе с большими файлами, такими как базы данных или медиа-архивы, разница в скорости между первой и второй версией может достигать кратных значений. Однако стоит учитывать, что клиенты, не поддерживающие SMB2, будут продолжать использовать SMB1, если он не будет принудительно отключен после настройки.</p>
+
+<h2 id="предварительная-подготовка-и-проверка-зависимостей">Предварительная подготовка и проверка зависимостей</h2>
+
+<p>Перед внесением изменений в реестр необходимо убедиться, что сервер соответствует минимальным требованиям. В первую очередь проверьте установленные пакеты обновлений. Для работы SMB2 на базе Windows 2003 критически важно наличие <strong>Service Pack 2 (SP2)</strong> или более поздней версии. Отсутствие этого пакета является самой распространенной причиной неудач при настройке.</p>
+
+<p>Также рекомендуется создать точку восстановления системы или полную резервную копию реестра. Ошибки при вводе hexadecimal значений могут привести к нестабильной работе сетевого стека. Убедитесь, что у вас есть физический доступ к серверу или доступ через консоль управления, так как потеря сетевого соединения в процессе настройки заблокирует удаленный доступ.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка готовности сервера</h4><label class="check-item"><input type="checkbox"><span>Установлен Service Pack 2</span></label><label class="check-item"><input type="checkbox"><span>Создана резервная копия реестра</span></label><label class="check-item"><input type="checkbox"><span>Есть физический доступ к серверу</span></label><label class="check-item"><input type="checkbox"><span>Известен IP-адрес сервера</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<p>Проверку версии Service Pack можно выполнить через свойства системы или командную строку. Введите команду <code>systeminfo</code> и найдите строку с версией ОС. Если там указано отсутствие Service Pack или наличие только SP1, сначала необходимо обновить систему. Без этого шага дальнейшие инструкции не имеют смысла.</p>
+
+<h2 id="пошаговая-инструкция-по-редактированию-реестра">Пошаговая инструкция по редактированию реестра</h2>
+
+<p>Активация протокола осуществляется через системный реестр Windows. Откройте редактор реестра, выполнив команду <code>regedit</code> в диалоговом окне"Выполнить" (Win+R). Вам необходимо перейти по следующему пути: <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters</code>. Именно здесь хранятся ключевые параметры службы файлового сервера.</p>
+
+<p>В правой панели окна редактора реестра создайте новый параметр типа DWORD (32 бита). Назовите этот параметр <strong>Smb2</strong>. Обратите внимание на регистр букв: имя должно быть написано точно как"Smb2", без дополнительных символов или расширений. После создания параметра дважды щелкните по нему и установите значение равным <code>1</code>. Это действие сигнализирует системе о необходимости загрузки модуля SMB2 при старте службы.</p>
+
+<pre><code>
+<p>[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters]</p>
+<p>"Smb2"=dword:00000001</p>
+</code></pre>
+
+<p>После установки значения необходимо перезагрузить сервер для вступления изменений в силу. Простой перезапуск службы <em>Server</em> может быть недостаточным, так как сетевой стек инициализируется на раннем этапе загрузки ОС. Убедитесь, что все сохраненные данные закрыты, перед выполнением перезагрузки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду reg add"HKLM\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters" /v Smb2 /t REG_DWORD /d 1 /f для автоматического внесения изменений через командную строку без ручного открытия редактора реестра.</p></aside>
+
+<h2 id="настройка-параметров-безопасности-и-портов">Настройка параметров безопасности и портов</h2>
+
+<p>После активации SMB2 важно убедиться, что сетевой экран (файрвол) не блокирует необходимые порты. Протокол SMB использует порт <strong>445</strong> для прямого подключения через TCP/IP. Если на сервере установлен сторонний фаервол или активирован встроенный брандмауэр Windows, необходимо добавить исключение для входящих подключений на этот порт.</p>
+
+<p>Кроме того, следует обратить внимание на политики безопасности. В некоторых конфигурациях требуется явное разрешение на использование подписи пакетов SMB. Это повышает безопасность передаваемых данных, предотвращая атаки типа"man-in-the-middle". Настройка производится в разделе локальных политик безопасности: <code>secpol.msc</code> → Локальные политики → Параметры безопасности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендуемое значение</th>
+<th>Влияние</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Smb2 (Реестр)</td>
+<td>0 (Отключено)</td>
+<td>1 (Включено)</td>
+<td>Активирует протокол</td>
+</tr>
+<tr>
+<td>Порт TCP</td>
+<td>445</td>
+<td>445</td>
+<td>Основной порт SMB</td>
+</tr>
+<tr>
+<td>Подпись SMB</td>
+<td>Не требуется</td>
+<td>Требуется (если возможно)</td>
+<td>Защита целостности</td>
+</tr>
+<tr>
+<td>Null Sessions</td>
+<td>Разрешено</td>
+<td>Запрещено</td>
+<td>Блокировка анонимов</td>
+</tr>
+</tbody>
+</table>
+
+<p>Не стоит игнорировать настройку уровней аутентификации. Для Windows 2003 актуальны проблемы с использованием устаревших хешей паролей (LM/NTLMv1). Рекомендуется настроить сервер на использование <strong>NTLMv2</strong>, хотя это может потребовать дополнительной настройки клиентов. Безопасность файлообмена начинается с правильной конфигурации этих параметров.</p>
+
+<h2 id="диагностика-и-проверка-работоспособности">Диагностика и проверка работоспособности</h2>
+
+<p>После перезагрузки сервера необходимо убедиться, что протокол действительно работает. Самый простой способ проверки — использование утилиты <code>netstat</code>. Выполните команду <code>netstat -an | find"445"</code> в командной строке. Если вы видите строку со статусом <strong>LISTENING</strong> на порту 445, значит служба запущена и ожидает подключений.</p>
+
+<p>Для более глубокой проверки можно использовать утилиту <em>PsTools</em> или встроенные средства мониторинга событий. В журнале событий Windows (<code>eventvwr.msc</code>) в разделе"Система" не должно быть ошибок, связанных со службой <em>LanmanServer</em>. Наличие ошибок с кодами, указывающими на сбой инициализации SMB, потребует повторной проверки значений реестра.</p>
+
+<div class="pb-poll" id="poll-3a54d143"><div class="pb-poll-question">📊 С каким клиентом вы чаще всего подключаетесь к Windows 2003?</div><div class="pb-poll-option" data-poll="3a54d143" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Windows XP</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="3a54d143" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Windows 7</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="3a54d143" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Windows 10/11</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="3a54d143" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Linux (Samba)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="3a54d143" data-idx="4" onclick="pbPollVote(this)"><span class="pb-poll-label">macOS</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<p>Попробуйте подключиться к ресурсам сервера с современного клиента. Создайте тестовый файл большого размера и измерьте скорость копирования. Если скорость значительно выше, чем ранее, и в свойствах сетевого подключения отображается использование SMB 2.0 или 3.0 (на стороне клиента), значит настройка прошла успешно. На клиентской машине можно использовать команду <code>Get-SmbConnection</code> в PowerShell для просмотра версии протокола.</p>
+
+<h2 id="известные-проблемы-и-методы-их-устранения">Известные проблемы и методы их устранения</h2>
+
+<p>Одной из частых проблем является конфликт с антивирусным ПО. Некоторые системы защиты в реальном времени сканируют сетевой трафик и могут блокировать пакеты SMB2, считая их подозрительными из-за нестандартной для старой ОС структуры. В таком случае необходимо добавить исключение в настройки антивируса для процесса <code>svchost.exe</code> или службы сервера.</p>
+
+<p>Также возможны проблемы с именами NetBIOS, если сервер находится в смешанном окружении. Убедитесь, что службы DNS и WINS работают корректно. Иногда помогает очистка кэша DNS на клиентских машинах командой <code>ipconfig /flushdns</code>. Если подключения сбрасываются сразу после установления, проверьте настройки таймаутов в реестре.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Если после внесения изменений сервер перестал отвечать по сети, загрузитесь в безопасном режиме. В реестре по пути <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\LanmanServer\Parameters</code> удалите созданный параметр <strong>Smb2</strong> или установите его значение в 0.</p>
+</blockquote>
+
+<p>В редких случаях активация SMB2 может привести к увеличению потребления оперативной памяти службой файлового сервера. Это связано с тем, что вторая версия протокола использует более сложные механизмы буферизации. На системах с объемом ОЗУ менее 512 МБ рекомендуется мониторить использование памяти и, при необходимости, ограничить количество одновременных подключений.</p>
+
+<details class="pb-accordion"><summary>Детали о влиянии на производительность CPU</summary><div class="pb-accordion-body"><p>Использование SMB2 снижает загрузку процессора при передаче больших файлов до 30% за счет уменьшения количества прерываний, но может кратковременно увеличить потребление памяти на каждое активное соединение.</p></div></details>
+
+<h2 id="альтернативные-решения-и-модернизация">Альтернативные решения и модернизация</h2>
+
+<p>Несмотря на возможность включения SMB2, следует рассматривать <em>Windows Server 2003</em> как временное решение. Поддержка этой ОС прекращена, и новые угрозы безопасности не будут исправлены. Рассмотрите возможность миграции файловых служб на более современную платформу, такую как <strong>Linux Samba</strong> или актуальная версия Windows Server, оставив старую систему только для специфического legacy-ПО.</p>
+
+<p>Если замена сервера невозможна, используйте шлюзы или прокси-серверы, которые будут принимать современные SMB-запросы и транслировать их в формат, понятный старому серверу, либо изолируйте сервер в закрытом сегменте сети. Такой подход минимизирует риски, связанные с использованием устаревшего программного обеспечения в корпоративной инфраструктуре.</p>
+
+<p>В заключение, включение SMB2 на Windows 2003 — это эффективный способ продлить жизнь старому оборудованию и улучшить производительность. Однако это требует глубокого понимания сетевых протоколов и мер безопасности. Регулярный мониторинг и своевременное планирование миграции остаются единственными гарантиями стабильной работы ИТ-инфраструктуры в долгосрочной перспективе.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Активация SMB2 улучшает скорость и совместимость, но не устраняет фундаментальные риски безопасности устаревшей ОС Windows 2003.</p></aside>
+
+<details>
+<summary>Можно ли включить SMB2 без перезагрузки сервера?</summary>
+<p>Технически, служба <code>LanmanServer</code> читает параметры реестра только при старте. Перезапуск службы через <code>net stop server</code> и <code>net start server</code> может активировать изменения, но это не гарантирует полную инициализацию всех компонентов сетевого стека SMB2. Рекомендуется полная перезагрузка.</p>
+</details>
+
+<details>
+<summary>Будет ли работать SMB2 с Windows XP?</summary>
+<p>Windows XP по умолчанию использует SMB1. Для работы по SMB2 на клиентской стороне также требуется установка обновлений или использование более новых версий ОС. Однако сервер Windows 2003 с включенным SMB2 продолжит поддерживать подключения SMB1 от старых клиентов, если протокол не отключен принудительно.</p>
+</details>
+
+<details>
+<summary>Какой максимальный размер файла поддерживает SMB2 на Windows 2003?</summary>
+<p>SMB2 снимает многие ограничения SMB1, позволяя передавать файлы размером до 8 экзабайт (теоретически). Однако на практике лимиты будут определяться файловой системой (NTFS) и доступным дисковым пространством, а не самим протоколом.</p>
+</details>
+
+<details>
+<summary>Влияет ли включение SMB2 на работу принтеров?</summary>
+<p>Сетевая печать также использует протокол SMB. Включение SMB2 может улучшить стабильность печати больших документов, но некоторые очень старые сетевые принтеры могут некорректно работать с новыми диалектами протокола. В таких случаях требуется настройка на стороне принтера.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-rabotat-v-word-na-windows-11.html" class="pb-related-card">
+                <span class="pb-related-title">Как работать в Word на Windows 11: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по работе в Microsoft Word на Windows 11. Настройка интерфейса, горячие клавиши</span>
+            </a><a href="/articles/d/de/depo-noutbuk-kak-sbrosit-parol-v-biose.html" class="pb-related-card">
+                <span class="pb-related-title">Сброс пароля BIOS на ноутбуке: универсальная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по снятию пароля BIOS на ноутбуках. Методы сброса через перемычки, батарейку и</span>
+            </a><a href="/articles/a/ad/adapter-yusb-internet-router.html" class="pb-related-card">
+                <span class="pb-related-title">USB-адаптер для роутера: Настройка 3G/4G модема через USB</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению USB-модема к роутеру. Настройка раздачи 4G интернета, выбор совм</span>
+            </a><a href="/articles/k/ka/kak-snyat-zaglushku-v-noutbuke-bez-cd-privoda.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять заглушку CD-привода в ноутбуке: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по демонтажу пластиковой заглушки отсека оптического привода. Инструменты, мето</span>
+            </a><a href="/articles/d/da/datchik-kholla-noutbuka.html" class="pb-related-card">
+                <span class="pb-related-title">Датчик Холла в ноутбуке: Диагностика, ремонт и проверка</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке и замене датчика Холла. Симптомы неисправности, методы диагностики </span>
+            </a><a href="/articles/t/ti/time-capsule-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Time Capsule Windows: Настройка и доступ к диску</span>
+                <span class="pb-related-desc">Полная инструкция по подключению Time Capsule к Windows. Настройка Samba, доступ к файлам, сброс пар</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

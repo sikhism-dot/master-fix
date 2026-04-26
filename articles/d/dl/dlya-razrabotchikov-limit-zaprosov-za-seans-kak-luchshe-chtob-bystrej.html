@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Оптимизация лимитов запросов API: стратегии для разработчиков — Мастер Фикс</title>
+    <meta name="description" content="Как разработчику настроить лимиты запросов за сеанс для максимальной скорости. Технические стратегии, алгоритмы и ошибки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/dl/dlya-razrabotchikov-limit-zaprosov-za-seans-kak-luchshe-chtob-bystrej.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Оптимизация лимитов запросов API: стратегии для разработчиков">
+    <meta property="og:description" content="Как разработчику настроить лимиты запросов за сеанс для максимальной скорости. Технические стратегии, алгоритмы и ошибки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Оптимизация лимитов запросов API: стратегии для разработчиков</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#стратегии-управления-очередью-запросов-на-клиенте">Стратегии управления очередью запросов на клиенте</a></li><li><a href="#механизмы-повторных-попыток-и-экспоненциальная-задержка">Механизмы повторных попыток и экспоненциальная задержка</a></li><li><a href="#оптимизация-структуры-запросов-и-кэширование">Оптимизация структуры запросов и кэширование</a></li><li><a href="#работа-с-заголовками-и-мониторинг-лимитов">Работа с заголовками и мониторинг лимитов</a></li><li><a href="#типичные-ошибки-при-настройке-лимитов">Типичные ошибки при настройке лимитов</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sdelat-badu-premium-besplatno.html">Как сделать БАД премиум бесплатно: технический разбор методов</a></li><li><a href="/articles/k/ka/kak-bystro-zakryt-brauzer-yandeks.html">Как быстро закрыть Яндекс Браузер: полные инструкции для ПК и мобильных устройств</a></li><li><a href="/articles/v/vo/vot-tebe-i-molodets-kak-udarenie-postavit-v-vatsap.html">Как сделать ударение в WhatsApp: технические способы для iOS и Android</a></li><li><a href="/articles/k/ka/kak-iz-aktivnoj-antenny-lotus-sdelat-passivnuyu-dlya-tsifry.html">Как сделать пассивную антенну Лотус из активной: схема и инструкция</a></li><li><a href="/articles/k/ka/kak-skachat-like-na-pk.html">Как скачать Likee на ПК: полная инструкция по установке</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация лимитов запросов: как ускорить работу API</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#стратегии-управления-очередью-запросов-на-клиенте">Стратегии управления очередью запросов на клиенте</a></li><li><a href="#механизмы-повторных-попыток-и-экспоненциальная-задержка">Механизмы повторных попыток и экспоненциальная задержка</a></li><li><a href="#оптимизация-структуры-запросов-и-кэширование">Оптимизация структуры запросов и кэширование</a></li><li><a href="#работа-с-заголовками-и-мониторинг-лимитов">Работа с заголовками и мониторинг лимитов</a></li><li><a href="#типичные-ошибки-при-настройке-лимитов">Типичные ошибки при настройке лимитов</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>При интеграции стороннего API или разработке собственного бэкенда разработчик часто сталкивается с ситуацией, когда приложение внезапно перестает получать данные. Сервер возвращает код 429 Too Many Requests, и процесс останавливается. Это происходит из-за исчерпания лимита запросов, установленного на стороне сервиса или в конфигурации шлюза.</p>
+<p>Попытка просто увеличить таймауты или переписывать циклы без понимания внутренней архитектуры rate limiting приводит лишь к временному решению. На практике требуется глубокая настройка клиентской части, чтобы укладываться в жесткие рамки пропускной способности, сохраняя при этом высокую скорость отклика интерфейса.</p>
+<p>Эффективное управление потоком данных требует сочетания правильной стратегии повторных попыток, кэширования и грамотного распределения запросов во времени. Ниже рассмотрены конкретные технические приемы, позволяющие обойти узкие места и обеспечить стабильную работу системы даже при строгих ограничениях.</p>
+
+<h2 id="стратегии-управления-очередью-запросов-на-клиенте">Стратегии управления очередью запросов на клиенте</h2>
+<p>На практике основным узким местом становится неспособность клиента правильно дозировать отправку пакетов данных. Если приложение отправляет 100 запросов в секунду, а сервер принимает только 10, то 90% ресурсов тратится впустую на ожидание и обработку ошибок. Необходимо внедрить механизм управления очередью, который будет регулировать поток исходящих запросов.</p>
+<p>Допустим, используется алгоритм <strong>Token Bucket</strong> (Базовая модель). В этом случае на стороне клиента создается виртуальное «ведро», в которое с постоянной скоростью добавляются токены. Каждый запрос потребляет один токен. Если токены закончились, запрос ставится в очередь ожидания до момента появления нового токена. Это позволяет сглаживать пиковые нагрузки.</p>
+<p>Если у вас реализована сложная логика бизнес-процессов, стоит рассмотреть алгоритм <strong>Leaky Bucket</strong> (Протекающее ведро). В отличие от предыдущего метода, здесь запросы попадают в очередь FIFO (First In, First Out) и обрабатываются с фиксированной скоростью, независимо от интенсивности входящего потока. Это гарантирует, что сервер никогда не получит больше запросов, чем он может обработать.</p>
+
+<h3>Реализация интервалов и задержек</h3>
+<p>Для реализации задержек не рекомендуется использовать стандартные функции <code>sleep</code> в синхронном коде, так как это блокирует основной поток выполнения. В асинхронных средах, таких как <em>Node.js</em> или <em>Python asyncio</em>, следует использовать промисы или корутины. Это позволяет эффективно использовать ресурсы процессора пока идет ожидание.</p>
+<p>Важно настроить динамический интервал между запросами. Если сервер сигнализирует о приближении к лимиту через заголовки ответа, клиент должен автоматически увеличивать задержку. Это предотвращает полное блокирование доступа.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка очереди</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Инициализация массива очереди</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверка наличия свободного токена</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Отправка запроса или ожидание</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Обновление счетчика токенов</span></div></div>
+
+<p>Ключевым моментом является правильная настройка начального размера окна и скорости восстановления токенов. Эти параметры должны быть чуть ниже заявленных лимитов сервера, чтобы оставить запас на случай сетевых задержек или ретраев.</p>
+
+<h2 id="механизмы-повторных-попыток-и-экспоненциальная-задержка">Механизмы повторных попыток и экспоненциальная задержка</h2>
+<p>Когда лимит все же исчерпан, критически важно правильно обработать ошибку. Простая мгновенная повторная отправка запроса (retry storm) может окончательно «положить» сервер или привести к бану IP-адреса. Здесь применяется стратегия экспоненциального отката (Exponential Backoff).</p>
+<p>Суть метода заключается в увеличении времени ожидания между попытками повторного запроса по экспоненциальному закону. Первая попытка выполняется через 1 секунду, вторая через 2, затем 4, 8 и так далее. Это дает системе время на восстановление и снижает общую нагрузку на сеть.</p>
+<p>Для реализации данной стратегии необходимо анализировать заголовок <code>Retry-After</code>, если он присутствует в ответе сервера. Этот заголовок явно указывает, через сколько секунд можно повторить запрос. Игнорирование этого параметра считается плохим тоном в разработке API-клиентов.</p>
+
+<h3>Настройка джиттера (Jitter)</h3>
+<p>Если тысячи клиентов одновременно получат ошибку и начнут повторные попытки по одинаковому алгоритму, возникнет эффект «грома», который снова обрушит сервис. Чтобы избежать синхронизации запросов, к времени ожидания добавляется случайная величина — джиттер.</p>
+<p>Формула расчета задержки обычно выглядит так: <code>delay = min(base * 2^attempt, max_delay) + random(0, 1000ms)</code>. Добавление случайности распределяет нагрузку во времени, делая график запросов более плавным и предсказуемым для серверной инфраструктуры.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base Delay</td>
+<td>Начальная задержка</td>
+<td>1000 мс</td>
+</tr>
+<tr>
+<td>Max Retries</td>
+<td>Максимум попыток</td>
+<td>3-5 раз</td>
+</tr>
+<tr>
+<td>Jitter Range</td>
+<td>Диапазон случайности</td>
+<td>0-1000 мс</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В некоторых случаях сервер может вернуть код 503 Service Unavailable вместо 429. Логика ретрая должна обрабатывать оба этих кода одинаково, применяя экспоненциальную задержку.</p></aside>
+
+<p>Стоит учитывать, что при использовании экспоненциальной задержки общее время ожидания ответа для пользователя может значительно вырасти. Поэтому важно установить жесткий лимит на максимальное время ожидания, после которого пользователю выдается понятное сообщение об ошибке, а не бесконечный спиннер загрузки.</p>
+
+<h2 id="оптимизация-структуры-запросов-и-кэширование">Оптимизация структуры запросов и кэширование</h2>
+<p>Самый эффективный способ уложиться в лимиты — перестать отправлять лишние запросы. Часто разработчики запрашивают полные объекты данных, когда нужны только несколько полей, или делают множество мелких запросов там, где хватило бы одного агрегированного.</p>
+<p>Использование механизмов кэширования на стороне клиента позволяет сохранять полученные данные и использовать их при повторных обращениях. Для статических или редко меняющихся данных это основной способ ускорения работы. Кэш может быть реализован в памяти (in-memory) или в локальном хранилище браузера/устройства.</p>
+<p>Если API поддерживает, необходимо использовать фильтры и выбор полей (field selection). Запрос <code>GET /users?fields=id,name</code> весит значительно меньше и обрабатывается быстрее, чем <code>GET /users</code>, возвращающий всю историю действий, аватарки и настройки. Это снижает нагрузку на сеть и сериализацию.</p>
+
+<h3>Пакетная обработка данных</h3>
+<p>Многие современные API поддерживают пакетные запросы (batching). Вместо того чтобы отправлять 10 отдельных запросов для получения информации о 10 пользователях, можно отправить один запрос с массивом ID. Это сокращает количество HTTP-рукопожатий и накладных расходов заголовков.</p>
+<p>В случае отсутствия нативной поддержки пакетных запросов на сервере, можно реализовать агрегацию на уровне клиента. Запросы накапливаются в буфере в течение короткого промежутка времени (например, 50-100 мс), а затем отправляются одним пакетом. Это особенно актуально для телеметрии и логирования событий.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При использовании кэширования важно следить за актуальностью данных (TTL). Устаревшие данные могут привести к логическим ошибкам в приложении. Всегда проверяйте заголовки Cache-Control.</p></aside>
+
+<p>Для реализации кэширования удобно использовать библиотеки вроде <em>Redis</em> (для бэкенда) или <em>TanStack Query</em> (для фронтенда). Они берут на себя управление временем жизни данных и инвалидацию кэша при изменении состояния.</p>
+
+<h2 id="работа-с-заголовками-и-мониторинг-лимитов">Работа с заголовками и мониторинг лимитов</h2>
+<p>Современные API предоставляют прозрачную информацию о текущем состоянии квот через HTTP-заголовки. Игнорирование этих метрик лишает разработчика возможности прогнозировать блокировку. Основными заголовками являются <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code> и <code>X-RateLimit-Reset</code>.</p>
+<p>На практике необходимо внедрить промежуточный слой (interceptor) в HTTP-клиенте, который будет парсить эти заголовки из каждого ответа. На основе значения <code>X-RateLimit-Remaining</code> можно динамически (регулировать) скорость отправки последующих запросов, не дожидаясь ошибки 429.</p>
+<p>Если заголовок <code>X-RateLimit-Reset</code> содержит Unix-timestamp, клиент может рассчитать точное время, когда счетчик обновится, и поставить запрос в очередь именно на этот момент, минимизируя простои.</p>
+
+<table>
+<thead>
+<tr>
+<th>Заголовок</th>
+<th>Значение</th>
+<th>Действие клиента</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X-RateLimit-Limit</td>
+<td>Максимум запросов</td>
+<td>Логирование конфигурации</td>
+</tr>
+<tr>
+<td>X-RateLimit-Remaining</td>
+<td>Остало запросов</td>
+<td>Снижение частоты, если < 10%</td>
+</tr>
+<tr>
+<td>X-RateLimit-Reset</td>
+<td>Время сброса</td>
+<td>Планирование следующей волны</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если сервер не возвращает стандартные заголовки лимитов, используйте библиотеки для трекинга исходящих запросов (например, axios-rate-limit) и ведите собственную статистику на основе известных ограничений API.</p></aside>
+
+<h3>Логирование и алертинг</h3>
+<p>Важно не просто обрабатывать ошибки, но и фиксировать их. Настройка логирования всех случаев получения 429 кода позволяет анализировать паттерны использования. Если лимиты достигаются регулярно в определенное время суток, это сигнал к оптимизации архитектуры или пересмотру тарифного плана.</p>
+<p>Для критически важных систем стоит настроить алертинг. Если количество отказов по лимиту превышает пороговое значение (например, 5% от всех запросов за минуту), ответственная команда должна получить уведомление. Это позволяет реагировать на инциденты до того, как они повлияют на конечных пользователей.</p>
+
+<h2 id="типичные-ошибки-при-настройке-лимитов">Типичные ошибки при настройке лимитов</h2>
+<p>Даже опытные инженеры допускают ошибки при работе с ограничениями API. Часто проблема кроется не в коде, а в misunderstanding (непонимании) того, как именно сервер считает запросы.</p>
+
+<ol>
+<li><strong>Игнорирование глобальных и пользовательских лимитов</strong> — многие API имеют два уровня ограничений: общий ключ API и лимит на конкретного пользователя. Попытка обойти пользовательский лимит путем создания новых сессий может привести к блокировке всего ключа API.</li>
+<li><strong>Отсутствие обработки сетевых таймаутов</strong> — если запрос завис и таймаут не настроен, поток может быть занят бесконечно. Правильно таймауты (connection и read) позволяют быстрее освобождать ресурсы и переходить к следующему шагу или ретраю.</li>
+<li><strong>Параллелизация без контроля</strong> — запуск 100 параллельных потоков (threads) или процессов для ускорения работы часто дает обратный эффект. Сервер видит резкий всплеск и блокирует IP. Необходимо использовать пулы соединений (connection pools) с ограниченным размером.</li>
+<li><strong>Повторные попытки без рандомизации</strong> — как упоминалось ранее, отсутствие джиттера приводит к синхронизации клиентов и повторным отказам. Это классическая ошибка, превращающая временную проблему сервера в длительный простой.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотное управление лимитами запросов строится на комбинации клиентского троттлинга, экспоненциальных ретраев с джиттером и активном использовании заголовков сервера.</p></aside>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+<p>Оптимизация работы с лимитами запросов — это не разовая настройка, а непрерывный процесс балансировки между скоростью отклика и соблюдением правил сервера. Использование алгоритмов Token Bucket и Exponential Backoff является стандартом индустрии, обеспечивающим стабильность соединения даже в условиях нестабильной сети.</p>
+<p>Внедрение умного кэширования и пакетной обработки данных позволяет существенно снизить количество необходимых запросов, что напрямую влияет на скорость работы приложения и удовлетворенность пользователей. Всегда стоит стремиться получать больше данных за один запрос, чем делать множество мелких обращений.</p>
+<p>В конечном итоге, уважение к лимитам сервера и правильная техническая реализация обходных путей делают приложение более надежным и предсказуемым. Инвестиции время в настройку механизмов очередей и повторных попыток окупаются снижением количества ошибок и улучшением пользовательского опыта.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор стратегии</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая отказоустойчивость</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Снижение нагрузки на сервер</li></ul></div>
+</div></div></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sdelat-badu-premium-besplatno.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать БАД премиум бесплатно: технический разбор методов</span>
+                <span class="pb-related-desc">Техническое руководство по получению БАД премиум без оплаты. Анализ методов, рисков безопасности, ра</span>
+            </a><a href="/articles/k/ka/kak-bystro-zakryt-brauzer-yandeks.html" class="pb-related-card">
+                <span class="pb-related-title">Как быстро закрыть Яндекс Браузер: полные инструкции для ПК и мобильных устройств</span>
+                <span class="pb-related-desc">Подробное руководство по принудительному закрытию Яндекс Браузера. Решения для зависаний на Windows,</span>
+            </a><a href="/articles/v/vo/vot-tebe-i-molodets-kak-udarenie-postavit-v-vatsap.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать ударение в WhatsApp: технические способы для iOS и Android</span>
+                <span class="pb-related-desc">Подробное руководство по установке знака ударения в WhatsApp. Методы для iPhone и Android, использов</span>
+            </a><a href="/articles/k/ka/kak-iz-aktivnoj-antenny-lotus-sdelat-passivnuyu-dlya-tsifry.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать пассивную антенну Лотус из активной: схема и инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция: как переделать активную антенну Лотус в пассивную для цифры. Схемы отключения </span>
+            </a><a href="/articles/k/ka/kak-skachat-like-na-pk.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать Likee на ПК: полная инструкция по установке</span>
+                <span class="pb-related-desc">Подробное руководство по установке Likee на компьютер. Скачивание эмуляторов, настройка Android-окру</span>
+            </a><a href="/articles/k/ka/kak-v-ivi-smotret-filmy-dlya-vzroslykh.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть фильмы для взрослых на Иви: настройки и ограничения</span>
+                <span class="pb-related-desc">Узнайте, как на Иви смотреть фильмы для взрослых, настроить родительский контроль и какие есть альте</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

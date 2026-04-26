@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>DtvBluetooth: принцип работы и настройка цифрового ТВ — Мастер Фикс</title>
+    <meta name="description" content="Технический разбор протокола DtvBluetooth. Как работает сопряжение пульта, диагностика ошибок и таблица кодов для Smart TV.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/dt/dtvbluetooth-kak-rabotaet.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="DtvBluetooth: принцип работы и настройка цифрового ТВ">
+    <meta property="og:description" content="Технический разбор протокола DtvBluetooth. Как работает сопряжение пульта, диагностика ошибок и таблица кодов для Smart TV.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">DtvBluetooth: принцип работы и настройка цифрового ТВ</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-взаимодействия-dtvbluetooth-и-операционной-системы">Архитектура взаимодействия DtvBluetooth и операционной системы</a></li><li><a href="#процесс-сопряжения-и-авторизации-устройств">Процесс сопряжения и авторизации устройств</a></li><li><a href="#диагностика-проблем-и-анализ-логов">Диагностика проблем и анализ логов</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/b/bi/bilajn-tv-ruchnaya-nastrojka-ip.html">Настройка IP-адреса для Билайн ТВ: ручная конфигурация</a></li><li><a href="/articles/k/ka/kak-otklyuchit-demonstratsionnyj-rezhim-na-televizore-hisense.html">Как отключить демонстрационный режим на телевизоре Hisense</a></li><li><a href="/articles/k/ka/kak-ubrat-vsplyvayushchuyu-ramku-v-televizore.html">Как убрать всплывающую рамку на телевизоре: полное руководство</a></li><li><a href="/articles/d/di/digital-media-renderer-dmr-na-tv-filips-32pfl5507t60-kak-podklyuchit-telefon.html">DMR на Philips 32PFL5507T/60: подключение телефона к ТВ</a></li><li><a href="/articles/k/ka/kak-v-televizore-sony-xr-55x90k-posmotret-narabotku-chasov.html">Как узнать наработку часов на Sony XR-55X90K: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ работы DtvBluetooth в Smart TV</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-взаимодействия-dtvbluetooth-и-операционной-системы">Архитектура взаимодействия DtvBluetooth и операционной системы</a></li><li><a href="#процесс-сопряжения-и-авторизации-устройств">Процесс сопряжения и авторизации устройств</a></li><li><a href="#диагностика-проблем-и-анализ-логов">Диагностика проблем и анализ логов</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке подключить современный Smart TV к беспроводным наушникам или звуковой панели пользователь часто сталкивается с ситуацией, когда устройство просто не обнаруживает источник сигнала или теряет соединение через несколько секунд работы.</p>
+<p>Вместо стабильной передачи аудиопотока система выдает ошибки сопряжения, а в логах системы появляются записи о сбоях в модуле <code>dtvbluetooth</code>, что указывает на глубокий уровень взаимодействия программного обеспечения телевизора и периферийного оборудования.</p>
+<p>Понимание механики работы этого компонента необходимо не только инженерам, но и продвинутым пользователям, стремящимся устранить рассинхронизацию звука или задержки управления, которые возникают из-за некорректной обработки пакетов данных в стеке Bluetooth.</p>
+
+<h2 id="архитектура-взаимодействия-dtvbluetooth-и-операционной-системы">Архитектура взаимодействия DtvBluetooth и операционной системы</h2>
+
+<p>На практике работа модуля <code>dtvbluetooth</code> представляет собой сложный процесс обмена данными между аппаратным чипом телевизора и операционной системой, чаще всего базирующейся на Linux или Android TV.</p>
+<p>Если у вас возникает задержка звука, это часто связано с тем, как операционная система планирует задачи для драйвера Bluetooth, который должен обрабатывать потоки данных в реальном времени без прерывания видеоряд.</p>
+<p>Драйвер <code>dtvbluetooth</code> выступает в роли посредника, транслирующего команды от пользовательского интерфейса к радио модулю, обеспечивая соблюдение временных меток для синхронизации аудио и видео.</p>
+<p>Важно понимать, что <strong>стабильность соединения</strong> зависит не только от качества антенны, но и от того, как операционная система приоритизирует процессы, связанные с Bluetooth-стеком.</p>
+<p>Системные ресурсы распределяются динамически, и если фоновые процессы занимают слишком много процессорного времени, пакетная передача данных может прерываться, вызывая характерные щелчки или разрывы связи.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На телевизорах с процессорами MediaTek и Realtek реализация драйвера может отличаться, что влияет на совместимость с профилями кодеков.</p></aside>
+
+<p>Допустим, вы используете телевизор для трансляции звука на внешнюю акустику; в этом случае система должна гарантировать буферизацию данных достаточного размера, чтобы компенсировать возможные микро-задержки в эфире.</p>
+
+<h3>Взаимодействие с профилями A2DP и AVRCP</h3>
+
+<p>Основная нагрузка ложится на профиль A2DP (Advanced Audio Distribution Profile), который отвечает за передачу стереофонического звука высокого качества в одностороннем режиме.</p>
+<p>Параллельно с этим работает профиль AVRCP (Audio/Video Remote Control Profile), позволяющий управлять воспроизведением, громкостью и переключением треков с пульта или подключенного смартфона.</p>
+<p>Конфликты между этими профилями часто возникают, когда телевизор пытается одновременно поддерживать высокое качество звука и мгновенную реакцию на команды управления, что требует от модуля <code>dtvbluetooth</code> высокой производительности.</p>
+<p>В некоторых прошивках наблюдается ситуация, когда при активном использовании AVRCP профиль A2DP временно снижает битрейт, чтобы освободить канал для управляющих пакетов.</p>
+<p>Это приводит к заметному ухудшению качества звучания в моменты регулировки громкости или переключения источников сигнала.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание влияния на систему</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Буферизация</td>
+<td>Увеличение буфера снижает риск прерываний, но повышает задержку звука</td>
+</tr>
+<tr>
+<td>Кодек SBC</td>
+<td>Базовый кодек, обеспечивающий максимальную совместимость, но среднее качество</td>
+</tr>
+<tr>
+<td>Кодек AAC/aptX</td>
+<td>Требует поддержки обоими устройствами, дает лучшее качество и меньшую задержку</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Модуль dtvBluetooth координирует работу аудио и управляющих профилей, балансируя между качеством звука и скоростью отклика системы.</p></aside>
+
+<h2 id="процесс-сопряжения-и-авторизации-устройств">Процесс сопряжения и авторизации устройств</h2>
+
+<p>Процедура подключения нового устройства начинается с перехода модуля в режим обнаружения, когда <code>dtvbluetooth</code> рассылает пакеты рекламных сообщений в эфир.</p>
+<p>На этом этапе система сканирует доступные устройства и формирует список, который пользователь видит в интерфейсе телевизора.</p>
+<p>Если устройство не отображается, это может означать, что оно уже сопряжено с другим гаджетом или находится вне зоны уверенного приема сигнала.</p>
+<p>После выбора устройства в списке инициируется handshake-процедура, в ходе которой обмениваются ключи безопасности и проверяются поддерживаемые профили.</p>
+<p>Успешная авторизация требует совпадения версий протоколов и отсутствия конфликтов адресации в локальной сети Bluetooth.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс сопряжения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Включение режима поиска на ТВ</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Активация видимости на внешнем устройстве</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выбор устройства в списке</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Ввод PIN-кода или подтверждение сопряжения</span></div></div>
+
+<h3>Работа с пультами Magic Remote и голосовым управлением</h3>
+
+<p>Особое внимание стоит уделить работе пультов, использующих Bluetooth для передачи команд движения и голосовых запросов, так как здесь критически важна минимальная задержка.</p>
+<p>В отличие от аудиоустройств, пульты передают небольшие пакеты данных, но требуют гарантированной доставки каждого пакета, чтобы курсор не дергался.</p>
+<p>Модуль <code>dtvbluetooth</code> обрабатывает данные с гироскопа и акселерометра пульта, преобразуя их в координаты курсора на экране.</p>
+<p>Если вы заметили, что курсор отстает от движения руки, возможно, происходит переполнение очереди команд или интерференция с сигналом Wi-Fi, работающим в том же частотном диапазоне 2.4 ГГц.</p>
+<p>Голосовые команды передаются с более высоким приоритетом, часто прерывая другие фоновые процессы Bluetooth для обеспечения мгновенной реакции ассистента.</p>
+
+<p>Сбои в работе голосового ввода часто связаны с тем, что микрофон пульта не успевает передать весь аудиопоток до того, как истечет таймаут ожидания сервера.</p>
+<p>В таких случаях система может отключать микрофон пульта и переключаться на встроенный микрофон телевизора, если такая функция поддерживается моделью.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Частая разрядка батареек в пульте может приводить к снижению мощности сигнала Bluetooth, что вызывает нестабильную работу курсора и голоса.</p></aside>
+
+<h2 id="диагностика-проблем-и-анализ-логов">Диагностика проблем и анализ логов</h2>
+
+<p>Для выявления причин нестабильной работы специалисты используют логирование системных процессов, где модуль <code>dtvbluetooth</code> оставляет подробные записи о каждом этапе соединения.</p>
+<p>Доступ к логам обычно осуществляется через меню разработчика или посредством подключения по ADB (Android Debug Bridge).</p>
+<p>В логах можно увидеть коды ошибок, время отклика устройств и моменты разрыва соединения, что позволяет точно определить источник проблемы.</p>
+<p>Анализ записей требует внимания к деталям, так как одна строка может содержать информацию о критической ошибке драйвера.</p>
+<p>Частые перезапросы соединения в логах указывают на проблемы с радиомодулем или программные сбои в стеке Bluetooth.</p>
+
+<ol>
+<li>Активируйте режим разработчика в меню телевизора, перейдя в <code>Настройки → О системе</code> и несколько раз нажав на номер сборки.</li>
+<li>Включите отладку по USB и подключите телевизор к компьютеру через кабель USB Type-A to Type-A или используйте Wi-Fi отладку.</li>
+<li>Запустите терминал и выполните команду <code>adb logcat | grep bluetooth</code> для фильтрации только relevantных сообщений.</li>
+<li>Воспроизведите проблему (например, попробуйте подключить наушники) и наблюдайте за потоком данных в реальном времени.</li>
+</ol>
+
+<p>Полученные данные помогут определить, является ли проблема аппаратной (слабый сигнал, помехи) или программной (ошибка драйвера, конфликт версий).</p>
+<p>Если в логах присутствуют сообщения о переполнении буфера, увеличить размер буфера в настройках разработчика, если такая опция доступна.</p>
+<p>Записи о «timeout» указывают на то, что устройство не ответило вовремя, что может быть связано с его собственными настройками энергосбережения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип ошибки в логе</th>
+<th>Вероятная причина</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connection Timeout</td>
+<td>Устройство вне зоны действия или выключено</td>
+</tr>
+<tr>
+<td>Authentication Fail</td>
+<td>Неверный PIN-код или конфликт ключей шифрования</td>
+</tr>
+<tr>
+<td>Service Discovery Failed</td>
+<td>Устройство не поддерживает требуемый профиль (A2DP/HID)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для более чистого лога перед началом диагностики выполните команду очистки буфера: adb logcat -c.</p></aside>
+
+<h3>Влияние версий прошивки и кодеков</h3>
+
+<p>Версия операционной системы и драйверов напрямую влияет на список поддерживаемых кодеков и стабильность соединения.</p>
+<p>Производители регулярно выпускают обновления, в которых исправляют уязвимости стека Bluetooth и оптимизируют работу с новыми устройствами.</p>
+<p>Отсутствие обновлений может привести к тому, что телевизор не сможет корректно работать с новыми наушниками, использующими современные стандарты шифрования.</p>
+<p>Поддержка кодеков высокого разрешения, таких как aptX HD или LDAC, часто добавляется именно в обновлениях программного обеспечения.</p>
+<p>Проверка актуальности версии ПО — первый шаг при устранении проблем со звуком и подключением.</p>
+
+<p>Перейдите в <code>Настройки → Система → Обновление</code>, чтобы проверить наличие новых версий.</p>
+<p>Иногда новая прошивка может содержать баги, поэтому перед обновлением стоит почитать отзывы других пользователей вашей модели телевизора.</p>
+<p>В редких случаях требуется откат на предыдущую версию прошивки, если обновление нарушило работу Bluetooth-модуля.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Несмотря на отлаженность технологий, пользователи регулярно сталкиваются с типовыми проблемами, решение которых часто лежит в плоскости правильной настройки.</p>
+<p>Большинство ошибок связано с человеческим фактором или банальным несовпадением ожиданий и технических возможностей оборудования.</p>
+<p>Систематический подход к диагностике позволяет устранить 90% проблем без обращения в сервисный центр.</p>
+
+<ol>
+<li><strong>Устройство не найдено при поиске</strong> — чаще всего внешнее устройство не переведено в режим сопряжения; необходимо зажать кнопку подключения на наушниках или колонке до мигания индикатора.</li>
+<li><strong>Звук есть, но управление не работает</strong> — профиль AVRCP не поддерживается или заблокирован; попробуйте переподключить устройство или обновить прошивку телевизора.</li>
+<li><strong>Постоянные разрывы соединения</strong> — вызвано интерференцией Wi-Fi; рекомендуется переключить роутер на канал 5 ГГц или отодвинуть роутер от телевизора.</li>
+<li><strong>Задержка аудио (Lip-sync)</strong> — проблема буферизации; в настройках звука телевизора найдите пункт «Задержка аудио» или «Аудио-видео синхронизация» и подкорректируйте значение.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Плюсы беспроводного подключения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Отсутствие проводов</li><li>✅ Возможность подключения нескольких устройств</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы беспроводного подключения:Зависимость от заряда батареи</li><li>❌ Возможные задержки звука</li></ul></div>
+</div></div>
+
+<p>Если ни один из методов не помог, имеет смысл выполнить полный сброс настроек сети телевизора.</p>
+<p>Это действие удалит все сохраненные Bluetooth-устройства и сетевые настройки, вернув модуль к заводскому состоянию.</p>
+<p>После сброса потребуется заново ввести пароли от Wi-Fi и заново выполнить сопряжение всех периферийных устройств.</p>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Технология <code>dtvbluetooth</code> является фундаментальной частью современного Smart TV, обеспечивая удобство управления и расширяя мультимедийные возможности телевизора.</p>
+<p>Понимание принципов ее работы, от архитектуры драйверов до нюансов кодеков, позволяет эффективно решать возникающие проблемы и настраивать систему под свои потребности.</p>
+<p>Регулярное обновление программного обеспечения и правильная диагностика логов гарантируют стабильную работу беспроводных соединений на протяжении всего срока службы устройства.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/b/bi/bilajn-tv-ruchnaya-nastrojka-ip.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка IP-адреса для Билайн ТВ: ручная конфигурация</span>
+                <span class="pb-related-desc">Подробная инструкция по ручной установке IP-адреса для приставок и Smart TV Билайн. Решение проблем </span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-demonstratsionnyj-rezhim-na-televizore-hisense.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить демонстрационный режим на телевизоре Hisense</span>
+                <span class="pb-related-desc">Подробная инструкция по снятию режима магазина (Retail Mode) на ТВ Hisense. Сброс настроек, использо</span>
+            </a><a href="/articles/k/ka/kak-ubrat-vsplyvayushchuyu-ramku-v-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать всплывающую рамку на телевизоре: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению всплывающих окон, рекламных рамок и уведомлений на Smart TV. Реше</span>
+            </a><a href="/articles/d/di/digital-media-renderer-dmr-na-tv-filips-32pfl5507t60-kak-podklyuchit-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">DMR на Philips 32PFL5507T/60: подключение телефона к ТВ</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке DMR на телевизоре Philips 32PFL5507T/60. Как подключить смартфон и</span>
+            </a><a href="/articles/k/ka/kak-v-televizore-sony-xr-55x90k-posmotret-narabotku-chasov.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать наработку часов на Sony XR-55X90K: Полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по проверке времени работы панели, процессора и ОС на телевизоре Sony X90K. </span>
+            </a><a href="/articles/g/gd/gde-mozhno-smotret-doramy-na-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть дорамы на телевизоре: гид по Smart TV, Android и AirPlay</span>
+                <span class="pb-related-desc">Подробное руководство по запуску корейских сериалов на телевизоре. Настройка Smart TV, Android TV, i</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

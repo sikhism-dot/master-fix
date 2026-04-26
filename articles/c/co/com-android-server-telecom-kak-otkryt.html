@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>com.android.server.telecom: как открыть и настроить — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по управлению системным процессом com.android.server.telecom. Решение проблем со звонками, сброс настроек и анализ логов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/c/co/com-android-server-telecom-kak-otkryt.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="com.android.server.telecom: как открыть и настроить">
+    <meta property="og:description" content="Подробная инструкция по управлению системным процессом com.android.server.telecom. Решение проблем со звонками, сброс настроек и анализ логов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">com.android.server.telecom: как открыть и настроить</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-и-анализ-состояния-сервиса">Диагностика и анализ состояния сервиса</a></li><li><a href="#управление-через-настройки-разработчика-и-adb">Управление через настройки разработчика и ADB</a></li><li><a href="#сброс-настроек-и-восстановление-функциональности">Сброс настроек и восстановление функциональности</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#сравнительный-анализ-методов-доступа">Сравнительный анализ методов доступа</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/zv/zvukorezhissyor-na-telefone.html">Звукорежиссёр на телефоне: настройка микрофона и запись</a></li><li><a href="/articles/k/ka/kak-udalit-mi-show-s-telefona-xiaomi.html">Как удалить Mi Show на Xiaomi: полное руководство</a></li><li><a href="/articles/k/ka/kak-otklyuchit-mnogostranichnyj-rezhim-na-telefone-honor.html">Как отключить многостраничный режим на Honor: полное руководство</a></li><li><a href="/articles/p/pr/prilozhenie-dlya-chasov-x22-pro.html">Приложение для часов X22 Pro: полная настройка и обзор функций</a></li><li><a href="/articles/k/ka/kak-razdelit-ekran-na-dve-chasti-na-magnitole-android-tc18-pro-max.html">Разделение экрана на Android TC18 Pro Max: Инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>com.android.server.telecom: управление системным сервисом</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-и-анализ-состояния-сервиса">Диагностика и анализ состояния сервиса</a></li><li><a href="#управление-через-настройки-разработчика-и-adb">Управление через настройки разработчика и ADB</a></li><li><a href="#сброс-настроек-и-восстановление-функциональности">Сброс настроек и восстановление функциональности</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#сравнительный-анализ-методов-доступа">Сравнительный анализ методов доступа</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь часто сталкивается с ситуацией, когда входящие или исходящие вызовы перестают работать, а в диспетчере задач или приложении для анализа системы обнаруживается процесс с названием com.android.server.telecom. Это системный компонент, отвечающий за маршрутизацию звонков, управление SIM-картами и взаимодействие с телефонией в операционной системе Android. Попытка «открыть» этот процесс через стандартный интерфейс launcher обычно невозможна, так как он не имеет пользовательского интерфейса в привычном понимании.</p>
+<p>Однако существуют legitimate способы взаимодействия с этим сервисом через скрытые меню инженерной диагностики, настройки разработчика или с помощью команд ADB. Неправильное вмешательство в работу данного компонента может привести к полной неработоспособности телефонного модуля, поэтому любые действия требуют четкого понимания структуры системы и последствий выполняемых команд.</p>
+<p>В техническом контексте под «открытием» com.android.server.telecom чаще всего подразумевается доступ к его логам, принудительный сброс кэша, изменение параметров VoLTE или переключение режимов работы модема. Ниже приведены детальные методы безопасного взаимодействия с данным системным сервисом для различных сценариев диагностики и восстановления.</p>
+
+<h2 id="диагностика-и-анализ-состояния-сервиса">Диагностика и анализ состояния сервиса</h2>
+<p>Первым шагом при возникновении проблем со звонками является оценка текущего состояния процесса. Стандартный интерфейс настроек Android скрывает большинство технических деталей работы <em>com.android.server.telecom</em>, предоставляя лишь базовую информацию о потреблении трафика или батареи. Для получения детальной информации необходимо использовать специальные диагностические коды или инструменты отладки.</p>
+<p>Если у вас есть доступ к компьютеру, наиболее эффективным методом является использование Android Debug Bridge (ADB). Этот инструмент позволяет отправлять команды непосредственно в shell-оболочку устройства, минуя графический интерфейс. С помощью команды <code>dumpsys telecom</code> можно получить исчерпывающий отчет о текущем состоянии телефонии, включая активные вызовы, зарегистрированные SIM-карты и состояние сетей.</p>
+<p>На практике, для запуска диагностики без ПК можно воспользоваться встроенным инженерным меню. Коды доступа могут отличаться в зависимости от производителя устройства и версии прошивки <em>MIUI</em>, <em>OneUI</em> или <em>ColorOS</em>. Введение правильного кода в приложении «Телефон» открывает скрытый интерфейс, где отображаются реальные параметры соединения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка статуса через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство к ПК с включенной отладкой по USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду adb shell dumpsys telecom</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Изучите разделы DefaultDialer и CallState для выявления ошибок</span></div></div>
+
+<p>Важно понимать, что <strong>com.android.server.telecom</strong> является фоновым сервисом, который запускается автоматически при загрузке операци-онной системы. Его принудительная остановка через стандартное меню приложений часто приводит к временному исчезновению значка сети или невозможности совершать экстренные вызовы до следующей перезагрузки устройства.</p>
+
+<h3>Использование инженерных кодов</h3>
+<p>Для доступа к скрытым функциям управления телефонией в номеронабирателе вводятся специальные USSD-коды или MMI-команды. Наиболее распространенным кодом для устройств на базе чипсетов Qualcomm является <code>*#*#4636#*#*</code>. После ввода этого кода открывается меню «Тестирование», где можно выбрать пункт «Информация о телефоне».</p>
+<p>В этом разделе отображаются технические данные: IMEI, тип сети, сила сигнала и состояние радиомодуля. Здесь же доступна функция «Переключить радиомодуль» (Turn off radio), которая фактически перезапускает связь процесса <em>com.android.server.telecom</em> с базовой станцией. Это действие эквивалентно включению и выключению режима полета, но выполняется на более глубоком уровне.</p>
+<p>На устройствах <em>Samsung</em> может использоваться код <code>*#0011#</code> для входа в сервисное меню, где также можно отследить работу сервера телефонии. Стоит учитывать, что на новых версиях Android (начиная с <em>Android 10</em> и выше) доступ к некоторым функциям через коды может быть ограничен производителем в целях безопасности.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых устройствах коды могут не работать без root-прав или специальной активации в скрытом меню разработчика. Если код не срабатывает, попробуйте использовать приложения-эмуляторы терминала.</p></aside>
+
+<h2 id="управление-через-настройки-разработчика-и-adb">Управление через настройки разработчика и ADB</h2>
+<p>Для более глубокого контроля над системными процессами, включая <em>com.android.server.telecom</em>, необходимо активировать режим разработчика. Это позволяет получать доступ к логированию в реальном времени и выполнять команды принудительной остановки или перезапуска сервисов. Активация производится путем многократного нажатия на номер сборки в разделе <code>Настройки → О телефоне</code>.</p>
+<p>После включения режима разработчика в меню появляется пункт «Отладка по USB». Подключив устройство к компьютеру и установив драйверы ADB, можно выполнять команды для управления пакетами. Например, команда <code>adb shell am stop com.android.server.telecom</code> принудительно остановит сервис, что может потребоваться для сброса зависшего состояния модуля связи.</p>
+<p>Однако просто остановить процесс недостаточно — система Android стремится поддерживать критически важные сервисы. Поэтому после остановки часто требуется очистка данных соответствующего системного приложения «Телефон» или «Управление SIM-картами». Это можно сделать через меню приложений или командой <code>adb shell pm clear com.android.server.telecom</code>, хотя последняя команда может потребовать root-доступа на некоторых прошивках.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда ADB</th>
+<th>Описание действия</th>
+<th>Требования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>adb shell dumpsys telecom</code></td>
+<td>Вывод полного лога состояния телефонии</td>
+<td>Включенная отладка по USB</td>
+</tr>
+<tr>
+<td><code>adb shell am stop com.android.server.telecom</code></td>
+<td>Принудительная остановка сервиса</td>
+<td>Права ADB (без root)</td>
+</tr>
+<tr>
+<td><code>adb shell pm clear com.android.phone</code></td>
+<td>Очистка данных приложения телефонии</td>
+<td>Права ADB, сбросит настройки звонков</td>
+</tr>
+</tbody>
+</table>
+
+<p>При работе с ADB важно соблюдать осторожность. Остановка системных процессов может привести к тому, что устройство перестанет видеть SIM-карту. В таком случае поможет только полная перезагрузка аппарата. Также стоит отметить, что на устройствах с сильной кастомизацией оболочки (например, <em>Xiaomi HyperOS</em> или <em>Huawei EMUI</em>) названия пакетов могут отличаться, например, содержать префиксы производителя.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование команд ADB для остановки системных сервисов может привести к временной потере связи. Не выполняйте команды, в назначении которых вы не уверены.</p></aside>
+
+<h3>Настройка логирования для отладки</h3>
+<p>Если целью «открытия» процесса является поиск причин сбоев, необходимо включить расширенное логирование. В меню для разработчиков есть пункт «Журнал логгера» (Logger buffer size), который можно увеличить для сохранения более подробной истории событий. Это полезно при анализе прерывистых звонков или проблем с VoLTE.</p>
+<p>Для перехвата логов именно процесса <em>com.android.server.telecom</em> используется утилита logcat. Команда <code>adb logcat -s TelecomService</code> отфильтрует вывод, оставив только сообщения, связанные с телефонией. Это позволяет в реальном времени видеть, какие ошибки генерирует сервис при попытке initiate call или ответа на входящий вызов.</p>
+<p>Анализ логов требует определенных знаний тегов Android. Ключевые теги, на которые стоит обратить внимание: <code>DcTracker</code> (проблемы с передачей данных во время звонка), <code>GsmCdmaPhone</code> (ошибки регистрации в сети) и <code>Telecom</code> (ошибки логики приложения). Сохранение лога в файл производится перенаправлением вывода в текстовый файл.</p>
+
+<pre><code>adb logcat -b all -d > telecom_log.txt</code></pre>
+
+<p>Полученный файл можно проанализировать текстовым редактором, поискав ключевые слова «Error», «Exception» или «Fail». Это поможет определить, является ли проблема аппаратной (модем не отвечает), программной (ошибка в коде сервиса) или сетевой (отказ оператора).</p>
+
+<h2 id="сброс-настроек-и-восстановление-функциональности">Сброс настроек и восстановление функциональности</h2>
+<p>В большинстве случаев пользователь ищет способ «открыть» или воздействовать на <em>com.android.server.telecom</em> для устранения неисправностей. Если звонки не проходят, а сеть теряется, наиболее эффективным методом является сброс настроек сетевого стека. Это действие возвращает параметры соединения к заводским значениям, не затрагивая личные файлы пользователя.</p>
+<p>Выполнить сброс можно через стандартное меню настроек Android. Путь обычно выглядит как <code>Настройки → Система → Сброс настроек → Сброс настроек Wi-Fi, мобильного интернета и Bluetooth</code>. После подтверждения действия устройство перезагрузится, и процесс <em>com.android.server.telecom</em> заново инициализирует соединения с оператором.</p>
+<p>Альтернативным методом является очистка данных приложения «Телефон» и «Управление SIM-картами». В разделе <code>Настройки → Приложения</code> нужно найти соответствующие системные компоненты и выбрать «Очистить данные» и «Очистить кэш». Это удалит историю вызовов и сохраненные настройки переадресации, но часто решает проблемы с зависанием интерфейса набора номера.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Полный сброс телефонии</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Приложения → Показать системные</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите «Телефон» и «Управление SIM-картами»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните «Очистить данные» и «Очистить кэш» для каждого</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите устройство</span></div></div>
+
+<p>Если программный сброс не помогает, возможно, повреждены конфигурационные файлы APN (точки доступа). В этом случае следует перейти в настройки мобильной сети, выбрать активную SIM-карту и найти пункт «Точки доступа (APN)». В меню options (три точки) нужно выбрать «Восстановить по умолчанию». Это действие перезапишет incorrect параметры, которые могли блокировать работу голосовых сервисов.</p>
+
+<h3>Работа с SIM-картами и профилями</h3>
+<p>Проблемы с процессом телефонии часто связаны с физическим контактом или логическим конфликтом SIM-карт. Если в устройстве установлено две SIM-карты, извлечь одну из них и проверить работу системы. Иногда <em>com.android.server.telecom</em> некорректно обрабатывает прерывания от второго модуля, что приводит к сбоям.</p>
+<p>Также стоит проверить, не заблокирована ли SIM-карта PIN-коком. В некоторых случаях после обновления прошивки система может требовать повторного ввода PIN, блокируя доступ сервиса к модулю безопасности. Ввод неверного кода несколько раз приведет к запросу PUK, что является защитным механизмом.</p>
+<p>Для пользователей, часто меняющих SIM-карты, полезно знать, что Android кэширует данные операторов. При установке новой карты может потребоваться время на обновление профилей. Ускорить этот процесс можно, включив и выключив режим полета, что принудительно запустить перерегистрацию в сети.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте оригинальные или сертифицированные SIM-карты. Кустарно обрезанные карты могут иметь нестандартную толщину или смещенные контакты, что вызывает нестабильную работу модема.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>При попытке вмешательства в работу системных компонентов телефонии пользователи часто допускают ошибки, которые усугубляют ситуацию. Понимание этих ошибок поможет избежать потери данных или необходимости перепрошивки устройства.</p>
+
+<ol>
+<li><strong>Попытка удаления системного пакета</strong> — некоторые пользователи пытаются удалить <em>com.android.server.telecom</em> через ADB командой uninstall. Это критическая ошибка, так как без этого компонента Android не сможет обрабатывать никакие вызовы, а в худшем случае устройство уйдет в bootloop (циклическую перезагрузку). Восстановить работоспособность можно только сбросом до заводских настроек (Wipe Data).</li>
+<li><strong>Игнорирование обновлений компонентов Google Play</strong> — сервис «Google Play Services» и «Телефон Google» часто получают обновления независимо от версии Android. Устаревшие версии этих компонентов могут конфликтовать с новой версией <em>com.android.server.telecom</em>, вызывая сбои. Необходимо проверить наличие обновлений в магазине Play Market.</li>
+<li><strong>Некорректное использование сторонних dialer-ов</strong> — установка альтернативных приложений для звонков (Truecaller, Dialer и т.д.) без правильной настройки прав доступа может привести к конфликту с системным сервером телефонии. Если после установки такого приложения пропали звонки, его следует удалить, а права «по умолчанию» вернуть стандартному приложению.</li>
+<li><strong>Отсутствие прав на доступ к журналу вызовов</strong> — в новых версиях Android (10+) доступ к истории звонков и SMS строго регламентирован. Если приложение-диагностик не имеет специального разрешения (операторского сертификата), оно не сможет получить полные данные от <em>com.android.server.telecom</em>, показывая пустые логи.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы взаимодействия с Telecom</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Доступ к скрытым настройкам сети</li><li>✅ Возможность сброса без потери данных</li><li>✅ Детальная диагностика через логи</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск нарушить работу экстренных вызовов</li><li>❌ Сложность для неподготовленных пользователей</li><li>❌ Возможность сброса настроек оператора</li></ul></div>
+</div></div>
+
+<p>Следует также упомянуть проблему совместимости. На устройствах с кастомными прошивками (LineageOS, Pixel Experience) процесс телефонии может быть заменен или модифицирован. В таких случаях стандартные инструкции могут не работать, и требуется поиск специфичных решений для конкретной сборки.</p>
+
+<h2 id="сравнительный-анализ-методов-доступа">Сравнительный анализ методов доступа</h2>
+<p>Различные методы взаимодействия с <em>com.android.server.telecom</em> имеют свои преимущества и ограничения. Выбор конкретного способа зависит от цели: нужна ли вам разовая диагностика, постоянный мониторинг или аварийное восстановление.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Эффективность</th>
+<th>Риски</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Инженерное меню (коды)</td>
+<td>Низкая</td>
+<td>Средняя (только просмотр)</td>
+<td>Минимальные</td>
+</tr>
+<tr>
+<td>ADB команды</td>
+<td>Высокая</td>
+<td>Высокая (полный контроль)</td>
+<td>Средние (ошибка команды)</td>
+</tr>
+<tr>
+<td>Сброс настроек сети</td>
+<td>Низкая</td>
+<td>Высокая (для сбоя связи)</td>
+<td>Потеря паролей Wi-Fi</td>
+</tr>
+</tbody>
+</table>
+
+<p>Для обычного пользователя наиболее безопасным и эффективным методом остается использование встроенных средств сброса и инженерных кодов. Использование ADB оправдано только в случаях, когда стандартные методы не дают результата и требуется глубокий анализ логов.</p>
+<p>android.server.telecom</strong> — это лишь один из элементов сложной цепочки связи. Проблемы могут крыться в радиомодуле, антенне, самой SIM-карте или на стороне оператора. Поэтому перед сложными манипуляциями всегда стоит проверить работу устройства с другой SIM-картой или в другой локации.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Оптимальным способом «открыть» и проверить com.android.server.telecom является использование инженерного кода *#*#4636#*#* или команд ADB для продвинутых пользователей.</p></aside>
+
+<p>В заключение, управление системным сервисом телефонии требует аккуратности. Большинство проблем решается простым сбросом настроек сети или обновлением программного обеспечения. Глубокое вмешательство в процессы через ADB или root-права должно производиться только при наличии резервной копии данных и четкого понимания выполняемых действий.</p>
+<p>Регулярное обновление системы и приложений от Google обеспечивает стабильную работу <em>com.android.server.telecom</em>. Если проблемы носят постоянный характер и не решаются программными методами, высока вероятность аппаратной неисправности модуля связи, что требует обращения в сервисный центр.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/zv/zvukorezhissyor-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Звукорежиссёр на телефоне: настройка микрофона и запись</span>
+                <span class="pb-related-desc">Полная инструкция по настройке звука на смартфоне. Как превратить телефон в студийный микрофон, выбр</span>
+            </a><a href="/articles/k/ka/kak-udalit-mi-show-s-telefona-xiaomi.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Mi Show на Xiaomi: полное руководство</span>
+                <span class="pb-related-desc">Пошаговая инструкция по отключению рекламы Mi Show, блокировке через ADB и DNS. Узнайте, как убрать </span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-mnogostranichnyj-rezhim-na-telefone-honor.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить многостраничный режим на Honor: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по отмене разделения экрана на Honor. Настройка Magic UI, EMUI и Android 10-14.</span>
+            </a><a href="/articles/p/pr/prilozhenie-dlya-chasov-x22-pro.html" class="pb-related-card">
+                <span class="pb-related-title">Приложение для часов X22 Pro: полная настройка и обзор функций</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению умных часов X22 Pro. Скачать приложение, настроить уведомления, </span>
+            </a><a href="/articles/k/ka/kak-razdelit-ekran-na-dve-chasti-na-magnitole-android-tc18-pro-max.html" class="pb-related-card">
+                <span class="pb-related-title">Разделение экрана на Android TC18 Pro Max: Инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по запуску двух приложений одновременно на магнитоле TC18 Pro Max. Настройка S</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-2-klient-diskorda-na-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить два Discord на Android: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по запуску двух аккаунтов Discord на одном телефоне. Методы клонирования, безо</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

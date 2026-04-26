@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>SVC агент: назначение, ошибки и управление службой — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор функции SVC Agent в Android, причины ошибок в логах, методы отключения и влияние на работу системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/sv/svc-agent-chto.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SVC агент: назначение, ошибки и управление службой">
+    <meta property="og:description" content="Подробный разбор функции SVC Agent в Android, причины ошибок в логах, методы отключения и влияние на работу системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">SVC агент: назначение, ошибки и управление службой</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурная-роль-и-назначение-процесса-svc-agent">Архитектурная роль и назначение процесса SVC Agent</a></li><li><a href="#диагностика-аномального-потребления-ресурсов-и-ошибок">Диагностика аномального потребления ресурсов и ошибок</a></li><li><a href="#методы-устранения-сбоев-и-оптимизация-работы">Методы устранения сбоев и оптимизация работы</a></li><li><a href="#типичные-ошибки-пользователей-при-работе-с-системными-процессами">Типичные ошибки пользователей при работе с системными процессами</a></li><li><a href="#резюме-и-профилактика-стабильной-работы-системы">Резюме и профилактика стабильной работы системы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/ac/ac4bfspexe-0xc000007b.html">Ошибка ac4bfsp.exe 0xc000007b: Решение проблемы запуска</a></li><li><a href="/articles/k/ka/kak-sdelat-v-prilozhenii-sberbank-chtoby-pri-oformlenii-karty-pisalos-vsyo-s-zaglavnoj-bukvy.html">Как в Сбербанке сделать все буквы заглавными в карте</a></li><li><a href="/articles/k/ko/kod-sobytiya-8198.html">Код события 8198: Решение ошибки входа в Microsoft 365</a></li><li><a href="/articles/a/aj/ajnj-d-ghjabkm.html">Как исправить ошибку ajnj d ghjabkm на Windows и Android</a></li><li><a href="/articles/c/ca/call-recorder-vse-vremya-zakryvaetsya-chto-delat.html">Call Recorder закрывается: причины и решения для Android</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>SVC Agent: назначение, диагностика и управление службой</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурная-роль-и-назначение-процесса-svc-agent">Архитектурная роль и назначение процесса SVC Agent</a></li><li><a href="#диагностика-аномального-потребления-ресурсов-и-ошибок">Диагностика аномального потребления ресурсов и ошибок</a></li><li><a href="#методы-устранения-сбоев-и-оптимизация-работы">Методы устранения сбоев и оптимизация работы</a></li><li><a href="#типичные-ошибки-пользователей-при-работе-с-системными-процессами">Типичные ошибки пользователей при работе с системными процессами</a></li><li><a href="#резюме-и-профилактика-стабильной-работы-системы">Резюме и профилактика стабильной работы системы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При анализе списка запущенных процессов в диспетчере задач или при изучении логов системы <em>Android</em> пользователи часто сталкиваются с названием <strong>SVC Agent</strong>. Появление этого процесса может вызвать беспокойство, особенно если он начинает потреблять значительный объем оперативной памяти или процессорного времени, что визуально отражается на скорости работы интерфейса. Владельцы устройств замечают, что батарея разряжается быстрее обычного, а в логах появляются повторяющиеся записи о сбоях или перезапусках именно этой службы.</p>
+
+<p>На практике игнорирование аномального поведения системных агентов может привести к накоплению ошибок в кэше и нестабильности работы операционной системы в целом. Если процесс зависает в циклическом перезапуске, это блокирует другие важные службы, ответственные за сетевое взаимодействие или синхронизацию данных. Понимание природы этого компонента необходимо для принятия взвешенного решения о методах оптимизации устройства без риска нарушить его функциональность.</p>
+
+<p>Детальный анализ показывает, что данный компонент не является вирусом или вредоносным ПО, а представляет собой стандартный элемент архитектуры операционной системы. Однако, как и любой программный код, он подвержен багам, конфликтам версий и ошибкам в работе сторонних приложений, которые пытаются получить к нему доступ. Грамотная диагностика позволяет устранить причины повышенной нагрузки и вернуть устройству штатный режим работы.</p>
+
+<h2 id="архитектурная-роль-и-назначение-процесса-svc-agent">Архитектурная роль и назначение процесса SVC Agent</h2>
+
+<p>В основе операционной системы <em>Android</em> лежит сложный механизм межпроцессорного взаимодействия, где каждый компонент выполняет строго определенную функцию. <strong>SVC Agent</strong> (Service Agent) выступает в роли посредника или управляющего агента для различных фоновых сервисов. Его основная задача заключается в координации запуска, остановки и мониторинга состояния служб, которые не имеют собственного пользовательского интерфейса, но критически важны для работы системы.</p>
+
+<p>Если у вас возникло подозрение, что процесс является лишним, стоит рассмотреть его связь с аппаратными компонентами. Часто этот агент отвечает за взаимодействие программного обеспечения с конкретными модулями смартфона, такими как модуль связи, датчики или управление питанием. Он собирает данные от драйверов и передает их в вышестоящие уровни системы, обеспечивая корректную работу функций, которыми пользователь пользуется ежедневно, даже не подозревая о сложной внутренней кухне.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах разных производителей (Samsung, Xiaomi, Huawei) реализация этого агента может иметь свои особенности и названия в исходном коде, но логика работы остается схожей.</p></aside>
+
+<p>Важно понимать, что SVC Agent не является единым монолитным приложением. Это скорее набор библиотек и исполняемых файлов, которые активируются по мере необходимости. <em>Системный сервис</em> может запросить выполнение фоновой задачи, и именно агент возьмет на себя управление ресурсами для ее выполнения. Нарушение в работе этого механизма приводит к тому, что задачи выполняются некорректно или не выполняются вовсе, что пользователь воспринимает как «глюки» телефона.</p>
+
+<p>На практике можно выделить несколько ключевых направлений, где задействован данный агент. Ниже представлена таблица, иллюстрирующая основные сферы ответственности процесса.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сфера ответственности</th>
+<th>Описание функции</th>
+<th>Влияние на пользователя</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Управление сервисами</td>
+<td>Контроль запуска и завершения фоновых процессов</td>
+<td>Стабильность работы приложений</td>
+</tr>
+<tr>
+<td>Аппаратная абстракция</td>
+<td>Связь между ОС и физическими компонентами (датчики, modem)</td>
+<td>Работа звонков, GPS, акселерометра</td>
+</tr>
+<tr>
+<td>Мониторинг ресурсов</td>
+<td>Отслеживание потребления памяти и CPU службами</td>
+<td>Энергоэффективность и скорость отклика</td>
+</tr>
+</tbody>
+</table>
+
+<p>Разобравшись с назначением, становится ясно, что полное удаление этого компонента невозможно без глубокой модификации системы, что не рекомендуется обычному пользователю. <strong>Системная целостность</strong> напрямую зависит от корректной работы таких агентов. Поэтому основной фокус при troubleshooting должен быть направлен не на удаление, а на выявление причин сбоев в их работе.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключевой вывод: SVC Agent — это критически важный системный процесс для управления службами и аппаратным обеспечением, а не вредоносное ПО.</p></aside>
+
+<h2 id="диагностика-аномального-потребления-ресурсов-и-ошибок">Диагностика аномального потребления ресурсов и ошибок</h2>
+
+<p>Первым признаком проблем с SVC Agent обычно становится заметное снижение производительности устройства. Если телефон начинает нагреваться в режиме простоя или батарея разряжается за несколько часов, стоит проверить статистику использования батареи. В разделе <code>Настройки → Батарея → Использование батареи</code> можно увидеть, какой процесс потребляет больше всего энергии. Если в топе списка находится системный процесс с названием, содержащим «SVC» или «Service», это сигнал для дальнейшей диагностики.</p>
+
+<p>Допустим, вы заметили, что проблема проявляется после установки определенного приложения. В таком случае высока вероятность конфликта программного обеспечения. Некоторые неоптимизированные приложения могут создавать бесконечные циклы запросов к системному агенту, заставляя его работать без остановки. Это приводит к так называемому «wakelock», когда процессор не может перейти в спящий режим, продолжая потреблять энергию.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Диагностика через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство к ПК с включенной отладкой по USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите команду adb shell top -m 10</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проанализируйте список процессов по нагрузке CPU</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запишите имя процесса с аномальными показателями</span></div></div>
+
+<p>Для более глубокого анализа можно использовать инструменты разработчика. Перейдя в <code>Настройки → О телефоне → Номер сборки</code> (нажать 7 раз), вы активируете меню разработчика. Там следует включить «Отладку по USB» и использовать компьютер для снятия логов. Команда <code>logcat</code> позволит увидеть-поток системных событий, где ошибки, связанные с агентом, часто помечаются тегом <em>AndroidRuntime</em> или именем конкретного сервиса.</p>
+
+<p>Если у вас есть доступ к расширенной статистике, обратите внимание на частоту пробуждений устройства. SVC Agent может будить телефон для выполнения синхронизации или проверки статуса сети. Чрезмерная активность в этом направлении часто свидетельствует о плохом сетевом соединении или ошибке в конфигурации аккаунта, который пытается постоянно переподключиться.</p>
+
+<p>Ниже приведена таблица с типичными симптомами и их возможными техническими причинами, связанными с работой агента.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Возможная причина</th>
+<th>Метод проверки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Высокий расход батареи</td>
+<td>Циклический перезапуск службы (Bootloop сервиса)</td>
+<td>Статистика батареи и Logcat</td>
+</tr>
+<tr>
+<td>Нагрев корпуса</td>
+<td>Постоянная активность CPU из-за зависшего процесса</td>
+<td>Диспетчер задач / Мониторинг CPU</td>
+</tr>
+<tr>
+<td>Лаги интерфейса</td>
+<td>Нехватка оперативной памяти из-за утечек агента</td>
+<td>Раздел «Память» в настройках</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="методы-устранения-сбоев-и-оптимизация-работы">Методы устранения сбоев и оптимизация работы</h2>
+
+<p>Если диагностика подтвердила, что SVC Agent является источником проблем, следует перейти к активным действиям по устранению неисправности. Первым и самым безопасным шагом является очистка кэша и данных системных служб, связанных с проблемным агентом. Для этого необходимо перейти в <code>Настройки → Приложения → Показать системные процессы</code>, найти соответствующий сервис (часто он может называться «Android Services» или иметь название вендора) и выбрать пункт «Хранилище».</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Очистка данных системных служб может сбросить некоторые настройки системы (например, настройки Wi-Fi или Bluetooth), но не удалит личные файлы пользователя.</p></aside>
+
+<p>На практике часто помогает обновление системного компонента <em>Android System WebView</em> и самих <em>Сервисов Google Play</em>. Поскольку SVC Agent тесно интегрирован с экосистемой Google, некорректная работа этих базовых компонентов может вызывать каскадные ошибки. Зайдите в <code>Google Play Маркет → Управление приложениями и устройством</code> и проверьте наличие доступных обновлений для всех системных элементов.</p>
+
+<p>В случаях, когда проблема вызвана сторонним приложением, эффективным методом является поиск виновника путем исключения. Можно воспользоваться безопасным режимом, который загружает систему без сторонних приложений. Если в безопасном режиме SVC Agent работает нормально, значит, конфликтует одно из установленных вами приложений. Следует удалять недавно установленные программы по одной, контролируя состояние системы после каждого удаления.</p>
+
+<p>Для продвинутых пользователей, имеющих права root, существует возможность заморозки проблемного сервиса с помощью утилит вроде <em>Titanium Backup</em> или <em>SD Maid</em>. Однако это крайняя мера. Более мягким подходом является использование команд ADB для отключения компонента без удаления:</p>
+
+<pre><code>adb shell pm disable-user --user 0 com.android.package.name</code></pre>
+
+<p>Где <code>com.android.package.name</code> нужно заменить на реальное имя пакета, вызывающего проблемы. Это действие обратимо и позволяет проверить, не нарушит ли отключение службы работу других функций телефона.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы решения проблем с SVC Agent</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Сохранение целостности системы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск случайного отключения важных функций:Потеря гарантии при получении root-прав:Возможность временного решения без перепрошивки</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-пользователей-при-работе-с-системными-процессами">Типичные ошибки пользователей при работе с системными процессами</h2>
+
+<p>Пытаясь решить проблему с SVC Agent, пользователи часто совершают ошибки, которые могут усугубить ситуацию. Понимание этих ошибок поможет избежать потери данных или полной неработоспособности устройства. Ниже приведен список наиболее распространенных заблуждений и неверных действий.</p>
+
+<ol>
+<li><strong>Попытка полного удаления системного файла через файловый менеджер</strong> — это действие без получения root-прав невозможно, а при их наличии может привести к «кирпичеванию» устройства, так как система потеряет критически важный компонент для запуска.</li>
+<li><strong>Использование сомнительных «чистильщиков» памяти</strong> — приложения, обещающие ускорить телефон путем агрессивного завершения процессов SVC Agent, лишь заставляют систему перезапускать их снова, создавая дополнительную нагрузку на процессор и батарею.</li>
+<li><strong>Игнорирование обновлений прошивки</strong> — часто баги в работе системных агентов исправляются производителями в патчах безопасности и обновлениях ОС; отказ от обновления оставляет устройство уязвимым перед известными ошибками.</li>
+<li><strong>Сброс до заводских настроек без резервного копирования</strong> — хотя это действенный метод, многие забывают сохранить важные данные, теряя контакты и фото, хотя проблему можно было решить менее радикальными методами.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Перед любыми манипуляциями с системными настройками всегда создавайте полную резервную копию данных на внешнем носителе или в облачном хранилище.</p></aside>
+
+<p>Особое внимание стоит уделить ошибочному мнению, что SVC Agent — это вирус. Антивирусные сканеры могут реагировать на нестандартное поведение системных процессов, помечая их как угрозу. Однако слепое доверие таким предупреждениям и попытка «лечения» антивирусом часто не дает результата, так как проблема лежит в плоскости логики работы ОС, а не во вредоносном коде.</p>
+
+<p>Если у вас возникла ситуация, когда после всех манипуляций телефон продолжает вести себя нестабильно, стоит рассмотреть возможность сброса настроек сети. Перейдите в <code>Настройки → Система → Сброс настроек → Сброс настроек Wi-Fi, мобильного интернета и Bluetooth</code>. Это действие не затронет личные файлы, но обновит сетевые конфигурации, которые часто являются триггером для сбоев агента.</p>
+
+<h2 id="резюме-и-профилактика-стабильной-работы-системы">Резюме и профилактика стабильной работы системы</h2>
+
+<p>SVC Agent представляет собой неотъемлемую часть операционной системы <em>Android</em>, обеспечивающую связь между программным обеспечением и аппаратными компонентами. Его нормальная работа проходит незаметно для пользователя, но любые сбои в этом процессе могут привести к серьезным проблемам с производительностью и автономностью устройства. Понимание природы этого процесса позволяет избегать паники и необдуманных действий при появлении уведомлений о его активности.</p>
+
+<p>Для поддержания стабильности системы рекомендуется регулярно обновлять операционную систему и критически важные приложения, следить за свободным пространством во внутренней памяти и избегать установки программ из непроверенных источников. Простые меры профилактики, такие как периодическая перезагрузка устройства, также помогают очищать временные файлы и завершать зависшие процессы, предотвращая накопление ошибок в работе SVC Agent.</p>
+
+<p>В случае возникновения серьезных сбоев, наиболее эффективным и безопасным методом остается последовательная диагностика, начиная с проверки статистики батареи и заканчивая сбросом настроек. Грамотное использование встроенных инструментов диагностики и понимание принципов работы операционной системы позволяют поддерживать смартфон в оптимальном состоянии на протяжении всего срока службы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/ac/ac4bfspexe-0xc000007b.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка ac4bfsp.exe 0xc000007b: Решение проблемы запуска</span>
+                <span class="pb-related-desc">Подробный разбор ошибки ac4bfsp.exe с кодом 0xc000007b. Эффективные методы исправления для Windows 1</span>
+            </a><a href="/articles/k/ka/kak-sdelat-v-prilozhenii-sberbank-chtoby-pri-oformlenii-karty-pisalos-vsyo-s-zaglavnoj-bukvy.html" class="pb-related-card">
+                <span class="pb-related-title">Как в Сбербанке сделать все буквы заглавными в карте</span>
+                <span class="pb-related-desc">Инструкция по изменению регистра букв в приложении СберБанк Онлайн. Настройки шрифта, перевод в верх</span>
+            </a><a href="/articles/k/ko/kod-sobytiya-8198.html" class="pb-related-card">
+                <span class="pb-related-title">Код события 8198: Решение ошибки входа в Microsoft 365</span>
+                <span class="pb-related-desc">Подробный разбор кода события 8198. Как исправить ошибку входа в Office 365, сбросить учетные данные</span>
+            </a><a href="/articles/a/aj/ajnj-d-ghjabkm.html" class="pb-related-card">
+                <span class="pb-related-title">Как исправить ошибку ajnj d ghjabkm на Windows и Android</span>
+                <span class="pb-related-desc">Подробная инструкция по расшифровке и устранению ошибки ajnj d ghjablm. Решения для Windows 10/11, A</span>
+            </a><a href="/articles/c/ca/call-recorder-vse-vremya-zakryvaetsya-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Call Recorder закрывается: причины и решения для Android</span>
+                <span class="pb-related-desc">Приложение Call Recorder постоянно закрывается? Подробная инструкция по устранению сбоев, очистке кэ</span>
+            </a><a href="/articles/k/ka/kak-nastroit-obnovleniya-tolko-cherez-vaj-faj-cherez-getapps.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка обновлений GetApps только через Wi-Fi</span>
+                <span class="pb-related-desc">Подробная инструкция по ограничению трафика GetApps для скачивания обновлений исключительно через Wi</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

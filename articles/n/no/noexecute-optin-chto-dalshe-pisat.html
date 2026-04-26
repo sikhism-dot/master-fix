@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Параметр noexecute optin: что писать дальше в BCD — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по настройке DEP в Windows через noexecute optin. Разбор параметров optin, optout, always, never и команд bcdedit.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/n/no/noexecute-optin-chto-dalshe-pisat.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Параметр noexecute optin: что писать дальше в BCD">
+    <meta property="og:description" content="Техническое руководство по настройке DEP в Windows через noexecute optin. Разбор параметров optin, optout, always, never и команд bcdedit.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Параметр noexecute optin: что писать дальше в BCD</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-dep-и-роль-параметра-nx">Архитектура DEP и роль параметра NX</a></li><li><a href="#синтаксис-команды-bcdedit-и-режимы-работы">Синтаксис команды bcdedit и режимы работы</a></li><li><a href="#практическое-применение-изменение-настроек-загрузки">Практическое применение: изменение настроек загрузки</a></li><li><a href="#диагностика-и-устранение-конфликтов">Диагностика и устранение конфликтов</a></li><li><a href="#типичные-ошибки-при-конфигурировании">Типичные ошибки при конфигурировании</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-zapisat-zvuk-s-mikshernogo-pulta.html">Как записать звук с микшерного пульта: полное руководство</a></li><li><a href="/articles/k/ka/kak-najti-dokument-na-vindovs-7-majkrosoft-vord-esli-ne-znaesh-kuda-sokhranil-po-slovam.html">Как найти документ Word на Windows 7 по тексту</a></li><li><a href="/articles/k/ka/kak-primenyat-zhidkoe-steklo-dlya-bani.html">Жидкое стекло для бани: полная инструкция по применению</a></li><li><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html">Папка 2ГИС: где хранятся карты и как найти файлы</a></li><li><a href="/articles/z/za/zala-na-tcl.html">Как смотреть Zala на TCL Smart TV: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка DEP через noexecute optin: полный разбор параметров</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-dep-и-роль-параметра-nx">Архитектура DEP и роль параметра NX</a></li><li><a href="#синтаксис-команды-bcdedit-и-режимы-работы">Синтаксис команды bcdedit и режимы работы</a></li><li><a href="#практическое-применение-изменение-настроек-загрузки">Практическое применение: изменение настроек загрузки</a></li><li><a href="#диагностика-и-устранение-конфликтов">Диагностика и устранение конфликтов</a></li><li><a href="#типичные-ошибки-при-конфигурировании">Типичные ошибки при конфигурировании</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Появление сообщения об ошибке, связанного с Data Execution Prevention (DEP), или требование изменить параметр загрузки системы часто застает врасплох даже опытных пользователей. Обычно ситуация возникает, когда критически важное приложение перестает запускаться из-за блокировки со стороны операционной системы, или же при попытке оптимизировать работу ядра для специфических задач.</p>
+<p>В командной строке загрузчика Windows (BCD) существует ключ <code>nx</code>, который управляет политикой безопасности исполнения кода. Именно после команды <code>noexecute</code> следует зарезервированное слово, определяющее режим работы защиты. Неправильный выбор этого параметра может привести как к уязвимости системы, так и к полной неработоспособности программного обеспечения.</p>
+<p>Понимание различий между значениями <code>optin</code>, <code>optout</code>, <code>always</code> и <code>never</code> является фундаментальным для администрирования Windows. В данном руководстве детально рассматривается синтаксис, сценарии использования каждого режима и методы безопасного переключения конфигурации через утилиту <code>bcdedit</code>.</p>
+
+<h2 id="архитектура-dep-и-роль-параметра-nx">Архитектура DEP и роль параметра NX</h2>
+
+<p>Технология предотвращения выполнения данных (DEP) работает в тандеме с процессором, помечая области памяти как исполняемые или неисполняемые. Когда параметр <code>nx</code> установлен в значение <code>optin</code>, защита включается только для системных компонентов Windows и служб. Это <strong>стандартная настройка по умолчанию</strong> для большинства клиентских версий операционной системы, обеспечивающая баланс между безопасностью и совместимостью.</p>
+<p>Если в конфигурации указано <code>optout</code>, то DEP активируется для всех процессов, кроме тех, что находятся в специальном списке исключений. Такой подход характерен для серверных редакций или рабочих станций, где запущено множество проверенных корпоративных приложений, требующих максимальной защиты периметра.</p>
+<p>Механизм работы основан на битах NX (No-eXecute) в процессорах AMD и bit XD (Execute Disable) в процессорах Intel. Операционная система использует эти аппаратные функции для маркировки страниц памяти. Если приложение попытается запустить код из помеченной области (например, из буфера переполнения), система принудительно завершит процесс.</p>
+
+<h3>Различия между клиентскими и серверными версиями</h3>
+<p>В пользовательских системах, таких как <em>Windows 10 Home</em> или <em>Windows 11 Pro</em>, приоритет отдается совместимости со старым ПО. Поэтому режим <code>optin</code> является наиболее безопасным выбором, не требующим ручной настройки списков исключений. Серверные ОС, напротив, часто требуют более агрессивной политики защиты данных.</p>
+<p>Администраторы должны учитывать, что изменение параметра влияет на все загрузки в текущей конфигурации BCD. При обновлении системы или установке крупных пакетов обновлений эти настройки могут быть проверены на целостность, но обычно сохраняются.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Параметр noexecute optin является заводским стандартом для Windows 7, 8, 10 и 11 в пользовательском сегменте.</p></aside>
+
+<p>Важно понимать, что DEP работает на уровне ядра и не зависит от антивирусного ПО. Отключение или модификация этого параметра снижает общий уровень защищенности компьютера от эксплойтов нулевого дня.</p>
+
+<h2 id="синтаксис-команды-bcdedit-и-режимы-работы">Синтаксис команды bcdedit и режимы работы</h2>
+
+<p>Для изменения политики исполнения кода используется утилита командной строки <code>bcdedit</code>. Запрос «noexecute optin что дальше писать» подразумевает необходимость указать конкретное значение после ключевого слова. Полный синтаксис команды выглядит как <code>bcdedit /set {identifier} nx <value></code>, где value — это один из четырех допустимых параметров.</p>
+<p>Значение <code>optin</code> означает, что DEP включен только для базовых компонентов Windows. Значение <code>optout</code> включает DEP для всех программ, кроме добавленных в исключения вручную. Режим <code>always</code> принудительно активирует защиту для всех процессов без исключений, что может вызвать сбои в старом софте.</p>
+<p>Параметр <code>never</code> полностью отключает DEP. Использование этого режима <strong>категорически не рекомендуется</strong> в рабочей среде, так как он оставляет систему уязвимой для атак через переполнение буфера. Этот режим используется только для отладки драйверов или запуска крайне старого программного обеспечения.</p>
+
+<h3>Таблица совместимости параметров</h3>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Охват защиты</th>
+<th>Рекомендуемое использование</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>optin</td>
+<td>Только компоненты Windows</td>
+<td>Домашние ПК, стандартная работа</td>
+</tr>
+<tr>
+<td>optout</td>
+<td>Все процессы, кроме исключений</td>
+<td>Серверы, защищенные рабочие станции</td>
+</tr>
+<tr>
+<td>always</td>
+<td>Все процессы без исключений</td>
+<td>Высокий уровень безопасности, тестирование</td>
+</tr>
+<tr>
+<td>never</td>
+<td>Защита отключена</td>
+<td>Отладка, запуск legacy-приложений</td>
+</tr>
+</tbody>
+</table>
+
+<p>При вводе команд важно соблюдать регистр символов, хотя утилита <code>bcdedit</code> обычно нечувствительна к регистру значений параметров. Однако пути к исполняемым файлам в других командах могут быть чувствительны к регистру в зависимости от файловой системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Изменение параметра NX</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте командную строку от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите bcdedit /set {current} nx optin</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите Enter для применения</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите компьютер</span></div></div>
+
+<p>Идентификатор <code>{current}</code> указывает на текущую загрузочную запись. Также можно использовать <code>{default}</code> для применения настроек к записи, выбираемой по умолчанию при старте системы, если их несколько.</p>
+
+<h2 id="практическое-применение-изменение-настроек-загрузки">Практическое применение: изменение настроек загрузки</h2>
+
+<p>Для внесения изменений необходимо запустить консоль с правами администратора. Если просто ввести команду без повышенных привилегий, система выдаст ошибку доступа, и параметр <code>noexecute</code> изменен не будет. Это стандартная мера защиты реестра загрузочных конфигураций.</p>
+<p>Допустим, требуется переключить систему в режим максимальной совместимости для запуска старой игры или программы. В этом случае в командной строке после <code>noexecute</code> пишется слово <code>never</code>. Команда будет выглядеть как <code>bcdedit /set {current} nx never</code>. После выполнения необходимо перезагрузить компьютер.</p>
+<p>Если же задача состоит в повышении безопасности, например, после устранения уязвимости, следует использовать параметр <code>optout</code>. Это потребует дополнительной работы по добавлению исключений для легитимных программ, которые могут конфликтовать с DEP. Список исключений управляется через графический интерфейс свойств системы.</p>
+
+<h3>Пошаговая инструкция по сбросу настроек</h3>
+<ol>
+<li>Нажмите комбинацию клавиш <code>Win + X</code> и выберите «Терминал (Администратор)» или «Командная строка (Администратор)».</li>
+<li>Введите команду <code>bcdedit /set {current} nx optin</code> для возврата к заводским настройкам безопасности.</li>
+<li>Дождитесь сообщения «Операция успешно завершена».</li>
+<li>Выполните перезагрузку устройства для применения изменений.</li>
+</ol>
+
+<p>В некоторых случаях, особенно на системах с UEFI и Secure Boot, изменения в BCD могут требовать подтверждения при загрузке. Экран может предложить выбрать режим загрузки или подтвердить изменение хеш-суммы загрузчика.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отключение DEP (параметр never) снижает защищенность системы. Делайте это только на изолированных машинах или для решения конкретных проблем совместимости.</p></aside>
+
+<p>Проверка текущего состояния осуществляется командой <code>bcdedit /enum</code>. В выводе нужно найти секцию «Windows Boot Loader» и строку <code>nx</code>. Если строка отсутствует, значит, действует значение по умолчанию (обычно <code>optin</code>).</p>
+
+<h2 id="диагностика-и-устранение-конфликтов">Диагностика и устранение конфликтов</h2>
+
+<p>Некорректная настройка параметра <code>nx</code> часто приводит к циклическим перезагрузкам или появлению синего экрана смерти (BSOD) с кодами ошибок, связанными с памятью. Если после изменения параметра система перестала загружаться, необходимо использовать среду восстановления.</p>
+<p>В среде восстановления (WinRE) доступ к командной строке позволяет исправить запись BCD даже если ОС не стартует. Команды остаются теми же, но вместо <code>{current}</code> может потребоваться идентификатор конкретной записи загрузки, который можно найти через <code>bcdedit /enum all</code>.</p>
+<p>Частой проблемой является конфликт между настройками DEP в BIOS/UEFI и настройками в Windows. Если в BIOS функция NX/XD отключена, то операционная система не сможет использовать аппаратную защиту, независимо от значения параметра <code>noexecute</code>.</p>
+
+<h3>Анализ логов и событий</h3>
+<p>Для диагностики проблем следует обратиться к журналу событий Windows. Раздел <code>Windows Logs → System</code> содержит записи от источника <em>Application Compatibility</em> или <em>Security</em>, где фиксируются попытки запуска исполняемого кода из защищенных областей памяти.</p>
+<p>Если приложение постоянно вылетает с ошибкой DEP, не стоит сразу отключать защиту глобально. Лучше добавить конкретное приложение в список исключений через панель управления. Это сохранит уровень безопасности для остальных процессов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте PowerShell для автоматизации проверки статуса: Get-Process | Where-Object { $_.MainModule.ModuleName -eq "app.exe" } для анализа запущенных модулей.</p></aside>
+
+<p>Существуют также сторонние утилиты для управления DEP, но использование встроенного <code>bcdedit</code> является наиболее надежным методом, так как исключает ошибки интерпретации реестра сторонним софтом.</p>
+
+<h2 id="типичные-ошибки-при-конфигурировании">Типичные ошибки при конфигурировании</h2>
+
+<p>При работе с загрузочными параметрами пользователи часто допускают ряд системных ошибок, которые могут привести к нестабильной работе ПК. Понимание этих ошибок поможет избежать длительной отладки системы.</p>
+
+<ol>
+<li><strong>Использование неправильного идентификатора</strong> — попытка изменить параметр для <code>{default}</code>, когда активна другая загрузочная запись, или использование несуществующего GUID. Всегда проверяйте активную запись через <code>bcdedit /enum</code>.</li>
+<li><strong>Отсутствие прав администратора</strong> — выполнение команд в обычной командной строке. Операция завершится ошибкой «Access denied», и пользователь может подумать, что параметр уже установлен верно, хотя изменений не произошло.</li>
+<li><strong>Опечатки в значении параметра</strong> — ввод <code>opt-n</code> или <code>alway</code> вместо корректных <code>optin</code>, <code>optout</code>, <code>always</code>, <code>never</code>. Утилита выдаст ошибку синтаксиса, но не объяснит, какое именно слово ожидаются.</li>
+<li><strong>Игнорирование требований BIOS</strong> — изменение настроек в Windows при отключенной функции NX в BIOS. Это создает иллюзию настройки, которая фактически не работает на аппаратном уровне.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Управление через bcdedit</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Точность настройки</li><li>✅ Работает на уровне ядра</li><li>✅ Не требует GUI</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск ошибки синтаксиса</li><li>❌ Требует прав админа</li><li>❌ Нет визуальной обратной связи</li></ul></div>
+</div></div>
+
+<p> В таких случаях необходимо временно приостановить защиту или добавить исключение для консоли.</p>
+
+<h2 id="резюме-и-рекомендации">Резюме и рекомендации</h2>
+
+<p>Параметр <code>noexecute</code> является мощным инструментом управления безопасностью и совместимостью в Windows. Для большинства пользователей оптимальным выбором остается значение <code>optin</code>, которое обеспечивает защиту системных процессов без вмешательства в работу пользовательских приложений. Изменение этого параметра требуется редко и должно быть обосновано конкретными техническими требованиями.</p>
+<p>При необходимости повысить уровень защиты до <code>optout</code> или <code>always</code>, следует заранее подготовить список исключений для критически важных программ. Полное отключение DEP через параметр <code>never</code> допустимо только в изолированных тестовых средах или для запуска специфического устаревшего ПО, несовместимого с современными стандартами безопасности.</p>
+<p>Грамотное использование утилиты <code>bcdedit</code> позволяет гибко настраивать среду загрузки, но требует внимательности к синтаксису и правам доступа. Соблюдение баланса между функциональностью и безопасностью — ключевой принцип администрирования современных операционных систем.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Параметр noexecute optin является стандартом безопасности Windows, ограничивая DEP системными процессами. Изменение на optout или always повышает защиту, но требует настройки исключений.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-zapisat-zvuk-s-mikshernogo-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Как записать звук с микшерного пульта: полное руководство</span>
+                <span class="pb-related-desc">Пошаговая инструкция по подключению микшера к ПК. Настройка уровней, выбор интерфейса, борьба с шума</span>
+            </a><a href="/articles/k/ka/kak-najti-dokument-na-vindovs-7-majkrosoft-vord-esli-ne-znaesh-kuda-sokhranil-po-slovam.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти документ Word на Windows 7 по тексту</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску потерянных файлов Word в Windows 7. Использование встроенных средств,</span>
+            </a><a href="/articles/k/ka/kak-primenyat-zhidkoe-steklo-dlya-bani.html" class="pb-related-card">
+                <span class="pb-related-title">Жидкое стекло для бани: полная инструкция по применению</span>
+                <span class="pb-related-desc">Подробный технический гид по использованию жидкого стекла в бане. Технология нанесения, защита бетон</span>
+            </a><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html" class="pb-related-card">
+                <span class="pb-related-title">Папка 2ГИС: где хранятся карты и как найти файлы</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску папки 2ГИС на Android. Узнайте, куда сохраняются карты, как их перене</span>
+            </a><a href="/articles/z/za/zala-na-tcl.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть Zala на TCL Smart TV: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по установке и настройке Zala на телевизорах TCL с Android TV и Google TV. Решение оши</span>
+            </a><a href="/articles/s/si/sim-app-dialog-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Sim App Dialog: что это за процесс, вирус или системный файл Android</span>
+                <span class="pb-related-desc">Подробный анализ процесса sim app dialog на Android. Узнайте, зачем нужен системный диалог SIM-карты</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

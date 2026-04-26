@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Почему СберБанк занимает много памяти: анализ и решение — Мастер Фикс</title>
+    <meta name="description" content="Технический анализ причин раздувания кэша и данных приложения СберБанк. Методы очистки, работа с фоновыми процессами и оптимизация хранилища.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/p/po/pochemu-prilozhenie-sberbank-tak-mnogo-vesit.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Почему СберБанк занимает много памяти: анализ и решение">
+    <meta property="og:description" content="Технический анализ причин раздувания кэша и данных приложения СберБанк. Методы очистки, работа с фоновыми процессами и оптимизация хранилища.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Почему СберБанк занимает много памяти: анализ и решение</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-приложения-и-механизм-накопления-данных">Архитектура приложения и механизм накопления данных</a></li><li><a href="#функциональная-насыщенность-и-встроенные-сервисы">Функциональная насыщенность и встроенные сервисы</a></li><li><a href="#технические-особенности-обновлений-и-остаточные-файлы">Технические особенности обновлений и остаточные файлы</a></li><li><a href="#методы-оптимизации-и-очистки-хранилища">Методы оптимизации и очистки хранилища</a></li><li><a href="#типичные-ошибки-при-попытке-освободить-место">Типичные ошибки при попытке освободить место</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-izmenit-kod-elementa-sajta-na-android.html">Как изменить код элемента сайта на Андроид: пошаговая инструкция</a></li><li><a href="/articles/h/h9/h96-max-m3-kak-smotret-s-telefona.html">H96 Max M3: как смотреть с телефона через Wi-Fi и HDMI</a></li><li><a href="/articles/v/va/vaj-faj-kak-obnovit-na-telefone-android.html">Как обновить Wi-Fi на Android: полная инструкция</a></li><li><a href="/articles/k/ka/kak-privyazat-telefon-ajfon-k-planshetu-android.html">Как привязать iPhone к Android-планшету: полная инструкция</a></li><li><a href="/articles/k/ka/kak-posmotret-u-kogo-ya-v-chernom-spiske-v-vkontakte-cherez-telefon.html">Как проверить черный список ВКонтакте с телефона</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ причин раздувания хранилища приложением СберБанк</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-приложения-и-механизм-накопления-данных">Архитектура приложения и механизм накопления данных</a></li><li><a href="#функциональная-насыщенность-и-встроенные-сервисы">Функциональная насыщенность и встроенные сервисы</a></li><li><a href="#технические-особенности-обновлений-и-остаточные-файлы">Технические особенности обновлений и остаточные файлы</a></li><li><a href="#методы-оптимизации-и-очистки-хранилища">Методы оптимизации и очистки хранилища</a></li><li><a href="#типичные-ошибки-при-попытке-освободить-место">Типичные ошибки при попытке освободить место</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При очередном обновлении операционной системы или при попытке установить новую программу пользователь часто сталкивается с критической нехваткой свободного места в памяти смартфона.</p>
+<p>Особое удивление вызывает тот факт, что одно из часто используемых банковских приложений занимает не 100–200 мегабайт, как ожидалось, а несколько гигабайт дискового пространства.</p>
+<p>В операционной системе Android и iOS накопление временных файлов происходит незаметно для владельца устройства, превращаясь в серьезную проблему производительности.</p>
+
+<h2 id="архитектура-приложения-и-механизм-накопления-данных">Архитектура приложения и механизм накопления данных</h2>
+<p>Современные банковские приложения представляют собой сложные программные комплексы, которые выходят далеко за рамки простого отображения баланса счета.</p>
+<p>Основной объем занимаемого пространства формируется за счет кэширования графических элементов, истории транзакций и вложенных модулей экосистемы.</p>
+<p>Каждый раз, когда открывается раздел с новостями, акциями партнеров или чеками, медиафайлы сохраняются в локальном хранилище для ускорения повторной загрузки.</p>
+<p>Если пользователь активно пользуется сервисами доставки, кинотеатрами или маркетплейсами внутри приложения, объем кэша растет экспоненциально.</p>
+<p>Важно понимать, что <strong>агрегирование микросервисов</strong> внутри одного исполняемого файла приводит к значительному увеличению веса программы после установки.</p>
+
+<h3>Влияние версий операционной системы и кэша</h3>
+<p>На устройствах под управлением <em>Android 10-14</em> механизм работы с кэшем приложений имеет свои особенности, позволяющие программам занимать большие объемы памяти без автоматической очистки.</p>
+<p>В более старых версиях прошивок система реже инициирует процесс удаления временных файлов фоновых приложений, считая их полезными для быстродействия.</p>
+<p>На практике это означает, что файлы могут храниться месяцами, если пользователь вручную не инициирует очистку или не удалит приложение полностью.</p>
+<p>В операционной системе <em>iOS</em> управление памятью более жесткое, однако кэш документов и данных внутри приложения <em>СберБанк</em> также имеет свойство разрастаться.</p>
+<p>Разница в подходах к хранению данных объясняет, почему на одном устройстве приложение весит 500 Мб, а на другом, при том же сценарии использования, — уже 2 Гб.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип данных</th>
+<th>Описание содержимого</th>
+<th>Влияние на объем</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Кэш изображений</td>
+<td>Логотипы, баннеры, фото товаров</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Логи транзакций</td>
+<td>История операций, чеки, квитанции</td>
+<td>Среднее</td>
+</tr>
+<tr>
+<td>Модули экосистемы</td>
+<td>Встроенные мини-аппы сервисов</td>
+<td>Критическое</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Объем кэша напрямую зависит от частоты использования разделов с медиаконтентом, таких как «Платежи» или «Маркет».</p></aside>
+
+<h2 id="функциональная-насыщенность-и-встроенные-сервисы">Функциональная насыщенность и встроенные сервисы</h2>
+<p>Приложение банка давно перестало быть просто инструментом для перевода денег, превратившись в супер-апп с десятками встроенных функций.</p>
+<p>Внутри основного пакета программы находятся ресурсы для работы с инвестициями, страховыми продуктами, билетами и заказами еды.</p>
+<p>Даже если пользователь никогда не открывал раздел «Инвестиции», базовые библиотеки для отображения графиков и котировок уже занимают место на диске.</p>
+<p>Каждый новый функциональный модуль добавляет свои ресурсы, шрифты и скрипты в общую структуру приложения.</p>
+<p><strong>Модульная архитектура</strong> позволяет обновлять части программы независимо, но требует наличия резервного места для развертывания компонентов.</p>
+
+<h3>Ресурсы для работы с чеками и историей</h3>
+<p>Функция хранения цифровых чеков требует сохранения копий документов или их детализированных превью в памяти устройства.</p>
+<p>При длительном использовании приложения без очистки истории, база данных локальных транзакций может достигать сотен мегабайт.</p>
+<p>Особенно ресурсоемкими являются чеки с большим количеством позиций или содержащие графические элементы магазинов.</p>
+<p>Система приоритетно загружает эти данные при старте приложения, что также влияет на скорость работы и объем занимаемой оперативной памяти.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка занимаемого места</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройки устройства</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел Приложения</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите СберБанк в списке</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Изучите пункт «Память» или «Хранилище»</span></div></div>
+
+<p>Для пользователей, которые не пользуются дополнительными сервисами, существует возможность ограничить некоторые фоновые процессы, хотя полностью отключить модули нельзя.</p>
+<p>Это связано с тем, что обновление приложения происходит единым пакетом, и удаление неиспользуемых функций на уровне пользователя не предусмотрено разработчиком.</p>
+<p>Единственным эффективным способом уменьшить вес в данном случае остается периодическая очистка кэша через системные настройки.</p>
+
+<h2 id="технические-особенности-обновлений-и-остаточные-файлы">Технические особенности обновлений и остаточные файлы</h2>
+<p>Процесс обновления приложения через официальные магазины <em>Google Play</em> или <em>App Store</em> часто приводит к временному удвоению занимаемого объема.</p>
+<p>Система скачивает новый установочный пакет, распаковывает его, и только затем удаляет старые файлы, если позволяет алгоритм работы ОС.</p>
+<p>В некоторых случаях, особенно при прерывании обновления или сбоях файловой системы, старые версии библиотек могут оставаться в памяти.</p>
+<p>Остаточные файлы также образуются при неправильном удалении и повторной установке программы без предварительной очистки данных.</p>
+<p>Накопление таких «цифровых отходов» является одной из основных причин, почему приложение весит больше, чем заявлено в описании магазина.</p>
+
+<h3>Специфика файловых систем Android и iOS</h3>
+<p>Файловая система <em>EXT4</em>, используемая в большинстве устройств на Android, склонна к фрагментации при частой записи и удалении больших объемов данных.</p>
+<p>Это может приводить к ситуации, когда фактически удаленные файлы продолжают числиться в занятом пространстве до проведения дефрагментации или очистки.</p>
+<p>В экосистеме <em>Apple</em> механизм <em>APFS</em> работает эффективнее, но кэш приложений также имеет свойство некорректно пересчитываться в статистике хранилища.</p>
+<p>Часто помогает простой перезапуск устройства, который инициирует системные процессы перепроверки целостности файлов.</p>
+<p>Если проблема сохраняется, требуется более глубокое вмешательство в настройки хранения данных конкретного приложения.</p>
+
+<pre><code>adb shell pm clear ru.sberbank.mobile</code></pre>
+<p>Выполнение подобной команды через отладочный мост позволяет полностью очистить данные приложения, возвращая его к состоянию сразу после установки.</p>
+<p>Однако для обычного пользователя безопаснее использовать штатные интерфейсы операционной системы для управления памятью.</p>
+
+<table>
+<thead>
+<tr>
+<th>Операционная система</th>
+<th>Расположение кэша</th>
+<th>Метод очистки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android</td>
+<td>/data/data/ru.sberbank.mobile/cache</td>
+<td>Настройки → Приложения</td>
+</tr>
+<tr>
+<td>iOS</td>
+<td>Внутри контейнера приложения</td>
+<td>Переустановка приложения</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Полная очистка данных (не только кэша) приведет к выходу из аккаунта и удалению сохраненных шаблонов платежей. Потребуется повторная авторизация.</p></aside>
+
+<h2 id="методы-оптимизации-и-очистки-хранилища">Методы оптимизации и очистки хранилища</h2>
+<p>Существует несколько проверенных способов уменьшить объем, занимаемый приложением, без потери функциональности.</p>
+<p>Наиболее безопасным методом является использование встроенных средств операционной системы для управления памятью приложений.</p>
+<p>Регулярное проведение таких процедур позволяет держать размер приложения в разумных пределах и освобождать место для других задач.</p>
+<p>Пользователю следует выработать привычку проверять занимаемое место раз в месяц, особенно после крупных обновлений программы.</p>
+<p>Эффективность очистки зависит от того, насколько давно проводилась предыдущая процедура и как активно использовалось приложение в этот период.</p>
+
+<h3>Алгоритм действий для Android устройств</h3>
+<p>Владельцам смартфонов на базе Android доступен наиболее гибкий инструмент управления памятью.</p>
+<p>Необходимо перейти в системные настройки и найти раздел, отвечающий за управление приложениями.</p>
+<p>В списке установленных программ следует найти <em>СберБанк</em> и открыть страницу сведений о нем.</p>
+<p>Далее выбирается пункт «Хранилище» или «Память», где отображается детализация занятого пространства.</p>
+<p>Нажатие кнопки «Очистить кэш» безопасно удаляет временные файлы, не затрагивая личные данные и настройки входа.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Очистка кэша на Android</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте «Настройки»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в «Приложения и уведомления»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите «СберБанк»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите «Хранилище» и выберите «Очистить кэш»</span></div></div>
+
+<p>Если требуется более радикальное решение, можно выбрать опцию «Очистить данные», но это потребует повторного входа в систему.</p>
+<p>После очистки приложение при первом запуске будет работать немного медленнее, так как ему потребуется заново сформировать кэш.</p>
+<p>Это нормальное поведение, которое компенсируется освобожденным пространством и потенциальным устранением ошибок работы.</p>
+
+<h3>Нюансы управления памятью на iOS</h3>
+<p>В операционной системе <em>iOS</em> отсутствует возможность выборочной очистки кэша конкретного приложения через настройки.</p>
+<p>Пользователям доступны только два варианта: удаление приложения с сохранением данных (если поддерживается) или полная переустановка.</p>
+<p>Наиболее эффективным методом является удаление приложения и его установка заново из <em>App Store</em>.</p>
+<p>Это гарантирует удаление всех накопленных временных файлов и логов, возвращая приложению минимально возможный вес.</p>
+
+
+<ul>
+<li>Проверьте наличие актуальной резервной копии устройства в iCloud.</li>
+<li>Убедитесь, что помните код доступа или пароль от учетной записи.</li>
+<li>Удалите приложение, зажав его иконку на рабочем столе.</li>
+<li>Зайдите в App Store и заново установите СберБанк.</li>
+<li>Выполните вход, используя стандартные процедуры авторизации.</li>
+</ul>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Полная переустановка приложения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Чистая установка без мусора:Устранение ошибок кэширования:Сброс настроек интерфейса</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требуется повторный вход:Нужно заново настроить биометрию:Занимает время и трафик</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-при-попытке-освободить-место">Типичные ошибки при попытке освободить место</h2>
+<p>Пытаясь решить проблему нехватки памяти, пользователи часто совершают ошибки, которые могут привести к потере доступа или данных.</p>
+<p>Незнание различий между кэшем и данными приложения приводит к сложностям при восстановлении доступа.</p>
+<p>Использование сторонних программ-чистильщиков часто не дает эффекта, так как они не имеют прав на глубокие системные папки.</p>
+
+<ol>
+<li><strong>Удаление без сохранения реквизитов</strong> — пользователь удаляет приложение, не помня логин или не имея доступа к номеру телефона, к которому привязан аккаунт, что блокирует возможность входа.</li>
+<li><strong>Игнорирование обновлений ОС</strong> — попытка очистить место только внутри приложения без обновления самой операционной системы, где могут быть исправлены ошибки управления памятью.</li>
+<li><strong>Использование неофициальных модификаций</strong> — установка взломанных версий приложения для «облегчения», что создает критические риски безопасности финансовых данных.</li>
+<li><strong>Очистка только ярлыков</strong> — удаление иконки с рабочего стола вместо деинсталляции, что не освобождает ни одного байта памяти, а лишь скрывает доступ.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Регулярно проверяйте раздел «Загрузки» в файловом менеджере, так как приложение может сохранять там PDF-копии чеков и справок, которые занимают место отдельно от кэша.</p></aside>
+
+<p>В заключение стоит подчеркнуть, что большой размер современного банковского приложения является следствием его многофункциональности и стремления предоставить пользователю максимальный комфорт.</p>
+<p>Понимание механизмов работы кэша и регулярное обслуживание устройства позволяют эффективно управлять дисковым пространством.</p>
+<p>Своевременная очистка временных файлов обеспечивает не только свободное место, но и стабильную, быструю работу всех финансовых инструментов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Приложение СберБанк занимает много места из-за накопления кэша, встроенных сервисов экосистемы и истории операций. Регулярная очистка кэша или переустановка приложения решает проблему нехватки памяти.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-izmenit-kod-elementa-sajta-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить код элемента сайта на Андроид: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по редактированию HTML/CSS элементов на Android. Используйте Chrome DevTools, консоль</span>
+            </a><a href="/articles/h/h9/h96-max-m3-kak-smotret-s-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">H96 Max M3: как смотреть с телефона через Wi-Fi и HDMI</span>
+                <span class="pb-related-desc">Подробная инструкция по выводу изображения на H96 Max M3. Настройка Miracast, DLNA, AirPlay, HDMI-за</span>
+            </a><a href="/articles/v/va/vaj-faj-kak-obnovit-na-telefone-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить Wi-Fi на Android: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по обновлению драйверов, модулей и настроек Wi-Fi на Android. Решения для разн</span>
+            </a><a href="/articles/k/ka/kak-privyazat-telefon-ajfon-k-planshetu-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как привязать iPhone к Android-планшету: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по синхронизации iPhone с планшетом на Android. Настройка облака, передача фай</span>
+            </a><a href="/articles/k/ka/kak-posmotret-u-kogo-ya-v-chernom-spiske-v-vkontakte-cherez-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить черный список ВКонтакте с телефона</span>
+                <span class="pb-related-desc">Подробная инструкция, как узнать, кто добавил вас в черный список ВКонтакте через мобильный телефон.</span>
+            </a><a href="/articles/p/pl/playavtoinstal-chto-za-prilozhenie.html" class="pb-related-card">
+                <span class="pb-related-title">PlayAvtoInstal: что это за приложение и как удалить</span>
+                <span class="pb-related-desc">Подробный анализ приложения PlayAvtoInstal: назначение, причины появления в системе, риски безопасно</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

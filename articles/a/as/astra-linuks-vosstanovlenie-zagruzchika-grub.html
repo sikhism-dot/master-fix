@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Astra Linux: полное восстановление загрузчика GRUB — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по восстановлению GRUB в Astra Linux. Методы chroot, live-режим, EFI и BIOS. Решения типовых ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/as/astra-linuks-vosstanovlenie-zagruzchika-grub.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Astra Linux: полное восстановление загрузчика GRUB">
+    <meta property="og:description" content="Подробная инструкция по восстановлению GRUB в Astra Linux. Методы chroot, live-режим, EFI и BIOS. Решения типовых ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Astra Linux: полное восстановление загрузчика GRUB</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-проблемы-и-подготовка-окружения">Диагностика проблемы и подготовка окружения</a></li><li><a href="#восстановление-grub-в-режиме-bios-legacy">Восстановление GRUB в режиме BIOS (Legacy)</a></li><li><a href="#настройка-загрузчика-для-uefi-систем">Настройка загрузчика для UEFI систем</a></li><li><a href="#работа-с-конфигурацией-и-обновление-меню">Работа с конфигурацией и обновление меню</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/w/wi/wink-napisat-v-chat.html">Как написать в чат Wink: решение проблем с сообщениями</a></li><li><a href="/articles/h/hp/hp-deskjet-2130-ne-vidit-na-pk.html">HP DeskJet 2130 не видит ПК: решение проблемы</a></li><li><a href="/articles/d/de/dezodorant-sroki-godnosti-kak-ponyat-kak-vyglyadit.html">Срок годности дезодоранта: как узнать дату и признаки</a></li><li><a href="/articles/d/da/datchik-skorosti-i-kadensa-coospo-mozhno-li-podklyuchit-k-iphone.html">Датчик скорости и каденса Coospo: подключение к iPhone</a></li><li><a href="/articles/b/bo/boot-menu-digma-pro.html">Boot Menu Digma Pro: вход, настройки и загрузка с USB</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика GRUB в Astra Linux</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-проблемы-и-подготовка-окружения">Диагностика проблемы и подготовка окружения</a></li><li><a href="#восстановление-grub-в-режиме-bios-legacy">Восстановление GRUB в режиме BIOS (Legacy)</a></li><li><a href="#настройка-загрузчика-для-uefi-систем">Настройка загрузчика для UEFI систем</a></li><li><a href="#работа-с-конфигурацией-и-обновление-меню">Работа с конфигурацией и обновление меню</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Работа с операционной системой может прерваться внезапным появлением черного экрана с мигающим курсором или сообщением «GRUB rescue» сразу после включения компьютера. Такая ситуация часто возникает после установки второй операционной системы, неудачного обновления ядра или изменения структуры разделов жесткого диска. Пользователь оказывается один на один с невозможностью запустить привычную рабочую среду, что блокирует доступ к важным данным и приложениям.</p>
+<p>Восстановление загрузчика в дистрибутивах на базе Debian, к которым относится <em>Astra Linux</em>, требует выполнения последовательных действий через терминал. Несмотря на кажущуюся сложность, процесс сводится к переустановке загрузочных файлов и обновлению конфигурационного файла. Важно не паниковать и внимательно следовать алгоритму, чтобы избежать потери данных на системном разделе.</p>
+<p>Для выполнения операций потребуется загрузочный носитель с образом <em>Astra Linux</em> соответствующей версии или любой другой дистрибутив Linux с поддержкой chroot. Перед началом работ рекомендуется убедиться в физической исправности жесткого диска и наличии резервной копии критически важных данных, так как работа с разделами диска всегда несет потенциальные риски.</p>
+
+<h2 id="диагностика-проблемы-и-подготовка-окружения">Диагностика проблемы и подготовка окружения</h2>
+
+<p>Первым шагом всегда является точное определение характера неисправности. Если при загрузке появляется меню GRUB, но система не стартует, проблема может крыться в поврежденном файле ядра или конфигурации. В случае полного отсутствия меню и перехода сразу в режим rescue, скорее всего, поврежден сам загрузчик или его конфигурационный файл <code>grub.cfg</code>.</p>
+<p>Для начала работ необходимо загрузиться с LiveCD или LiveUSB. После запуска системы с внешнего носителя следует открыть терминал и перейти в режим суперпользователя. Это необходимо для получения прав на запись в системные разделы жесткого диска. Команда <code>sudo -i</code> или ввод пароля root позволит выполнить требуемые действия.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Убедитесь, что версия Live-носителя соответствует или новее установленной системы, чтобы избежать проблем с совместимостью библиотек.</p></aside>
+
+<p>Далее требуется идентифицировать разделы диска. Использование утилиты <code>fdisk</code> или <code>lsblk</code> позволит увидеть структуру накопителей. Необходимо найти системный раздел, где установлен <em>Astra Linux</em>, и раздел EFI, если система использует UEFI. Обычно системный раздел имеет файловую систему ext4, а EFI — fat32.</p>
+
+<pre><code>lsblk -f</code></pre>
+
+<p>Вывод команды покажет буквенные обозначения устройств, такие как <code>/dev/sda1</code> или <code>/dev/nvme0n1p2</code>. Важно не перепутать системный раздел с разделом восстановления или домашним каталогом, если они вынесены отдельно. Ошибка в выборе раздела приведет к невозможности смонтировать корневую файловую систему.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип раздела</th>
+<th>Файловая система</th>
+<th>Типичный размер</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Системный (Root)</td>
+<td>ext4</td>
+<td>20-100 Гб</td>
+</tr>
+<tr>
+<td>EFI (Загрузочный)</td>
+<td>FAT32</td>
+<td>100-512 Мб</td>
+</tr>
+<tr>
+<td>Swap (Подкачка)</td>
+<em>swap</em></td>
+<td>Равен объему ОЗУ</td>
+</tr>
+</tbody>
+</table>
+
+<p>После идентификации разделов их необходимо смонтировать в определенном порядке. Сначала монтируется корневой раздел в директорию <code>/mnt</code>. Если в системе используются отдельные разделы для <code>/boot</code> или <code>/home</code>, их также следует смонтировать в соответствующие подкаталоги внутри <code>/mnt</code>.</p>
+
+<h2 id="восстановление-grub-в-режиме-bios-legacy">Восстановление GRUB в режиме BIOS (Legacy)</h2>
+
+<p>Для систем, использующих классический BIOS, процесс восстановления выглядит наиболее стандартным. После монтирования корневого раздела необходимо эмулировать работу установленной системы с помощью механизма chroot. Это позволит выполнять команды от имени основной системы, используя её библиотеки и конфигурацию.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подготовка chroot</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Монтирование /dev, /dev/pts, /proc, /sys</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Копирование resolv.conf</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполнение chroot /mnt</span></div></div>
+
+<p>Перед входом в окружение chroot нужно смонтировать виртуальные файловые системы. Это обеспечит работу утилит внутри chroot, которые обращаются к ядру Live-системы. Команды монтирования <code>/dev</code>, <code>/proc</code> и <code>/sys</code> являются обязательными для корректной работы пакета <em>grub-pc</em>.</p>
+
+<pre><code>mount --bind /dev /mnt/dev
+<p>mount --bind /dev/pts /mnt/dev/pts</p>
+<p>mount --bind /proc /mnt/proc</p>
+<p>mount --bind /sys /mnt/sys</code></pre></p>
+
+<p>Также стоит скопировать файл <code>/etc/resolv.conf</code> из Live-системы в смонтированный раздел, чтобы внутри chroot работал доступ в интернет. Это может потребоваться для переустановки пакетов, если файлы загрузчика были удалены полностью. После подготовки окружения выполняется команда входа <code>chroot /mnt</code>.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Нельзя прерывать процесс установки GRUB выключением питания, это может привести к полной неработоспособности диска.</p></aside>
+
+<p>Находясь внутри chroot, следует выполнить переустановку загрузчика. Команда <code>grub-install</code> записывает загрузочные сектора на диск. Важно указать правильное устройство, обычно это весь диск (например, <code>/dev/sda</code>), а не конкретный раздел.</p>
+
+<pre><code>grub-install /dev/sda</code></pre>
+
+<p>После успешной установки бинарных файлов необходимо сгенерировать новый конфигурационный файл. Утилита <code>update-grub</code> сканирует диски на наличие установленных операционных систем и создает меню загрузки. В логе будут видны найденные ядра Linux и другие ОС, такие как Windows.</p>
+
+<pre><code>update-grub</code></pre>
+
+<h2 id="настройка-загрузчика-для-uefi-систем">Настройка загрузчика для UEFI систем</h2>
+
+<p>Современные компьютеры используют интерфейс UEFI, который требует наличия специального раздела FAT32 с файлами загрузчика. В <em>Astra Linux</em> этот раздел обычно смонтирован в <code>/boot/efi</code>. При восстановлении в режиме UEFI критически важно правильно смонтировать этот раздел перед входом в chroot.</p>
+<p>Если раздел EFI не был создан или поврежден, его можно создать заново с помощью утилиты <code>mkfs.fat</code>. Однако, если данные на нем просто затерты, достаточно отформатировать раздел и смонтировать его. Путь монтирования должен строго соответствовать записи в файле <code>/etc/fstab</code> основной системы.</p>
+
+<pre><code>mount /dev/sda1 /mnt/boot/efi</code></pre>
+
+<p>При установке GRUB для UEFI необходимо указать целевую платформу и путь к директории EFI. Архитектура процессора также имеет значение: для большинства современных ПК это <code>x86_64</code>. Команда будет отличаться от BIOS-версии наличием флага <code>--target</code> и опции <code>--efi-directory</code>.</p>
+
+<pre><code>grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=AstraLinux</code></pre>
+
+<p>Параметр <code>--bootloader-id</code> задает имя, которое будет отображаться в меню загрузки UEFI материнской платы. Если этого имени там нет, возможно, потребуется добавить запись через инструменты BIOS/UEFI или утилиту <code>efibootmgr</code>. После установки файлов снова запускается <code>update-grub</code> для обновления меню.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду efibootmgr -v внутри chroot для просмотра списка загрузочных записей UEFI и проверки их статуса.</p></aside>
+
+<p>В некоторых случаях, особенно на ноутбуках с Secure Boot, может потребоваться дополнительное копирование файла загрузчика. Файл <code>grubx64.efi</code> из директории <code>/boot/efi/EFI/astralinux/</code> иногда нужно скопировать в <code>/boot/efi/EFI/BOOT/</code> и переименовать в <code>BOOTX64.EFI</code>. Это обеспечивает загрузку по умолчанию, если запись в NVRAM потеряна.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>BIOS (Legacy)</th>
+<th>UEFI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Раздел загрузчика</td>
+<td>MBR (начало диска)</td>
+<td>EFI System Partition (FAT32)</td>
+</tr>
+<tr>
+<td>Пакет GRUB</td>
+<td><em>grub-pc</em></td>
+<td><em>grub-efi-amd64</em></td>
+</tr>
+<tr>
+<td>Ключевая команда</td>
+<td><code>grub-install /dev/sdX</code></td>
+<td><code>grub-install --target=x86_64-efi</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="работа-с-конфигурацией-и-обновление-меню">Работа с конфигурацией и обновление меню</h2>
+
+<p>Файл <code>/etc/default/grub</code> содержит основные настройки поведения загрузчика. Здесь можно изменить время ожидания выбора ОС, разрешение экрана консоли и параметры ядра. Редактирование производится любым текстовым редактором, например, <code>nano</code> или <code>vi</code>.</p>
+<p>Частой проблемой является отсутствие других операционных систем в меню GRUB. За обнаружение сторонних ОС отвечает пакет <em>os-prober</em>. В новых версиях GRUB функционал os-prober может быть отключен по умолчанию в целях безопасности, поэтому требуется явно включить его в конфигурации.</p>
+
+<pre><code>GRUB_DISABLE_OS_PROBER=false</code></pre>
+
+<p>Добавление этой строки в конец файла <code>/etc/default/grub</code> активирует поиск других систем. После внесения изменений в любой конфигурационный файл обязательным действием является запуск <code>update-grub</code>. Без этого шага изменения не вступят в силу, и меню загрузки останется прежним.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Все изменения в настройках GRUB применяются только после выполнения команды update-grub, которая генерирует бинарный файл меню.</p></aside>
+
+<p>Для тонкой настройки можно использовать скрипты в директории <code>/etc/grub.d/</code>. Файл <code>40_custom</code> предназначен для добавления пользовательских записей меню, которые не будут перезаписаны при обновлении. Это удобно для добавления специфических параметров загрузки или восстановления доступа к Windows.</p>
+<p>Если после обновления ядра система перестала загружаться, можно попробовать загрузить предыдущую версию. В меню GRUB следует выбрать «Дополнительные параметры» и выбрать ядро с более старым номером версии. Это позволит войти в систему и удалить проблемное обновление или драйвер.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Процесс восстановления редко проходит идеально гладко, особенно при работе с нестандартными конфигурациями дисков. Понимание природы распространенных ошибок позволяет быстро среагировать и исправить ситуацию без повторной загрузки с LiveCD. Большинство ошибок связано с неверным указанием устройств или прав доступа.</p>
+
+<ol>
+<li><strong>Ошибка «failed to get canonical path»</strong> — возникает, когда в файле <code>/etc/fstab</code> или конфигурации GRUB указаны UUID устройств, которые изменились или не найдены. Следует проверить актуальные UUID командой <code>blkid</code> и исправить записи в соответствующих файлах.</li>
+<li><strong>Сообщение «efi variables fs not mounted»</strong> — характерно для UEFI систем, когда попытка установки GRUB производится без смонтированного раздела EFI. Необходимо убедиться, что раздел FAT32 смонтирован именно в <code>/boot/efi</code> перед запуском <code>grub-install</code>.</li>
+<li><strong>GRUB не видит Windows</strong> — часто происходит из-за функции «Быстрый запуск» в Windows или отключенного <code>os-prober</code>. Требуется отключить Fast Startup в настройках электропитания Windows и добавить строку включения os-prober в конфиг GRUB.</li>
+<li><strong>Ошибка «cannot open /dev/sda»</strong> — означает отсутствие прав доступа или блокировку устройства. Проверьте, не смонтирован ли диск в другой программе, и убедитесь, что вы работаете от имени root.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Полная переустановка GRUB</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полное восстановление загрузочных секторов</li><li>✅ Исправление ошибок конфигурации</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск потери данных при ошибке</li><li>❌ Требует знания командной строки</li></ul></div>
+</div></div>
+
+<p>В ситуациях, когда стандартные методы не помогают, можно воспользоваться автоматизированными утилитами, такими как <em>Boot-Repair</em>. Однако в корпоративной среде с <em>Astra Linux</em> предпочтительнее ручное восстановление, так как оно дает полный контроль над процессом и позволяет избежать установки непроверенного ПО.</p>
+<p> Перед монтажом разделов в таких случаях необходимо сначала активировать тома LVM командой <code>vgchange -ay</code> или разблокировать шифрованный контейнер командой <code>cryptsetup luksOpen</code>.</p>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+
+<p>После успешного выполнения всех команд необходимо корректно выйти из окружения chroot. Команда <code>exit</code> вернет в терминал Live-системы. Затем следует размонтировать все созданные точки монтирования в обратном порядке, чтобы избежать повреждения файловой системы.</p>
+<p>Размонтирование производится командой <code>umount</code> с указанием пути или устройства. Если система пишет, что раздел занят, нужно убедиться, что ни один процесс не использует файлы на этом разделе, и повторить попытку. Только после успешного размонтирования можно извлекать загрузочный носитель.</p>
+
+<pre><code>exit
+<p>umount /mnt/dev/pts</p>
+<p>umount /mnt/dev</p>
+<p>umount /mnt/proc</p>
+<p>umount /mnt/sys</p>
+<p>umount /mnt/boot/efi</p>
+<p>umount /mnt</code></pre></p>
+
+<p>Финальным этапом является перезагрузка компьютера и извлечение LiveUSB. Если все шаги выполнены верно, должен появиться экран меню GRUB с выбором операционной системы. Рекомендуется выбрать <em>Astra Linux</em> и убедиться в полной загрузке рабочего стола и сетевых сервисов.</p>
+<p>Регулярное резервное копирование конфигурации загрузчика и критических разделов диска может спасти множество часов работы в будущем. Создание загрузочной флешки с актуальной версией дистрибутива также является хорошей практикой для любого системного администратора.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>После первого успешного запуска рекомендуется выполнить обновление системы командой apt update и apt upgrade для устранения потенциальных уязвимостей.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/w/wi/wink-napisat-v-chat.html" class="pb-related-card">
+                <span class="pb-related-title">Как написать в чат Wink: решение проблем с сообщениями</span>
+                <span class="pb-related-desc">Подробная инструкция: как написать в чат Wink, настроить уведомления и решить ошибки подключения на </span>
+            </a><a href="/articles/h/hp/hp-deskjet-2130-ne-vidit-na-pk.html" class="pb-related-card">
+                <span class="pb-related-title">HP DeskJet 2130 не видит ПК: решение проблемы</span>
+                <span class="pb-related-desc">Полное руководство, если HP DeskJet 2130 не видит компьютер. Проверка USB, драйверов, служб Windows </span>
+            </a><a href="/articles/d/de/dezodorant-sroki-godnosti-kak-ponyat-kak-vyglyadit.html" class="pb-related-card">
+                <span class="pb-related-title">Срок годности дезодоранта: как узнать дату и признаки</span>
+                <span class="pb-related-desc">Подробный гид по срокам годности дезодорантов. Как расшифровать маркировку, определить испортившийся</span>
+            </a><a href="/articles/d/da/datchik-skorosti-i-kadensa-coospo-mozhno-li-podklyuchit-k-iphone.html" class="pb-related-card">
+                <span class="pb-related-title">Датчик скорости и каденса Coospo: подключение к iPhone</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению датчиков Coospo к iPhone. Настройка ANT+, Bluetooth, совместимос</span>
+            </a><a href="/articles/b/bo/boot-menu-digma-pro.html" class="pb-related-card">
+                <span class="pb-related-title">Boot Menu Digma Pro: вход, настройки и загрузка с USB</span>
+                <span class="pb-related-desc">Полная инструкция по входу в Boot Menu на планшетах Digma Pro. Клавиши, способы загрузки с флешки и </span>
+            </a><a href="/articles/a/aj/ajfon-bystro-pereklyuchat-mezhdu-sim.html" class="pb-related-card">
+                <span class="pb-related-title">Как быстро переключать симки на Айфоне: полные инструкции</span>
+                <span class="pb-related-desc">Узнайте, как мгновенно переключать сим-карты на iPhone. Подробные способы смены номера для звонков, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

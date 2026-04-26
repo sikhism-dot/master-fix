@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление Ubuntu с флешки: пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Полный гайд по восстановлению загрузчика GRUB и системы Ubuntu через Live USB. Решение проблем с доступом, командами и настройкой EFI.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vo/vosstanovlenie-ubuntu-s-ustanovochnoj-fleshki.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление Ubuntu с флешки: пошаговая инструкция">
+    <meta property="og:description" content="Полный гайд по восстановлению загрузчика GRUB и системы Ubuntu через Live USB. Решение проблем с доступом, командами и настройкой EFI.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление Ubuntu с флешки: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-системы-и-подготовка-загрузочного-носителя">Диагностика системы и подготовка загрузочного носителя</a></li><li><a href="#восстановление-загрузчика-grub-через-chroot">Восстановление загрузчика GRUB через chroot</a></li><li><a href="#автоматическое-восстановление-утилитой-boot-repair">Автоматическое восстановление утилитой Boot-Repair</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/zn/znaya-kod-donora-kak-poluchit-20-znachnyj-kod-dlya-prilozheniya.html">Как получить 20-значный код по коду донора: Инструкция</a></li><li><a href="/articles/s/sa/sarada-rising-walkthrough.html">Sarada Rising: Полный гайд по прохождению и секретам</a></li><li><a href="/articles/k/ka/kak-ustanovit-zonu-na-tsl.html">Как установить зону на TCL: полный гайд по смене региона</a></li><li><a href="/articles/k/ka/kak-nastroit-media-station-x-na-kompyutere.html">Media Station X на ПК: Настройка эмулятора и установка APK</a></li><li><a href="/articles/g/go/golosovoj-pomoshchnik-toppal-skachat.html">Как скачать голосовой помощник Toppal: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление Ubuntu с установочной флешки: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-системы-и-подготовка-загрузочного-носителя">Диагностика системы и подготовка загрузочного носителя</a></li><li><a href="#восстановление-загрузчика-grub-через-chroot">Восстановление загрузчика GRUB через chroot</a></li><li><a href="#автоматическое-восстановление-утилитой-boot-repair">Автоматическое восстановление утилитой Boot-Repair</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#завершение-работ-и-проверка-результата">Завершение работ и проверка результата</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда после очередного обновления ядра или изменения конфигурации оборудования операционная система перестает загружаться, знакома многим пользователям Linux. Вместо привычного рабочего стола экран встречает черным консольным интерфейсом с сообщением об ошибке <em>GRUB rescue</em> или просто мигающим курсором. Паниковать в этот момент не следует, так как ядро системы и пользовательские данные, как правило, остаются целыми, а проблема кроется исключительно в загрузчике или конфигурационных файлах.</p>
+<p>Для решения большинства критических сбоев не требуется переустанавливать дистрибутив заново, теряя время на настройку окружения и восстановление софта. Оптимальным инструментом для реанимации является загрузочная флешка с образом <em>Ubuntu</em> или любого другого дистрибутива на базе <em>Debian</em>. Наличие под рукой такого носителя позволяет запустить систему в режиме <em>Live USB</em>, получить доступ к файловой системе жесткого диска и провести необходимые ремонтные работы.</p>
+<p>Успех операции напрямую зависит от правильного понимания структуры разделов диска и точности ввода команд в терминале. Ошибки на этапе определения корневого раздела или точки монтирования могут привести к повреждению данных или невозможности завершить процедуру восстановления. Поэтому перед началом активных действий важно внимательно изучить текущее состояние дискового пространства и выбрать подходящий метод реанимации.</p>
+
+<h2 id="диагностика-системы-и-подготовка-загрузочного-носителя">Диагностика системы и подготовка загрузочного носителя</h2>
+<p>Первым шагом перед любыми манипуляциями является создание или проверка загрузочной флешки. Если под рукой уже есть установочный носитель, созданный ранее, следует убедиться, что версия дистрибутива на нем совместима с установленной системой или является более новой. Для записи образа рекомендуется использовать утилиты <em>Rufus</em> в Windows или <em>Etcher</em> в macOS, выбирая режим записи <em>DD Image</em> для максимальной совместимости.</p>
+<p>После подключения флешки к проблемному компьютеру необходимо войти в настройки BIOS или UEFI. В зависимости от производителя материнской платы, вызов меню загрузки осуществляется клавишами <em>F12</em>, <em>F10</em>, <em>F2</em> или <em>Del</em>. В меню приоритета загрузки следует выбрать USB-устройство, обратив внимание на префикс: для систем с новым интерфейсом прошивки нужно выбирать пункт с пометкой <em>UEFI</em>, а для legacy-систем — без нее.</p>
+<p>Загрузившись в Live-режим, система предложит попробовать Ubuntu без установки. Не запуская инсталлятор, нужно открыть терминал через меню приложений или сочетанием клавиш <code>Ctrl+Alt+T</code>. Первичная диагностика заключается в определении структуры разделов жесткого диска, что делается с помощью утилиты <em>fdisk</em> или <em>lsblk</em>. Вывод команды покажет список всех подключенных накопителей и их разделов, что критически важно для дальнейших шагов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На компьютерах с UEFI раздел загрузчика обычно имеет файловую систему FAT32 и помечается флагом boot, esp. Его размер редко превышает 512 МБ.</p></aside>
+
+<p>Важно корректно идентифицировать корневой раздел, где установлена система. Обычно это раздел с файловой системой <em>ext4</em> наибольшего объема, но в сложных конфигурациях с LVM или шифрованием структура может отличаться. Если на диске несколько разделов с Linux, стоит обратить внимание на метки или использовать команду <code>sudo blkid</code> для просмотра UUID и типов файловых систем.</p>
+
+<h3>Анализ разметки диска в терминале</h3>
+<p>Для получения детальной информации о разделах используется команда <code>sudo fdisk -l</code>. Она выводит таблицу всех устройств, их секторов, блоков и идентификаторов. В этом списке нужно найти устройство, соответствующее внутреннему жесткому диску (часто <em>/dev/sda</em> или <em>/dev/nvme0n1</em>), и запомнить имя корневого раздела, например, <em>/dev/sda2</em>.</p>
+<p>Если система использует стандартную схему разметки, то корневой раздел будет содержать директорию <em>/bin</em>, <em>/etc</em> и <em>/boot</em>. В случае использования отдельного раздела для <em>/home</em> или <em>/boot</em>, их также нужно будет учитывать при монтировании, хотя для восстановления загрузчика часто достаточно доступа к корню и EFI-разделу.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип раздела</th>
+<th>Файловая система</th>
+<th>Обычный размер</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EFI System</td>
+<td>FAT32</td>
+<td>100–512 МБ</td>
+</tr>
+<tr>
+<td>Linux root</td>
+<td>ext4</td>
+<td>20 ГБ и более</td>
+</tr>
+<tr>
+<td>Linux swap</td>
+<td>swap</td>
+<td>Равен ОЗУ или больше</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="восстановление-загрузчика-grub-через-chroot">Восстановление загрузчика GRUB через chroot</h2>
+<p>Наиболее универсальным и надежным способом восстановления доступа к системе является использование механизма <em>chroot</em> (change root). Этот метод позволяет запустить командную оболочку Live-системы в контексте файловой системы установленной на жестком диске Ubuntu. Таким образом, все выполняемые команды будут применяться непосредственно к поврежденной системе, а не к временной Live-сессии.</p>
+<p>Процесс начинается с монтирования корневого раздела в директорию <em>/mnt</em>. После этого необходимо создать точки монтирования для системных каталогов, таких как <em>/dev</em>, <em>/proc</em>, <em>/sys</em> и <em>/run</em>, чтобы восстановленная система имела доступ к устройствам и процессам ядра Live-окружения. Без этого шага многие системные утилиты не смогут корректно отработать.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подготовка chroot окружения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Монтирование корневого раздела в /mnt</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создание точек монтирования для /dev, /proc, /sys</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Вызов оболочки chroot /mnt</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выполнение команды update-grub</span></div></div>
+
+<p>Если на компьютере используется UEFI, обязательным шагом является монтирование EFI-раздела. Обычно он монтируется в директорию <em>/boot/efi</em> внутри смонтированной системы. Важно убедиться, что путь соответствует конфигурации <em>fstab</em> восстанавливаемой системы, хотя для операции обновления загрузчика достаточно смонтировать его по стандартному пути.</p>
+<p>После выполнения всех монтажных операций производится переход в окружение восстановленной системы командой <code>chroot /mnt</code>. Находясь внутри этого окружения, пользователь получает полный контроль над установленным дистрибутивом. Именно здесь выполняется переустановка пакетов загрузчика и генерация новой конфигурации.</p>
+<p>Ключевой командой для обновления конфигурации GRUB является <code>update-grub</code>. Она запускает скрипт <em>os-prober</em>, который сканирует диски на наличие других операци-онных систем (например, Windows), и формирует новый файл конфигурации <em>grub.cfg</em>. Если требуется переустановить сам загрузчик в загрузочную запись диска, используется команда <code>grub-install</code> с указанием целевого устройства.</p>
+
+<pre><code>sudo mount /dev/sdXY /mnt
+<p>sudo mount --bind /dev /mnt/dev</p>
+<p>sudo mount --bind /proc /mnt/proc</p>
+<p>sudo mount --bind /sys /mnt/sys</p>
+<p>sudo chroot /mnt</p>
+<p>update-grub</p>
+<p>grub-install /dev/sdX</code></pre></p>
+
+<h3>Нюансы работы с EFI и Legacy BIOS</h3>
+<p>Различие между режимами загрузки диктует разные команды для установки загрузчика. В режиме <em>Legacy BIOS</em> загрузчик записывается в Master Boot Record (MBR) диска, поэтому в команде <code>grub-install</code> указывается само устройство, например, <em>/dev/sda</em>, без номера раздела. Ошибка в указании номера раздела может привести к перезаписи загрузочного сектора раздела вместо MBR.</p>
+<p>В режиме <em>UEFI</em> загрузчик представляет собой файл <em>.efi</em>, который должен находиться на FAT32-разделе. Команда установки в этом случае часто требует указания дополнительных параметров, таких как <code>--target=x86_64-efi</code> и <code>--efi-directory=/boot/efi</code>. Также важно, чтобы пакет <em>grub-efi-amd64</em> был установлен в системе.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неверное указание устройства при установке GRUB в режиме BIOS может затереть таблицу разделов. Всегда проверяйте, что указываете на диск (sdX), а не на раздел (sdX1).</p></aside>
+
+<p>После успешного выполнения команд необходимо выйти из окружения <em>chroot</em> командой <code>exit</code> и размонтировать все разделы в обратном порядке. Команда <code>sudo umount -R /mnt</code> позволяет размонтировать рекурсивно все вложенные точки. Только после этого можно перезагружать компьютер и проверять результат.</p>
+
+<h2 id="автоматическое-восстановление-утилитой-boot-repair">Автоматическое восстановление утилитой Boot-Repair</h2>
+<p>Для пользователей, которые не хотят погружаться в глубины командной строки, существует графическая утилита <em>Boot-Repair</em>. Этот инструмент автоматизирует процесс диагностики и исправления распространенных проблем с загрузкой. Он способен самостоятельно определить структуру разделов, восстановить GRUB, переустановить загрузчик в MBR или EFI-раздел и даже восстановить доступ к Windows, если она была скрыта.</p>
+<p>Использование утилиты требует подключения к сети Интернет, так как в стандартном образе Live USB она может отсутствовать. Однако, ее установка занимает всего пару минут. После запуска программа проведет сканирование и предложит два варианта действий: «Рекомендуемое исправление» (Recommended repair) и «Создать отчет BootInfo».</p>
+<p>Выбор рекомендуемого исправления запускает автоматический скрипт, который попытается применить наиболее безопасные и распространенные настройки. Утилита сама определит, нужно ли монтировать EFI-раздел, какие флаги выставить и какую конфигурацию GRUB сгенерировать. В процессе работы могут появляться окна с запросами на выполнение специфических команд в терминале, которые нужно подтверждать.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка и запуск Boot-Repair</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Добавление репозитория ppa:yannubuntu/boot-repair</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Обновление списка пакетов apt update</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установка пакета boot-repair</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запуск команды boot-repair</span></div></div>
+
+<p>В некоторых случаях утилита может предложить выполнить дополнительные действия вручную, например, скопировать и вставить определенные команды в терминал или изменить настройки BIOS. Следование этим инструкциям критически важно для завершения процесса. После окончания работы Boot-Repair выдаст сообщение об успехе или ссылку на отчет, если проблема не была решена.</p>
+<p>Главным преимуществом метода является минимизация человеческого фактора. Алгоритмы утилиты учитывают множество сценариев, включая двойную загрузку с Windows, использование LVM и нестандартные схемы разметки. Однако, в крайне редких и сложных случаях автоматика может не справиться там, где поможет ручная настройка через <em>chroot</em>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Критерий</th>
+<th>Boot-Repair</th>
+<th>Ручной chroot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сложность</td>
+<td>Низкая (GUI)</td>
+<td>Высокая (CLI)</td>
+</tr>
+<tr>
+<td>Гибкость</td>
+<td>Ограничена сценариями</td>
+<td>Полный контроль</td>
+</tr>
+<tr>
+<td>Зависимость</td>
+<td>Требует Интернет</td>
+<td>Работает офлайн</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка параметров Boot-Repair</h3>
+<p>При запуске в режиме «Дополнительные параметры» (Advanced options) утилита предоставляет доступ к тонкой настройке. Здесь можно выбрать место установки загрузчика, указать путь к EFI-разделу вручную, если автоматическое определение gagal, и настроить параметры ядра. Вкладка <em>GRUB location</em> позволяет принудительно переустановить загрузчик, даже если он формально присутствует.</p>
+<p>В разделе <em>GRUB settings</em> доступна опция переустановки пакетов GRUB, что полезно при повреждении бинарных файлов загрузчика. Также можно сгенерировать новый конфигурационный файл, игнорируя старые настройки. Для продвинутых пользователей доступна возможность восстановления MBR Windows, если целью является полный отказ от Linux.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если Boot-Repair выдает ошибку о переполнении EFI-раздела, попробуйте очистить старые файлы.efi через файловый менеджер перед повторным запуском утилиты.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>Процесс восстановления редко проходит идеально гладко, особенно если пользователь сталкивается с ним впервые. Понимание природы возможных ошибок позволяет быстро сориентироваться и исправить ситуацию без потери данных. Большинство проблем связано с неверным определением разделов или особенностями работы UEFI.</p>
+<p>Одной из частых проблем является ошибка «<em>efi variables are not supported on this system</em>». Это сообщение указывает на то, что Live-система загружена в режиме Legacy (BIOS), в то время как на диске установлена UEFI-версия Ubuntu, или наоборот. Решение заключается в перезагрузке и правильном выборе пункта загрузки флешки в меню BIOS (с префиксом UEFI или без).</p>
+<p>Другая распространенная ошибка — «<em>failed to get canonical path of /dev/sdX</em>». Она возникает, когда команда <code>grub-install</code> не может найти указанное устройство. Часто это происходит из-за опечатки или использования имени раздела вместо имени диска. Необходимо перепроверить вывод <code>lsblk</code> и убедиться, что устройство доступно.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство ошибок восстановления решаются проверкой режима загрузки (UEFI/BIOS) и точности указания имен устройств в командах.</p></aside>
+
+<ol>
+<li><strong>Ошибка монтирования «wrong fs type, bad option»</strong> — возникает при попытке смонтировать раздел с поврежденной файловой системой. Требуется предварительная проверка диска утилитой <em>fsck</em> перед монтированием.</li>
+<li><strong>GRUB не видит Windows</strong> — часто случается, если в BIOS отключена опция совместимости или не установлен пакет <em>os-prober</em>. Нужно включить опцию <em>os-prober</em> в конфигурации GRUB и запустить обновление.</li>
+<li><strong>Отказ записи в EFI-раздел</strong> — может быть вызван отсутствием прав или блокировкой Secure Boot. Следует проверить права доступа к смонтированному разделу и временно отключить Secure Boot в BIOS.</li>
+<li><strong>Система загружается в grub rescue</strong> после восстановления — означает, что загрузчик установлен, но не может найти свой конфигурационный файл. Необходимо заново выполнить команду <code>update-grub</code> внутри chroot.</li>
+</ol>
+
+<h2 id="завершение-работ-и-проверка-результата">Завершение работ и проверка результата</h2>
+<p>После выполнения всех необходимых операций по восстановлению загрузчика или конфигурации, важно правильно завершить сеанс работы с Live-системой. Прежде всего, следует выйти из окружения <em>chroot</em>, если оно использовалось, командой <code>exit</code>. Затем необходимо размонтировать все примонтированные разделы, чтобы избежать повреждения данных при извлечении носителя.</p>
+<p>Команда <code>sudo umount -R /mnt</code> надежно размонтирует корневой раздел и все связанные с ним каталоги. Убедившись, что индикаторы активности диска погасли, можно извлечь флешку и выполнить перезагрузку компьютера. При следующем включении система должна загрузиться в штатном режиме, предложив меню выбора операционной системы, если установлена двойная загрузка.</p>
+<p>Если загрузка прошла успешно, рекомендуется сразу же выполнить полное обновление системы и проверить целостность файлов. В случае, если проблема сохранилась, стоит проанализировать логи, сохраненные утилитой Boot-Repair, или повторить процедуру, уделив особое внимание выбору режима работы BIOS/UEFI. Грамотное восстановление позволяет продлить жизнь системе и избежать потери важных данных.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Полный контроль над процессом</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Возможностьить сложные случаи</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Не требует reinstall системы</li></ul></div>
+</div></div></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/zn/znaya-kod-donora-kak-poluchit-20-znachnyj-kod-dlya-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Как получить 20-значный код по коду донора: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по генерации 20-значного ключа активации из кода донора. Разбор алгоритмов, ра</span>
+            </a><a href="/articles/s/sa/sarada-rising-walkthrough.html" class="pb-related-card">
+                <span class="pb-related-title">Sarada Rising: Полный гайд по прохождению и секретам</span>
+                <span class="pb-related-desc">Детальный разбор Sarada Rising walkthrough. Тактика боя с боссами, поиск секретов, прокачка персонаж</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-zonu-na-tsl.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить зону на TCL: полный гайд по смене региона</span>
+                <span class="pb-related-desc">Подробная инструкция, как установить зону на TCL Android TV. Смена региона, разблокировка приложений</span>
+            </a><a href="/articles/k/ka/kak-nastroit-media-station-x-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Media Station X на ПК: Настройка эмулятора и установка APK</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску Media Station X на Windows. Настройка эмулятора, установка APK-файла</span>
+            </a><a href="/articles/g/go/golosovoj-pomoshchnik-toppal-skachat.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать голосовой помощник Toppal: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке приложения Toppal на Android и iOS. Решение проблем с загрузкой, </span>
+            </a><a href="/articles/g/gd/gde-smotret-diskaveri-na-russkom-yazyke.html" class="pb-related-card">
+                <span class="pb-related-title">Где смотреть Discovery на русском: все способы 2026</span>
+                <span class="pb-related-desc">Полный гид по просмотру каналов Discovery на русском языке. Smart TV, приставки, мобильные приложени</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

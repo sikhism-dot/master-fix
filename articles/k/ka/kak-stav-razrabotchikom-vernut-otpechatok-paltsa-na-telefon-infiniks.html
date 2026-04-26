@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление сканера отпечатка Infinix: Гайд для разработчиков — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по возврату функционала биометрии на Infinix. ADB-команды, прошивка сенсоров, анализ логов и работа с Goodix.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-stav-razrabotchikom-vernut-otpechatok-paltsa-na-telefon-infiniks.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление сканера отпечатка Infinix: Гайд для разработчиков">
+    <meta property="og:description" content="Техническое руководство по возврату функционала биометрии на Infinix. ADB-команды, прошивка сенсоров, анализ логов и работа с Goodix.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление сканера отпечатка Infinix: Гайд для разработчиков</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-состояния-биометрического-модуля">Диагностика состояния биометрического модуля</a></li><li><a href="#программное-восстановление-через-adb-и-fastboot">Программное восстановление через ADB и Fastboot</a></li><li><a href="#работа-с-разделом-persist-и-калибровкой">Работа с разделом Persist и калибровкой</a></li><li><a href="#специфика-моделей-и-версий-android">Специфика моделей и версий Android</a></li><li><a href="#типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</a></li><li><a href="#резюме-и-профилактика">Резюме и профилактика</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vy/vyletaet-iz-khranilishcha-android.html">Почему вылетает хранилище Android: полное руководство</a></li><li><a href="/articles/k/ka/kak-redaktirovat-spiski-druzej-v-vk-cherez-telefon.html">Редактирование списков друзей ВКонтакте на телефоне: полное руководство</a></li><li><a href="/articles/k/ka/kak-vklyuchit-na-prilozhenie-allegro-anglijskij-yazyk.html">Как включить английский язык в приложении Allegro: полная инструкция</a></li><li><a href="/articles/h/he/hearthstone-kak-optimizirovat-igru-na-telefone.html">Hearthstone: оптимизация на телефоне для стабильного FPS</a></li><li><a href="/articles/k/ka/kak-udalit-kasperskij-sejf-kids-s-telefona-rebenka-bez-parolya-i-logina-khneepk-ekhyapyuoni-nkieye.html">Удаление Kaspersky Safe Kids без пароля: полные инструкции</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление работы сканера отпечатков Infinix: инженерное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-состояния-биометрического-модуля">Диагностика состояния биометрического модуля</a></li><li><a href="#программное-восстановление-через-adb-и-fastboot">Программное восстановление через ADB и Fastboot</a></li><li><a href="#работа-с-разделом-persist-и-калибровкой">Работа с разделом Persist и калибровкой</a></li><li><a href="#специфика-моделей-и-версий-android">Специфика моделей и версий Android</a></li><li><a href="#типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</a></li><li><a href="#резюме-и-профилактика">Резюме и профилактика</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда после неудачного обновления прошивки, сброса настроек или попытки получения прав суперпользователя перестает работать сканер отпечатков пальцев на смартфонах Infinix, является распространенной проблемой в среде кастомизации Android.</p>
+<p>Устройство продолжает функционировать, но биометрическая авторизация блокируется, а в настройках безопасности появляется сообщение об ошибке или раздел вовсе исчезает, что делает невозможным разблокировку экрана и подтверждение платежей.</p>
+<p>Восстановление работоспособности модуля требует не просто поверхностных манипуляций, а глубокого понимания архитектуры безопасности Android, структуры разделов памяти и специфики драйверов Goodix, используемых в большинстве моделей бренда.</p>
+
+<h2 id="диагностика-состояния-биометрического-модуля">Диагностика состояния биометрического модуля</h2>
+<p>Первым этапом восстановления является точное определение статуса аппаратного и программного обеспечения сенсора, так как методы лечения программной ошибки и физического повреждения кардинально отличаются.</p>
+<p>Для начала необходимо получить доступ к системным логам через отладочный интерфейс, что позволяет увидеть реакцию ядра на попытку инициализации драйвера сканера.</p>
+<p>Если в логах <code>logcat</code> присутствуют записи с тегом <em>Goodix</em> или <em>FingerprintService</em>, содержащие ошибки <code>init fail</code> или <code>hal init failed</code>, это указывает на рассинхронизацию прошивки сенсора и системного сервиса.</p>
+
+<h3>Анализ логов через ADB</h3>
+<p>Подключите устройство к компьютеру с установленным платформенным инструментарием <em>Android SDK Platform Tools</em> и запустите мониторинг событий в реальном времени для фиксации момента включения сенсора.</p>
+<pre><code>adb logcat -b all | grep -i fingerprint</code></pre>
+<p>В полученном потоке данных следует искать строки, указывающие на отсутствие файла конфигурации или невозможность чтения калибровочных данных из защищенного раздела <em>TZ (TrustZone)</em>.</p>
+<p>Допустим, в логах видна ошибка <code>Device not found</code>, что может свидетельствовать о том, что драйвер не видит устройство на шине SPI или I2C, либо прошивка сенсора полностью повреждена.</p>
+<p>Важно также проверить наличие системного файла <code>/data/vendor/fingerprint/fpdata.db</code>, который хранит зашифрованные шаблоны отпечатков и без которого сервис не запустится.</p>
+
+<h3>Проверка целостности разделов</h3>
+<p>Следующим шагом является проверка целостности раздела <code>persist</code>, где хранятся уникальные калибровочные данные для каждого конкретного экземпляра сканера отпечатков.</p>
+<p>Повреждение этого раздела часто происходит при перепрошивке стоковой прошивки на кастомную или при использовании инструментов глобальной прошивки без предварительного бэкапа.</p>
+<p>Для проверки статуса раздела выполните команду в терминале эмулятора или через ADB Shell с правами root, чтобы убедиться в доступности данных калибровки.</p>
+<pre><code>su -c"ls -l /dev/block/bootdevice/by-name/persist"</code></pre>
+<p>Если раздел доступен, но данные внутри повреждены, система будет видеть сканер, но не сможет провести процедуру enrollment (обучения) новым отпечаткам.</p>
+
+<h2 id="программное-восстановление-через-adb-и-fastboot">Программное восстановление через ADB и Fastboot</h2>
+<p>В случае программной ошибки, когда драйвер цел, но конфигурация сбита, наиболее эффективным методом является принудительная перезагрузка сервисов безопасности и очистка временных файлов биометрии.</p>
+<p>Этот подход позволяет устранить конфликты версий между <em>HAL (Hardware Abstraction Layer)</em> и системным фреймворком без полной перепрошивки устройства.</p>
+<p>Стоит учитывать, что для выполнения данных операций обязательно требуется наличие включенной отладки по USB и, в большинстве случаев, права root-доступа.</p>
+
+<h3>Сброс сервисов безопасности</h3>
+<p>Первым действием является принудительная остановка системных процессов, отвечающих за биометрию, что часто решает проблему зависшего состояния драйвера.</p>
+<p>Выполните последовательный сброс сервисов, начиная с основного демона, затем переходя к хранилищу ключей и интерфейсу пользователя.</p>
+<ol>
+<li>Остановите процесс <code>android.hardware.biometrics.fingerprint</code>.</li>
+<li>Очистите данные приложения <code>com.android.settings</code> (Настройки).</li>
+<li>Перезапустите сервис <code>keystore</code> для обновления токенов безопасности.</li>
+</ol>
+<p>После выполнения этих действий система попытается заново инициализировать оборудование, считав конфигурацию с нуля.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Перезапуск биометрии</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">adb shell stop vendor.fingerprint-goodix</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">adb shell stop android.hardware.biometrics.fingerprint@2.1-service</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">adb shell start android.hardware.biometrics.fingerprint@2.1-service</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверка в настройках</span></div></div>
+<p>Если после перезапуска сервисов ошибка сохраняется, необходимо проверить версии прошивок сенсора, которые могут не соответствовать версии ядра операционной системы.</p>
+
+<h3>Обновление прошивки сенсора</h3>
+<p>В некоторых случаях требуется ручная установка firmware-файла для сканера, который поставляется отдельно от основного образа системы.</p>
+<p>Файлы прошивки обычно имеют расширение <em>.bin</em> или <em>.fw</em> и должны быть размещены в директории <code>/vendor/firmware/</code> с правильными правами доступа.</p>
+<p>Для загрузки файла используйте команду <code>adb push</code>, предварительно переключив раздел в режим чтения-записи, если файловая система смонтирована только для чтения.</p>
+<pre><code>adb root
+<p>adb remount</p>
+<p>adb push goodix_firmware.bin /vendor/firmware/goodix_firmware.bin</code></pre></p>
+<p>Критически важно установить правильные права доступа <code>chmod 644</code> и владельца <code>chown root:root</code> на загруженный файл, иначе сервис безопасности не сможет его прочитать.</p>
+<p>После замены файла необходимо выполнить полный цикл перезагрузки устройства, так как прошивка сенсора загружается только на ранней стадии запуска Android.</p>
+
+<h2 id="работа-с-разделом-persist-и-калибровкой">Работа с разделом Persist и калибровкой</h2>
+<p>Наиболее сложным сценарием является потеря или повреждение раздела <code>persist</code>, который содержит уникальные для каждого устройства данные калибровки сенсора.</p>
+<p>Без этих данных сканер может определяться системой, но будет выдавать ошибки при попытке регистрации отпечатка или работать крайне нестабильно.</p>
+<p>Восстановление этого раздела возможно только при наличии ранее сделанной резервной копии (бэкапа) именно с этого устройства или аналогичной модели с идентичным сенсором.</p>
+
+<h3>Восстановление из резервной копии</h3>
+<p>Если у вас есть файл бэкапа раздела <code>persist.img</code>, его можно восстановить через режим Fastboot, что является наиболее безопасным методом.</p>
+<p>Переведите смартфон в режим загрузчика, зажав комбинацию клавиш громкости и питания, и подключите его к ПК.</p>
+<p>Выполните команду прошивки образа, убедившись, что файл бэкапа лежит в папке с инструментами ADB.</p>
+<pre><code>fastboot flash persist persist.img</code></pre>
+<p>После успешной записи необходимо перезагрузить устройство и проверить работу сканера, так как без этого шага изменения не вступят в силу.</p>
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Запись неверного образа persist может привести к полной неработоспособности сканера отпечатков и других модулей (Wi-Fi, Bluetooth). Используйте только свой бэкап!</p></aside>
+<p>В случаях, когда бэкапа нет, восстановление раздела <code>persist</code> программным путем практически невозможно из-за шифрования данных привязки.</p>
+
+<h3>Создание новой калибровки</h3>
+<p>Некоторые инженерные меню Infinix позволяют запустить процедуру повторной калибровки сенсора, если аппаратная часть исправна, но данные утеряны.</p>
+<p>Для доступа к инженерному меню используйте код <code>*#*#3646633#*#*</code> или аналогичный для вашей модели, затем перейдите в раздел <code>Hardware Testing</code>.</p>
+<p>Найдите пункт <code>Fingerprint</code> или <code>Sensor</code> и выберите опцию <code>Calibration</code> или <code>Self-Test</code>.</p>
+<p>Следуйте инструкциям на экране, которые могут включать прикладывание пальца к сканеру определенное количество раз для сбора базовых данных.</p>
+<p>Успешное завершение теста и появление статуса <code>Pass</code> свидетельствует о том, что калибровочные данные успешно записаны в память устройства.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Необходимые права</th>
+<th>Риск потери данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сброс сервисов</td>
+<td>ADB / Root</td>
+<td>Низкий</td>
+</tr>
+<tr>
+<td>Прошивка Persist</td>
+<td>Fastboot</td>
+<td>Высокий</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="специфика-моделей-и-версий-android">Специфика моделей и версий Android</h2>
+<p>Процедура восстановления может существенно различаться в зависимости от используемого процессора (MediaTek или Snapdragon) и версии операционной системы.</p>
+<p>Устройства на базе MediaTek, такие как <em>Infinix Hot</em> или <em>Note</em> серий, часто используют утилиты <em>SP Flash Tool</em> для низкоуровневого восстановления.</p>
+<p>В то же время модели на Snapdragon, например, серия <em>Infinix Zero</em>, требуют использования инструментов <em>QFIL</em> или <em>EDL Mode</em> для доступа к разделам памяти.</p>
+
+<h3>Особенности MediaTek (Helio)</h3>
+<p>На процессорах MediaTek критически важным является файл <code>nvdata</code> и <code>protect_f</code>, которые часто содержат данные, необходимые для работы биометрии.</p>
+<p>При прошивке через <em>SP Flash Tool</em> необходимо выбирать режим <code>Download Only</code> или <code>Format All + Download</code> с крайней осторожностью, чтобы не затереть IMEI.</p>
+<p>Для Infinix на Helio часто помогает перепрошивка только раздела <code>vendor</code> и <code>system</code> стоковой прошивкой, что возвращает оригинальные драйверы.</p>
+<p>Стоит отметить, что разблокированный загрузчик на MediaTek может блокировать работу TrustZone, что делает сканер нерабочим до повторной блокировки.</p>
+
+<h3>Нюансы Android 11, 12 и 13</h3>
+<p>В версиях Android 11 и выше ужесточились требования к безопасности, и простая замена файлов прошивки может быть заблокирована верификатором загрузки.</p>
+<p>Если устройство имеет разблокированный bootloader, некоторые модели Infinix могут принудительно отключать биометрию в целях безопасности.</p>
+<p>В этом случае требуется либо повторная блокировка загрузчика (что сотрет все данные), либо использование патченых образов <em>vbmeta</em> для отключения проверки целостности.</p>
+<pre><code>fastboot flash vbmeta --disable-verity --disable-verification vbmeta.img</code></pre>
+<p>Использование данной команды позволяет обойти проверки, но снижает общий уровень безопасности устройства.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На Android 13 и выше меню настроек может называться «Биометрические данные» вместо «Отпечаток пальца».</p></aside>
+
+<h2 id="типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</h2>
+<p>В процессе восстановления функционала сканера разработчики и продвинутые пользователи часто допускают ряд систематических ошибок, которые усугубляют ситуацию.</p>
+<p>Понимание этих ошибок позволяет избежать дополнительных проблем с программным обеспечением и аппаратной частью устройства.</p>
+<p>Анализ неудачных попыток показывает, что большинство проблем связано с невнимательностью к деталям версионности и прав доступа.</p>
+
+<ol>
+<li><strong>Использование чужого бэкапа persist</strong> — попытка восстановить раздел <code>persist</code> с другого телефона приведет к неработоспособности Wi-Fi, Bluetooth и сканера, так как MAC-адреса и калибровки уникальны.</li>
+<li><strong>Несовместимость версий HAL</strong> — установка драйверов от прошивки Android 10 на систему Android 12 вызовет конфликт библиотек и циклическую перезагрузку сервиса биометрии.</li>
+<li><strong>Игнорирование прав доступа</strong> — забытое изменение прав <code>chmod</code> на загруженные файлы прошивки не позволит системе считать их, и ошибка сохранится.</li>
+<li><strong>Прерывание процесса прошивки</strong> — отключение кабеля или разрядка аккумулятора во время записи раздела <code>vendor</code> может привести к кирпичу устройства.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Метод ADB Reset</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Быстро и безопасно</li><li>✅ Не требует перезагрузки</li><li>✅ Сохраняет данные</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Метод Fastboot:Требует бэкапа</li><li>❌ Риск потери IMEI</li><li>❌ Нужен ПК</li></ul></div>
+</div></div>
+
+<p>Дополнительно стоит упомянуть проблему совместимости кастомных рекавери (TWRP, OrangeFox) с шифрованием разделов Infinix.</p>
+<p>Часто после установки кастомного рекавери перестает работать сканер из-за того, что рекавери не может корректно смонтировать зашифрованный раздел данных.</p>
+<p>В таких случаях помогает обновление кастомного рекавери до версии, поддерживающей конкретную версию Android и тип шифрования вашего устройства.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Вероятная причина</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сканер не включается</td>
+<td>Отключен в BIOS/TrustZone</td>
+<td>Блокировка Bootloader</td>
+</tr>
+<tr>
+<td>Ошибка при регистрации</td>
+<td>Поврежден persist</td>
+<td>Восстановление бэкапа</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="резюме-и-профилактика">Резюме и профилактика</h2>
+<p>Восстановление работы сканера отпечатков на устройствах Infinix — это комплексный процесс, требующий точной диагностики и понимания взаимосвязи между аппаратными драйверами и системными сервисами безопасности.</p>
+<p>Наиболее эффективным методом является предотвращение потери данных: перед любыми манипуляциями с прошивкой или правами доступа обязательно создавайте полные бэкапы разделов <code>persist</code>, <code>nvdata</code> и <code>frp</code>.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда сохраняйте оригинальную стоковую прошивку вашей модели в том же состоянии, в котором она была при покупке, для возможности отката изменений.</p></aside>
+<p>Если программные методы, такие как сброс сервисов и переустановка драйверов, не помогают, проблема может заключаться в физическом повреждении шлейфа или самого модуля сенсора.</p>
+<p>В таких случаях единственно верным решением остается обращение в авторизованный сервисный центр для проведения аппаратной диагностики и замены неисправных компонентов.</p>
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к успеху — наличие актуального бэкапа уникальных разделов и точное соответствие версий драйверов версии Android.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vy/vyletaet-iz-khranilishcha-android.html" class="pb-related-card">
+                <span class="pb-related-title">Почему вылетает хранилище Android: полное руководство</span>
+                <span class="pb-related-desc">Подробный разбор причин сбоев приложения «Хранилище» на Android. Эффективные методы восстановления, </span>
+            </a><a href="/articles/k/ka/kak-redaktirovat-spiski-druzej-v-vk-cherez-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Редактирование списков друзей ВКонтакте на телефоне: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по управлению списками друзей в ВК через мобильное приложение и браузер. Как со</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-na-prilozhenie-allegro-anglijskij-yazyk.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить английский язык в приложении Allegro: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене языка интерфейса в приложении Allegro. Решения для Android, iOS и веб</span>
+            </a><a href="/articles/h/he/hearthstone-kak-optimizirovat-igru-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Hearthstone: оптимизация на телефоне для стабильного FPS</span>
+                <span class="pb-related-desc">Полная инструкция по настройке Hearthstone на Android и iOS. Устранение лагов, настройка графики и р</span>
+            </a><a href="/articles/k/ka/kak-udalit-kasperskij-sejf-kids-s-telefona-rebenka-bez-parolya-i-logina-khneepk-ekhyapyuoni-nkieye.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление Kaspersky Safe Kids без пароля: полные инструкции</span>
+                <span class="pb-related-desc">Как удалить Kaspersky Safe Kids с телефона ребенка. Сброс пароля, доступ к админке, заводской сброс </span>
+            </a><a href="/articles/u/um/umbrella-corporation-temy-na-androide.html" class="pb-related-card">
+                <span class="pb-related-title">Темы Umbrella Corporation на Android: установка и настройка</span>
+                <span class="pb-related-desc">Полная инструкция по установке тем Umbrella Corporation на Android. Настройка кастомных лаунчеров, в</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>LAN-Wi-Fi переходник своими руками: настройка и схемы — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию адаптера Ethernet-WiFi на базе Arduino и ESP8266. Схемы подключения, прошивка и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/la/lan-wifi-perekhodnik-svoimi-rukami.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="LAN-Wi-Fi переходник своими руками: настройка и схемы">
+    <meta property="og:description" content="Техническое руководство по созданию адаптера Ethernet-WiFi на базе Arduino и ESP8266. Схемы подключения, прошивка и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">LAN-Wi-Fi переходник своими руками: настройка и схемы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#выбор-аппаратной-платформы-для-реализации-проекта">Выбор аппаратной платформы для реализации проекта</a></li><li><a href="#организация-питания-и-схемотехнические-решения">Организация питания и схемотехнические решения</a></li><li><a href="#программная-настройка-микроконтроллеров">Программная настройка микроконтроллеров</a></li><li><a href="#конфигурация-сетевого-моста-и-маршрутизации">Конфигурация сетевого моста и маршрутизации</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-перспективы-развития">Резюме и перспективы развития</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-poluchit-adres-na-svoj-plejlist-ot-rostelekoma.html">Как получить адрес плейлиста Ростелеком: полная инструкция</a></li><li><a href="/articles/o/ob/obzhim-provodov-na-routere.html">Обжим проводов на роутере: инструкция по кабелю LAN</a></li><li><a href="/articles/k/ka/kak-otklyuchit-dom-internet-a1.html">Как отключить интернет A1: инструкции для роутера и Wi-Fi</a></li><li><a href="/articles/k/ka/kak-k-tsifrovoj-pristavke-lyumaks-podklyuchit-internet.html">Как подключить Lumax к Wi-Fi: полная инструкция</a></li><li><a href="/articles/k/ka/kak-udalit-skajp-s-plansheta-calaxy-tab-a-2016.html">Как удалить Skype с планшета Galaxy Tab A 2016: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Создание LAN-Wi-Fi моста своими руками</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#выбор-аппаратной-платформы-для-реализации-проекта">Выбор аппаратной платформы для реализации проекта</a></li><li><a href="#организация-питания-и-схемотехнические-решения">Организация питания и схемотехнические решения</a></li><li><a href="#программная-настройка-микроконтроллеров">Программная настройка микроконтроллеров</a></li><li><a href="#конфигурация-сетевого-моста-и-маршрутизации">Конфигурация сетевого моста и маршрутизации</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-перспективы-развития">Резюме и перспективы развития</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда стационарный компьютер или сетевой принтер не имеет встроенного модуля Wi-Fi, а тянуть Ethernet-кабель через всю квартиру физически невозможно, встречается довольно часто. Пользователь оказывается перед выбором: покупать специализированный и зачастую дорогой клиентский мост или искать альтернативное решение на базе доступных компонентов.</p>
+
+<p>Практика показывает, что использование старого роутера или микроконтроллера с поддержкой Wi-Fi позволяет создать эффективный переходник, который будет работать стабильнее многих бюджетных USB-адаптеров. Такой подход дает полный контроль над конфигурацией сети и позволяет адаптировать устройство под специфические требования инфраструктуры.</p>
+
+<p>Внедрение собственного шлюза требует понимания принципов работы сетевых интерфейсов и базовых навыков пайки, однако результат оправдывает затраченные усилия. Грамотно спроектированная система обеспечивает высокую скорость передачи данных и низкую задержку, что критически важно для современных сетевых приложений.</p>
+
+<h2 id="выбор-аппаратной-платформы-для-реализации-проекта">Выбор аппаратной платформы для реализации проекта</h2>
+
+<p>Первым шагом становится подбор оборудования, которое ляжет в основу создаваемого устройства. Рынок предлагает несколько категорий компонентов, различающихся по производительности, стоимости и сложности программирования. Оптимальным выбором для большинства задач является связка микроконтроллера и радиомодуля.</p>
+
+<p>Наиболее популярным решением считается использование платы <em>ESP8266</em> или её более современного аналога <em>ESP32</em>. Эти чипы обладают встроенным стеком TCP/IP и поддерживают работу в режиме клиента (Station), что позволяет им подключаться к существующей Wi-Fi сети и передавать данные через последовательный порт.</p>
+
+<p>Для более сложных сценариев, где требуется высокая пропускная способность, можно рассмотреть одноплатные компьютеры, такие как <em>Raspberry Pi Zero</em>. Однако для задачи простого проброса LAN-порта микроконтроллеры предпочтительнее благодаря мгновенному старту и минимальному энергопотреблению.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При выборе ESP32 убедитесь, что версия чипа поддерживает режим SoftAP или Station, так как некоторые ревизии имеют ограничения по количеству одновременных подключений.</p></aside>
+
+<p>Если целью является создание прозрачного моста для игровых консолей или Smart TV, то старый роутер с поддержкой OpenWrt станет идеальной базой. Встроенный Ethernet-порт и мощный процессор позволяют обрабатывать трафик без задержек, характерных для микроконтроллеров.</p>
+
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Скорость Wi-Fi</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ESP8266</td>
+<td>до 70 Мбит/с</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>ESP32</td>
+<td>до 150 Мбит/с</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>OpenWrt Роутер</td>
+<td>до 300+ Мбит/с</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Выбор оборудования</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Определите требуемую скорость</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите микроконтроллер или роутер</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте наличие свободных портов</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь в совместимости ПО</span></div></div>
+
+<h2 id="организация-питания-и-схемотехнические-решения">Организация питания и схемотехнические решения</h2>
+
+<p>Стабильная работа Wi-Fi модуля напрямую зависит от качества питания, так как в моменты передачи пакетов потребление тока резко возрастает. Недостаточная мощность источника приводит к перезагрузкам устройства и разрывам соединения, что сводит на нет все усилия по настройке.</p>
+
+<p>Для ESP8266 и ESP32 критически важно подавать напряжение 3.3 В с током не менее 500 мА. Использование стандартных портов USB компьютера часто оказывается недостаточным, поэтому рекомендуется применять отдельные блоки питания или качественные Power Bank.</p>
+
+<p>Если переходник создается на базе роутера, то его штатный блок питания обычно справляется с нагрузкой. Однако при подключении внешних антенн или USB-модемов может потребоваться замена блока на более мощный аналог с запасом по току.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Подача напряжения 5 В напрямую на GPIO пины микроконтроллера приведет к необратимому выходу устройства из строя. Всегда используйте стабилизаторы или делители напряжения.</p></aside>
+
+<p>При сборке конструкции в корпусе необходимо предусмотреть отвод тепла, особенно если используется металлический корпус или устройство работает под нагрузкой 24/7. Перегрев радиомодуля вызывает снижение чувствительности приемника и падение скорости.</p>
+
+<p>Для соединения микроконтроллера с Ethernet-адаптером (если реализуется схема с внешним модулем) часто используются преобразователи уровней, так как логические уровни могут отличаться. Внимательное изучение даташитов помогает избежать ошибок на этапе проектирования печатной платы.</p>
+
+<h2 id="программная-настройка-микроконтроллеров">Программная настройка микроконтроллеров</h2>
+
+<p>Превращение микроконтроллера в сетевой адаптер требует загрузки специализированной прошивки, которая реализует необходимые сетевые протоколы. Наиболее гибким инструментом для этой цели является среда разработки <em>Arduino IDE</em> или <em>PlatformIO</em>.</p>
+
+<p>Для начала работы необходимо установить поддержку платы в IDE. В меню <code>Файл → Настройки</code> в поле дополнительных ссылок для менеджера плат добавляется URL репозитория ESP8266 или ESP32. После этого в диспетчере плат появляется возможность выбора нужного устройства.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для ESP32 может потребоваться установка драйверов CH340 или CP2102, чтобы компьютер определил подключенную плату как COM-порт.</p></aside>
+
+<p>Существует готовое решение <em>ESP-Link</em>, которое превращает модуль в прозрачный Wi-Fi мост. Прошивка позволяет эмулировать последовательный порт через сеть (Serial-to-WiFi), что идеально подходит для подключения к устройствам с консольным интерфейсом или специфическим протоколом обмена.</p>
+
+<p>Альтернативный подход подразумевает использование скриптов <em>MicroPython</em> или <em>ESPHome</em>. Эти платформы позволяют настроить устройство без глубокого знания C++, используя YAML-конфигурацию или Python-подобный синтаксис для определения логики работы.</p>
+
+<pre><code># Пример базовой настройки WiFi в Arduino IDE
+<p>#include <ESP8266WiFi.h></p>
+<p>const char* ssid = "YourNetwork";</p>
+<p>const char* password = "YourPassword";</p>
+<p>void setup() {</p>
+<p>WiFi.begin(ssid, password);</p>
+<p>while (WiFi.status() != WL_CONNECTED) {</p>
+<p>delay(500);</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<p>При использовании OpenWrt на роутерах процесс сводится к установке пакетов и правке конфигурационных файлов. Интерфейс LuCI предоставляет графическую оболочку, но для тонкой настройки мостов часто требуется редактирование файлов <code>/etc/config/network</code> и <code>/etc/config/wireless</code>.</p>
+
+<h2 id="конфигурация-сетевого-моста-и-маршрутизации">Конфигурация сетевого моста и маршрутизации</h2>
+
+<p>После успешной прошивки необходимо настроить сетевые параметры, чтобы устройство корректно работало в существующей инфраструктуре. Ключевым моментом является выбор режима работы: клиент (Station) или точка доступа (AP).</p>
+
+<p>В режиме клиента устройство подключается к основному роутеру и получает IP-адрес через DHCP. Это наиболее распространенный сценарий, когда нужно дать сетевой доступ устройству, не имеющему Wi-Fi модуля. Настройка осуществляется через веб-интерфейс или консольные команды.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка сети</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Войдите в интерфейс устройства</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел WiFi</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите данные роутера</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните и перезагрузитесь</span></div></div>
+
+<p>Если требуется пробросить конкретные порты или создать статический маршрут, используется механизм проброса портов (Port Forwarding) или NAT. На микроконтроллерах это реализуется программно, а на роутерах — через правила фаервола.</p>
+
+<p>Для обеспечения безопасности рекомендуется отключить незащищенные протоколы, такие как Telnet, и использовать SSH для удаленного управления. Смена стандартных паролей и отключение WPS являются обязательными мерами защиты периметра сети.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Примечание</th>
+</thead>
+<tbody>
+<tr>
+<td>Канал Wi-Fi</td>
+<td>1, 6 или 11</td>
+<td>Наименее загруженные</td>
+</tr>
+<tr>
+<td>Ширина канала</td>
+<td>20 МГц</td>
+<td>Для стабильности</td>
+</tr>
+<tr>
+<td>Шифрование</td>
+<td>WPA2-AES</td>
+<td>Максимальная защита</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте статический IP-адрес для вашего переходника, чтобы правила маршрутизации и проброса портов не сбивались после перезагрузки роутера.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе создания и эксплуатации самодельных сетевых устройств пользователи часто сталкиваются с рядом типовых проблем. Понимание причин их возникновения позволяет быстро восстановить работоспособность системы без обращения к специалистам.</p>
+
+<ol>
+<li><strong>Нестабильное соединение и частые обрывы</strong> — чаще всего вызвано нехваткой мощности блока питания или плохим качеством антенного кабеля. Следует заменить источник питания на более мощный и проверить надежность контактов антенны.</li>
+<li><strong>Невозможность подключения к точке доступа</strong> — обычно связана с неверным паролем или несовместимостью стандартов шифрования. Проверьте, не использует ли роутер только WPA3, если модуль поддерживает только WPA2.</li>
+<li><strong>Низкая скорость передачи данных</strong> — может быть следствием работы в зашумленном эфире или использования узкого канала. Попробуйте сменить канал Wi-Fi или перейти на диапазон 5 ГГц, если оборудование это поддерживает.</li>
+<li><strong>Устройство не определяется компьютером</strong> — проблема с драйверами USB-UART конвертера или повреждением кабеля данных. Установка актуальных драйверов и замена кабеля часто решают проблему.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Самодельный адаптер</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гибкость настройки</li><li>✅ Низкая стоимость</li><li>✅ Полный контроль</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует времени</li><li>❌ Нужны навыки пайки</li><li>❌ Габариты больше USB-свистка</li></ul></div>
+</div></div>
+
+<p>Особое внимание стоит уделить совместимости версий прошивок и библиотек. Обновление одной части системы может нарушить работу другой, поэтому перед внесением изменений рекомендуется делать резервные копии конфигурационных файлов.</p>
+
+<p>Диагностика сети с помощью утилиты <code>ping</code> и анализаторов трафика помогает локализовать узкое место. Если пакеты теряются на уровне Wi-Fi, проблема в радиоканале, если на уровне Ethernet — в кабеле или порте.</p>
+
+<h2 id="резюме-и-перспективы-развития">Резюме и перспективы развития</h2>
+
+<p>Создание LAN-Wi-Fi переходника своими руками представляет собой эффективное решение для расширения сетевых возможностей имеющегося оборудования. Использование доступных компонентов позволяет достичь результата, сопоставимого с коммерческими аналогами, при значительно меньших затратах.</p>
+
+<p>Гибкость программной настройки дает возможность адаптировать устройство под любые, даже самые экзотические требования пользователя. Освоенные навыки работы с сетевыми протоколами и микроконтроллерами станут valuable активом для реализации более сложных проектов в области умного дома и автоматизации.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Самодельный переходник — это баланс между стоимостью, гибкостью и требуемыми навыками, позволяющий решить проблему отсутствия Wi-Fi без покупки дорогого оборудования.</p></aside>
+
+<p>Дальнейшее развитие проекта может включать интеграцию с системами мониторинга, добавление функций файлового сервера или организацию VPN-туннеля для безопасного удаленного доступа. Технические возможности современных микроконтроллеров практически не ограничивают фантазию разработчика.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-poluchit-adres-na-svoj-plejlist-ot-rostelekoma.html" class="pb-related-card">
+                <span class="pb-related-title">Как получить адрес плейлиста Ростелеком: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по получению ссылки на IPTV Ростелеком. Настройка Wink, STB-приставок и Smart </span>
+            </a><a href="/articles/o/ob/obzhim-provodov-na-routere.html" class="pb-related-card">
+                <span class="pb-related-title">Обжим проводов на роутере: инструкция по кабелю LAN</span>
+                <span class="pb-related-desc">Пошаговая инструкция по обжиму кабеля витая пара для роутера. Схемы распиновки, выбор инструмента и </span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-dom-internet-a1.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить интернет A1: инструкции для роутера и Wi-Fi</span>
+                <span class="pb-related-desc">Полная инструкция по отключению интернета A1. Сброс роутера, блокировка через приложение, настройка </span>
+            </a><a href="/articles/k/ka/kak-k-tsifrovoj-pristavke-lyumaks-podklyuchit-internet.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Lumax к Wi-Fi: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке интернета на приставках Lumax. Настройка Wi-Fi, Ethernet, решение</span>
+            </a><a href="/articles/k/ka/kak-udalit-skajp-s-plansheta-calaxy-tab-a-2016.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Skype с планшета Galaxy Tab A 2016: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по удалению Skype на Samsung Galaxy Tab A 2016. Способы деинсталляции, очистка</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-uslugu-rostelekom-garantiya-plyus-v-lichnom-kabinete.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Ростелеком Гарантия Плюс: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробный гид по отключению услуги Ростелеком Гарантия Плюс в ЛК. Узнайте, как отказаться от подписк</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

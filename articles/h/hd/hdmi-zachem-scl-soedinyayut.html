@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Зачем в HDMI нужен SCL: роль I2C шины и EDID — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор функции SCL в HDMI. Как работает обмен данными EDID, почему без тактирования нет изображения и как диагностировать обрыв линии.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/hd/hdmi-zachem-scl-soedinyayut.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Зачем в HDMI нужен SCL: роль I2C шины и EDID">
+    <meta property="og:description" content="Подробный разбор функции SCL в HDMI. Как работает обмен данными EDID, почему без тактирования нет изображения и как диагностировать обрыв линии.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Зачем в HDMI нужен SCL: роль I2C шины и EDID</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-канала-ddc-и-протокол-i2c">Архитектура канала DDC и протокол I2C</a></li><li><a href="#функция-scl-при-чтении-edid-данных">Функция SCL при чтении EDID данных</a></li><li><a href="#физический-уровень-распиновка-и-электрические-параметры">Физический уровень: распиновка и электрические параметры</a></li><li><a href="#роль-scl-в-протоколе-защиты-hdcp">Роль SCL в протоколе защиты HDCP</a></li><li><a href="#диагностика-иые-неисправности-линии-scl">Диагностика иые неисправности линии SCL</a></li><li><a href="#эволюция-стандарта-и-будущие-перспективы">Эволюция стандарта и будущие перспективы</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/le/lezymediadelxe-dlya-lg.html">Установка приложений на LG TV: полное руководство</a></li><li><a href="/articles/t/tv/tv-khajer-43-otklyuchit-blyutuz.html">Как отключить Bluetooth на Haier 43: полная инструкция</a></li><li><a href="/articles/d/do/dolgo-zagruzhaetsya-prilozhenie-psb-banka-chto-delat.html">Почему долго грузится ПСБ Онлайн: устранение проблем</a></li><li><a href="/articles/t/te/televizor-sony-kb-55xh9077-kak-veshaetsya-na-stenu.html">Крепление Sony KD-55XH9077 на стену: схема, болты, кронштейны</a></li><li><a href="/articles/l/lg/lg-jk-5400pla-ne-v-det-router-wi-fi.html">LG JK 5400PLA не видит Wi-Fi роутер: причины и решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Зачем в HDMI соединяют контакт SCL: роль тактирования и EDID</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-канала-ddc-и-протокол-i2c">Архитектура канала DDC и протокол I2C</a></li><li><a href="#функция-scl-при-чтении-edid-данных">Функция SCL при чтении EDID данных</a></li><li><a href="#физический-уровень-распиновка-и-электрические-параметры">Физический уровень: распиновка и электрические параметры</a></li><li><a href="#роль-scl-в-протоколе-защиты-hdcp">Роль SCL в протоколе защиты HDCP</a></li><li><a href="#диагностика-иые-неисправности-линии-scl">Диагностика иые неисправности линии SCL</a></li><li><a href="#эволюция-стандарта-и-будущие-перспективы">Эволюция стандарта и будущие перспективы</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Многие пользователи, сталкиваясь с проблемами подключения монитора или телевизора, даже не подозревают, что за передачей видеосигнала скрывается сложная система диалога между устройствами. Когда вы вставляете кабель <em>HDMI</em> в разъем, начинается мгновенный обмен цифровыми пакетами данных, без которых экран останется черным. Ключевым элементом этого процесса является не только передача пикселей, но и служебная информация, которая передается по специальным линиям.</p>
+
+<p>Одной из таких критически важных линий является <strong>SCL</strong> (Serial Clock Line). Именно она обеспечивает синхронизацию передачи данных между источником сигнала (видеокартой, консолью) и приемником (телевизором, проектором). Без корректной работы этой линии устройство просто «не узнает» дисплей, и изображение не появится, даже если все остальные провода целы.</p>
+
+<p>В этой статье мы детально разберем архитектуру взаимодействия, объясним физический смысл тактирования и ответим на вопрос, почему инженеры выделили отдельный контакт для синхронизации. Понимание этих процессов поможет вам грамотно диагностировать неисправности кабелей и разъемов.</p>
+
+<h2 id="архитектура-канала-ddc-и-протокол-i2c">Архитектура канала DDC и протокол I2C</h2>
+
+<p>Линия <strong>SCL</strong> является неотъемлемой частью интерфейса <em>DDC</em> (Display Data Channel), который базируется на широко распространенном промышленном протоколе <strong>I2C</strong>. Этот протокол был разработан компанией <em>Philips</em> еще в 1980-х годах и до сих пор остается стандартом для связи низкоскоростных периферийных устройств. В контексте <em>HDMI</em> он используется для чтения данных о возможностях дисплея.</p>
+
+<p>Протокол I2C является двухпроводным, что означает наличие только двух сигнальных линий для обмена данными: <strong>SDA</strong> (Serial Data) и <strong>SCL</strong> (Serial Clock). Первая линия отвечает за передачу самих битов информации, а вторая, <strong>SCL</strong>, генерирует тактовые импульсы. Мастер (источник сигнала) создает эти импульсы, чтобы синхронизировать чтение и запись данных с ведомым устройством (дисплеем).</p>
+
+<blockquote>⚠️ Внимание: Линия SCL работает на низких частотах (стандартно 100 кГц или 400 кГц), но любое нарушение целостности этого сигнала приводит к полному отсутствию изображения, так как handshake-процедура не завершается.</blockquote>
+
+<p>Важно понимать, что <strong>DDC</strong> канал работает независимо от основного видеопотока. Даже если вы передаете видео в 4K с высокой частотой кадров, служебный обмен данными EDID происходит на минимальных скоростях, требующих надежной синхронизации через <strong>SCL</strong>. Именно поэтому качество экранирования кабеля критично не только для видеосигнала, но и для линий управления.</p>
+
+<div class="pb-poll" id="poll-703ab6ef"><div class="pb-poll-question">📊 Сталкивались ли вы с ситуацией, когда кабель HDMI работает только после переподключения?</div><div class="pb-poll-option" data-poll="703ab6ef" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Да, часто</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="703ab6ef" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Иногда бывает</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="703ab6ef" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Редко, но было</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="703ab6ef" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Никогда не замечал</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="функция-scl-при-чтении-edid-данных">Функция SCL при чтении EDID данных</h2>
+
+<p>Основная задача, для которой соединяют и используют линию <strong>SCL</strong> в разъеме <em>HDMI</em>, — это чтение структуры <strong>EDID</strong> (Extended Display Identification Data). EDID представляет собой небольшой объем данных (обычно 128 или 256 байт), хранящийся в памяти дисплея. В этой памяти записаны все технические характеристики экрана: поддерживаемые разрешения, частоты обновления, цветовые профили и даже серийный номер.</p>
+
+<p>Когда вы подключаете кабель, источник сигнала (например, ноутбук) подает напряжение на линию питания +5V, после чего initiрует процедуру опроса. Через линию <strong>SCL</strong> он посылает тактовые импульсы, запрашивая данные через линию <strong>SDA</strong>. Если линия <strong>SCL</strong> оборвана или закорочена, этот диалог невозможен, и компьютер считает, что дисплей не подключен.</p>
+
+<p>Процесс чтения выглядит следующим образом:</p>
+<ul>
+ <li>📡 Источник сигнала генерирует стартовый условие на шине I2C.</li>
+ <li>📡 Через линию <strong>SCL</strong> передается адрес устройства (обычно 0x50 для EDID).</li>
+ <li>📡 Дисплей отвечает подтверждением (ACK), синхронизируясь по тактам <strong>SCL</strong>.</li>
+ <li>📡 Происходит побайтовая передача данных EDID, где каждый бит данных на линии SDA действителен только в момент изменения состояния линии <strong>SCL</strong>.</li>
+</ul>
+
+<p>Без успешного завершения этой процедуры операционная система не сможет предложить вам правильные настройки разрешения. Вы можете увидеть сообщение «Неподдерживаемый режим» или изображение будет растянутым и нечетким, так как видеодрайвер будет работать в безопасном режиме с минимальными параметрами.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если изображение появляется с задержкой в несколько секунд после включения, возможно, линия SCL имеет высокое сопротивление или плохой контакт, и устройству требуется несколько попыток для чтения EDID.</p></aside>
+
+<h2 id="физический-уровень-распиновка-и-электрические-параметры">Физический уровень: распиновка и электрические параметры</h2>
+
+<p>В стандартном 19-контактном разъеме <em>Type A</em>, который используется в большинстве потребительских устройств, линии <strong>SCL</strong> и <strong>SDA</strong> имеют строго определенное расположение. Контакт <strong>SCL</strong> находится на позиции номер 15, а <strong>SDA</strong> — на позиции 16. Они расположены рядом с контактами заземления TMDS, что требует качественного экранирования во избежание перекрестных помех.</p>
+
+<p>Электрически линия <strong>SCL</strong> представляет собой открытый коллектор (Open Collector). Это означает, что устройство не подает напряжение постоянно, а лишь «прижимает» линию к земле для передачи логического нуля. Для возврата в логическую единицу используются подтягивающие резисторы. В спецификации <em>HDMI</em> указано, что напряжение на линии <strong>SCL</strong> должно находиться в диапазоне от 0,95В (минимум для логического нуля) до 5,0В (максимум).</p>
+
+<p>Таблица ниже демонстрирует распределение контактов, критичных для работы канала DDC:</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Пин (Контакт)</th>
+ <th>Сигнал</th>
+ <th>Направление</th>
+ <th>Описание функции</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>15</td>
+ <td><strong>SCL</strong></td>
+ <td>Двунаправленный</td>
+ <td>Тактовая линия I2C для синхронизации данных DDC</td>
+ </tr>
+ <tr>
+ <td>16</td>
+ <td><strong>SDA</strong></td>
+ <td>Двунаправленный</td>
+ <td>Линия данных I2C для передачи EDID и HDCP</td>
+ </tr>
+ <tr>
+ <td>17</td>
+ <td>DDC GND</td>
+ <td>Земля</td>
+ <td>Общий провод для канала DDC</td>
+ </tr>
+ <tr>
+ <td>18</td>
+ <td>+5V Power</td>
+ <td>Питание</td>
+ <td>Питание для чипа EDID в дисплее</td>
+ </tr>
+ </tbody>
+</table>
+
+<p>Нарушение целостности контакта №15 (<strong>SCL</strong>) часто встречается в дешевых кабелях, где производители экономят на количестве жил или качестве лужения. В таких случаях видео может передаваться, но «умные» функции, такие как автоматическое переключение источников или настройка HDR, работать не будут.</p>
+
+<details class="pb-accordion"><summary>Почему именно открытый коллектор?</summary><div class="pb-accordion-body"><p>Использование схемы с открытым коллектором позволяет подключать несколько устройств к одной шине без риска короткого замыкания, если одно устройство тянет линию вверх, а другое вниз. Это обеспечивает надежную арбитражную защиту шины I2C.</p></div></details>
+
+<h2 id="роль-scl-в-протоколе-защиты-hdcp">Роль SCL в протоколе защиты HDCP</h2>
+
+<p>Помимо базовых данных EDID, линия <strong>SCL</strong> критически важна для работы системы защиты цифрового контента <strong>HDCP</strong> (High-bandwidth Digital Content Protection). Этот протокол предотвращает несанкционированное копирование видео и аудио при передаче по <em>HDMI</em>. Перед началом передачи защищенного контента (например, фильма из Blu-ray или стримингового сервиса) происходит сложная процедура аутентификации.</p>
+
+<p>Процесс аутентификации HDCP полностью завязан на обмене ключами шифрования через канал DDC, использующий <strong>SCL</strong> для тактирования. Источник и приемник обмениваются уникальными ключами, проверяют друг друга и только после успешного рукопожатия начинают передачу зашифрованного видеопотока. Если линия <strong>SCL</strong> имеет нестабильный контакт, процесс аутентификации прерывается.</p>
+
+<p>Результатом сбоя в работе <strong>SCL</strong> при попытке просмотра защищенного контента становится:</p>
+<ul>
+ <li>🚫 Мигание экрана или периодическое пропадание изображения.</li>
+ <li>🚫 Появление сообщения об ошибке HDCP на экране.</li>
+ <li>🚫 Снижение разрешения до 480p или 576p (стандартная защита).</li>
+ <li>🚫 Полное отсутствие изображения при работающем звуке.</li>
+</ul>
+
+<p>Стоит отметить, что для HDCP требования к целостности сигнала еще выше, чем для простого чтения EDID, так как обмен ключами происходит динамически в течение сеанса связи. Любые помехи на линии <strong>SCL</strong> могут быть расценены системой защиты как попытка взлома или наличие нелегального промежуточного устройства (сплиттера).</p>
+
+<blockquote>⚠️ Внимание: Использование длинных кабелей (более 5 метров) без активной электроники часто приводит к затуханию сигнала SCL. В таких случаях необходимо использовать активные усилители или оптические HDMI кабели.</blockquote>
+
+<h2 id="диагностика-иые-неисправности-линии-scl">Диагностика иые неисправности линии SCL</h2>
+
+<p>При диагностике проблем с <em>HDMI</em> часто забывают про служебные линии, фокусируясь на видеопотоке. Однако, если изображение то появляется, то исчезает, или телевизор видит устройство, но не показывает картинку, проблема может крыться именно в <strong>SCL</strong>. Частой причиной является окисление контактов в разъеме или механический излом кабеля у коннектора.</p>
+
+<p>Для профессиональной диагностики инженеры используют осциллографы или логические анализаторы, подключаясь к контакту 15. На осциллограмме вы должны видеть четкую прямоугольную форму сигнала с частотой 100 кГц (или выше в режиме Fast Mode). Если сигнал имеет заваленные фронты или амплитуда менее 3 вольт, это указывает на проблему.</p>
+
+<p>Основные симптомы неисправности линии <strong>SCL</strong>:</p>
+<ul>
+ <li>🔍 Телевизор показывает «Нет сигнала», хотя источник включен.</li>
+ <li>🔍 Компьютер не определяет второй монитор в списке устройств.</li>
+ <li>🔍 Изображение черно-белое или с артефактами цвета (сбой чтения цветового профиля).</li>
+ <li>🔍 Невозможность активировать режимы HDR или Deep Color.</li>
+</ul>
+
+<p>В домашних условиях проверить кабель сложно, но можно попробовать почистить контакты разъемов спиртом или заменить кабель на заведомо исправный короткий аналог. Если проблема исчезает с новым кабелем, значит, в старом был нарушен контакт линии <strong>SCL</strong> или <strong>SDA</strong>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Диагностика проблемы HDMI</h4><label class="check-item"><input type="checkbox"><span>Проверить кабель на изломы</span></label><label class="check-item"><input type="checkbox"><span>Почистить контакты разъемов</span></label><label class="check-item"><input type="checkbox"><span>Попробовать другой порт HDMI</span></label><label class="check-item"><input type="checkbox"><span>Проверить настройки разрешения источника</span></label><label class="check-item"><input type="checkbox"><span>Заменить кабель на короткий для теста</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<h2 id="эволюция-стандарта-и-будущие-перспективы">Эволюция стандарта и будущие перспективы</h2>
+
+<p>С выходом новых версий стандарта <em>HDMI</em>, таких как 2.0 и 2.1, пропускная способность основного канала выросла до 48 Гбит/с, но роль линии <strong>SCL</strong> осталась фундаментальной. Хотя объем данных EDID увеличился (появились блоки HEIF для HDR10+, Dolby Vision), базовый механизм передачи через I2C сохранился. Более того, в <em>HDMI 2.1</em> появилась функция eARC (Enhanced Audio Return Channel), которая также использует канал DDC для первоначального согласования возможностей аудиоустройств.</p>
+
+<p>В новых спецификациях уделяется больше внимания помехоустойчивости. Поскольку скорости передачи видеоданных выросли, требования к экранированию кабелей стали жестче, чтобы высокочастотные помехи от пар TMDS не влияли на низкочастотный сигнал <strong>SCL</strong>. Инженерам приходится балансировать между емкостью кабеля и качеством передачи тактового сигнала.</p>
+
+<p><aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Даже в эпоху 8K и 120 Гц, линия SCL остается «ключом», который открывает дверь для передачи видеосигнала, обеспечивая первичное рукопожатие устройств.</p></aside> Будущее показывает, что несмотря на развитие беспроводных технологий, физический контакт и надежная синхронизация через <strong>SCL</strong> останутся стандартом де-факто для гарантированной передачи качественного контента без задержек и артефактов сжатия.</p>
+
+<p>Понимание важности каждого контакта в разъеме помогает не только в ремонте, но и в правильном выборе оборудования. Не стоит экономить на кабелях, если вы планируете использовать современные форматы видео, так как качество исполнения линий управления напрямую влияет на стабильность всей системы.</p>
+
+<details class="pb-accordion"><summary>Можно лиить оборванный SCL?</summary><div class="pb-accordion-body"><p>Теоретически, перепайка контакта возможна, но на практике в условиях тонких кабелей HDMI это крайне сложно. Дешевле и надежнее заменить кабель целиком, так как нарушение геометрии жил может привести к рассогласованию импеданса и потере сигнала на высоких разрешениях.</p></div></details>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+ <summary>Что будет, если закоротить SCL на землю?</summary>
+ <p>Если линия <strong>SCL</strong> замкнута на землю, шина I2C будет постоянно занята низким уровнем. Источник сигнала не сможет сгенерировать тактовый импульс, чтение EDID станет невозможным, и изображение не появится. Устройство будет думать, что дисплей отключен.</p>
+</details>
+
+<details>
+ <summary>Можно ли использовать кабель HDMI без линии SCL?</summary>
+ <p>Технически видеосигнал может пройти, если остальные линии целы, но без <strong>SCL</strong> не пройдет идентификация. Современные устройства (особенно цифровые TVs и консоли) часто блокируют вывод изображения, если не могут прочитать EDID, поэтому работать ничего не будет.</p>
+</details>
+
+<details>
+ <summary>Почему SCL называют тактирующей линией?</summary>
+ <p>Название происходит от английского <strong>Clock</strong> (часы/такт). Эта линия задает ритм (такт) передачи данных. Без неё принимающая сторона не знает, когда именно нужно считывать состояние линии данных <strong>SDA</strong>.</p>
+</details>
+
+<details>
+ <summary>Влияет ли длина кабеля на работу SCL?</summary>
+ <p>Да, влияет. При увеличении длины растет емкость и сопротивление кабеля. Сигнал <strong>SCL</strong> может «заваливаться» (терять крутизну фронта), что приводит к ошибкам чтения. Для длинных трасс (более 10-15 м) требуются активные кабели или ретрансляторы.</p>
+</details>
+
+<details>
+ <summary>Есть ли разница между SCL в HDMI и DVI?</summary>
+ <p>Принципиальной разницы нет, так как оба интерфейса используют стандарт DDC2B (I2C) для обмена EDID. Распиновка контактов может отличаться геометрически, но логика работы линии <strong>SCL</strong> идентична.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/le/lezymediadelxe-dlya-lg.html" class="pb-related-card">
+                <span class="pb-related-title">Установка приложений на LG TV: полное руководство</span>
+                <span class="pb-related-desc">Как скачать и установить приложения на телевизоры LG Smart TV. Инструкция для webOS, решение проблем</span>
+            </a><a href="/articles/t/tv/tv-khajer-43-otklyuchit-blyutuz.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Bluetooth на Haier 43: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению Bluetooth на телевизорах Haier 43. Методы через меню, пульт, ADB</span>
+            </a><a href="/articles/d/do/dolgo-zagruzhaetsya-prilozhenie-psb-banka-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Почему долго грузится ПСБ Онлайн: устранение проблем</span>
+                <span class="pb-related-desc">Долго загружается ПСБ Онлайн? Инструкция по устранению задержек, очистке кэша, настройке сети и реше</span>
+            </a><a href="/articles/t/te/televizor-sony-kb-55xh9077-kak-veshaetsya-na-stenu.html" class="pb-related-card">
+                <span class="pb-related-title">Крепление Sony KD-55XH9077 на стену: схема, болты, кронштейны</span>
+                <span class="pb-related-desc">Техническая инструкция по монтажу Sony KD-55XH9077 на стену. Размеры VESA, спецификация болтов M6, т</span>
+            </a><a href="/articles/l/lg/lg-jk-5400pla-ne-v-det-router-wi-fi.html" class="pb-related-card">
+                <span class="pb-related-title">LG JK 5400PLA не видит Wi-Fi роутер: причины и решение</span>
+                <span class="pb-related-desc">Телевизор LG JK 5400PLA не подключается к Wi-Fi? Подробная инструкция по настройке DNS, сбросу сети </span>
+            </a><a href="/articles/k/ka/kak-snyat-zashchitu-ot-detej-na-starom-elt-televizore-lg.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять блокировку на LG CRT: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению защиты от детей на старых телевизорах LG. Сброс пароля, вход в с</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

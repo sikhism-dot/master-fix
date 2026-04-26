@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Hesk: подробная инструкция по установке системы Help Desk — Мастер Фикс</title>
+    <meta name="description" content="Руководство по установке Hesk. Настройка базы данных MySQL, конфигурация config.php, создание базы данных и запуск скрипта установки на сервере.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/he/hesk-kak-ustanovit.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Hesk: подробная инструкция по установке системы Help Desk">
+    <meta property="og:description" content="Руководство по установке Hesk. Настройка базы данных MySQL, конфигурация config.php, создание базы данных и запуск скрипта установки на сервере.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Hesk: подробная инструкция по установке системы Help Desk</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#предварительные-требования-и-подготовка-серверного-окружения">Предварительные требования и подготовка серверного окружения</a></li><li><a href="#загрузка-дистрибутива-и-размещение-файлов-на-хостинге">Загрузка дистрибутива и размещение файлов на хостинге</a></li><li><a href="#создание-базы-данных-и-настройка-подключения">Создание базы данных и настройка подключения</a></li><li><a href="#запуск-скрипта-установки-и-первоначальная-конфигурация">Запуск скрипта установки и первоначальная конфигурация</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/q/qu/quick-app-chto-eto-za-programma.html">Quick App: что это за программа и как она работает</a></li><li><a href="/articles/k/ka/kak-otpravit-skrinshot-banku-levoberezhnyj.html">Как отправить скриншот в банк Левобережный: полная инструкция</a></li><li><a href="/articles/m/mi/mi-coin-chto-eto-za-programma.html">Mi Coin что это: назначение, риски и удаление майнера</a></li><li><a href="/articles/z/zh/zhestkij-disk-sata-skhema-podklyucheniya-razema-pitaniya.html">Схема подключения SATA питания HDD: Полная инструкция</a></li><li><a href="/articles/c/cm/cmit-20190.html">CMIT 20190: Смена MAC-адреса Wi-Fi на Android и PC</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Hesk: техническое руководство по развертыванию</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#предварительные-требования-и-подготовка-серверного-окружения">Предварительные требования и подготовка серверного окружения</a></li><li><a href="#загрузка-дистрибутива-и-размещение-файлов-на-хостинге">Загрузка дистрибутива и размещение файлов на хостинге</a></li><li><a href="#создание-базы-данных-и-настройка-подключения">Создание базы данных и настройка подключения</a></li><li><a href="#запуск-скрипта-установки-и-первоначальная-конфигурация">Запуск скрипта установки и первоначальная конфигурация</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда поток запросов от пользователей становится неуправляемым, а переписка теряется в хаосе почтовых ящиков, знакома многим администраторам и владельцам малого бизнеса. Отсутствие централизованной системы учета приводит к потере важных обращений, снижению качества обслуживания и росту недовольства клиентов. Решением проблемы становится внедрение специализированного ПО для управления тикетами, однако выбор часто падает на сложные и дорогие корпоративные продукты, внедрение которых требует штата разработчиков.</p>
+<p>В таких условиях оптимальным выбором становится <strong>установка Hesk</strong> — легковесной, быстрой и бесплатной системы поддержки пользователей. Этот программный комплекс не требует глубоких знаний серверной архитектуры для базового развертывания, но предоставляет мощные инструменты для автоматизации ответов, управления знаниями и отслеживания статусов заявок. Ключевым преимуществом является минимальное потребление ресурсов сервера, что позволяет запускать систему даже на дешевых виртуальных хостингах.</p>
+<p>Процесс инсталляции представляет собой последовательность четко определенных действий, выполнение которых гарантирует стабильную работу сервиса. Несмотря на кажущуюся простоту, существуют нюансы, связанные с версиями PHP, настройками базы данных MySQL и правами доступа к файлам, игнорирование которых может привести к ошибкам при запуске. Ниже представлен детальный алгоритм действий, позволяющий развернуть полностью функциональную систему поддержки в кратчайшие сроки.</p>
+
+<h2 id="предварительные-требования-и-подготовка-серверного-окружения">Предварительные требования и подготовка серверного окружения</h2>
+<p>Перед началом непосредственной загрузки файлов необходимо убедиться, что хостинг-провайдер или выделенный сервер соответствует минимальным системным требованиям. Hesk написан на языке PHP и использует базу данных MySQL или MariaDB для хранения информации, поэтому наличие этих компонентов является обязательным условием. На практике современные версии системы требуют PHP версии 7.4 или выше, хотя для максимальной совместимости и безопасности рекомендуется использовать актуальные стабильные ветки, такие как <em>PHP 8.1</em> или <em>PHP 8.2</em>.</p>
+<p>Важным аспектом является конфигурация расширений PHP, которые должны быть активированы на стороне сервера. Без модулей <code>mysqli</code>, <code>mbstring</code> и <code>gd</code> система не сможет корректно обрабатывать соединения с базой данных, кодировки текста и графические элементы капчи. Если используется управляемый хостинг, проверить наличие модулей можно через панель управления, например, перейдя в раздел <code>cPanel → Select PHP Version → Extensions</code>.</p>
+<p>Допустим, серверное окружение готово к работе, но права доступа к файлам еще не настроены. Для корректной работы скриптов установки и последующего сохранения вложений (скриншотов, логов) необходимо, чтобы папки имели правильные атрибуты. Обычно права <code>755</code> для папок и <code>644</code> для файлов являются стандартом, однако в процессе инсталляции скрипт может запросить временное изменение прав на конфигурационный файл.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых хостингах с жесткой политикой безопасности (например, suPHP) права 777 могут быть запрещены. В таком случае используйте 755 и меняйте владельца файла через FTP-клиент.</p></aside>
+
+<p>Следует также обратить внимание на лимиты выполнения скриптов, установленные в конфигурации <code>php.ini</code>. Параметры <code>max_execution_time</code> и <code>memory_limit</code> напрямую влияют на возможность импорта больших объемов данных или установки тяжелых языковых пакетов. Рекомендуется установить время выполнения не менее 30 секунд и лимит памяти не менее 128 МБ, хотя для базовой работы достаточно и меньших значений.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Минимальная версия</th>
+<th>Рекомендуемая версия</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PHP</td>
+<td>7.4.0</td>
+<td>8.2.x</td>
+</tr>
+<tr>
+<td>MySQL / MariaDB</td>
+<td>5.5.3</td>
+<td>8.0+ / 10.6+</td>
+</tr>
+<tr>
+<td>Web Server</td>
+<td>Apache 2.4 / Nginx</td>
+<td>Apache 2.4+ / Nginx 1.20+</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная установка Hesk невозможна без проверки версий PHP и MySQL, а также активации необходимых расширений.</p></aside>
+
+<h2 id="загрузка-дистрибутива-и-размещение-файлов-на-хостинге">Загрузка дистрибутива и размещение файлов на хостинге</h2>
+<p>Первым практическим шагом является получение актуальной версии программного обеспечения с официального репозитория. Скачивание следует производить только из проверенных источников, таких как официальный сайт разработчика или GitHub, чтобы исключить риск внедрения вредоносного кода. После загрузки архива <code>hesk.zip</code> необходимо распаковать его содержимое на локальном компьютере для предварительного анализа структуры папок.</p>
+<p>Внутри архива находится множество файлов, но для размещения на сервере критически важны только определенные директории. Основное содержимое, включая папки <code>admin</code>, <code>inc</code>, <code>languages</code> и файлы в корне, должно быть перенесено в корневую директорию веб-сайта (обычно <code>public_html</code> или <code>www</code>). Если планируется установка в подпапку, например, для адреса <code>site.com/support</code>, файлы загружаются именно туда.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Загрузка файлов на сервер</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте архив с официального сайта</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Распакуйте архив локально</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключитесь к серверу по FTP или SFTP</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Загрузите все файлы в корневую папку домена</span></div></div>
+
+<p>Процесс передачи данных лучше всего осуществлять через протокол SFTP, обеспечивающий шифрование соединения, особенно если используются учетные данные администратора. При использовании FTP-клиентов, таких как <em>FileZilla</em> или <em>WinSCP</em>, стоит проверить, что при передаче не изменилась кодировка файлов, хотя для бинарных и текстовых файлов PHP это редко становится проблемой в современных системах. После завершения загрузки рекомендуется проверить целостность файлов, сравнив их количество с оригинальным архивом.</p>
+<p>Если на сервере уже существовала предыдущая версия системы или тестовые файлы, их необходимо удалить или переместить в резервную папку во избежание конфликтов версий. Чистая среда установки гарантирует, что старые конфигурационные файлы, такие как <code>hesk_settings.inc.php</code>, не будут конфликтовать с новыми скриптами. В случае обновления существующей системы процедура отличается и требует предварительного бэкапа базы данных.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Никогда не загружайте файлы поверх работающей системы без предварительной резервной копии базы данных и файлов. Это может привести к полной потере тикетов.</p></aside>
+
+<p>Стоит отметить, что файл <code>install.php</code>, который запускает мастер установки, по соображениям безопасности рекомендуется удалять сразу после завершения настройки. До момента удаления этот файл представляет потенциальную уязвимость, позволяющую переустановить систему или изменить параметры доступа. Современные версии Hesk автоматически блокируют повторный запуск установки, если конфигурационный файл уже существует.</p>
+
+<h2 id="создание-базы-данных-и-настройка-подключения">Создание базы данных и настройка подключения</h2>
+<p>Фундаментом любой установки Hesk является база данных, где будет храниться вся информация о тикетах, пользователях и настройках. Создание новой базы данных обычно осуществляется через панель управления хостингом, например, cPanel, Plesk или ISPmanager. Необходимо перейти в раздел управления базами данных MySQL, создать новую базу и (запомнить) её полное имя, так как на некоторых хостингах к имени добавляется префикс пользователя.</p>
+<p>Следующим этапом является создание пользователя базы данных с соответствующими привилегиями. При генерации пароля следует использовать сложные комбинации символов, цифр и спецзнаков, так как этот пароль будет храниться в открытом виде в конфигурационном файле на сервере. После создания пользователя ему необходимо назначить права <code>ALL PRIVILEGES</code> на созданную ранее базу данных, чтобы скрипт установки мог создавать таблицы и индексы.</p>
+
+<ol>
+<li>Войдите в панель управления хостингом и откройте раздел «Базы данных MySQL».</li>
+<li>Создайте новую базу данных и запишите её имя.</li>
+<li>Создайте нового пользователя MySQL и задайте сложный пароль.</li>
+<li>Добавьте пользователя к базе данных и установите права «Все привилегии».</li>
+<li>Запишите имя хоста базы данных (часто это <code>localhost</code>, но может отличаться).</li>
+</ol>
+
+<p>Если используется командная строка сервера (SSH), создание базы можно выполнить быстрее с помощью SQL-команд. Это особенно актуально для VPS и выделенных серверов, где нет графической панели управления. В терминале необходимо авторизоваться под root или пользователем с правами администратора MySQL и выполнить последовательность команд для создания объекта и назначения прав.</p>
+
+<pre><code>CREATE DATABASE hesk_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+<p>CREATE USER'hesk_user'@'localhost' IDENTIFIED BY'strong_password';</p>
+<p>GRANT ALL PRIVILEGES ON hesk_db.* TO'hesk_user'@'localhost';</p>
+<p>FLUSH PRIVILEGES;</code></pre></p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование кодировки utf8mb4 важно для корректного отображения эмодзи и специальных символов в текстах тикетов.</p></aside>
+
+<p>После создания базы данных и пользователя необходимо убедиться, что хост подключения указан верно. В большинстве случаев это <code>localhost</code>, однако на некоторых конфигурациях серверов (например, при разделении веб-сервера и сервера баз данных) это может быть IP-адрес или доменное имя. Проверить этот параметр можно в документации хостинг-провайдера или в файле конфигурации <code>config.inc.php</code>, если там есть примеры для данного хостинга.</p>
+
+<h2 id="запуск-скрипта-установки-и-первоначальная-конфигурация">Запуск скрипта установки и первоначальная конфигурация</h2>
+<p>После размещения файлов и подготовки базы данных можно переходить к непосредственной установке. Для этого в адресной строке браузера открывается путь к файлу <code>install.php</code>, расположенному в корне сайта. Например, если домен <code>example.com</code>, то адрес будет выглядеть как <code>http://example.com/install.php</code>. Скрипт проведет автоматическую проверку среды и выведет результаты на экран.</p>
+<p>На первом экране установщик проверит версию PHP, наличие необходимых расширений и права доступа к файлам. Если все требования выполнены, появится зеленая индикация успеха. В случае обнаружения ошибок, таких как отсутствие модуля <code>mbstring</code> или недостаточные права на запись, процесс будет остановлен, и система укажет на конкретную проблему, которую необходимо устранить перед продолжением.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Автоматический установщик</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Проверка всех зависимостей</li><li>✅ Простой интерфейс</li><li>✅ Создание таблиц автоматически</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует доступа к файлам через веб</li><li>❌ Не показывает детальные SQL-логи ошибок</li></ul></div>
+</div></div>
+
+<p>Далее следует этап ввода параметров подключения к базе данных. В соответствующие поля вносятся ранее подготовленные данные: имя хоста, имя базы данных, пользователь и пароль. Также здесь выбирается префикс таблиц, который по умолчанию равен <code>hesk_</code>. Изменение префикса имеет смысл, если на одном сервере развернуто несколько экземпляров Hesk или если политики безопасности требуют специфических имен таблиц.</p>
+<p>После успешного соединения с базой данных скрипт предложит создать учетную запись администратора. Здесь задаются логин, пароль, имя и email администратора. Эти данные будут использоваться для первого входа в панель управления <code>admin</code>. Крайне важно использовать сложный пароль, так как эта учетная запись имеет полный доступ ко всей системе и настройкам сервера.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Пример</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Database Host</td>
+<td>Адрес сервера БД</td>
+<td>localhost</td>
+</tr>
+<tr>
+<td>Table Prefix</td>
+<td>Префикс таблиц</td>
+<td>hesk_</td>
+</tr>
+</tbody>
+</table>
+
+<p>Завершающим шагом мастер установки предложит переименовать или удалить файл <code>install.php</code> и файл <code>install.php.bak</code>, если он был создан. Это критически важный шаг безопасности. После подтверждения действия система перенаправит пользователя в панель администратора, где можно приступать к тонкой настройке категорий тикетов и шаблонов ответов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Сохраните данные для входа в базу данных и админ-панель в надежном месте, например, в менеджере паролей. Восстановление доступа к БД без этих данных невозможно.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе развертывания системы даже опытные пользователи могут столкнуться с непредвиденными трудностями, связанными с конфигурацией сервера. Большинство проблем легко решаются пониманием логики работы веб-сервера и PHP. Ниже приведен список наиболее частых ошибок и способы их устранения, что позволит сэкономить время на диагностику.</p>
+
+<ol>
+<li><strong>Ошибка «Unable to connect to database»</strong> — чаще всего вызвана неверным именем хоста базы данных или блокировкой подключения firewall-ом. Следует проверить правильность ввода данных в <code>config.php</code> и убедиться, что IP-адрес веб-сервера разрешен в списке пользователей MySQL.</li>
+<li><strong>Ошибка «Headers already sent»</strong> — возникает, если в файлах конфигурации или языковых пакетах есть пробелы или переводы строк перед открывающим тегом <code>&lt;?php</code>. Необходимо открыть файл в текстовом редакторе и удалить любые символы до начала PHP-кода.</li>
+<li><strong>Ошибка «Permission denied» при загрузке вложений</strong> — свидетельствует о неправильных правах доступа к папке <code>attachments</code>. Необходимо изменить права папки на <code>755</code> или <code>777</code> (с осторожностью) и убедиться, что владелец файла совпадает с пользователем, от имени которого работает веб-сервер (обычно <code>www-data</code> или <code>nobody</code>).</li>
+<li><strong>Ошибка «Maximum execution time exceeded»</strong> — возникает при импорте больших баз данных или установке тяжелых языковых пакетов. Требуется увеличить значение <code>max_execution_time</code> в файле <code>php.ini</code> или через файл <code>.htaccess</code>.</li>
+</ol>
+
+<p>Если после установки система работает некорректно, например, не отправляет письма или не сохраняются настройки, первым делом следует проверить логи веб-сервера. Файлы <code>error_log</code> в корне сайта или в панели управления хостинга содержат детальную информацию о фатальных ошибках PHP. Анализ этих записей часто дает точный ответ на вопрос о причине сбоя.</p>
+<p>В случаях, когда изменения в конфигурации не применяются, стоит проверить наличие кэширования на уровне сервера или PHP. Опкоды PHP (OPcache) могут сохранять старую версию файла конфигурации в памяти. Сбросить кэш можно через панель хостинга или временно отключив OPcache в настройках PHP на время проведения работ по установке.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство ошибок установки Hesk связано с правами доступа к файлам или неверными параметрами подключения к базе данных.</p></aside>
+
+<h2 id="резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</h2>
+<p>Успешная установка Hesk открывает возможности для построения эффективной системы поддержки клиентов, не требуя значительных финансовых вложений. Выполнение описанных шагов позволяет развернуть работающий инструмент за считанные минуты, обеспечивая базу для обработки обращений. </p>
+<p>После завершения инсталляции рекомендуется сразу же обновить систему до последней версии, если была скачана стабильная, но не самая свежая сборка. Регулярное обновление обеспечивает безопасность данных и доступ к новым функциям. Также стоит рассмотреть возможность установки плагина для мобильной версии или интеграции с другими сервисами через API для расширения функциональности.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/q/qu/quick-app-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Quick App: что это за программа и как она работает</span>
+                <span class="pb-related-desc">Подробный анализ Quick App: что это за технология, как работают мини-приложения, их отличие от натив</span>
+            </a><a href="/articles/k/ka/kak-otpravit-skrinshot-banku-levoberezhnyj.html" class="pb-related-card">
+                <span class="pb-related-title">Как отправить скриншот в банк Левобережный: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по созданию и отправке скриншотов в банк Левобережный. Методы для iOS, Android</span>
+            </a><a href="/articles/m/mi/mi-coin-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Mi Coin что это: назначение, риски и удаление майнера</span>
+                <span class="pb-related-desc">Mi Coin — это не официальная программа Xiaomi, а вирус-майнер. Узнайте, как удалить угрозу, проверит</span>
+            </a><a href="/articles/z/zh/zhestkij-disk-sata-skhema-podklyucheniya-razema-pitaniya.html" class="pb-related-card">
+                <span class="pb-related-title">Схема подключения SATA питания HDD: Полная инструкция</span>
+                <span class="pb-related-desc">Подробная схема разъема SATA питания и данных. Как правильно подключить жесткий диск, распиновка кон</span>
+            </a><a href="/articles/c/cm/cmit-20190.html" class="pb-related-card">
+                <span class="pb-related-title">CMIT 20190: Смена MAC-адреса Wi-Fi на Android и PC</span>
+                <span class="pb-related-desc">Полная инструкция по использованию CMIT 20190 для смены MAC-адреса на Android и ПК. Разбор драйверов</span>
+            </a><a href="/articles/g/go/golye-majnkraft.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить моды на голый Minecraft: полное руководство</span>
+                <span class="pb-related-desc">Техническая инструкция по установке модов на чистую версию Minecraft. Настройка Forge, Fabric, решен</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

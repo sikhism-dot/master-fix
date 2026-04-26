@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>TorrServe для Tizen: установка, настройка и устранение ошибок — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по запуску TorrServe на Samsung Tizen. Установка через SSH, настройка буфера, работа с TizenTool и устранение типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/t/to/torrserve-dlya-tizen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="TorrServe для Tizen: установка, настройка и устранение ошибок">
+    <meta property="og:description" content="Полная инструкция по запуску TorrServe на Samsung Tizen. Установка через SSH, настройка буфера, работа с TizenTool и устранение типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">TorrServe для Tizen: установка, настройка и устранение ошибок</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-работы-torrserve-на-платформе-tizen">Архитектура работы TorrServe на платформе Tizen</a></li><li><a href="#подготовка-окружения-и-активация-режима-разработчика">Подготовка окружения и активация режима разработчика</a></li><li><a href="#установка-клиентского-приложения-tizentool">Установка клиентского приложения TizenTool</a></li><li><a href="#развертывание-серверной-части-torrserve">Развертывание серверной части TorrServe</a></li><li><a href="#тонкая-настройка-буфера-и-производительности">Тонкая настройка буфера и производительности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vo/vosstanovlenie-pin-koda-trikolor.html">Восстановление PIN-кода Триколор: инструкции и сброс</a></li><li><a href="/articles/v/vi/vidzhet-torrserver-tizen.html">Виджет TorrServer Tizen: Установка и настройка на Samsung</a></li><li><a href="/articles/k/ka/kak-proverit-rabotosposobnost-resivera-trikolor-bez-tarelki-pri-pokupke.html">Проверка ресивера Триколор без антенны: полная инструкция</a></li><li><a href="/articles/w/wi/windows-10-ltsc-mozhno-li-kak-to-sdelat-gaming-services-dlya-xbox.html">Gaming Services на Windows 10 LTSC: установка и настройка</a></li><li><a href="/articles/f/fo/forkplayer-kak-iz-nego-vyjti.html">Как выйти из ForkPlayer на Smart TV: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>TorrServe для Tizen: полная инструкция по запуску торрентов</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-работы-torrserve-на-платформе-tizen">Архитектура работы TorrServe на платформе Tizen</a></li><li><a href="#подготовка-окружения-и-активация-режима-разработчика">Подготовка окружения и активация режима разработчика</a></li><li><a href="#установка-клиентского-приложения-tizentool">Установка клиентского приложения TizenTool</a></li><li><a href="#развертывание-серверной-части-torrserve">Развертывание серверной части TorrServe</a></li><li><a href="#тонкая-настройка-буфера-и-производительности">Тонкая настройка буфера и производительности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Попытка запустить торрент-клиент на современном Smart TV часто приводит к разочарованию из-за ограничений операционной системы Tizen, которая не поддерживает установку сторонних APK-файлов напрямую, как это делается на Android.</p>
+<p>Владельцы телевизоров Samsung сталкиваются с необходимостью искать обходные пути, чтобы смотреть контент высокого качества без предварительного скачивания, используя технологию потоковой передачи.</p>
+<p>Решением становится использование TorrServe в связке с внешним устройством или эмуляцией среды, что требует точного следования техническим шагам для стабильной работы.</p>
+
+<h2 id="архитектура-работы-torrserve-на-платформе-tizen">Архитектура работы TorrServe на платформе Tizen</h2>
+<p>Понимание принципа работы системы необходимо для корректной настройки, поскольку Tizen не является нативной средой для запуска исполняемых файлов Linux в том виде, в котором это привычно для десктопных систем.</p>
+<p>TorrServe представляет собой серверную часть, которая берет на себя задачу дешифровки и буферизации torrent-потока, передавая на клиентское устройство уже готовый видеопоток через HTTP.</p>
+<p>На устройствах с ОС Tizen, таких как телевизоры Samsung серий K, M, Q и более новых моделей, прямая установка серверной части невозможна без использования специальных инструментов разработчика.</p>
+<p><strong>Ключевым моментом</strong> является то, что для работы требуется либо эмуляция Linux-среды на самом телевизоре (что сложно и нестабильно), либо вынос сервера на внешнее устройство.</p>
+<p>На практике наиболее эффективным и стабильным методом считается использование внешнего вычислительного узла, который берет на себя нагрузку по обработке торрент-потоков, разгружая процессор телевизора.</p>
+
+<h3>Сравнение методов развертывания</h3>
+<p>Существует несколько подходов к организации работы связки, каждый из которых имеет свои технические особенности и требования к аппаратному обеспечению.</p>
+<p>Первый метод подразумевает установку TorrServe непосредственно на телевизор через режим разработчика и использование эмуляторов, что часто приводит к нехватке оперативной памяти.</p>
+<p>Второй, более надежный метод, предполагает использование отдельного устройства, например, одноплатного компьютера или старого ноутбука, который выступает в роли сервера в локальной сети.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Стабильность</th>
+<th>Требования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Прямая установка (TizenTool)</td>
+<td>Низкая</td>
+<td>Режим разработчика, ПК</td>
+</tr>
+<tr>
+<td>Внешний сервер (Docker/PC)</td>
+<td>Высокая</td>
+<td>Отдельное устройство</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Прямая установка</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Не требует extra hardware</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложная настройка, риск «окирпичивания», низкая производительность</li></ul></div>
+</div></div>
+
+<h2 id="подготовка-окружения-и-активация-режима-разработчика">Подготовка окружения и активация режима разработчика</h2>
+<p>Для начала любых манипуляций с системой Tizen необходимо получить расширенные права доступа, которые скрыты от обычного пользователя в стандартном меню.</p>
+<p>Первым шагом является активация режима разработчика, что позволяет телевизору принимать и запускать приложения, не подписанные официальным сертификатом Samsung.</p>
+<p>Если у вас телевизор серии K (2016) или новее, процедура включает в себя вход в приложение Smart Hub и ввод специального PIN-кода для активации режима.</p>
+<p>После активации в меню <code>Настройки → Поддержка → Режим разработчика</code> необходимо включить соответствующий переключатель и прописать IP-адрес компьютера, с которого будет вестись управление.</p>
+<p><strong>Важно помнить</strong>, что после включения этого режима телевизор может работать медленнее, а некоторые стандартные функции могут быть временно недоступны.</p>
+
+<h3>Настройка сетевого подключения</h3>
+<p>Корректная работа всей системы зависит от качества связи между управляющим компьютером и телевизором, поэтому оба устройства должны находиться в одной подсети.</p>
+<p>Рекомендуется использовать проводное соединение Ethernet для телевизора, чтобы исключить потери пакетов при передаче тяжелого видеопотока.</p>
+<p>Если использование кабеля невозможно, убедитесь, что Wi-Fi роутер поддерживает стандарт 5 ГГц и расположен в непосредственной близости от приемника.</p>
+<p>Проверьте, что на роутере не включена изоляцию клиентов (Client Isolation), которая запрещает устройствам внутри локальной сети обмениваться данными друг с другом.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Активация Dev Mode</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Smart Hub</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите 12345 в поле поиска</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Включите «Режим разработчика»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Укажите IP ПК</span></div></div>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях 2020 года и старше IP-адрес телевизора можно найти в разделе «Сеть → Статус сети».</p></aside>
+
+<h2 id="установка-клиентского-приложения-tizentool">Установка клиентского приложения TizenTool</h2>
+<p>Поскольку нативного клиентского приложения для Tizen в официальном магазине нет, используется специализированный инструмент под названием TizenTool или его аналоги.</p>
+<p>Этот инструмент представляет собой оболочку, которая умеет отправлять команды на сервер TorrServe и воспроизводить полученный поток через встроенный плеер телевизора.</p>
+<p>Установка производится путем загрузки файла с расширением <code>.tpk</code> или <code>.wgt</code> на компьютер и последующей его «закидывания» на телевизор через утилиту Samsung Certificate Manager.</p>
+<p>В процессе установки система запросит подтверждение на запуск неизвестного источника, что является штатной реакцией защищенной системы Tizen на сторонний софт.</p>
+<p>После успешной установки в списке приложений появится новый значок, который будет служить основным интерфейсом для выбора и запуска торрент-ссылок.</p>
+
+<h3>Конфигурация клиентского приложения</h3>
+<p>При первом запуске приложение потребует указать адрес сервера, где непосредственно запущ процесс TorrServe.</p>
+<p>В поле настроек необходимо ввести статический IP-адрес компьютера или устройства, на котором крутится сервер, и порт, по умолчанию это <code>8090</code>.</p>
+<p>Если настройки верны, приложение покажет статус соединения «Connected» или аналогичное сообщение, подтверждающее успешное рукопожатие с сервером.</p>
+<p>В расширенных настройках можно изменить пользовательский агент (User-Agent), если сервер требует идентификации конкретного типа устройства.</p>
+
+<pre><code>http://192.168.1.50:8090/play/http/0/torrent_file.torrent</code></pre>
+
+<p>Именно по такому принципу формируется ссылка для воспроизведения, где <code>192.168.1.50</code> — это адрес вашего сервера.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование статического IP для сервера обязательно. Если адрес изменится после перезагрузки роутера, клиент потеряет связь.</p></aside>
+
+<h2 id="развертывание-серверной-части-torrserve">Развертывание серверной части TorrServe</h2>
+<p>Самой ресурсоемкой частью системы является сервер, который должен постоянно работать и иметь доступ к интернету для скачивания частей файла.</p>
+<p>Наиболее целесообразно развернуть TorrServe на отдельном устройстве с операционной системой Linux, Windows или macOS, которое подключено к той же сети.</p>
+<p>Для пользователей Windows существует портативная версия сервера, не требующая сложной установки, достаточно распаковать архив и запустить исполняемый файл.</p>
+<p>Владельцы Linux-систем или NAS-хранилиц могут использовать Docker-контейнер, что обеспечивает изоляцию и удобство управления версиями ПО.</p>
+<p><strong>Оптимальным решением</strong> считается использование Docker, так как это позволяет автоматизировать запуск и настройку переменных окружения.</p>
+
+<h3>Настройка через Docker</h3>
+<p>Если выбран контейнерный способ запуска, необходимо создать файл конфигурации <code>docker-compose.yml</code> для упрощения управления сервисом.</p>
+<p>В конфигурации следует указать проброс портов, чтобы телевизор мог обращаться к серверу, а также пути для сохранения временных файлов.</p>
+<p>После создания конфигурационного файла запуск производится одной командой в терминале, что занимает несколько секунд.</p>
+
+<pre><code>version: '3'
+<p>services:</p>
+<p>torrserve:</p>
+<p>image: younity/torrserve-server:latest</p>
+<p>container_name: torrserve</p>
+<p>network_mode: host</p>
+<p>restart: unless-stopped</p>
+<p>environment:</p>
+<p>- BUFFER_SIZE=64</code></pre></p>
+
+<p>Параметр <code>network_mode: host</code> критически важен, так как он позволяет серверу видеть все сетевые интерфейсы и корректно работать с multicast-трафиком.</p>
+<p>Для систем, где режим хоста недоступен, необходимо явно пробросить порты <code>8090</code> и <code>8190</code> в настройках Docker.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image</td>
+<td>younity/torrserve-server</td>
+<td>Официальный образ</td>
+</tr>
+<tr>
+<td>Port</td>
+<td>8090</td>
+<td>Порт HTTP потока</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для повышения стабильности добавьте параметр restart: always, чтобы сервер автоматически запускался после сбоя питания.</p></aside>
+
+<h2 id="тонкая-настройка-буфера-и-производительности">Тонкая настройка буфера и производительности</h2>
+<p>Качество воспроизведения напрямую зависит от правильно настроенного размера буфера, который сглаживает скачки скорости интернет-соединения.</p>
+<p>Слишком маленький буфер приведет к постоянным остановкам на загрузку, особенно на файлах с высоким битрейтом, например, 4K HDR.</p>
+<p>Слишком большой буфер может вызвать переполнение оперативной памяти на устройстве-сервере или задержку начала воспроизведения.</p>
+<p>Настройка производится в веб-интерфейсе сервера, доступном по адресу <code>http://IP_СЕРВЕРА:8090</code> через браузер любого устройства в сети.</p>
+<p>В разделе настроек следует найти параметр «Размер буфера предзагрузки» и установить значение, кратное размеру оперативной памяти устройства.</p>
+
+<h3>Оптимизация для разных скоростей сети</h3>
+<p>Для локальной сети Gigabit Ethernet оптимальным считается значение буфера в диапазоне 64-128 МБ, что позволяет загружать до 10% фильма заранее.</p>
+<p>Если соединение осуществляется через Wi-Fi 5 ГГц, размер буфера стоит увеличить до 256 МБ, чтобы компенсировать возможные кратковременные потери пакетов.</p>
+<p>При использовании беспроводного соединения 2.4 ГГц рекомендуется снижать качество потока или увеличивать буфер до максимума, поддерживаемого системой.</p>
+<p>Стоит проверить, что на роутере включен приоритет трафика (QoS) для устройства-сервера, если наблюдаются проблемы с пропускной способностью.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка буфера</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте веб-интерфейс</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Настройки</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Измените Buffer Size</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните и перезапустите</span></div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе эксплуатации пользователи часто сталкиваются с рядом стандартных проблем, вызванных особенностями сетевой инфраструктуры или настройками безопасности.</p>
+<p>Большинство ошибок легко диагностируются по коду ответа сервера или сообщению в логах клиентского приложения на телевизоре.</p>
+<p>Ниже приведен список наиболее частых сценариев сбоев и способы их решения.</p>
+
+<ol>
+<li><strong>Ошибка «Не удается подключиться к серверу»</strong> — чаще всего вызвана блокировкой брандмауэром Windows или антивирусом, необходимо добавить исключение для порта 8090.</li>
+<li><strong>Видео дергается или останавливается</strong> — указывает на недостаточный размер буфера или низкую скорость Wi-Fi, требуется переключение на кабель или снижение битрейта.</li>
+<li><strong>Приложение вылетает при запуске</strong> — возможно, не включен режим разработчика или истек сертификат, нужно переподтвердить запуск в меню телевизора.</li>
+<li><strong>Нет звука при наличии картинки</strong> — проблема с кодеками, стоит попробовать сменить плеер в настройках клиентского приложения или транслировать звук на внешнюю акустику.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Стабильная работа TorrServe на Tizen возможна только при использовании внешнего сервера и проводного подключения.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</h2>
+<p>Организация просмотра торрентов на телевизорах Samsung с ОС Tizen требует грамотного подхода к архитектуре системы, где серверная часть вынесена на отдельное устройство.</p>
+<p>Использование связки внешнего сервера TorrServe и специализированного клиента TizenTool позволяет обойти ограничения платформы и получить доступ к контенту любого качества.</p>
+<p>Соблюдение рекомендаций по настройке сетевой инфраструктуры и размеров буфера гарантирует плавное воспроизведение без артефактов и задержек.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vo/vosstanovlenie-pin-koda-trikolor.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление PIN-кода Триколор: инструкции и сброс</span>
+                <span class="pb-related-desc">Полная инструкция по восстановлению PIN-кода Триколор. Сброс пароля на ресивере, через ЛК и приложен</span>
+            </a><a href="/articles/v/vi/vidzhet-torrserver-tizen.html" class="pb-related-card">
+                <span class="pb-related-title">Виджет TorrServer Tizen: Установка и настройка на Samsung</span>
+                <span class="pb-related-desc">Подробная инструкция по установке виджета TorrServer Tizen, настройке Torrest и решению проблем с бу</span>
+            </a><a href="/articles/k/ka/kak-proverit-rabotosposobnost-resivera-trikolor-bez-tarelki-pri-pokupke.html" class="pb-related-card">
+                <span class="pb-related-title">Проверка ресивера Триколор без антенны: полная инструкция</span>
+                <span class="pb-related-desc">Как проверить работоспособность ресивера Триколор без спутниковой тарелки. Диагностика через Wi-Fi, </span>
+            </a><a href="/articles/w/wi/windows-10-ltsc-mozhno-li-kak-to-sdelat-gaming-services-dlya-xbox.html" class="pb-related-card">
+                <span class="pb-related-title">Gaming Services на Windows 10 LTSC: установка и настройка</span>
+                <span class="pb-related-desc">Техническое руководство по активации Gaming Services в Windows 10 LTSC. Пошаговая установка Xbox App</span>
+            </a><a href="/articles/f/fo/forkplayer-kak-iz-nego-vyjti.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из ForkPlayer на Smart TV: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по закрытию приложения ForkPlayer на телевизорах разных брендов. Методы прин</span>
+            </a><a href="/articles/e/es/esli-gudit-pristavka-wink.html" class="pb-related-card">
+                <span class="pb-related-title">Почему гудит приставка Wink: устранение шума и гула</span>
+                <span class="pb-related-desc">Подробное руководство по диагностике и устранению гула в приставке Wink. Анализ причин, проверка бло</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

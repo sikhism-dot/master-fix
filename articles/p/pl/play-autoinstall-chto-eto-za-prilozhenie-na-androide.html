@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Play Autoinstall: что это за приложение на Android и его функции — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический анализ процесса com.android.vending.autoinstall. Разбор функций, причин высокой нагрузки и методов устранения ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/p/pl/play-autoinstall-chto-eto-za-prilozhenie-na-androide.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Play Autoinstall: что это за приложение на Android и его функции">
+    <meta property="og:description" content="Подробный технический анализ процесса com.android.vending.autoinstall. Разбор функций, причин высокой нагрузки и методов устранения ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Play Autoinstall: что это за приложение на Android и его функции</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-и-назначение-системного-процесса">Архитектура и назначение системного процесса</a></li><li><a href="#основные-сценарии-активации-и-работы">Основные сценарии активации и работы</a></li><li><a href="#диагностика-проблем-и-ошибок-установки">Диагностика проблем и ошибок установки</a></li><li><a href="#управление-автообновлениями-и-безопасность">Управление автообновлениями и безопасность</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/h/ho/honor-magic-book-x14-2025-drajvera.html">Honor MagicBook X14 2026: Драйвера и установка ПО</a></li><li><a href="/articles/k/ka/kak-otkryt-biblioteku-v-epik-gejms-na-telefone-cherez-brauzer.html">Как открыть библиотеку Epic Games на телефоне: полная инструкция</a></li><li><a href="/articles/k/ka/kak-perejti-v-nastrojki-telefona-cherez-brauzer.html">Как зайти в настройки телефона через браузер: полное руководство</a></li><li><a href="/articles/k/ka/kak-ustanovit-videokontrol-ot-beltelekom-na-telefon.html">Установка видеоконтроля Белтелеком на телефон: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-udalit-klonirovanie-telefona.html">Удаление клонирования телефона: полное руководство по безопасности</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Системный процесс Play Autoinstall: назначение и настройка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-и-назначение-системного-процесса">Архитектура и назначение системного процесса</a></li><li><a href="#основные-сценарии-активации-и-работы">Основные сценарии активации и работы</a></li><li><a href="#диагностика-проблем-и-ошибок-установки">Диагностика проблем и ошибок установки</a></li><li><a href="#управление-автообновлениями-и-безопасность">Управление автообновлениями и безопасность</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапное появление неизвестного процесса в списке запущенных приложений или уведомления о высокой нагрузке на батарею часто вызывают беспокойство у владельца смартфона. Пользователь видит в диспетчере задач название <em>com.android.vending.autoinstall</em> и начинает искать информацию о том, не является ли это вредоносным ПО или вирусом, скрывающимся под системным именем.</p>
+<p>На практике такое поведение операционной системы Android свидетельствует о штатной работе фоновых служб магазина Google Play, отвечающих за автоматическую установку и обновление программного обеспечения. Понимание механизма работы этого компонента необходимо для грамотного управления ресурсами устройства и устранения ложных срабатываний антивирусного ПО.</p>
+<p>Далее представлен детальный технический разбор назначения данного процесса, его взаимодействия с другими системными службами и алгоритмы действий в случае возникновения сбоев или ошибок в работе.</p>
+
+<h2 id="архитектура-и-назначение-системного-процесса">Архитектура и назначение системного процесса</h2>
+
+<p>Компонент <strong>Play Autoinstall</strong> является неотъемлемой частью инфраструктуры Google Play Services, встроенной в операционную систему Android. Его основная задача заключается в фоновом мониторинге, загрузке и инсталляции обновлений для установленных приложений, а также в первоначальной настройке устройства после сброса или покупки.</p>
+<p>Если у вас только что активирован новый смартфон или выполнен полный сброс до заводских настроек (<em>Factory Reset</em>), именно этот процесс инициирует загрузку списка ранее установленных программ, привязанных к вашему Google-аккаунту. Он работает в связке с сервисом <em>Google Play Store</em> и системным менеджером пакетов <em>PackageManagerService</em>.</p>
+<p>В отличие от пользовательских приложений, данный процесс имеет более глубокие привилегии доступа к файловой системе, что позволяет ему модифицировать содержимое системных разделов и пользовательских данных без постоянного вмешательства человека. Это необходимо для обеспечения актуальности безопасности и функциональности операционной системы.</p>
+
+<h3>Различия между версиями Android</h3>
+<p>На устройствах с версией <em>Android 10</em> и ниже процесс часто отображался просто как часть службы Google Play, не выделяясь в отдельную заметную сущность в интерфейсе пользователя. Начиная с <em>Android 11</em> и в более свежих версиях, таких как <em>Android 12, 13 и 14</em>, система стала более детально логировать фоновую активность, выводя уведомления о работе <em>com.android.vending.autoinstall</em> при интенсивной загрузке.</p>
+<p>Владельцам устройств от разных производителей также стоит учитывать особенности оболочек. Например, на смартфонах <em>Samsung</em> с оболочкой One UI или <em>Xiaomi</em> с MIUI/HyperOS, системные ограничители батареи могут агрессивно завершать этот процесс, считая его потребляющим ресурсы, что приводит к циклическим перезапускам службы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с кастомными прошивками (LineageOS, Pixel Experience) данный компонент может отсутствовать или работать в ограниченном режиме, если не установлены сертифицированные сервисы Google (GApps).</p></aside>
+
+<p>Важно понимать, что процесс не является самостоятельным приложением с графическим интерфейсом. Его нельзя «открыть» и запустить вручную, так как он активируется только по событию: поступлению сигнала от серверов Google о наличии обновлений или при первичной инициализации системы.</p>
+
+<h2 id="основные-сценарии-активации-и-работы">Основные сценарии активации и работы</h2>
+
+<p>Активация службы <em>Play Autoinstall</em> происходит строго по определенным триггерам, которые инициируются либо действиями пользователя, либо системными событиями. Наиболее частым сценарием является подключение устройства к сети Wi-Fi после периода простоя или перезагрузки.</p>
+<p>Допустим, вы только что обновили операционную систему до новой мажорной версии. В этом случае десятки установленных приложений могут потребовать обновления своих библиотек для совместимости с новыми API. Служба автоматически формирует очередь задач и начинает последовательную установку пакетов.</p>
+<p>Также активация происходит при смене региона или языка системы, когда некоторые приложения должны быть заменены на их региональные версии. В фоновом режиме происходит сверка хеш-сумм установленных APK-файлов с данными в облачном хранилище Google Play.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка статуса автообновления</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте приложение Play Store</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите на аватар профиля в углу</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите «Управление приложениями и устройством»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перейдите в «Управление» и проверьте статус обновлений</span></div></div>
+
+<p>Вторым важным сценарием является восстановление данных. При вводе учетной записи Google на очищенном устройстве, сервер отправляет список всех ранее загруженных приложений. <strong>Play Autoinstall</strong> берет на себя задачу их тихой установки, чтобы пользователь получил привычное окружение сразу после настройки.</p>
+
+<h3>Влияние на ресурсы системы</h3>
+<p>В периоды активной работы процесс может потреблять значительное количество оперативной памяти и процессорного времени. Это нормально для этапа загрузки и распаковки архивов APK, но может приводить к нагреву корпуса устройства. После завершения установки потребление ресурсов падает до минимума.</p>
+<p>Сетевой трафик также расходуется интенсивно, однако современные версии сервиса умеют дожидаться подключения к Wi-Fi, если в настройках стоит ограничение на мобильную передачу данных. Исключение составляют критические обновления безопасности, которые могут загружаться через сотовую сеть.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим ожидания</th>
+<th>Режим активной установки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Использование CPU</td>
+<td>0-1%</td>
+<td>15-40%</td>
+</tr>
+<tr>
+<td>Потребление RAM</td>
+<td>10-30 МБ</td>
+<td>100-300 МБ</td>
+</tr>
+<tr>
+<td>Сетевая активность</td>
+<td>Отсутствует</td>
+<td>Высокая (загрузка данных)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Стоит учитывать, что на устройствах с медленной внутренней памятью (eMMC вместо UFS) процесс распаковки и записи может занимать длительное время, создавая иллюзию «зависания» системы. В такие моменты интерфейс может работать менее отзывчиво.</p>
+
+<h2 id="диагностика-проблем-и-ошибок-установки">Диагностика проблем и ошибок установки</h2>
+
+<p>Несмотря на отлаженность механизмов Google, в работе службы иногда возникают сбои, проявляющиеся в виде бесконечного цикла «Загрузка...», ошибок с кодами (например, 907, 921, 403) или постоянного появления уведомления о том, что обновление не удалось установить.</p>
+<p>Чаще всего проблема кроется в рассинхронизации кэша магазина приложений или повреждении временных файлов загрузки. Если процесс застрял на этапе проверки лицензии или загрузки конкретного пакета, это блокирует установку остальных обновлений в очереди.</p>
+<p>Для диагностики необходимо перейти в раздел <code>Настройки → Приложения → Все приложения</code> и найти в списке «Google Play Маркет». Анализ раздела «Хранилище» покажет объем накопленных временных данных.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Принудительная остановка системных процессов Google Play может временно нарушить работу других приложений, зависящих от сервисов Google, таких как карты, почта или синхронизация контактов.</p></aside>
+
+<p>Если вы наблюдаете постоянные ошибки, стоит проверить свободное место на внутреннем накопителе. Для работы <em>Play Autoinstall</em> требуется объем свободного пространства, примерно в 1.5-2 раза превышающий размер устанавливаемого обновления, так как система сначала скачивает полный пакет, а затем развертывает его.</p>
+
+<h3>Методы устранения неполадок</h3>
+<p>Первым шагом всегда должна быть очистка кэша. Это не удалит ваши личные данные или установленные приложения, но сбросит временные файлы, которые могли повредиться. Выполняется это через меню приложения в настройках системы.</p>
+<p>В более сложных случаях требуется удаление обновлений самого магазина Play Маркет. Система автоматически откатит его до заводской версии, после чего произведет повторное обновление до актуальной, что часто решает проблемы с некорректными зависимостями.</p>
+
+<ol>
+<li>Перейдите в <code>Настройки → Приложения → Google Play Маркет</code>.</li>
+<li>Нажмите на три точки в верхнем правом углу и выберите «Удалить обновления».</li>
+<li>Перезагрузите устройство и дождитесь автоматического обновления магазина в фоновом режиме.</li>
+</ol>
+
+<p>Также эффективным методом является удаление и повторное добавление Google-аккаунта. Это действие сбрасывает токены авторизации и принудительно синхронизирует список приложений с облаком, устраняя ошибки верификации.</p>
+
+<h2 id="управление-автообновлениями-и-безопасность">Управление автообновлениями и безопасность</h2>
+
+<p>Контроль над работой <em>Play Autoinstall</em> осуществляется через настройки самого магазина приложений. Пользователь может гибко конфигурировать условия, при которых разрешена фоновая загрузка и установка пакетов.</p>
+<p>Для перехода к настройкам необходимо открыть приложение Play Маркет, нажать на аватар профиля и выбрать пункт «Настройки». Здесь находится раздел «Настройки предпочтений», а затем «Автообновление приложений».</p>
+<p>Доступны три варианта поведения системы: обновление только через Wi-Fi, обновление через любые сети (что не рекомендуется из-за расхода трафика) или полный запрет автообновления. Последний вариант требует ручной установки каждого обновления, что снижает уровень безопасности устройства.</p>
+
+<ul>
+<li>Режим «Только через Wi-Fi» является оптимальным для большинства сценариев использования, балансируя между актуальностью ПО и расходом мобильного трафика.</li>
+<li>Отключение автообновления может привести к тому, что некоторые приложения перестанут работать, если их серверная часть потребует новой версии клиента.</li>
+<li>Системные приложения и компоненты безопасности Google часто обновляются независимо от этих настроек, так как относятся к критической инфраструктуре.</li>
+</ul>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для экономии заряда батареи можно включить режим «Экономия трафика» в настройках Play Маркет, что запретит загрузку больших обновлений, если сигнал Wi-Fi слабый.</p></aside>
+
+<p>В корпоративной среде, где устройства управляются через MDM (Mobile Device Management), политики обновления могут диктоваться администратором, и локальные настройки пользователя будут заблокированы или ограничены.</p>
+
+<h2 id="типичные-ошибки-пользователей">Типичные ошибки пользователей</h2>
+
+<p>При столкновении с активным процессом <em>com.android.vending.autoinstall</em> пользователи часто совершают ошибки, пытаясь «оптимизировать» систему, что приводит к дестабилизации работы Android.</p>
+
+<ol>
+<li><strong>Попытка полного удаления процесса</strong> — так как это системный компонент, его удаление возможно только с правами root и потерей гарантии, что приведет к неработоспособности магазина приложений и многих игр.</li>
+<li><strong>Постоянная принудительная остановка</strong> — циклический запуск и остановка службы через диспетчер приложений не решает проблему, а лишь разряжает батарею быстрее из-за постоянных перезапусков процесса.</li>
+<li><strong>Игнорирование нехватки памяти</strong> — попытки установить крупные обновления при почти заполненном хранилище приводят к циклу ошибок, который невозможно прервать без освобождения места.</li>
+<li><strong>Установка сторонних «чистильщиков»</strong> — агрессивные приложения для очистки памяти часто ошибочно помечают этот процесс как вредоносный и блокируют его, нарушая синхронизацию.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Play Autoinstall — это критически важный системный сервис для поддержания актуальности и безопасности Android, требующий минимального вмешательства пользователя.</p></aside>
+
+<p>В заключение следует отметить, что наличие процесса <em>Play Autoinstall</em> является признаком исправной работы экосистемы Google на вашем устройстве. Он обеспечивает своевременное получение исправлений уязвимостей, новых функций и совместимости приложений.</p>
+<p>Вмешательство в его работу требуется только в случаях явных сбоев, проявляющихся в ошибках установки или аномальном расходе ресурсов в режиме простоя. Грамотная настройка параметров сети и регулярная очистка кэша позволяют минимизировать любое негативное влияние на производительность смартфона.</p>
+<p>Понимание принципов работы фоновых служб позволяет эффективно управлять мобильным устройством, избегая необоснованных действий по «оптимизации», которые часто приносят больше вреда, чем пользы. Система Android самостоятельно регулирует приоритеты процессов, и доверие к этим механизмам является ключом к стабильной работе гаджета.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Автоматическая установка обновлений</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Повышение безопасности данных</li><li>✅ Получение новых функций</li><li>✅ Стабильность работы приложений</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Расход трафика (если не настроено)</li><li>❌ Временное снижение производительности</li><li>❌ Занятие места в памяти</li></ul></div>
+</div></div>
+
+<table>
+<thead>
+<tr>
+<th>Действие</th>
+<th>Результат</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Очистка кэша</td>
+<td>Устранение ошибок загрузки</td>
+<td>Безопасно, рекомендуется</td>
+</tr>
+<tr>
+<td>Отключение автообновлений</td>
+<td>Риск уязвимостей</td>
+<td>Не рекомендуется</td>
+</tr>
+<tr>
+<td>Удаление обновлений Play Маркет</td>
+<td>Сброс настроек сервиса</td>
+<td>Эффективно при сбоях</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/h/ho/honor-magic-book-x14-2025-drajvera.html" class="pb-related-card">
+                <span class="pb-related-title">Honor MagicBook X14 2026: Драйвера и установка ПО</span>
+                <span class="pb-related-desc">Полный гид по установке драйверов на Honor MagicBook X14 2026. Официальные ссылки, ручная настройка,</span>
+            </a><a href="/articles/k/ka/kak-otkryt-biblioteku-v-epik-gejms-na-telefone-cherez-brauzer.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть библиотеку Epic Games на телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по доступу к библиотеке игр Epic Games через мобильный браузер. Обход ограниче</span>
+            </a><a href="/articles/k/ka/kak-perejti-v-nastrojki-telefona-cherez-brauzer.html" class="pb-related-card">
+                <span class="pb-related-title">Как зайти в настройки телефона через браузер: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по доступу к системным параметрам смартфона через веб-интерфейс. Настройка удал</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-videokontrol-ot-beltelekom-na-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Установка видеоконтроля Белтелеком на телефон: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке видеонаблюдения Белтелеком на Android и iOS. Решение проблем с до</span>
+            </a><a href="/articles/k/ka/kak-udalit-klonirovanie-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление клонирования телефона: полное руководство по безопасности</span>
+                <span class="pb-related-desc">Подробная инструкция по выявлению и удалению скрытого ПО, шпионских программ и клонов на Android и i</span>
+            </a><a href="/articles/l/lo/lordfilm-prilozhenie-dlya-webos.html" class="pb-related-card">
+                <span class="pb-related-title">LordFilm на LG WebOS: установка и настройка 2026</span>
+                <span class="pb-related-desc">Полная инструкция по установке LordFilm на телевизоры LG WebOS. Решение ошибок, методы запуска через</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

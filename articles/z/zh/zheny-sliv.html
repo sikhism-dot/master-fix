@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Жены слив: анализ причин утечки памяти в Linux и методы диагностики — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический гайд по устранению эффекта&#x27;жены слив&#x27; в Linux. Разбор процессов, анализ дампа памяти и настройка мониторинга утечек.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/z/zh/zheny-sliv.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Жены слив: анализ причин утечки памяти в Linux и методы диагностики">
+    <meta property="og:description" content="Подробный технический гайд по устранению эффекта&#x27;жены слив&#x27; в Linux. Разбор процессов, анализ дампа памяти и настройка мониторинга утечек.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Жены слив: анализ причин утечки памяти в Linux и методы диагностики</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#первичная-диагностика-и-анализ-распределения-памяти">Первичная диагностика и анализ распределения памяти</a></li><li><a href="#анализ-дампа-памяти-и-поиск-виновника">Анализ дампа памяти и поиск виновника</a></li><li><a href="#мониторинг-и-автоматическое-предотвращение-сбоев">Мониторинг и автоматическое предотвращение сбоев</a></li><li><a href="#типичные-ошибки-при-диагностике-и-устранении">Типичные ошибки при диагностике и устранении</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vi/vidzhety-na-rabochij-stol-vindovs-10-temperatura-i-zagruzka-tsp.html">Виджеты Windows 10: температура и загрузка ЦП</a></li><li><a href="/articles/f/fa/farcar-ne-vidit-sim-kartu.html">FarCar не видит SIM: полное руководство по устранению</a></li><li><a href="/articles/u/ur/ur-bit-oshibki-2000-chto-delat.html">Ошибка 2000 на Ур Бит: причины и способы устранения</a></li><li><a href="/articles/c/cu/custom-blackberry-passport.html">Кастомизация BlackBerry Passport: Android, прошивки и патчи</a></li><li><a href="/articles/i/is/ischezlo-tablo-v-yandeks-brauzere-chto-delat.html">Исчезло табло в Яндекс Браузере: решение проблемы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Диагностика и устранение утечек памяти (Memory Leak) в Linux</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#первичная-диагностика-и-анализ-распределения-памяти">Первичная диагностика и анализ распределения памяти</a></li><li><a href="#анализ-дампа-памяти-и-поиск-виновника">Анализ дампа памяти и поиск виновника</a></li><li><a href="#мониторинг-и-автоматическое-предотвращение-сбоев">Мониторинг и автоматическое предотвращение сбоев</a></li><li><a href="#типичные-ошибки-при-диагностике-и-устранении">Типичные ошибки при диагностике и устранении</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда сервер начинает потреблять всё больше оперативной памяти без видимой нагрузки, а процессы не завершаются самостоятельно, знакома многим системным администраторам. В профессиональной среде часто называют «жены слив» или memory leak, когда ресурс захватывается и не освобождается после завершения операций.</p>
+<p>На практике это приводит к тому, что система начинает активно использовать swap-раздел, резко падает производительность дисковой подсистемы, и в критический момент OOM-killer принудительно завершает важные процессы. Если у вас наблюдаются симптомы, когда свободная память (free) постоянно уменьшается, а кэшированная (cached/buffered) не сбрасывается, требуется глубокий анализ.</p>
+<p>Ошибочное мнение, что перезагрузка службы решит проблему навсегда, часто лишь отодвигает момент критического отказа. Необходимо выявить виновника, проанализировать логи и понять, какой именно механизм вызывает неосвобождение памяти. Далее рассмотрены методы диагностики и устранения неисправностей.</p>
+
+<h2 id="первичная-диагностика-и-анализ-распределения-памяти">Первичная диагностика и анализ распределения памяти</h2>
+<p>Если у вас возникло подозрение на утечку, первым шагом становится сбор объективных данных о текущем состоянии системы. Стандартные утилиты позволяют быстро оценить общую картину, но требуют внимательной интерпретации показаний. Допустим, вы видите, что параметр <code>used</code> в выводе команды <code>free -h</code> растет линейно в течение нескольких дней.</p>
+<p>Наиболее информативным инструментом для первичного анализа является утилита <em>htop</em> или <em>top</em> с сортировкой по потреблению памяти. Стоит обратить внимание не только на столбец <code>%MEM</code>, но и на значения <code>RES</code> (резидентная память) и <code>VIRT</code> (виртуальная память). Резкий рост резидентной памяти у конкретного процесса часто указывает на то, что он аллоцирует блоки, но не возвращает их системе.</p>
+<p>Для более детального просмотра можно использовать команду <code>ps aux --sort=-%mem | head</code>, которая выведет топ процессов. Однако стандартные инструменты не всегда показывают «скрытые» утечки, связанные с отображением файлов в память или shared memory сегментами. В таких случаях требуется использование специализированных утилит для анализа конкретных PID.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На системах с малым объемом RAM (менее 2 ГБ) даже небольшая утечка в 10 МБ в час может привести к падению сервиса через сутки работы.</p></aside>
+
+<p>Важно различать реальную утечку в коде приложения и разрастание кэшей ядра. Если процесс <code>kswapd</code> потребляет значительные ресурсы CPU, это может свидетельствовать о том, что система пытается освободить память, но приложения удерживают страницы слишком агрессивно. Проверка логов ядра через <code>dmesg | grep -i"out of memory"</code> или <code>journalctl -k</code> поможет найти следы работы механизма защиты.</p>
+
+
+
+<h3>Инструментарий для глубокого анализа процессов</h3>
+<p>Для детального изучения того, как именно процесс использует память, предназначен утилита <code>pmap</code>. Команда <code>pmap -x [PID]</code> покажет карту памяти процесса с детализацией до каждого сегмента. Если вы видите множество сегментов с типом <code>[ anon ]</code> (анонимная память), которые суммарно занимают гигабайты, это верный признак того, что приложение выделяет память в куче (heap) и не освобождает её.</p>
+<p>Еще одним мощным инструментом является <code>smem</code>, который показывает использование памяти с учетом общих страниц (shared memory). В отличие от <code>ps</code>, <code>smem</code> не делит общую память поровну между процессами, а показывает реальный вклад (USS — Unique Set Size). Это позволяет точнее определить, какое приложение действительно «ест» уникальную память, а какое лишь использует общие библиотеки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Основная функция</th>
+<th>Сложность использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>top</code> / <code>htop</code></td>
+<td>Мониторинг в реальном времени</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td><code>pmap -x</code></td>
+<td>Анализ карты памяти процесса</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td><code>smem</code></td>
+<td>Точный расчет USS/PSS</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td><code>valgrind</code></td>
+<td>Поиск утечек в коде (dev)</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если речь идет о Java-приложениях, стандартные Linux-утилиты могут быть недостаточно информативны, так как JVM управляет памятью самостоятельно. В этом случае необходимо подключаться к запущенной виртуальной машине через <code>jstat</code> или <code>jmap</code>. Команда <code>jstat -gc [pid] 1000</code> позволит наблюдать за заполнением различных пулов памяти (Eden, Survivor, Old Gen) в реальном времени.</p>
+
+<h2 id="анализ-дампа-памяти-и-поиск-виновника">Анализ дампа памяти и поиск виновника</h2>
+<p>Когда процесс-виновник идентифицирован, но причина его поведения неясна, может потребоваться создание дампа памяти (core dump) или снятие снимка состояния кучи (heap dump). Это критически важный этап для разработчиков, позволяющий увидеть, какие именно объекты занимают место. Допустим, веб-сервер <em>Nginx</em> или приложение на <em>Python</em> потребляет 4 ГБ вместо положенных 512 МБ.</p>
+<p>Для создания дампа работающего процесса в Linux можно использовать утилиту <code>gcore</code> (часть пакета gdb) или команду <code>kill -SIGABRT</code>, если приложение настроено на создание core-файла при этом сигнале. Перед началом следует убедиться, что на диске достаточно места, так как размер дампа может совпадать с объемом занимаемой памяти.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Создание полного дампа памяти (core dump) работающего процесса может привести к его остановке на несколько секунд или минут, что вызовет таймауты соединений.</p></aside>
+
+<p>После получения файла дампа (например, <code>core.1234</code>), его можно проанализировать отладчиком <code>gdb</code>. Команда <code>gdb /path/to/binary core.1234</code> позволит загрузить снимок. Внутри отладчика представляет интерес команда <code>info proc mappings</code>, которая покажет, какие области памяти выделены, и команда <code>bt</code> (backtrace), если процесс упал или был остановлен в момент аллокации.</p>
+<p>В случае с управляемыми языками (Java, C#), анализ проводится через heap dump. Для Java используется формат <code>.hprof</code>. Анализировать такие файлы удобнее не текстовыми редакторами, а специализированными анализаторами, такими как <em>Eclipse MAT</em> или <em>VisualVM</em>. Они строят графы ссылок между объектами и показывают «деревья утечек» — наборы объектов, которые должны были быть удалены сборщиком мусора, но на них остаются ссылки.</p>
+
+
+
+<h3>Сценарии для различных типов приложений</h3>
+<p>Поведение при утечках сильно зависит от типа приложения. Веб-серверы, такие как <em>Apache</em> с модулем <code>mod_php</code> или <code>mod_perl</code>, часто страдают от утечек в самих модулях или скриптах. В таких случаях эффективным решением является настройка периодической перезагрузки воркеров. Например, в конфигурации <em>Apache</em> можно задать <code>MaxRequestsPerChild</code>, чтобы процесс перезапускался после обработки определенного числа запросов, гарантированно освобождая всю накопленную память.</p>
+<p>Базы данных, такие как <em>PostgreSQL</em> или <em>MySQL</em>, обычно хорошо управляют памятью, но могут «раздуваться» из-за больших сортировок или временных таблиц, если конфигурация <code>work_mem</code> или <code>tmp_table_size</code> выставлена некорректно. Если вы видите, что процесс БД растет, проверьте логи медленных запросов. Часто «жены слив» в БД — это на самом деле неутечка, а неэффективный запрос, требующий загрузки огромного объема данных в RAM.</p>
+<p>Микросервисы на Go или Rust, компилируемые в нативный код, реже подвержены классическим утечкам кучи, но могут страдать от утечек в goroutines (в Go) или неправильного управления буферами. В Go существует встроенный профилировщик <code>pprof</code>, который через HTTP-эндпоинт <code>/debug/pprof/heap</code> позволяет скачать профиль памяти и проанализировать его без остановки сервиса.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип приложения</th>
+<th>Вероятная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Веб-скрипты (PHP/Python)</td>
+<td>Глобальные массивы, кэш</td>
+<td>Ограничение времени жизни процесса</td>
+</tr>
+<tr>
+<td>Java (JVM)</td>
+<td>Статические коллекции, listeners</td>
+<td>Анализ Heap Dump (MAT)</td>
+</tr>
+<tr>
+<td>Базы данных</td>
+<td>Большие временные таблицы</td>
+<td>Оптимизация запросов и конфигов</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="мониторинг-и-автоматическое-предотвращение-сбоев">Мониторинг и автоматическое предотвращение сбоев</h2>
+<p>После выявления и, возможно, временного устранения проблемы, критически важно внедрить систему мониторинга, которая предупредит о повторении ситуации. «Жены слив» часто имеют накопительный эффект, поэтому мониторинг должен вестись в динамике. Использование систем вроде <em>Prometheus</em> в связке с <em>Grafana</em> позволяет строить графики потребления памяти по хостам и подам.</p>
+<p>На уровне операционной системы можно использовать <code>systemd</code> для ограничения ресурсов. Директивы <code>MemoryLimit</code> и <code>MemoryHigh</code> в юните службы позволяют задать жесткие или мягкие лимиты. Если процесс превысит <code>MemoryHigh</code>, ядро начнет aggressively вытеснять его страницы, что замедлит работу, но не даст ему «задушить» всю систему. Превышение <code>MemoryLimit</code> приведет к немедленному завершению процесса.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование cgroups (через systemd) предпочтительнее, чем reliance на OOM-killer, так как позволяет контролировать, какой именно процесс будет уничтожен при нехватке памяти.</p></aside>
+
+<p>Для автоматизации реакции на утечки можно настроить скрипты, которые будут перезапускать сервис при достижении определенного порога. Однако это решение следует применять с осторожностью, чтобы не создать цикл постоянных перезагрузок. Более грамотно настроить алертинг: при достижении порога в 80-90% от лимита команда получает уведомление в Telegram или Slack для ручного анализа.</p>
+<p>Также стоит рассмотреть возможность использования инструментов трейсинга, таких как <em>eBPF</em>. С их помощью можно отслеживать системные вызовы <code>mmap</code> и <code>brk</code> в реальном времени без заметного влияния на производительность. Это позволяет увидеть, какой именно поток или функция вызывает активное выделение памяти прямо в момент роста.</p>
+
+
+
+<h3>Настройка алертинга и логирования</h3>
+<p>Эффективный мониторинг невозможен без правильных пороговых значений. Не стоит ставить алерт на 100% использования, так как к этому моменту система уже будет недоступна. Оптимальная стратегия — многоступенчатая. Первый уровень предупреждения (Warning) срабатывает при 70-75% и росте в течение 1 часа. Второй уровень (Critical) — при 85-90% или резком скачке (spike).</p>
+<p>Логирование должно быть настроено так, чтобы фиксировать события выделения больших объемов памяти, если приложение это поддерживает. Для Java-приложений включение флага <code>-XX:+HeapDumpOnOutOfMemoryError</code> гарантирует, что при критической ситуации будет сохранен снимок памяти для последующего разбора полетов. Путь для сохранения дампа должен вести на диск с достаточным свободным местом, желательно отдельный от системного.</p>
+
+<h2 id="типичные-ошибки-при-диагностике-и-устранении">Типичные ошибки при диагностике и устранении</h2>
+<p>В процессе борьбы с утечками памяти специалисты часто допускают ряд ошибок, которые усложняют поиск корневой причины или приводят к новым проблемам. Избежание этих распространенных заблуждений сэкономит время и нервы.</p>
+
+<ol>
+<li><strong>Игнорирование кэшей файловой системы.</strong> — Часто администраторы видят высокий процент использования памяти в <code>free</code> и паникуют, забывая, что Linux использует свободную память для кэширования дисковых операций. Если параметр <code>available</code> высок, а <code>used</code> растет за счет <code>buff/cache</code>, это нормальное поведение, а не утечка.</li>
+<li><strong>Постоянная перезагрузка вместо анализа.</strong> — Регулярный рестарт сервиса («костыль») скрывает симптом, но не лечит болезнь. Память может утекать медленно, и переза раз в неделю не заметна, но со временем интервалы будут сокращаться, а данные для анализа (логи, дампы) будут утрачиваться.</li>
+<li><strong>Неверная интерпретация VIRT.</strong> — Виртуальная память (<code>VIRT</code>) включает в себя все, что процесс «попросил», включая зарезервированные, но не выделенные физически страницы, а также общие библиотеки. Ориентироваться нужно на <code>RES</code> (RSS) или <code>USS</code>.</li>
+<li><strong>Отсутствие нагрузки при тестировании.</strong> — Попытка воспроизвести утечку на тестовом окружении без реалистичного профиля нагрузки часто ни к чему не приводит. Утечки часто проявляются только при определенной последовательности действий или высоком RPS (requests per second).</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная борьба с утечками памяти требует комплексного подхода: от грамотного мониторинга до глубокого анализа дампов, а не просто периодических перезагрузок.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+<p>Проблема «жены слив» или утечки памяти в Linux является сложной, но решаемой задачей при наличии правильных инструментов и методологии. Ключ к успеху лежит в переходе от реактивных действий (перезагрузка при падении) к проактивному мониторингу и анализу трендов потребления ресурсов. Понимание различий между реальной утекой в коде и особенностями работы менеджера памяти ядра позволяет избегать ложных тревог.</p>
+<p>Использование связки <code>systemd</code> для ограничения ресурсов, <code>prometheus</code> для визуализации и специализированных профилировщиков для глубокого анализа кода создает надежный щит для серверной инфраструктуры. Даже если устранить утечку в коде прямо сейчас невозможно, грамотное ограничение ресурсов и автоматический рестарт позволят системе работать стабильно до момента выхода патча.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vi/vidzhety-na-rabochij-stol-vindovs-10-temperatura-i-zagruzka-tsp.html" class="pb-related-card">
+                <span class="pb-related-title">Виджеты Windows 10: температура и загрузка ЦП</span>
+                <span class="pb-related-desc">Техническая инструкция по установке виджетов температуры и загрузки ЦП на рабочий стол Windows 10. Н</span>
+            </a><a href="/articles/f/fa/farcar-ne-vidit-sim-kartu.html" class="pb-related-card">
+                <span class="pb-related-title">FarCar не видит SIM: полное руководство по устранению</span>
+                <span class="pb-related-desc">Если FarCar не видит сим-карту, проверьте настройки APN, формат карты и режим сети. Подробная инстру</span>
+            </a><a href="/articles/u/ur/ur-bit-oshibki-2000-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка 2000 на Ур Бит: причины и способы устранения</span>
+                <span class="pb-related-desc">Полная инструкция по коду ошибки 2000 на Ур Бит. Разбор причин, пошаговый сброс, проверка сети и обн</span>
+            </a><a href="/articles/c/cu/custom-blackberry-passport.html" class="pb-related-card">
+                <span class="pb-related-title">Кастомизация BlackBerry Passport: Android, прошивки и патчи</span>
+                <span class="pb-related-desc">Полная инструкция по установке Android на BlackBerry Passport. Патч OS, патч ядра, установка Google </span>
+            </a><a href="/articles/i/is/ischezlo-tablo-v-yandeks-brauzere-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Исчезло табло в Яндекс Браузере: решение проблемы</span>
+                <span class="pb-related-desc">Пропало табло в Яндекс Браузере? Узнайте, как вернуть стартовую страницу, восстановить виджеты и нас</span>
+            </a><a href="/articles/s/sv/svc-agent-uznat-otkuda-ustanovlen.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать откуда установлен svc agent: методы проверки</span>
+                <span class="pb-related-desc">Техническое руководство по определению источника установки svc agent. Анализ логов, проверка сертифи</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

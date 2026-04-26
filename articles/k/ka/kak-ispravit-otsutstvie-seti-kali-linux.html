@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Kali Linux нет сети: исправление ошибок подключения — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по устранению отсутствия сети в Kali Linux. Настройка интерфейсов, драйверов, NetworkManager и resolv.conf.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-ispravit-otsutstvie-seti-kali-linux.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Kali Linux нет сети: исправление ошибок подключения">
+    <meta property="og:description" content="Подробная инструкция по устранению отсутствия сети в Kali Linux. Настройка интерфейсов, драйверов, NetworkManager и resolv.conf.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Kali Linux нет сети: исправление ошибок подключения</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-состояния-сетевых-интерфейсов">Диагностика состояния сетевых интерфейсов</a></li><li><a href="#настройка-networkmanager-и-системных-служб">Настройка NetworkManager и системных служб</a></li><li><a href="#установка-и-обновление-драйверов-беспроводных-адаптеров">Установка и обновление драйверов беспроводных адаптеров</a></li><li><a href="#конфигурация-сети-в-виртуальных-машинах">Конфигурация сети в виртуальных машинах</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/karta-dostupa-nesovmestima-s-dannoj-tv-pristavkoj-ntv-plyus-chto-delat.html">НТВ Плюс: Карта несовместима с приставкой – решение</a></li><li><a href="/articles/k/ka/kak-vyjti-iz-profilya-ivi-na-televizore.html">Как выйти из профиля Иви на телевизоре: полная инструкция</a></li><li><a href="/articles/k/ka/kak-obnovit-televizor-tompson-do-drugoj-versii-android.html">Обновление Android на телевизоре Thomson: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-nastroit-zalu-na-televizore-kivi.html">Как настроить залу на телевизоре Киви: полное руководство</a></li><li><a href="/articles/k/ka/kak-pravilno-nastroit-zvuk-na-televizore-hartens.html">Как настроить звук на телевизоре Hartens: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Устранение отсутствия сети в Kali Linux: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-состояния-сетевых-интерфейсов">Диагностика состояния сетевых интерфейсов</a></li><li><a href="#настройка-networkmanager-и-системных-служб">Настройка NetworkManager и системных служб</a></li><li><a href="#установка-и-обновление-драйверов-беспроводных-адаптеров">Установка и обновление драйверов беспроводных адаптеров</a></li><li><a href="#конфигурация-сети-в-виртуальных-машинах">Конфигурация сети в виртуальных машинах</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда после установки или обновления операционной системы <em>Kali Linux</em> индикатор сетевого подключения показывает разрыв связи, является одной из самых распространенных проблем для пользователей данного дистрибутива. Отсутствие доступа к интернету блокирует возможность обновления репозиториев, установки новых инструментов для тестирования на проникновение и проведения сканирования уязвимостей. Часто пользователь сталкивается с тем, что сетевой адаптер физически присутствует в системе, но программно не инициализируется или не получает IP-адрес от DHCP-сервера.</p>
+
+<p>Причины такого поведения могут крыться в конфликте сетевых менеджеров, отсутствии проприетарных драйверов для беспроводных карт или некорректных настройках конфигурационных файлов системы. Виртуальные машины, такие как <em>VirtualBox</em> или <em>VMware</em>, также добавляют уровень сложности, требуя правильной настройки сетевых мостов или NAT. Игнорирование этих нюансов приводит к тому, что интерфейс остается в состоянии <code>DOWN</code>, несмотря на активное физическое соединение кабеля или наличие доступных Wi-Fi сетей.</p>
+
+<p>Для успешного восстановления функциональности необходимо последовательно проверить состояние сетевых интерфейсов, убедиться в работе соответствующих служб и при необходимости вручную прописать параметры подключения. Ниже представлен детальный алгоритм действий, позволяющий диагностировать и устранить неисправность в большинстве сценариев использования <em>Kali Linux</em>.</p>
+
+<h2 id="диагностика-состояния-сетевых-интерфейсов">Диагностика состояния сетевых интерфейсов</h2>
+
+<p>Первым шагом при обнаружении проблемы является точное определение текущего статуса сетевых карт, установленных в системе. Стандартный набор утилит позволяет получить исчерпывающую информацию о том, виден ли адаптер ядру и присвоен ли ему IP-адрес. Использование команды <code>ip link show</code> выводит список всех сетевых интерфейсов, включая физические устройства и виртуальные петли.</p>
+
+<p>Если в выводе команды интерфейс отображается с состоянием <code>DOWN</code>, это означает, что он административно отключен. В таком случае необходимо принудительно активировать его. Часто бывает так, что интерфейс <code>eth0</code> или <code>wlan0</code> существует, но не поднят после загрузки системы. Для изменения состояния используется команда <code>ip link set dev [имя_интерфейса] up</code>, где вместо плейсхолдера подставляется актуальное имя устройства.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В современных версиях Kali Linux имена интерфейсов могут быть изменены на предсказуемые, например, enp0s3 вместо eth0.</p></aside>
+
+<p>После включения интерфейса стоит проверить, получает ли система адрес автоматически. Для этого применяется утилита <code>dhclient</code>, которая отправляет запрос на DHCP-сервер. Если команда выполняется без ошибок и в выводе <code>ip addr</code> появляется IP-адрес, проблема решена. В противном случае, если адрес не получен, следует проверить физическое подключение или настройки виртуальной сети.</p>
+
+<pre><code>sudo ip link set dev eth0 up
+<p>sudo dhclient -v eth0</code></pre></p>
+
+<p>Важно различать отсутствие линка (физического соединения) и отсутствие IP-адреса. Если линк отсутствует, индикаторы на сетевой карте могут не гореть, либо в логах ядра будут сообщения об ошибках драйвера. Если же линк есть, но адреса нет, проблема кроется в настройках DHCP или статической маршрутизации.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Назначение</th>
+<th>Ожидаемый результат</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>ip link show</code></td>
+<td>Отображение состояния интерфейсов</td>
+<td>Список устройств со статусом UP/DOWN</td>
+</tr>
+<tr>
+<td><code>ip addr show</code></td>
+<td>Проверка IP-адресации</td>
+<td>Наличие IP в сети (не 127.0.0.1)</td>
+</tr>
+<tr>
+<td><code>ping 8.8.8.8</code></td>
+<td>Проверка доступности шлюза</td>
+<td>Ответы от удаленного хоста</td>
+</tr>
+</tbody>
+</table>
+
+<p>Допустим, что интерфейс поднят, IP-адрес получен, но интернет все равно не работает. В этом случае необходимо проверить таблицу маршрутизации. Отсутствие шлюза по умолчанию (<code>default via</code>) приведет к тому, что пакеты не будут знать, куда отправляться за пределы локальной сети. Команда <code>ip route show</code> должна содержать запись о шлюзе, соответствующем вашей сети.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная диагностика</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выполните 'ip link show'</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверьте статус интерфейса (UP/DOWN)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">При необходимости выполните 'ip link set dev [iface] up'</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите 'dhclient [iface]'</span></div></div>
+
+<h2 id="настройка-networkmanager-и-системных-служб">Настройка NetworkManager и системных служб</h2>
+
+<p>В дистрибутиве <em>Kali Linux</em> за управление соединениями чаще всего отвечает служба <em>NetworkManager</em>. Если эта служба остановлена или работает некорректно, графический индикатор сети может исчезнуть, а автоматическое подключение перестанет функционировать. Проверка статуса службы выполняется через <code>systemctl status NetworkManager</code>. Если статус отличается от <code>active (running)</code>, службу необходимо запустить.</p>
+
+<p>Частой ошибкой является конфликт между <em>NetworkManager</em> и устаревшей службой <code>networking</code> (или <code>network</code>), которая управляется через файл <code>/etc/network/interfaces</code>. Если в этом файле прописаны статические настройки или просто указано <code>auto eth0</code>, <em>NetworkManager</code> может игнорировать устройство, считая, что оно находится под управлением другой службы. Необходимо убедиться, что в файле конфигурации интерфейсы описаны корректно или закомментированы, если управление передается менеджеру.</p>
+
+<pre><code>sudo systemctl start NetworkManager
+<p>sudo systemctl enable NetworkManager</code></pre></p>
+
+<p>Для управления подключениями через графический интерфейс или терминал можно использовать утилиту <code>nmtui</code>. Это текстовый интерфейс, который позволяет визуально выбрать доступную Wi-Fi сеть, ввести пароль и настроить параметры IPv4. Использование <code>nmtui</code> предпочтительнее ручного редактирования конфигов для новичков, так как оно минимизирует риск синтаксических ошибок.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение настроек NetworkManager во время активного сеанса может привести к разрыву соединения. Убедитесь, что у вас есть доступ к консоли или физическому терминалу.</p></aside>
+
+<p>В некоторых случаях требуется полный перезапуск сетевой подсистемы. Это особенно актуально после установки новых драйверов или обновления ядра. Команда <code>sudo systemctl restart NetworkManager</code> принудительно перезапустит демон и применит все сохраненные профили подключений заново. Если проблема заключалась во временном сбое процесса, это действие восстановит работоспособность.</p>
+
+<ul>
+<li>Проверьте, не блокирует ли брандмауэр <code>ufw</code> или <code>iptables</code> исходящие соединения.</li>
+<li>Убедитесь, что в настройках роутера не включена фильтрация по MAC-адресам.</li>
+<li>При использовании виртуальной машины проверьте, что сетевой адаптер подключен к правильной виртуальной сети.</li>
+</ul>
+
+<p>Если автоматическая настройка не помогает, можно попробовать удалить сохраненный профиль проблемной сети и создать его заново. Файлы конфигурации соединений хранятся в директории <code>/etc/NetworkManager/system-connections/</code>. Удаление старого конфига и повторная авторизация часто решает проблемы с неверными параметрами безопасности или устаревшими ключами шифрования.</p>
+
+<h2 id="установка-и-обновление-драйверов-беспроводных-адаптеров">Установка и обновление драйверов беспроводных адаптеров</h2>
+
+<p>Проблемы с Wi-Fi в <em>Kali Linux</em> часто обусловлены отсутствием проприетарных драйверов для беспроводных карт, особенно для чипсетов <em>Realtek</em> и <em>Broadcom</em>. В отличие от проводного Ethernet, который работает «из коробки» в большинстве случаев, беспроводные модули требуют специфического firmware. Первым шагом является идентификация устройства с помощью команды <code>lsusb</code> для USB-адаптеров или <code>lspci</code> для внутренних карт.</p>
+
+<p>После получения идентификатора устройства (Vendor ID и Product ID) необходимо найти соответствующий пакет драйверов. В репозиториях Kali часто присутствуют пакеты с названиями вроде <code>firmware-realtek</code>, <code>firmware-brcm80211</code> или <code>firmware-misc-nonfree</code>. Установка этих пакетов помещает необходимые бинарные файлы прошивок в директорию <code>/lib/firmware</code>, откуда ядро загружает их при старте модуля.</p>
+
+<pre><code>sudo apt update
+<p>sudo apt install firmware-realtek firmware-misc-nonfree</code></pre></p>
+
+<p>В ситуациях, когда готового пакета в репозитории нет, приходится прибегать к ручной компиляции драйверов из исходного кода. Этот процесс требует установки заголовочных файлов ядра (<code>linux-headers-$(uname -r)</code>) и инструментов сборки (<code>build-essential</code>). Исходный код обычно берется с GitHub репозиториев разработчиков, таких как <em>aircrack-ng</em> или официальных сайтов производителей чипов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда проверяйте версию ядра перед установкой драйверов. Драйвер, собранный для одной версии ядра, может не заработать на другой без перекомпиляции.</p></aside>
+
+<p>После установки или компиляции драйвера необходимо перезагрузить модуль ядра или всю систему. Команда <code>modprobe -r [имя_модуля]</code> выгружает модуль, а <code>modprobe [имя_модуля]</code> загружает его заново. Если модуль загружается успешно, в логах <code>dmesg</code> появятся сообщения об успешной инициализации устройства и загрузке firmware.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип чипсета</th>
+<th>Пакет firmware</th>
+<th>Статус поддержки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Realtek RTL8812AU</td>
+<td>rtl8812au-dkms</td>
+<td>Требует DKMS</td>
+</tr>
+<tr>
+<td>Broadcom BCM43xx</td>
+<td>firmware-brcm80211</td>
+<td>Полная</td>
+</tr>
+<tr>
+<td>Atheros AR9271</td>
+<td>firmware-atheros</td>
+<td>Полная (Native)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Стоит учитывать, что некоторые внешние адаптеры поддерживают режим мониторинга и инъекции пакетов только с определенными драйверами. Стандартные драйверы ядра могут обеспечивать только режим клиента (Station). Для задач пентестинга часто требуется установка специализированных драйверов, поддерживающих расширенный функционал, что также может временно нарушить обычное подключение к интернету до завершения настройки.</p>
+
+<h2 id="конфигурация-сети-в-виртуальных-машинах">Конфигурация сети в виртуальных машинах</h2>
+
+<p>При запуске <em>Kali Linux</em> в среде виртуализации, такой как <em>VirtualBox</em> или <em>VMware Workstation</em>, отсутствие сети чаще всего связано с неправильным выбором типа сетевого адаптера в настройках самой виртуальной машины. По умолчанию может быть выбран режим «Host-only», который изолирует гостевую ОС от внешней сети, позволяя общаться только с хостом. Для выхода в интернет необходимо переключить режим на «NAT» или «Bridged Adapter».</p>
+
+<p>Режим <strong>NAT</strong> позволяет виртуальной машине использовать IP-адрес хоста для выхода во внешнюю сеть. Это наиболее безопасный и простой вариант, не требующий дополнительной настройки роутера. В этом режиме виртуальная машина получает адрес из внутренней сети гипервизора. Если в этом режиме сети нет, стоит проверить настройки DHCP в самом гипервизоре.</p>
+
+<p>Режим <strong>Bridged Adapter</strong> (Сетевой мост) делает виртуальную машину полноценным узлом в физической сети. Она получает IP-адрес напрямую от роутера, как если бы это было отдельное физическое устройство. Этот режим необходим для задач, требующих видимости машины другими устройствами в локальной сети, но он может не работать, если на физическом порту стоит защита от множественных MAC-адресов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка VirtualBox</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте настройки ВМ</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел 'Сеть'</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите тип подключения 'Сетевой мост' или 'NAT'</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь, что галочка 'Подключено' активна</span></div></div>
+
+<p>Внутри гостевой ОС <em>Kali Linux</em> также должны быть установлены дополнения гостевой ОС (<em>Guest Additions</em> или <em>VMware Tools</em>). Они обеспечивают правильную работу драйверов виртуального сетевого адаптера. Без этих дополнений система может видеть устройство, но не сможет эффективно передавать через него данные. Установка обычно производится через меню виртуальной машины: «Устройства» -> «Подключить образ диска Дополнений гостевой ОС».</p>
+
+<p>Если после смены настроек в гипервизоре сеть не появилась, попробуйте сбросить настройки сетевого стека внутри Kali. Иногда виртуальный адаптер «зависает» в состоянии ошибки. Выключение и включение сетевого адаптера через настройки ВМ или команда <code>sudo systemctl restart networking</code> внутри гостя могут помочь восстановить соединение.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе восстановления доступа к сети пользователи часто допускают ряд повторяющихся ошибок, которые лишь усугубляют ситуацию. Понимание этих нюансов позволяет сэкономить время и избежать unnecessary complications. Ниже приведен список наиболее частых проблемных сценариев.</p>
+
+<ol>
+<li><strong>Игнорирование блокировки rfkill</strong> — часто беспроводной адаптер заблокирован программно или аппаратным переключателем. Команда <code>rfkill list</code> показывает статус блокировки. Если стоит «Soft blocked», необходимо выполнить <code>sudo rfkill unblock wifi</code>. Без этого шага никакие настройки не помогут.</li>
+<li><strong>Неверный файл конфигурации interfaces</strong> — ручное редактирование <code>/etc/network/interfaces</code> без понимания синтаксиса приводит к тому, что NetworkManager перестает управлять интерфейсом. Если вы не настраиваете статический IP для сервера, этот файл должен содержать только строку для loopback, а остальные интерфейсы должны управляться менеджером.</li>
+<li><strong>Отсутствие DNS-серверов</strong> — ситуация, когда пинг по IP (8.8.8.8) работает, а сайты по имени не открываются. Это решается прописыванием DNS в файле <code>/etc/resolv.conf</code> или настройкой соответствующего параметра в профиле NetworkManager. Часто файл <code>resolv.conf</code> перезаписывается, поэтому лучше использовать <code>resolvconf</code>.</li>
+<li><strong>Конфликт MAC-адресов</strong> — при клонировании виртуальных машин или использовании одинаковых образов на разных устройствах в одной сети могут возникать конфликты MAC-адресов. В таких случаях помогает генерация нового случайного MAC-адреса для интерфейса перед подключением.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Решение проблемы сети</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Восстановление доступа к репозиториям</li><li>✅ Возможность установки обновлений</li><li>✅ Полноценная работа инструментов</li><li>✅ Сложность настройки драйверов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск неправильной настройки</li><li>❌ Возможность потери данных при сбросе</li><li>❌ Затраты времени на диагностику</li></ul></div>
+</div></div>
+
+<p>Особое внимание стоит уделить файлу <code>/etc/resolv.conf</code>. В современных системах он часто является символической ссылкой на файл, управляемый службой. Прямое редактирование может быть бесполезным, если служба перезапишет его при рестарте. Для постоянной смены DNS лучше использовать настройки в <code>/etc/NetworkManager/NetworkManager.conf</code> или графический интерфейс.</p>
+
+<h2 id="заключительное-резюме">Заключительное резюме</h2>
+
+<p>Восстановление сети в <em>Kali Linux</em> требует системного подхода, начиная от проверки физического состояния интерфейсов и заканчивая тонкой настройкой драйверов и служб. Большинство проблем решается корректной настройкой <em>NetworkManager</em> или установкой отсутствующих пакетов прошивок. </p>
+
+<p>Регулярное обновление системы и внимательное отношение к сообщениям в логах позволяют предотвращать многие проблемы с подключением. Если стандартные методы не помогают, всегда стоит обратиться к документации конкретного сетевого оборудования или сообществу, так как специфика чипсетов может диктовать уникальные требования к конфигурации.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное восстановление сети зависит от правильной последовательности действий: диагностика интерфейса, проверка служб, установка драйверов и корректная настройка виртуализации.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/karta-dostupa-nesovmestima-s-dannoj-tv-pristavkoj-ntv-plyus-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">НТВ Плюс: Карта несовместима с приставкой – решение</span>
+                <span class="pb-related-desc">Полная инструкция: что делать, если карта доступа несовместима с тв приставкой НТВ Плюс. Проверка ID</span>
+            </a><a href="/articles/k/ka/kak-vyjti-iz-profilya-ivi-na-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из профиля Иви на телевизоре: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по выходу из аккаунта Иви на Smart TV. Сброс пароля, отвязка устройств и решение пробл</span>
+            </a><a href="/articles/k/ka/kak-obnovit-televizor-tompson-do-drugoj-versii-android.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление Android на телевизоре Thomson: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по прошивке Smart TV Thomson. Как обновить Android вручную через USB или OTA. Решение</span>
+            </a><a href="/articles/k/ka/kak-nastroit-zalu-na-televizore-kivi.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить залу на телевизоре Киви: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению Smart TV Kivi к домашней сети. Настройка проводного и беспроводн</span>
+            </a><a href="/articles/k/ka/kak-pravilno-nastroit-zvuk-na-televizore-hartens.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить звук на телевизоре Hartens: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке аудиосистемы Hartens. Устранение эха, настройка эквалайзера, подк</span>
+            </a><a href="/articles/k/ka/kak-obnovit-yandeks-brauzer-na-televizore-lg-smart-tv.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление Яндекс.Браузера на LG Smart TV: Полная инструкция</span>
+                <span class="pb-related-desc">Как обновить Яндекс.Браузер на телевизоре LG Smart TV. Пошаговые методы для WebOS, решение ошибок и </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

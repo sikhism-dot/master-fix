@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>BLE-M3 настройка: подробное руководство по подключению и параметрам — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по конфигурации модулей BLE-M3. Настройка UART, управление GPIO, работа с AT-командами и устранение типовых ошибок при подключении.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bl/ble-m3-nastrojka.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="BLE-M3 настройка: подробное руководство по подключению и параметрам">
+    <meta property="og:description" content="Полная инструкция по конфигурации модулей BLE-M3. Настройка UART, управление GPIO, работа с AT-командами и устранение типовых ошибок при подключении.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">BLE-M3 настройка: подробное руководство по подключению и параметрам</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-аппаратного-окружения-и-драйверов">Подготовка аппаратного окружения и драйверов</a></li><li><a href="#вход-в-режим-конфигурации-и-базовые-команды">Вход в режим конфигурации и базовые команды</a></li><li><a href="#настройка-параметров-связи-и-gpio">Настройка параметров связи и GPIO</a></li><li><a href="#режим-прозрачного-моста-и-передача-данных">Режим прозрачного моста и передача данных</a></li><li><a href="#типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/li/live2d-tentacle.html">Интеграция Live2D щупальца: техническое руководство</a></li><li><a href="/articles/o/ol/ol-voice-chto-eto.html">OL Voice: что это, функции и настройка голосового помощника</a></li><li><a href="/articles/k/ka/kak-zagruzit-film-v-ivi.html">Как загрузить фильм на Иви: полная инструкция для ТВ и ПК</a></li><li><a href="/articles/k/ka/kak-v-premer-udalit-prosmotrennye-filmy.html">Как удалить просмотренные фильмы в Премьер: Инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-monitor-k-sistemnomu-bloku-kompyutera.html">Как подключить монитор к системному блоку: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Профессиональная настройка модуля BLE-M3: от подключения до отладки</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-аппаратного-окружения-и-драйверов">Подготовка аппаратного окружения и драйверов</a></li><li><a href="#вход-в-режим-конфигурации-и-базовые-команды">Вход в режим конфигурации и базовые команды</a></li><li><a href="#настройка-параметров-связи-и-gpio">Настройка параметров связи и GPIO</a></li><li><a href="#режим-прозрачного-моста-и-передача-данных">Режим прозрачного моста и передача данных</a></li><li><a href="#типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Операции по интеграции Bluetooth Low Energy модулей в существующую инфраструктуру часто сталкиваются с проблемой несовместимости профилей или невозможностью установить стабильное соединение при первичном запуске.</p>
+<p>Специалисты, работающие с оборудованием на базе чипов Realtek или Nordic, нередко обнаруживают, что устройство не отображается в сканере или теряет связь сразу после сопряжения, что требует глубокого погружения в параметры конфигурации.</p>
+<p>Внедрение модуля <em>BLE-M3</em> в проект требует тщательной подготовки программного окружения и понимания специфики работы стека протоколов, так как стандартные настройки по умолчанию редко подходят для промышленных или специализированных задач.</p>
+
+<h2 id="подготовка-аппаратного-окружения-и-драйверов">Подготовка аппаратного окружения и драйверов</h2>
+<p>Перед началом конфигурации необходимо обеспечить физическое подключение модуля к управляющему компьютеру через UART-адаптер или USB-TTL конвертер, так как прямое подключение к порту USB без переходника невозможно.</p>
+<p>Для работы с <em>BLE-M3</em> потребуется установить специализированные драйверы виртуального последовательного порта, которые зависят от используемого чипа конвертера, будь то <em>CP2102</em>, <em>CH340</em> или <em>FT232</em>.</p>
+<p>Если у вас установлена операционная система Windows, проверка установки драйверов производится через диспетчер устройств, где в разделе «Порты (COM и LPT)» должен появиться соответствующий идентификатор.</p>
+<p>Важно правильно подключить сигнальные линии TX и RX, перекрестив их между модулем и адаптером, чтобы передающая линия одного устройства была соединена с принимающей линией другого.</p>
+<p>Питание модуля должно быть стабильным и составлять ровно 3.3 Вольта, так как подача 5 Вольт на вход VCC гарантированно выведет устройство из строя без возможности восстановления.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Подача напряжения выше 3.6 В на контакты модуля BLE-M3 приведет к необратимому повреждению микросхемы. Используйте только стабилизированные источники питания.</p></aside>
+
+<p>После физического подключения следует запустить терминальную программу, такую как <em>Putty</em>, <em>Tera Term</em> или встроенный монитор последовательного порта в <em>Arduino IDE</em>.</p>
+<p>Скорость обмена данными по умолчанию для большинства прошивок <em>BLE-M3</em> составляет 9600 или 115200 бод, однако этот параметр может быть изменен в предыдущих конфигурациях.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Скорость (Baud Rate)</td>
+<td>9600 / 115200</td>
+<td>115200</td>
+</tr>
+<tr>
+<td>Биты данных</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Стоповые биты</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Четность (Parity)</td>
+<td>None</td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых ревизиях платы для входа в режим конфигурации требуется удерживать кнопку BOOT при подаче питания.</p></aside>
+
+<h2 id="вход-в-режим-конфигурации-и-базовые-команды">Вход в режим конфигурации и базовые команды</h2>
+<p>Для перехода в режим настройки модуль <em>BLE-M3</em> часто требует подачи специальной последовательности символов или физического замыкания контакта на землю.</p>
+<p>На практике наиболее распространенным методом является отправка строки <code>AT</code> с переводом строки, на что исправное устройство должно ответить кодом <code>OK</code>.</p>
+<p>Если ответ не поступает, необходимо проверить настройки перевода строки в терминале, выбрав опцию <code>Both NL & CR</code> или <code>Send newline</code>.</p>
+<p>Базовый набор команд позволяет изменить имя устройства, пароль сопряжения и интервалы рекламы, что является критически важным для безопасности сети.</p>
+<p>Команда <code>AT+NAME?</code> позволяет узнать текущее имя модуля, а запись нового имени производится командой <code>AT+NAME=NewName</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичный вход в режим AT</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите модуль к ПК через UART</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте терминал на скорости 9600 бод</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Отправьте строку AT</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Получите ответ OK</span></div></div>
+
+<p>Изменение параметров без сохранения в энергонезависимую память приведет к сбросу настроек после перезагрузки, поэтому всегда используйте команду записи конфигурации.</p>
+<p>Для применения изменений часто требуется программная перезагрузка модуля командой <code>AT+RENEW</code> или <code>AT+RESET</code>.</p>
+<p>В некоторых версиях прошивок команды регистрозависимы, поэтому следует внимательно следить за регистром букв в синтаксисе AT-интерфейса.</p>
+<p>Если модуль находится в режиме сна, он может не реагировать на команды до пробуждения по таймеру или внешнему прерыванию.</p>
+<p>Проверка версии прошивки осуществляется командой <code>AT+VERSION</code>, что помогает определить совместимость с конкретным набором инструкций.</p>
+
+<h2 id="настройка-параметров-связи-и-gpio">Настройка параметров связи и GPIO</h2>
+<p>Глубокая настройка <em>BLE-M3</em> включает в себя конфигурацию портов общего назначения GPIO, которые могут работать как входы или выходы для управления периферией.</p>
+<p>Управление состоянием пинов осуществляется через специализированные команды, позволяющие устанавливать логический уровень или считывать его значение.</p>
+<p>Например, команда <code>AT+GPIO=1,1</code> может устанавливать высокий уровень на первом пине, в то время как <code>AT+GPIO=1,0</code> переводит его в низкий.</p>
+<p>Для передачи данных в прозрачном режиме необходимо переключить модуль из командного режима в режим передачи, часто это делается отправкой спецсимвола или таймаутом.</p>
+<p>Параметры интервалов соединения (Connection Interval) напрямую влияют на энергопотребление и скорость передачи данных, требуя тонкой балансировки.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Режим прозрачного моста</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость передачи данных</li><li>✅ Простота интеграции с legacy системами</li><li>✅ Минимальная задержка</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Трудность отладки</li><li>❌ Невозможность контроля состояния соединения</li><li>❌ Риск потери пакетов при переполнении буфера</li></ul></div>
+</div></div>
+
+<p>При настройке рекламных пакетов можно внедрять пользовательские данные в поля Manufacturer Specific Data для идентификации устройства в crowded эфире.</p>
+<p>Фильтрация подключений по MAC-адресу позволяет создать whitelist устройств, которым разрешено устанавливать соединение с модулем.</p>
+<p>Изменение мощности передатчика через команды вроде <code>AT+POWER</code> позволяет регулировать дальность связи в зависимости от требований проекта.</p>
+<p>Логирование событий соединения помогает диагностировать проблемы разрыва связи, фиксируя коды ошибок и причины дисконнекта.</p>
+<p>Для промышленных применений важно настроить таймауты ожидания, чтобы устройство не зависало в состоянии ожидания команды.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Функция</th>
+<th>Пример использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AT+MAC</td>
+<td>Чтение MAC-адреса</td>
+<td>AT+MAC?</td>
+</tr>
+<tr>
+<td>AT+ADVI</td>
+<td>Интервал рекламы (мс)</td>
+<td>AT+ADVI=100</td>
+</tr>
+<tr>
+<td>AT+CONI</td>
+<td>Интервал соединения</td>
+<td>AT+CONI=20</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотная настройка таймингов рекламы и соединения является ключом к балансу между энергоэффективностью и отзывчивостью устройства.</p></aside>
+
+<h2 id="режим-прозрачного-моста-и-передача-данных">Режим прозрачного моста и передача данных</h2>
+<p>Режим прозрачного моста (Transparent Bridge) является наиболее востребованным сценарием использования, позволяющим передавать данные между UART и Bluetooth без модификации payload.</p>
+<p>В этом режиме модуль выступает в роли кабельной замены, принимая байты из последовательного порта и отправляя их через BLE характеристиками уведомления.</p>
+<p>Для входа в этот режим обычно используется команда <code>AT+MODE=1</code> или аналогичная, зависящая от производителя чипа.</p>
+<p>Важно учитывать ограничение MTU (Maximum Transmission Unit), так как большие пакеты данных будут фрагментироваться или обрезаться.</p>
+<p>Управление потоком данных (Flow Control) может быть реализовано аппаратно через пины RTS/CTS или программно через XON/XOFF.</p>
+
+<ol>
+<li>Настройте скорость UART модуля равной скорости целевого устройства.</li>
+<li>Активируйте режим прозрачного моста соответствующей AT-командой.</li>
+<li>Сохраните конфигурацию в энергонезависимую память.</li>
+<li>Перезагрузите модуль для применения изменений.</li>
+<li>Подключитесь к модулю со смартфона или ПК и отправьте тестовые данные.</li>
+</ol>
+
+<p>При передаче больших объемов данных может потребоваться настройка буферов приема и передачи для предотвращения переполнения.</p>
+<p>Задержки между пакетами данных (Inter-byte delay) могут потребоваться для совместимости со старыми устройствами, не успевающими обрабатывать поток.</p>
+<p>Контрольные суммы и проверки целостности данных рекомендуется реализовывать на уровне прикладного протокола, так как BLE гарантирует доставку только на транспортном уровне.</p>
+<p>В режиме моста модуль может выступать как в роли центрального устройства (Central), так и периферийного (Peripheral), в зависимости от задачи.</p>
+<p>Тестирование пропускной способности канала следует проводить с помощью специализированных утилиту, замеряющих время передачи фиксированного объема байт.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для увеличения стабильности передачи в зашумленном эфире уменьшите скорость UART на 10-15% от максимальной поддерживаемой модулем.</p></aside>
+
+<h2 id="типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</h2>
+<p>В процессе эксплуатации и настройки <em>BLE-M3</em> инженеры часто сталкиваются с рядом повторяющихся проблем, решение которых требует системного подхода.</p>
+<p>Отсутствие реакции на команды чаще всего связано с неверной скоростью обмена или отсутствием перевода строки в терминале.</p>
+<p>Нестабильное соединение может быть вызвано помехами в диапазоне 2.4 ГГц, особенно вблизи работающих сетей Wi-Fi или микроволновых печей.</p>
+<p>Ошибки прошивки или сброс настроек могут возникнуть при скачках напряжения в цепи питания модуля во время записи конфигурации.</p>
+
+<ol>
+<li><strong>Нет ответа на AT-команды</strong> — проверьте целостность проводов, правильность подключения TX/RX и соответствие скоростиrate в терминале.</li>
+<li><strong>Устройство не видно при сканировании</strong> — убедитесь, что модуль не находится в режиме сна, не подключен к другому мастеру и интервал рекламы не слишком велик.</li>
+<li><strong>Данные приходят с искажениями</strong> — проверьте качество контакта заземления, уровень шумов в линии питания и согласование уровней логики.</li>
+<li><strong>Сброс настроек после выключения</strong> — забыта команда сохранения конфигурации (обычно <code>AT+SAVE</code> или <code>AT+UPDATE</code>) перед перезагрузкой.</li>
+</ol>
+
+<p>Для глубокой диагностики радиоканала рекомендуется использовать снифферы Bluetooth или приложения-анализаторы спектра.</p>
+<p>Анализ логов подключения позволяет точно определить стадию, на которой происходит разрыв: реклама, соединение, обмен ключами или передача данных.</p>
+<p>Если модуль уходит в глубокий сон и не пробуждается, следует проверить конфигурацию пинов пробуждения и таймеры активности.</p>
+<p>В сложных случаях может потребоваться перепрошивка модуля через SWD или UART загрузчик с использованием специализированного программного обеспечения производителя.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование ферритовых колец на кабелях питания и данных может существенно снизить уровень высокочастотных помех.</p></aside>
+
+<p>Завершающим этапом настройки всегда должна быть проверка работы системы в условиях, максимально приближенных к реальным условиям эксплуатации.</p>
+<p>Документирование всех измененных параметров и версий прошивок упростит дальнейшее обслуживание и масштабирование проекта.</p>
+<p>Регулярное обновление прошивки модуля до последней стабильной версии позволяет закрыть известные уязвимости безопасности и улучшить стабильность работы стека.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/li/live2d-tentacle.html" class="pb-related-card">
+                <span class="pb-related-title">Интеграция Live2D щупальца: техническое руководство</span>
+                <span class="pb-related-desc">Полная инструкция по настройке Live2D щупальца: от ретрига арта до интеграции в движки. Решение проб</span>
+            </a><a href="/articles/o/ol/ol-voice-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">OL Voice: что это, функции и настройка голосового помощника</span>
+                <span class="pb-related-desc">Подробный разбор OL Voice: что это за сервис, как он работает на Android и iOS, настройка, устранени</span>
+            </a><a href="/articles/k/ka/kak-zagruzit-film-v-ivi.html" class="pb-related-card">
+                <span class="pb-related-title">Как загрузить фильм на Иви: полная инструкция для ТВ и ПК</span>
+                <span class="pb-related-desc">Подробная инструкция, как загрузить фильм в Иви через USB, DLNA, AirPlay и HDMI. Решение проблем с ф</span>
+            </a><a href="/articles/k/ka/kak-v-premer-udalit-prosmotrennye-filmy.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить просмотренные фильмы в Премьер: Инструкция</span>
+                <span class="pb-related-desc">Полная инструкция по очистке истории просмотров в Premier Pro и удалению старых фильмов с устройства</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-monitor-k-sistemnomu-bloku-kompyutera.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить монитор к системному блоку: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по подключению монитора через HDMI, DisplayPort и VGA. Настройка разрешения, д</span>
+            </a><a href="/articles/v/v-/v-prilozhenii-ivi-snova-proizoshel-sboj-ne-otkryvaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Сбой в Иви: как исправить, если приложение не открывается</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки запуска Иви. Проверка сети, очистка кэша, обновление DNS и</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

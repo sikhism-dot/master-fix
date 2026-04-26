@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>RX Drone Google Map: Интеграция карт и GPS в FPV очки — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по подключению RX Drone к Google Maps. Настройка OSD, GPS-трекеров и устранение ошибок отображения координат.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/r/rx/rx-drone-google-map.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="RX Drone Google Map: Интеграция карт и GPS в FPV очки">
+    <meta property="og:description" content="Техническое руководство по подключению RX Drone к Google Maps. Настройка OSD, GPS-трекеров и устранение ошибок отображения координат.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">RX Drone Google Map: Интеграция карт и GPS в FPV очки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-передачи-телеметрии-от-приемника-к-карте">Принципы передачи телеметрии от приемника к карте</a></li><li><a href="#настройка-программного-обеспечения-для-работы-с-картами">Настройка программного обеспечения для работы с картами</a></li><li><a href="#аппаратная-совместимость-и-выбор-оборудования">Аппаратная совместимость и выбор оборудования</a></li><li><a href="#практическая-реализация-пошаговая-инструкция">Практическая реализация: пошаговая инструкция</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/gd/gde-najti-obnovleniya-dlya-rzhd-ofitsialnyj-sajt.html">Где найти обновления на сайте РЖД: техническая инструкция</a></li><li><a href="/articles/t/to/toppal-al-pro-kod.html">TopPal AL Pro: Коды разблокировки и сброс пароля</a></li><li><a href="/articles/k/ka/kak-otkatit-do-zadannoj-versii-astra-linuks.html">Как откатить версию Astra Linux: полная инструкция</a></li><li><a href="/articles/k/ka/kak-otkryt-pult-vink-chtoby-pomenyat-batarejku.html">Как открыть пульт Wink: замена батарейки и диагностика</a></li><li><a href="/articles/k/ki/kinopub-na-ipad-2025.html">Kinopub на iPad 2026: полная инструкция по установке и настройке</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Интеграция RX Drone с Google Maps: Настройка GPS и OSD</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-передачи-телеметрии-от-приемника-к-карте">Принципы передачи телеметрии от приемника к карте</a></li><li><a href="#настройка-программного-обеспечения-для-работы-с-картами">Настройка программного обеспечения для работы с картами</a></li><li><a href="#аппаратная-совместимость-и-выбор-оборудования">Аппаратная совместимость и выбор оборудования</a></li><li><a href="#практическая-реализация-пошаговая-инструкция">Практическая реализация: пошаговая инструкция</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда пилот FPV дрона теряет визуальный контакт с аппаратом в условиях пересеченной местности или густой растительности, является одной из самых стрессовых. В этот момент отсутствие точных координат последнего известного местоположения превращает поиск из пятиминутной процедуры в многочасовую операцию с сомнительным результатом.</p>
+<p>Интеграция данных телеметрии, получаемых через приемник (RX), с картографическими сервисами, такими как Google Maps, позволяет в реальном времени отслеживать позицию аппарата на большом экране или в мобильном устройстве. Это критически важно не только для поиска упавших моделей, но и для планирования полетов и соблюдения законодательных ограничений по зонам.</p>
+<p>Основная сложность заключается в правильной интерпретации потока данных, передаваемого приемником, и его преобразовании в формат, понятный картографическим приложениям. Ниже представлен детальный разбор технических аспектов настройки связи между приемником, полетным контроллером и внешними устройствами отображения.</p>
+
+<h2 id="принципы-передачи-телеметрии-от-приемника-к-карте">Принципы передачи телеметрии от приемника к карте</h2>
+<p>Для реализации функции отображения дрона на карте необходимо понимать архитектуру передачи данных. Приемник (RX) получает сигналы от передатчика пилота и, в случае современных цифровых систем или аналоговых систем с телеметрией (например, TBS Crossfire, ELRS, FrSky), формирует пакет данных, содержащий координаты GPS, высоту, скорость и заряд батареи.</p>
+<p>Эти данные передаются по протоколам UART или I2C на полетный контроллер (FC), который, в свою очередь, может транслировать их через видеопередатчик (VTX) в формате OSD или отправлять по радиоканалу обратно на пульт управления. Для работы с Google Maps чаще всего используется путь, где данные выводятся на экран смартфона пилота через Wi-Fi соединение или Bluetooth-модуль, подключенный к полетному контроллеру.</p>
+<p><strong>Ключевым элементом</strong> здесь является корректная настройка портов и протоколов обмена. Если приемник настроен на отправку телеметрии, но полетный контроллер ожидает данные на другом порту или с другой скоростью (Baud rate), интеграция с картой работать не будет. В системах на базе Betaflight или INAV это решается через вкладку <code>Ports</code> в конфигураторе.</p>
+
+<h3>Использование OSD и видеопотока</h3>
+<p>Один из методов интеграции — это вывод координат непосредственно на видеопоток, который затем захватывается мобильным устройством. При этом на экране очков или монитора поверх видео накладываются текстовые данные GPS. Специализированные приложения могут распознавать эти данные (через OCR или прямой захват телеметрии из цифрового потока DJI/Walksnail) и проецировать точку на карту.</p>
+<p>Для аналоговых систем этот метод менее эффективен из-за низкого качества изображения и помех, однако цифровые системы (DJI O3, Walksnail Avatar) позволяют передавать телеметрию с высокой точностью. В этом случае приложение-компаньон на смартфоне получает данные по USB или Wi-Fi и отображает их поверх карты Google Maps.</p>
+
+<h3>Прямое подключение GPS-модуля к приемнику</h3>
+<p>Некоторые продвинутые приемники, такие как <em>ELRS</em> или <em>Tracer</em>, имеют собственный порт для подключения GPS-модуля. Это позволяет передавать координаты даже в случае отказа полетного контроллера, если приемник продолжает работать. В настройках приемника необходимо активировать протокол телеметрии, например, <code>CRSF</code> или <code>SmartAudio</code>, чтобы данные поступали в систему.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Убедитесь, что версия прошивки приемника поддерживает одновременную передачу управляющих сигналов и телеметрии GPS, так как на старых версиях это может вызывать задержки (latency).</p></aside>
+<p>Настройка такого режима требует внимательного изучения документации к конкретному приемнику. Часто требуется перепрошивка приемника через специализированный программатор или веб-интерфейс, доступный по Wi-Fi.</p>
+
+<h2 id="настройка-программного-обеспечения-для-работы-с-картами">Настройка программного обеспечения для работы с картами</h2>
+<p>После аппаратной подготовки необходимо настроить программную часть. Существует несколько популярных решений для вывода телеметрии на карты, и выбор зависит от используемой экосистемы. Наиболее распространенным является связка полетного контроллера с Betaflight/INAV и мобильного приложения, такого как <em>Tactical Quad</em>, <em>FPV Viewer</em> или <em>QGroundControl</em>.</p>
+<p>Процесс настройки начинается с активации нужных функций в прошивке полетного контроллера. В Betaflight это делается через CLI или графический интерфейс. Необходимо включить поддержку GPS и настроить соответствующий порт. Для работы с внешними картами часто требуется протокол <code>MSP</code> или <code>MAVLink</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка портов в Betaflight</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите во вкладку Ports</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите порт, к которому подключен GPS/Receiver</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Включите переключатель MSP или GPS Protocol</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните и перезагрузите</span></div></div>
+
+<h3>Использование INAV для навигации</h3>
+<p>Прошивка <em>INAV</em> изначально заточена на навигацию и имеет встроенную поддержку карт. При использовании INAV настройка интеграции с Google Maps упрощается благодаря наличию готовых OSD-элементов и поддержке протокола LTM (Lightweight Telemetry). Это позволяет передавать данные на смартфон с минимальными задержками.</p>
+<p>Для начала работы необходимо откалибровать компас и GPS-модуль. Без точной калибровки компаса дрон может лететь не туда, куда указывает курсор на карте, что делает навигацию бесполезной. В конфигураторе INAV есть мастер настройки, который пошагово проведет через этот процесс.</p>
+<p>Важно правильно настроить параметры фильтрации GPS-сигнала. Если фильтр будет слишком агрессивным, точка на карте будет «плавать», если слишком слабым — реакция на перемещения будет запоздалой. Оптимальные значения зависят от скорости полета и типа используемого GPS-модуля.</p>
+
+<h3>Приложения для Android и iOS</h3>
+<p>Мобильные устройства играют роль дисплея для карт. Приложения вроде <em>FPV Viewer</em> для Android позволяют подключаться к дрону по Wi-Fi и отображать телеметрию поверх видеопотока. Для iOS спектр приложений может быть ограничен, но существуют кроссплатформенные решения.</p>
+<p>При выборе приложения стоит обращать внимание на возможность загрузки оффлайн-карт. В полевых условиях, где нет покрытия сотовой сети, онлайн-карты Google Maps могут не загрузиться, что сделает поиск дрона невозможным. Заранее скачанные карты местности — обязательное требование для серьезных вылетов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование мобильных карт в реальном времениляет значительный объем трафика и заряд батареи. Всегда имейте запасной powerbank и загруженные оффлайн-карты перед вылетом.</p></aside>
+
+<h2 id="аппаратная-совместимость-и-выбор-оборудования">Аппаратная совместимость и выбор оборудования</h2>
+<p>Не все приемники и полетные контроллеры одинаково хорошо справляются с задачей передачи телеметрии для карт. При сборке дрона, ориентированного на дальние полеты и навигацию, стоит уделять особое внимание выбору компонентов. Критически важным параметром является наличие свободного UART порта и поддержка соответствующих протоколов.</p>
+<p>Ниже приведена таблица сравнения популярных протоколов, используемых для передачи телеметрии в связке с картографическими сервисами.</p>
+
+<table>
+<thead>
+<tr>
+<th>Протокол</th>
+<th>Скорость передачи</th>
+<th>Совместимость с картами</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CRSF</code></td>
+<td>Высокая (до 400кбит)</td>
+<td>Отличная (ELRS, TBS)</td>
+</tr>
+<tr>
+<td><code>SBUS</code></td>
+<td>Средняя</td>
+<td>Только управление, нет телеметрии</td>
+</tr>
+<tr>
+<td><code>MAVLink</code></td>
+<td>Высокая</td>
+<td>Профессиональная (QGroundControl)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>GPS-модули: требования к точности</h3>
+<p>Для точного отображения на Google Maps необходим GPS-модуль с поддержкой множественных созвездий (GPS, GLONASS, Galileo, BeiDou). Модули на базе чипов <em>U-Blox M8N</em> или <em>M9N</em> показывают наилучшие результаты. Чип <em>M9N</em> предпочтительнее для скоростных дронов, так как он лучше справляется с высокими скоростями перемещения.</p>
+<p>Расположение антенны также играет роль. Она должна быть установлена горизонтально, максимально высоко на раме дрона, и экранирована от источников помех, таких как видеопередатчик и силовые провода. Использование экранированного кабеля и ферритовых колец может значительно улучшить качество сигнала.</p>
+<p>Если дрон планируется использовать в лесистой местности или каньонах, где сигнал GPS может пропадать, важна функция сохранения последнего известного местоположения (Last Known Position). Эта функция программно реализуется в полетном контроллере и позволяет запомнить координаты перед потерей сигнала.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор GPS модуля</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка 4-х систем навигации</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокая стоимость</li></ul></div>
+</div></div>
+
+<h2 id="практическая-реализация-пошаговая-инструкция">Практическая реализация: пошаговая инструкция</h2>
+<p>Рассмотрим процесс настройки системы на примере связки: полетный контроллер с Betaflight, приемник ELRS с телеметрией и GPS-модуль M9N. Цель — вывести координаты на смартфон для отображения в приложении с картами.</p>
+<p>Первым шагом является физическое подключение GPS-модуля к свободному UART порту полетного контроллера. Обычно используются провода <code>VCC</code>, <code>GND</code>, <code>TX</code> и <code>RX</code>. Важно не перепутать TX и RX: TX модуля подключается к RX контроллера и наоборот.</p>
+
+<ol>
+<li>Подключите GPS-модуль к полетному контроллеру согласно схеме распиновки.</li>
+<li>Запустите конфигуратор Betaflight и перейдите во вкладку <code>Ports</code>.</li>
+<li>Найдите порт, к которому подключен GPS, и включите переключатель <code>GPS</code>.</li>
+<li>Перейдите во вкладку <code>Configuration</code> и убедитесь, что выбран правильный протокол GPS (обычно <code>UBlox</code>) и скорость (для M9N часто <code>115200</code> или <code>38400</code>).</li>
+<li>Сохраните настройки и перезагрузите контроллер.</li>
+</ol>
+
+<p>После перезагрузки в верхней панели конфигуратора должны появиться спутники и координаты. Если данные есть, можно переходить к настройке вывода на внешнее устройство. Для этого часто используется Wi-Fi модуль, подключенный к другому порту, или Bluetooth-свисток.</p>
+<p>Если используется цифровой видеопередатчик (например, DJI O3), телеметрию можно пробросить через USB-порт на смартфон, используя кабель USB-C to USB-C. В этом случае приложение на телефоне будет получать данные напрямую от дрона.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте приложение"Betaflight Configurator" на смартфоне для быстрой проверки работы GPS и телеметрии без необходимости запускать полный конфигуратор на ПК.</p></aside>
+
+<h3>Настройка приложения для отображения</h3>
+<p>В выбранном приложении (например, <em>Tactical Quad</em>) необходимо выбрать источник данных. Если используется Wi-Fi, вводится IP-адрес и порт полетного контроллера. Если используется USB-кабель, приложение обычно автоматически определяет устройство.</p>
+<p>После подключения на экране должна появиться карта. При включении питания дрона и появлении сигнала GPS точка на карте должна обновляться в реальном времени. Для проверки функциональности «поиска» можно отключить питание дрона и посмотреть, сохранится ли последняя точка на экране смартфона.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для ELRS</th>
+<th>Значение для TBS Crossfire</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Протокол телеметрии</td>
+<td><code>CRSF</code></td>
+<td><code>CRSF</code></td>
+</tr>
+<tr>
+<td>Частота обновления</td>
+<td>50-150 Гц</td>
+<td>150-400 Гц</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</h2>
+<p>В процессе настройки интеграции RX Drone с Google Maps пользователи часто сталкиваются с рядом повторяющихся проблем. Понимание причин этих ошибок позволяет быстро устранить неисправности и наладить стабильную работу системы.</p>
+
+<ol>
+<li><strong>Отсутствие координат в OSD</strong> — чаще всего проблема кроется в неправильном выборе порта в Betaflight или неверной скорости baud rate. Проверьте, включен ли протокол GPS именно на том порту, куда физически впаян модуль, и соответствует ли скорость настройкам модуля (для M9N часто нужно менять через u-center).</li>
+<li><strong>Точка на карте «улетает» или дрожит</strong> — это признак плохого сигнала GPS или помех. Убедитесь, что GPS-антенна не экранирована карбоном рамы и находится подальше от антенны видеопередатчика. Также проверьте настройки фильтрации в INAV/Betaflight.</li>
+<li><strong>Приложение не видит дрон по Wi-Fi</strong> — возможно, конфликт IP-адресов или блокировка фаерволом. Убедитесь, что смартфон подключен именно к Wi-Fi сети дрона, а не к мобильному интернету, и в приложении выбран правильный протокол соединения (UDP/TCP).</li>
+<li><strong>Задержка отображения позиции</strong> — возникает при низкой скорости передачи телеметрии или перегрузке канала связи. Снижение частоты обновления телеметрии или переход на более быстрый протокол (например, с 50Гц на 150Гц) может решить проблему.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная интеграция зависит от трех факторов: правильный выбор GPS-модуля, корректная настройка портов в прошивке и использование совместимого приложения для карт.</p></aside>
+
+<p>В заключение стоит отметить, что система навигации дрона с выводом на Google Maps — это мощный инструмент, повышающий безопасность полетов. Однако она требует тщательной предварительной подготовки и тестирования на земле. Не стоит полагаться на телеметрию как на единственный способ поиска; визуальный контроль и знание местности остаются главными навыками пилота.</p>
+<p>Регулярное обновление прошивок приемников и полетных контроллеров обеспечивает совместимость с новыми версиями приложений и протоколов. Следите за релизами разработчиков используемого оборудования, чтобы иметь доступ к последним улучшениям в области телеметрии и навигации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/gd/gde-najti-obnovleniya-dlya-rzhd-ofitsialnyj-sajt.html" class="pb-related-card">
+                <span class="pb-related-title">Где найти обновления на сайте РЖД: техническая инструкция</span>
+                <span class="pb-related-desc">Полный разбор источников ПО для устройств РЖД. Где искать прошивки терминалов, обновления приложения</span>
+            </a><a href="/articles/t/to/toppal-al-pro-kod.html" class="pb-related-card">
+                <span class="pb-related-title">TopPal AL Pro: Коды разблокировки и сброс пароля</span>
+                <span class="pb-related-desc">Полная инструкция по TopPal AL Pro: коды для сброса пароля, разблокировка через ПК, устранение ошибо</span>
+            </a><a href="/articles/k/ka/kak-otkatit-do-zadannoj-versii-astra-linuks.html" class="pb-related-card">
+                <span class="pb-related-title">Как откатить версию Astra Linux: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по откату пакетов и ядра в ОС Astra Linux. Решение проблем после обновлений, в</span>
+            </a><a href="/articles/k/ka/kak-otkryt-pult-vink-chtoby-pomenyat-batarejku.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть пульт Wink: замена батарейки и диагностика</span>
+                <span class="pb-related-desc">Подробная инструкция по замене элементов питания в пультах Wink. Разбор корпусов, типы батареек, уст</span>
+            </a><a href="/articles/k/ki/kinopub-na-ipad-2025.html" class="pb-related-card">
+                <span class="pb-related-title">Kinopub на iPad 2026: полная инструкция по установке и настройке</span>
+                <span class="pb-related-desc">Актуальная инструкция по запуску Kinopub на iPad в 2026 году. Настройка tvOS-приложений, работа с AP</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-znachok-plyus-v-krugu.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить значок плюс в кругу: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению значка плюс в круге на Android и iOS. Решение проблем с обновлени</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

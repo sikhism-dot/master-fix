@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Whatshap 1.0: Инструкция по фазированию геномных данных — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по запуску whatshap версии 1.0. Установка, подготовка BAM/VCF файлов, запуск фазирования и типичные ошибки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wh/whatshap-1-versii.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Whatshap 1.0: Инструкция по фазированию геномных данных">
+    <meta property="og:description" content="Техническое руководство по запуску whatshap версии 1.0. Установка, подготовка BAM/VCF файлов, запуск фазирования и типичные ошибки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Whatshap 1.0: Инструкция по фазированию геномных данных</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-и-требования-к-окружению-whatshap-10">Архитектура и требования к окружению Whatshap 1.0</a></li><li><a href="#подготовка-входных-данных-bam-и-vcf-файлы">Подготовка входных данных: BAM и VCF файлы</a></li><li><a href="#запуск-фазирования-и-параметры-алгоритма">Запуск фазирования и параметры алгоритма</a></li><li><a href="#анализ-результатов-и-интерпретация-output">Анализ результатов и интерпретация output</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/m/mm/mmigroup-chto.html">MMI Group: что это, функции и настройка инженерного меню Android</a></li><li><a href="/articles/g/go/golosovye-komandy-s-yumorom-dlya-otklyucheniya-zaryadki.html">Голосовые команды для отключения зарядки: мифы и юмор</a></li><li><a href="/articles/z/za/zamknut-rele-pal-gate.html">Как замкнуть реле PAL Gate: полная техническая инструкция</a></li><li><a href="/articles/k/ki/kivi-32fk32g-pdu-aktivatsiya.html">Активация ПДУ Kivi 32FK32G: подробная инструкция</a></li><li><a href="/articles/w/wa/wapi-na-ajfone-chto-eto.html">WAPI на iPhone: что это за протокол и как его включить</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Руководство по использованию Whatshap версии 1.0 для фазирования гаплотипов</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-и-требования-к-окружению-whatshap-10">Архитектура и требования к окружению Whatshap 1.0</a></li><li><a href="#подготовка-входных-данных-bam-и-vcf-файлы">Подготовка входных данных: BAM и VCF файлы</a></li><li><a href="#запуск-фазирования-и-параметры-алгоритма">Запуск фазирования и параметры алгоритма</a></li><li><a href="#анализ-результатов-и-интерпретация-output">Анализ результатов и интерпретация output</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Работа с геномными данными часто упирается в необходимость разделения смешанных аллельных сигналов на отдельные родительские хромосомы, особенно при анализе данных секвенирования третьего поколения.</p>
+<p>Исследователи, сталкивающиеся с короткими ридами Illumina или длинными прочтениями PacBio и Oxford Nanopore, обнаруживают, что стандартные пайплайны variant calling дают лишь список SNP без привязки к гаплотипам, что критично для изучения сложных геномных регионов.</p>
+<p>Ситуация усугубляется, когда требуется интегрировать результаты в существующие биоинформатические цепочки, где несовместимость форматов файлов или версий зависимостей приводит к остановке анализа на этапе подготовки данных.</p>
+
+<h2 id="архитектура-и-требования-к-окружению-whatshap-10">Архитектура и требования к окружению Whatshap 1.0</h2>
+
+<p>Инструмент <em>whatshap</em> версии 1.0 представляет собой консольную утилиту, написанную на Python и C++, предназначенную для фазирования генетических вариантов с использованием данных выравнивания.</p>
+<p>Ключевой особенностью данной версии является поддержка алгоритмов, оптимизированных как для коротких, так и для длинных чтений, что требует специфической конфигурации вычислительного окружения для достижения максимальной производительности.</p>
+<p>Для корректной работы программного обеспечения необходимо убедиться, что на сервере или рабочей станции установлены все системные библиотеки, включая <code>libhts</code> для работы с форматами сжатых геномных файлов.</p>
+
+<h3>Установка через менеджеры пакетов и исходный код</h3>
+
+<p>Наиболее надежным способом установки является использование менеджера пакетов <em>Conda</em>, который автоматически разрешает зависимости и создает изолированное окружение для работы с геномными данными.</p>
+<p>Альтернативный метод предполагает компиляцию из исходных кодов репозитория, что может потребоваться при работе на специализированных кластерах с нестандартной архитектурой процессора или ограниченным доступом к внешним репозиториям.</p>
+<p>Важно учитывать, что версия 1.0 требует Python версии не ниже 3.6, так как более старые интерпретаторы не поддерживают синтаксические конструкции, используемые в скриптах обработки аргументов командной строки.</p>
+
+<ol>
+<li>Создайте новое окружение командой <code>conda create -n whatshap_env python=3.8</code> и активируйте его.</li>
+<li>Установите пакет из канала bioconda, выполнив команду <code>conda install -c bioconda whatshap=1.0</code>.</li>
+<li>Проверьте корректность установки, запустив команду <code>whatshap --version</code> в терминале.</li>
+<li>При необходимости обновите зависимости <code>pysam</code> и <code>cython</code> до актуальных стабильных версий.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Если вы используете операционную систему macOS, убедитесь, что установлен Xcode Command Line Tools, так как компиляция некоторых модулей может требовать наличия нативных компиляторов C.</p></aside>
+
+<p>Таблица ниже демонстрирует сравнение методов установки по критериям сложности и скорости развертывания в производственной среде.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод установки</th>
+<th>Сложность</th>
+<th>Рекомендуемый сценарий</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conda / Bioconda</td>
+<td>Низкая</td>
+<td>Стандартные рабочие станции и серверы Linux</td>
+</tr>
+<tr>
+<td>Исходный код (GitHub)</td>
+<td>Высокая</td>
+<td>Кастомные сборки и отладка кода</td>
+</tr>
+<tr>
+<td>Docker контейнер</td>
+<td>Средняя</td>
+<td>Воспроизводимые пайплайны и CI/CD системы</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="подготовка-входных-данных-bam-и-vcf-файлы">Подготовка входных данных: BAM и VCF файлы</h2>
+
+<p>Качество фазирования напрямую зависит от правильности подготовки входных файлов, основными из которых являются отсортированный BAM-файл с выравниваниями и файл вариантов в формате VCF или BCF.</p>
+<p>Программа <em>whatshap</em> требует, чтобы BAM-файл был отсортирован по координатам и проиндексирован, иначе процесс чтения данных завершится ошибкой на этапе инициализации.</p>
+<p>Файл вариантов должен содержать только те SNP и инделы, которые подлежат фазированию; inclusion лишних вариантов может существенно замедлить работу алгоритма без улучшения результата.</p>
+
+<h3>Требования к индексации и сортировке</h3>
+
+<p>Перед запуском основного процесса необходимо убедиться, что для BAM-файла создан индекс с расширением <code>.bai</code>, который позволяет алгоритму быстро обращаться к конкретным регионам генома.</p>
+<p>Если входной VCF файл содержит множественные аллели в одной позиции, рекомендуется провести нормализацию данных, чтобы привести сложные варианты к каноническому представлению.</p>
+<p>Для длинных чтений критически важно, чтобы в BAM-файле присутствовали теги, указывающие на качество выравнивания, так как алгоритм использует эту информацию для взвешивания доказательств.</p>
+
+<pre><code>samtools sort -o sorted.bam input.bam
+<p>samtools index sorted.bam</p>
+<p>bcftools norm -m -any -f reference.fasta input.vcf > normalized.vcf</code></pre></p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование неиндексированных BAM-файлов приведет к значительному увеличению времени выполнения или аварийному завершению программы с кодом ошибки 1.</p></aside>
+
+<p>В процессе подготовки данных следует обратить внимание на наличие дубликатов PCR, которые могут исказить статистическую оценку фазы, если они не были помечены или удалены на предыдущих этапах.</p>
+<p>Рекомендуется использовать инструменты вроде <code>samtools markdup</code> или <code>picard MarkDuplicates</code> для обработки артефактов амплификации перед передачей данных в <em>whatshap</em>.</p>
+
+<ul>
+<li>Проверьте соответствие имен хромосом в BAM и VCF файлах (например, префикс <code>chr</code>).</li>
+<li>Убедитесь, что кодировка файлов UTF-8 и отсутствуют скрытые символы в заголовках.</li>
+<li>Отфильтруйте варианты с низким качеством (QUAL < 20) для повышения точности.</li>
+<li>Проверьте, что покрытие генома равномерно и нет регионов с экстремально высоким глубиной.</li>
+</ul>
+
+<h2 id="запуск-фазирования-и-параметры-алгоритма">Запуск фазирования и параметры алгоритма</h2>
+
+<p>Основной командой для запуска процесса является <code>whatshap phase</code>, которая принимает на вход BAM и VCF файлы и генерирует фазированный VCF на выходе.</p>
+<p>Алгоритм использует динамическое программирование для минимизации количества переключений между гаплотипами, учитывая веса прочтений, перекрывающих гетерозиготные позиции.</p>
+<p>Пользователь может гибко настраивать параметры, такие как максимальное расстояние между вариантами или минимальное количество прочтений, поддерживающих фазу.</p>
+
+<h3>Настройка параметров для разных типов данных</h3>
+
+<p>Для данных Illumina с короткими ридами стандартные параметры обычно работают хорошо, однако для длинных чтений PacBio HiFi или Nanopore требуется корректировка порога ошибки.</p>
+<p>Параметр <code>--ignore-read-groups</code> позволяет игнорировать информацию о группах чтения, что может быть полезно при работе с данными, полученными из смешанных источников.</p>
+<p>Использование флага <code>--output</code> обязательно для сохранения результатов, иначе программа попытается вывести огромный объем данных в стандартный поток вывода, что может переполнить буфер терминала.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовый запуск фазирования</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подготовьте reference.fasta, sorted.bam и variants.vcf</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите whatshap phase --output phased.vcf sorted.bam variants.vcf</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте лог файл на наличие предупреждений</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проанализируйте выходной VCF файл</span></div></div>
+
+<p>В таблице приведены основные флаги командной строки, влияющие на поведение алгоритма в версии 1.0.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Значение по умолчанию</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>--reference</td>
+<td>Путь к файлу референсного генома</td>
+<td>Не требуется (опционально)</td>
+</tr>
+<tr>
+<td>--ped</td>
+<td>Файл родословной для семейного фазирования</td>
+<td>Отсутствует</td>
+</tr>
+<tr>
+<td>--chromosome</td>
+<td>Имя хромосомы для обработки</td>
+<td>Все хромосомы</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Семейное фазирование и использование PED файлов</h3>
+<p>Если доступны данные секвенирования родителей или других родственников, <em>whatshap</em> позволяет использовать эту информацию для повышения точности через механизм передачи аллелей.</p>
+<p>Для этого необходимо подготовить файл в формате PED, описывающий структуру семьи, и передать его через аргумент <code>--ped</code>.</p>
+<p>Такой подход позволяет разрешать фазу в регионах с низким покрытием, опираясь на наследование, что невозможно при использовании только данных одного индивидуума.</p>
+
+<pre><code>whatshap phase --ped family.ped --output family_phased.vcf sorted.bam input.vcf</code></pre>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для больших когорт рассмотрите возможность распараллеливания процесса по хромосомам, запуская отдельные задачи для каждой хромосомы независимо.</p></aside>
+
+<h2 id="анализ-результатов-и-интерпретация-output">Анализ результатов и интерпретация output</h2>
+
+<p>Результатом работы программы является VCF файл, в котором в поле <code>GT</code> (Genotype) появляется разделитель <code>|</code> вместо <code>/</code>, указывающий на определенную фазу аллелей.</p>
+<p>Кроме того, добавляются новые поля в заголовок и строки данных, такие как <code>PS</code> (Phase Set), которые группируют варианты, принадлежащие к одному блоку фазирования.</p>
+<p>Важно понимать, что не все варианты могут быть фазированы; для некоторых позиций останется символ <code>.</code> или разделитель <code>/</code>, если доказательств недостаточно.</p>
+
+<h3>Статистика и метрики качества</h3>
+<p>Программа генерирует подробную статистику, включая количество фазированных блоков, среднюю длину блока и Switch Error Rate, если известен эталонный набор данных.</p>
+<p>Анализ распределения длин блоков фазирования позволяет оценить качество входных данных: длинные блоки характерны для данных с длинными ридами или трио-анализа.</p>
+<p>Для визуализации результатов можно использовать инструменты вроде <em>IGV</em> или специализированные библиотеки Python для работы с геномными данными.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оценка результатов фазирования</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая точность на длинных ридах</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность работы с трио-данными</li></ul></div>
+</div></div>
+
+<p>При интерпретации результатов следует учитывать, что блоки фазирования могут разрываться в регионах повторов или низкого качества секвенирования.</p>
+<p>Статистическая достоверность фазы снижается при уменьшении глубины покрытия, поэтому для критически важных приложений рекомендуется пороговое значение покрытия не менее 20x.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе эксплуатации <em>whatshap</em> версии 1.0 пользователи часто сталкиваются с рядом типовых проблем, связанных с форматом данных или нехваткой ресурсов.</p>
+<p>Понимание причин этих ошибок позволяет быстро диагностировать проблему и продолжить работу без потери данных или необходимости перезапуска всего пайплайна.</p>
+<p>Ниже приведен список наиболее распространенных сценариев сбоев и способы их корректного разрешения.</p>
+
+<ol>
+<li><strong>Ошибка "IndexError: list index out of range"</strong> — возникает при несоответствии имен хромосом в BAM и VCF файлах; проверьте префиксы (chr1 против 1) и унифицируйте их.</li>
+<li><strong>Ошибка "ValueError: invalid literal for int()"</strong> — указывает на повреждение VCF файла или наличие некорректных символов в поле качества; проведите валидацию файла через <code>vcf-validator</code>.</li>
+<li><strong>Прерывание работы из-за нехватки памяти (OOM)</strong> — характерно для фазирования целых хромосом с высоким покрытием; используйте параметр <code>--chromosome</code> для разбивки задачи.</li>
+<li><strong>Отсутствие фазирования (все генотипы 0/1)</strong> — означает, что алгоритм не нашел перекрывающихся ридов; проверьте, что BAM файл отсортирован и содержит данные для указанных в VCF позиций.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При возникновении ошибок, не описанных в документации, попробуйте запустить программу с флагом --debug для получения расширенного лога выполнения.</p></aside>
+
+<p>Систематический подход к проверке входных данных перед запуском позволяет избежать большинства ошибок, связанных с форматированием.</p>
+<p>Регулярное обновление зависимостей и использование стабильных версий библиотек <code>htslib</code> также снижает риск возникновения конфликтов на уровне системных вызовов.</p>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Использование <em>whatshap</em> версии 1.0 предоставляет исследователям мощный инструмент для точного фазирования гаплотипов на основе данных секвенирования нового поколения.</p>
+<p>Грамотная подготовка входных файлов и понимание принципов работы алгоритма позволяют получать надежные результаты даже в сложных геномных регионах.</p>
+<p>Внедрение этого инструмента в биоинформатические пайплайны значительно улучшает качество последующего анализа, включая поиск составных гетерозигот и реконструкцию гаплотипов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Whatshap 1.0 является стандартом де-факто для фазирования, обеспечивая баланс между точностью и вычислительной эффективностью при правильной настройке окружения.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/m/mm/mmigroup-chto.html" class="pb-related-card">
+                <span class="pb-related-title">MMI Group: что это, функции и настройка инженерного меню Android</span>
+                <span class="pb-related-desc">Подробный разбор MMI Group и кодов. Настройка инженерного меню, сброс, диагностика и устранение ошиб</span>
+            </a><a href="/articles/g/go/golosovye-komandy-s-yumorom-dlya-otklyucheniya-zaryadki.html" class="pb-related-card">
+                <span class="pb-related-title">Голосовые команды для отключения зарядки: мифы и юмор</span>
+                <span class="pb-related-desc">Технический разбор функций голосового управления питанием. Почему фразы с юмором не работают и как р</span>
+            </a><a href="/articles/z/za/zamknut-rele-pal-gate.html" class="pb-related-card">
+                <span class="pb-related-title">Как замкнуть реле PAL Gate: полная техническая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по подключению и эмуляции реле для шлагбаумов PAL Gate. Схемы, параметры, мето</span>
+            </a><a href="/articles/k/ki/kivi-32fk32g-pdu-aktivatsiya.html" class="pb-related-card">
+                <span class="pb-related-title">Активация ПДУ Kivi 32FK32G: подробная инструкция</span>
+                <span class="pb-related-desc">Руководство по настройке пульта Kivi 32FK32G. Инфракрасный режим, активация Bluetooth, устранение не</span>
+            </a><a href="/articles/w/wa/wapi-na-ajfone-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">WAPI на iPhone: что это за протокол и как его включить</span>
+                <span class="pb-related-desc">Подробный разбор технологии WAPI на iPhone. Инструкция по подключению, сравнение с WPA2, настройка п</span>
+            </a><a href="/articles/k/ka/kak-k-saundbaru-podklyuchit-mikrofon.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить микрофон к саундбару: техническая инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по подключению микрофона к саундбару. Анализ совместимости портов, настройка к</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

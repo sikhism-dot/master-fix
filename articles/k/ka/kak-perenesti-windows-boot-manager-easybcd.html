@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как перенести Windows Boot Manager с помощью EasyBCD: инструкция — Мастер Фикс</title>
+    <meta name="description" content="Пошаговое руководство по переносу загрузчика Windows Boot Manager через EasyBCD. Настройка BCD, работа с разделами и устранение ошибок загрузки ОС.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-perenesti-windows-boot-manager-easybcd.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как перенести Windows Boot Manager с помощью EasyBCD: инструкция">
+    <meta property="og:description" content="Пошаговое руководство по переносу загрузчика Windows Boot Manager через EasyBCD. Настройка BCD, работа с разделами и устранение ошибок загрузки ОС.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как перенести Windows Boot Manager с помощью EasyBCD: инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-к-миграции-загрузчика-и-анализ-текущей-структуры">Подготовка к миграции загрузчика и анализ текущей структуры</a></li><li><a href="#процесс-клонирования-и-переноса-bcd-хранилища">Процесс клонирования и переноса BCD хранилища</a></li><li><a href="#настройка-приоритетов-и-параметров-запуска">Настройка приоритетов и параметров запуска</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vojti-v-bios-nougbuk-dns.html">Как войти в BIOS ноутбука DNS: все способы и коды</a></li><li><a href="/articles/p/pa/pantum-ocr-for-windows-software.html">Pantum OCR для Windows: настройка и выбор ПО</a></li><li><a href="/articles/h/hp/hp-tpn-c126-drivers.html">HP TPN-C126: Установка драйверов и решение проблем</a></li><li><a href="/articles/d/dr/drajvera-dlya-noutbuka-hp-tpn-126.html">Драйверы для ноутбука HP TPN-126: поиск и установка</a></li><li><a href="/articles/k/ka/kak-prochitat-zametki-na-noutbuke-khuavej.html">Как читать заметки на ноутбуке Huawei: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как перенести Windows Boot Manager с помощью EasyBCD</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-к-миграции-загрузчика-и-анализ-текущей-структуры">Подготовка к миграции загрузчика и анализ текущей структуры</a></li><li><a href="#процесс-клонирования-и-переноса-bcd-хранилища">Процесс клонирования и переноса BCD хранилища</a></li><li><a href="#настройка-приоритетов-и-параметров-запуска">Настройка приоритетов и параметров запуска</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#заключительное-резюме">Заключительное резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда после установки второй операционной системы, замены жесткого диска или клонирования раздела основной загрузчик перестает отвечать, знакома многим администраторам и продвинутым пользователям.</p>
+<p>Компьютер при включении выдает черный экран с сообщением об отсутствии загрузочного устройства или сразу запускает не ту систему, которая должна быть приоритетной по умолчанию.</p>
+<p>В таких случаях стандартные средства восстановления Windows могут оказаться недостаточно гибкими или требовать наличия установочного диска, который не всегда под рукой.</p>
+<p>Использование специализированного программного обеспечения, такого как <em>EasyBCD</em>, позволяет вручную редактировать конфигурацию хранилища данных загрузки (BCD) и переносить управление стартом ОС на нужный раздел.</p>
+<p>Данная инструкция описывает процесс переноса управления загрузкой на целевой диск с сохранением работоспособности всех установленных систем.</p>
+
+<h2 id="подготовка-к-миграции-загрузчика-и-анализ-текущей-структуры">Подготовка к миграции загрузчика и анализ текущей структуры</h2>
+<p>Перед началом любых манипуляций с загрузочными записями критически важно оценить текущее состояние дисковой системы и понять, где физически расположены файлы запуска.</p>
+<p>Запустите <em>EasyBCD</em> от имени администратора, так как программа требует повышенных привилегий для работы с системными секторами.</p>
+<p>В главном окне перейдите в раздел <code>Текущая конфигурация</code> (Current Configuration), чтобы увидеть список доступных загрузочных записей.</p>
+<p>Обратите внимание на столбец «Диск» и «Раздел»: именно здесь видно, с какого физического носителя в данный момент считывается информация для старта.</p>
+<p>Если целевой диск, на который планируется перенос, отсутствует в списке или помечен как «Неизвестно», необходимо сначала убедиться, что он отформатирован в файловой системе NTFS и имеет присвоенную букву.</p>
+
+<h3>Идентификация системного и зарезервированного разделов</h3>
+<p>Часто пользователи путают раздел с установленной Windows и скрытый системный раздел, где фактически лежит <strong>Windows Boot Manager</strong>.</p>
+<p>В утилитах управления дисками этот раздел обычно имеет размер от 100 МБ до 500 МБ и помечен как «Зарезервировано системой».</p>
+<p>Для корректного переноса нужно знать букву этого раздела; если она не назначена, используйте стандартную оснастку <code>diskmgmt.msc</code> для её присвоения.</p>
+<p>Без правильной идентификации источника и приемника конфигурации высок риск создать неработоспособную загрузочную запись, которая приведет к циклической перезагрузке.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Любые изменения в таблице разделов или загрузочной записи несут риск потери доступа к данным. Рекомендуется создать полную резервную копию важных файлов перед началом работ.</p></aside>
+
+<p>Проверка целостности файловой системы на обоих дисках также является обязательным этапом, так как ошибки сектора могут прервать процесс записи новых параметров.</p>
+
+<h2 id="процесс-клонирования-и-переноса-bcd-хранилища">Процесс клонирования и переноса BCD хранилища</h2>
+<p>Основной механизм переноса реализуется через функцию сохранения и восстановления конфигурации загрузчика, что позволяет скопировать все необходимые параметры на новый носитель.</p>
+<p>В интерфейсе программы выберите вкладку <code>BCD Деployment</code> (Развертывание BCD) или используйте функцию экспорта/импорта в зависимости от версии <em>EasyBCD</em>.</p>
+<p>Наиболее надежным методом является создание полной резервной копии текущих настроек, которая затем развертывается на целевом диске.</p>
+<p>Нажмите кнопку <code>Сохранить настройки</code> и укажите путь к внешнему носителю или другому разделу, который не будет затронут процессом форматирования.</p>
+<p>После создания бэкапа необходимо переключить контекст работы программы на целевой диск, выбрав его букву в соответствующем выпадающем меню.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм переноса конфигурации</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите EasyBCD и перейдите в BCD Deployment</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите опцию «Select BCD Location» и укажите целевой диск</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите «Install BCD» для создания базовой структуры</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Импортируйте ранее сохраненные настройки через меню File -> Save/Load Settings</span></div></div>
+
+<p>Процесс записи может занять несколько секунд, в течение которых не рекомендуется прерывать работу программы или извлекать носители.</p>
+<p>После успешного завершения операции в логе программы появится сообщение об отсутствии ошибок, что свидетельствует о корректной структуре файлов.</p>
+<p>Важно понимать, что сам по себе перенос файлов BCD не делает диск загрузочным без соответствующей записи в MBR или EFI-разделе.</p>
+
+<h3>Работа с загрузочным сектором MBR и GPT</h3>
+<p>Тип таблицы разделов определяет метод активации загрузчика: для <strong>MBR</strong> (Legacy BIOS) требуется запись кода в первый сектор диска.</p>
+<p>В меню <code>BCD Deployment</code> выберите целевой диск из списка и нажмите кнопку <code>Install BCD</code> для MBR-дисков.</p>
+<p>Если используется современный стандарт <strong>GPT</strong> и режим UEFI, процедура отличается: здесь загрузчик размещается в скрытом FAT32 разделе EFI.</p>
+<p>Для UEFI систем убедитесь, что выбран правильный EFI-раздел, иначе компьютер проигнорирует новые настройки при старте.</p>
+<p>Визуальный индикатор в программе покажет статус раздела: «Bootable» означает, что диск готов к запуску операционной системы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим Legacy (MBR)</th>
+<th>Режим UEFI (GPT)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Расположение кода</td>
+<td>Первый сектор диска (MBR)</td>
+<td>Раздел EFI System Partition</td>
+</tr>
+<tr>
+<td>Требования к разделу</td>
+<td>Активный первичный раздел</td>
+<td>Файловая система FAT32</td>
+</tr>
+</tbody>
+</table>
+
+<p>При работе с гибридными системами, где присутствуют оба типа дисков, необходимо проявлять особую осторожность при выборе целевого устройства.</p>
+
+<h2 id="настройка-приоритетов-и-параметров-запуска">Настройка приоритетов и параметров запуска</h2>
+<p>После физического переноса файлов загрузчика необходимо настроить логическую очередь загрузки, чтобы компьютер знал, какую систему запускать первой.</p>
+<p>Перейдите в раздел <code>Изменить параметры</code> (Edit Boot Menu) для управления списком доступных ОС.</p>
+<p>Здесь отображаются все найденные записи; выделите нужную операционную систему и используйте кнопки вверх/вниз для изменения порядка.</p>
+<p>Установите флажок <code>Загружать ОС по умолчанию</code> напротив той системы, которая должна стартовать автоматически.</p>
+<p>Параметр <code>Время ожидания</code> (Timeout) регулирует длительность показа меню выбора; оптимальным значением считается 5-10 секунд.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Если в списке отсутствует нужная операционная система, используйте кнопку «Добавить новую запись» и укажите тип ОС и букву раздела вручную.</p></aside>
+
+<p>Для продвинутых пользователей доступна настройка параметров ядра и драйверов через дополнительные меню программы.</p>
+<p>Изменение порядка загрузки особенно актуально, если после переноса компьютер начинает загружать старую систему вместо новой.</p>
+<p>Сохранение изменений происходит автоматически при нажатии кнопки «Сохранить», но лучше перепроверить список перед выходом.</p>
+
+<h3>Управление мультизагрузкой и цепочечным запуском</h3>
+<p>В сложных сценариях, когда на компьютере установлено несколько версий Windows или Linux, используется цепочечный загрузчик.</p>
+<p><em>EasyBCD</em> позволяет добавлять записи для загрузки других менеджеров, таких как GRUB или LILO.</p>
+<p>При добавлении Linux-системы выберите соответствующий тип в меню добавления и укажите диск, где установлен загрузчик Unix-системы.</p>
+<p>Это позволяет использовать Windows Boot Manager как единый входной шлюз для всех установленных операционных сред.</p>
+<p>Правильная настройка цепочки загрузки гарантирует, что удаление одного из дисков не нарушит доступ к остальным.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование EasyBCD для мультизагрузки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гибкое управление таймерами и меню</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность настройки для новичков</li><li>❌ Поддержка всех версий Windows</li></ul></div>
+</div></div>
+
+<p>Тестирование конфигурации лучше проводить путем перезагрузки, убеждаясь в корректности работы каждого пункта меню.</p>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+<p>Даже при точном следовании инструкции могут возникнуть ситуации, когда система не загружается или ведет себя нестабильно.</p>
+<p>Одной из частых проблем является ошибка <code>0xc000000e</code>, которая указывает на то, что загрузчик не может найти файл конфигурации BCD.</p>
+<p>Это часто случается, если при переносе изменилась буква диска или была повреждена файловая структура целевого раздела.</p>
+<p>Для исправления ситуации может потребоваться повторное выполнение процедуры с проверкой целостности диска утилитами <code>chkdsk</code>.</p>
+<p>Также стоит проверить настройки BIOS/UEFI, убедившись, что целевой диск стоит первым в очереди приоритета загрузки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте портативную версию EasyBCD с загрузочной флешки, если основная система не запускается, чтобы восстановить доступ к настройкам.</p></aside>
+
+<p>В некоторых случаях антивирусное ПО может блокировать запись в загрузочный сектор, считая это подозрительной активностью.</p>
+
+<h3>Типичные ошибки</h3>
+<ol>
+<li><strong>Выбор неверного диска для записи MBR</strong> — приводит к тому, что старый диск перестает быть загрузочным, а новый не запускается; всегда перепроверяйте размер и метку диска перед записью.</li>
+<li><strong>Отсутствие активного флага на разделе</strong> — в режиме Legacy раздел с загрузчиком должен быть помечен как активный, иначе BIOS пропустит его при сканировании.</li>
+<li><strong>Несоответствие режима BIOS и таблицы разделов</strong> — попытка загрузить GPT-диск в режиме Legacy (или наоборот) без соответствующей поддержки CSM/UEFI приведет к ошибке.</li>
+<li><strong>Игнорирование буквы раздела EFI</strong> — при работе с UEFI важно назначить букву скрытому разделу EFI, чтобы программа могла записать туда файлы, иначе загрузка невозможна.</li>
+</ol>
+
+<p>Анализ логов программы, которые сохраняются в папке установки, часто помогает выявить причину сбоя на раннем этапе.</p>
+<p>Если ничего не помогает, восстановление из созданной ранее резервной копии BCD является самым быстрым способом вернуть систему в рабочее состояние.</p>
+
+<table>
+<thead>
+<tr>
+<th>Код ошибки</th>
+<th>Вероятная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0xc0000001</td>
+<td>Повреждение файлов BCD</td>
+<td>Восстановление из бэкапа или пересоздание</td>
+</tr>
+<tr>
+<td>0xc000000f</td>
+<td>Файл не найден или поврежден</td>
+<td>Проверка путей и целостности диска</td>
+</tr>
+</tbody>
+</table>
+
+<p>Понимание природы ошибки позволяет избежать паники и применить точечное исправление вместо полной переустановки системы.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешный перенос Windows Boot Manager требует точного выбора целевого диска, соответствия типа таблицы разделов режиму BIOS и обязательного создания резервной копии перед внесением изменений.</p></aside>
+
+<h2 id="заключительное-резюме">Заключительное резюме</h2>
+<p>Перенос Windows Boot Manager с использованием <em>EasyBCD</em> представляет собой эффективный метод восстановления работоспособности системы или миграции на новый накопитель.</p>
+<p>Главным условием успеха является внимательность при выборе дисков и понимание различий между режимами Legacy и UEFI.</p>
+<p>Регулярное создание резервных копий конфигурации загрузчика позволяет минимизировать риски и быстро восстановить доступ к данным в случае сбоя.</p>
+<p>Владение этими навыками дает пользователю полный контроль над процессом загрузки и позволяет гибко управлять мультизагрузочными конфигурациями любой сложности.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vojti-v-bios-nougbuk-dns.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в BIOS ноутбука DNS: все способы и коды</span>
+                <span class="pb-related-desc">Полная инструкция по входу в BIOS ноутбуков DNS. Горячие клавиши, сброс пароля, настройки UEFI и реш</span>
+            </a><a href="/articles/p/pa/pantum-ocr-for-windows-software.html" class="pb-related-card">
+                <span class="pb-related-title">Pantum OCR для Windows: настройка и выбор ПО</span>
+                <span class="pb-related-desc">Как настроить OCR для принтеров Pantum на Windows. Обзор программ для распознавания текста, драйверо</span>
+            </a><a href="/articles/h/hp/hp-tpn-c126-drivers.html" class="pb-related-card">
+                <span class="pb-related-title">HP TPN-C126: Установка драйверов и решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску, установке и обновлению драйверов для ноутбуков серии HP TPN-C126. Ре</span>
+            </a><a href="/articles/d/dr/drajvera-dlya-noutbuka-hp-tpn-126.html" class="pb-related-card">
+                <span class="pb-related-title">Драйверы для ноутбука HP TPN-126: поиск и установка</span>
+                <span class="pb-related-desc">Полное руководство по установке драйверов HP TPN-126. Поиск ПО по ID оборудования, ручная установка,</span>
+            </a><a href="/articles/k/ka/kak-prochitat-zametki-na-noutbuke-khuavej.html" class="pb-related-card">
+                <span class="pb-related-title">Как читать заметки на ноутбуке Huawei: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по доступу к заметкам на ноутбуках Huawei через Huawei Cloud и Notepad. Синхронизация </span>
+            </a><a href="/articles/k/ka/kak-vyglyadit-razem-dlya-podklyucheniya-akkumulyatora-n-noutbuke-asus-kh550e.html" class="pb-related-card">
+                <span class="pb-related-title">Разъем аккумулятора ASUS X550E: схема, типы и замена</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску и замене разъема питания батареи для ноутбука ASUS X550E. Схемы конне</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Автозагрузка в Linux Mint: полная инструкция по управлению — Мастер Фикс</title>
+    <meta name="description" content="Как настроить автозагрузку программ в Linux Mint? Подробный гид по Session and Startup, systemd и скрытым службам для оптимизации системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/av/avtozagruzka-v-mint.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Автозагрузка в Linux Mint: полная инструкция по управлению">
+    <meta property="og:description" content="Как настроить автозагрузку программ в Linux Mint? Подробный гид по Session and Startup, systemd и скрытым службам для оптимизации системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Автозагрузка в Linux Mint: полная инструкция по управлению</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#стандартные-средства-управления-автозагрузкой">Стандартные средства управления автозагрузкой</a></li><li><a href="#глубокая-настройка-через-файлы-конфигурации">Глубокая настройка через файлы конфигурации</a></li><li><a href="#использование-systemd-для-управления-сервисами">Использование Systemd для управления сервисами</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vr/vr-ochki-virtualnoj-realnosti-aldm-electronic-vr-shinecon-sc-g07e.html">Настройка VR-очков ALDM Electronic Shinecon SC-G07E: инструкция</a></li><li><a href="/articles/p/pr/premer-kak-udalit-istoriyu-prosmotrov.html">Как удалить историю просмотров на Премьер ТВ: полная инструкция</a></li><li><a href="/articles/k/ka/kak-onlajn-posmotret-na-sebya-lysym.html">Как посмотреть себя лысым онлайн: лучшие приложения и сайты</a></li><li><a href="/articles/k/ka/kak-proverit-usilitel-antenny-na-5-volt-multimetrom.html">Как проверить усилитель антенны на 5 Вольт мультиметром: пошаговая инструкция</a></li><li><a href="/articles/b/bq/bq-2822-dragon-blue-zvuk-ne-rabotaet.html">BQ 2822 Dragon Blue: ремонт звука и динамиков</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Управление автозагрузкой в Linux Mint: от базовых настроек до systemd</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#стандартные-средства-управления-автозагрузкой">Стандартные средства управления автозагрузкой</a></li><li><a href="#глубокая-настройка-через-файлы-конфигурации">Глубокая настройка через файлы конфигурации</a></li><li><a href="#использование-systemd-для-управления-сервисами">Использование Systemd для управления сервисами</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда операционная система загружается значительно дольше привычного времени, а фоновые процессы начинают потреблять ресурсы сразу после входа в рабочий стол, знакома многим пользователям. Часто причиной становится избыточное количество приложений, прописанных в автозагрузку без ведома владельца системы. Вместо того чтобы наслаждаться отзывчивостью <em>Linux Mint</em>, пользователь вынужден наблюдать за индикаторами диска и ждать завершения инициализации десятков служб.</p>
+<p>Проблема актуальна как для старых компьютеров, где каждый мегабайт оперативной памяти на счету, так и для мощных рабочих станций, где важна чистота запускаемого окружения. Неконтролируемая автозагрузка может привести к конфликтам портов, ошибкам в работе сетевых интерфейсов и нестабильности графической оболочки. Понимание механизмов инициализации позволяет не только ускорить старт, но и повысить общую безопасность системы.</p>
+<p>В операционной системе <em>Linux Mint</em>, базирующейся на Debian/Ubuntu, управление процессами запуска реализовано через несколько уровней. Существуют пользовательские настройки, системные службы и низкоуровневые демоны, каждый из которых имеет свои приоритеты и методы конфигурации. Грамотное сочетание инструментов позволяет добиться идеального баланса между функциональностью и производительностью.</p>
+
+<h2 id="стандартные-средства-управления-автозагрузкой">Стандартные средства управления автозагрузкой</h2>
+<p>Основным инструментом для большинства пользователей является графический интерфейс, встроенный в настройки системы. Он позволяет управлять приложениями, которые должны запускаться автоматически при входе пользователя в графическую сессию. Для доступа к этому инструменту необходимо открыть главное меню и перейти в раздел <code>Параметры</code>, где выбирается пункт <code>Сеансы и запуск</code> (или <code>Startup Applications</code> в английской локализации). В открывшемся окне отображается список всех активных элементов, настроенных для текущего пользователя.</p>
+<p>Каждая запись в списке содержит имя приложения, комментарий и команду запуска. Пользователь может временно отключить элемент, сняв галочку, или полностью удалить его из списка. Важно понимать, что удаление здесь не затрагивает файлы самой программы на диске, а лишь убирает ссылку на её запуск. Если требуется изменить параметры запуска, например, добавить аргументы командной строки, следует выбрать элемент и нажать кнопку «Правка».</p>
+<p>Для добавления новой программы, отсутствующей в стандартном списке, используется кнопка «Добавить». В открывшемся диалоге потребуется указать имя, команду и, опционально, комментарий. Команда должна быть прописана полным путем к исполняемому файлу или названию, если оно доступно в <code>PATH</code>. Например, для запуска текстового редактора можно указать <code>gedit</code> или полный путь <code>/usr/bin/gedit</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Добавление приложения в автозагрузку</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте меню → Параметры → Сеансы и запуск</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите кнопку «Добавить»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">В поле «Команда» введите название программы или путь к ней</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите «Добавить» для сохранения изменений</span></div></div>
+
+<p>Стоит учитывать, что настройки, сделанные через этот интерфейс, применяются только к текущему пользователю. Если в системе созданы другие учетные записи, для них автозагрузку придется настраивать отдельно. Это обеспечивает изоляцию пользовательских окружений и предотвращает конфликты конфигураций в многопользовательских средах.</p>
+
+<h3>Работа с системными службами и демонами</h3>
+<p>Некоторые процессы не являются обычными приложениями с графическим интерфейсом, а представляют собой фоновые службы. Такие программы часто управляются не через пользовательский интерфейс автозагрузки, а через системные механизмы. Попытка добавить системный демон в пользовательскую автозагрузку может привести к ошибкам, так как у пользователя может не быть необходимых прав или окружения для его корректного запуска.</p>
+<p>Для управления такими службами в <em>Linux Mint</em> используется утилита <code>services</code> или прямое взаимодействие с <code>systemd</code>. Например, если необходимо отключить службу печати <code>cups</code> на домашнем компьютере, где принтер не используется, это делается через терминал. Отключение службы на уровне системы гарантирует, что она не запустится ни для одного пользователя и не будет потреблять ресурсы ядра.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Изменения в системных службах требуют прав суперпользователя. Будьте внимательны при отключении служб, связанных с сетью или звуком, чтобы не нарушить работос!</p></aside>
+
+<h2 id="глубокая-настройка-через-файлы-конфигурации">Глубокая настройка через файлы конфигурации</h2>
+<p>Более продвинутым методом управления автозагрузкой является работа с файлами конфигурации напрямую. Этот подход необходим, когда графический интерфейс не отображает нужный элемент или требуется тонкая настройка времени запуска. В среде рабочего стола <em>Cinnamon</em>, <em>MATE</em> или <em>Xfce</em>, используемых в Mint, пользовательские файлы автозагрузки хранятся в скрытой директории <code>.config/autostart</code> в домашней папке пользователя.</p>
+<p>Файлы в этой директории имеют расширение <code>.desktop</code> и соответствуют спецификации Desktop Entry. Они содержат поля, определяющие исполняемый файл, условия запуска, зависимости и другие параметры. Редактирование этих файлов позволяет, например, добавить задержку перед запуском приложения, что полезно для программ, зависящих от сетевых подключений или других сервисов.</p>
+<p>Для создания или редактирования файла можно использовать любой текстовый редактор. Структура файла строго регламентирована: секция <code>[Desktop Entry]</code> должна содержать ключи <code>Type</code>, <code>Name</code> и <code>Exec</code>. Ключ <code>X-GNOME-Autostart-enabled</code> со значением <code>false</code> используется для отключения элемента, что аналогично снятию галочки в графическом интерфейсе.</p>
+
+<pre><code>[Desktop Entry]
+<p>Type=Application</p>
+<p>Exec=sleep 10 && /usr/bin/myapp</p>
+<p>Hidden=false</p>
+<p>NoDisplay=false</p>
+<p>X-GNOME-Autostart-enabled=true</p>
+<p>Name=My Delayed App</p>
+<p>Comment=Starts after 10 seconds delay</code></pre></p>
+
+<p>Использование задержек через <code>sleep</code> в команде запуска — распространенная практика. Она позволяет избежать ситуации, когда приложение пытается запуститься раньше, чем полностью загрузится сетевой менеджер или драйвер видеокарты. Однако стоит помнить, что такая задержка увеличивает общее время готовности системы к работе.</p>
+
+<h3>Системная автозагрузка для всех пользователей</h3>
+<p>Если требуется, чтобы приложение или скрипт запускались автоматически для всех пользователей системы при их входе, файлы <code>.desktop</code> размещаются в системной директории <code>/etc/xdg/autostart/</code>. Файлы, находящиеся здесь, имеют более высокий приоритет и применяются глобально. Любые изменения в этой папке требуют прав администратора.</p>
+<p>Важной особенностью является механизм переопределения. Если в системной папке <code>/etc/xdg/autostart/</code> существует файл, а пользователь хочет отключить автозагрузку только для себя, ему не нужно удалять системный файл. Достаточно скопировать этот файл в свою пользовательскую папку <code>~/.config/autostart/</code> и добавить или изменить строку <code>X-GNOME-Autostart-enabled=false</code>. Локальная конфигурация всегда имеет приоритет над глобальной.</p>
+
+<table>
+<thead>
+<tr>
+<th>Расположение файла</th>
+<th>Область действия</th>
+<th>Требуются права root</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>~/.config/autostart/</code></td>
+<td>Только текущий пользователь</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td><code>/etc/xdg/autostart/</code></td>
+<td>Все пользователи системы</td>
+<td>Да</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Редактирование файлов в /etc/xdg/autostart/ может повлиять на работу всех учетных записей. Всегда создавайте резервные копии перед внесением изменений.</p></aside>
+
+<h2 id="использование-systemd-для-управления-сервисами">Использование Systemd для управления сервисами</h2>
+<p>Современные версии <em>Linux Mint</em> используют <code>systemd</code> в качестве системы инициализации. Это мощный инструмент, который управляет не только загрузкой системы, но и мониторингом процессов, сокетами, таймерами и точками монтирования. Для управления автозагрузкой системных служб используется команда <code>systemctl</code>, которая предоставляет детальный контроль над состоянием сервисов.</p>
+<p>В отличие от пользовательской автозагрузки, <code>systemd</code> работает на уровне операционной системы еще до входа пользователя в графическую оболочку. Это делает его идеальным для запуска веб-серверов, баз данных, сетевых демонов и других критически важных компонентов. Управление осуществляется через юниты — специальные файлы конфигурации, описывающие сервис.</p>
+<p>Для проверки статуса службы используется команда <code>systemctl status имя_службы</code>. Если сервис должен запускаться автоматически при загрузке системы, его состояние должно быть «enabled». Команда <code>systemctl enable</code> создает символические ссылки, необходимые для автозапуска, в то время как <code>systemctl disable</code> удаляет их, предотвращая старт.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Управление службой через systemd</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Проверьте статус: systemctl status service_name</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Включите автозагрузку: sudo systemctl enable service_name</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Перезапустите службу: sudo systemctl restart service_name</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь в работе: systemctl is-enabled service_name</span></div></div>
+
+<p>Существует также понятие пользовательских юнитов <code>systemd</code>. Они позволяют запускать фоновые процессы конкретного пользователя без необходимости графического входа в систему. Файлы таких юнитов располагаются в <code>~/.config/systemd/user/</code>. Это удобно для запуска личных скриптов или демонов, которые должны работать постоянно, независимо от того, открыта ли графическая сессия.</p>
+
+<h3>Анализ времени загрузки и оптимизация</h3>
+<p>Одной из сильных сторон <code>systemd</code> является возможность детального анализа времени загрузки. Команда <code>systemd-analyze</code> показывает общее время, затраченное на загрузку ядра и пользовательского пространства. Более детальную информацию с разбивкой по каждому сервису можно получить с помощью команды <code>systemd-analyze blame</code>.</p>
+<p>Вывод этой команды представляет собой список служб, отсортированный по времени их инициализации. Службы, находящиеся вверху списка, больше всего влияют на скорость загрузки. Если вы видите сервис, который не используется, но загружается несколько секунд, его стоит рассмотреть для отключения. Однако будьте осторожны: отключение системных служб может привести к неработоспособности отдельных функций ОС.</p>
+
+<pre><code>systemd-analyze blame
+<p>5.234s NetworkManager-wait-online.service</p>
+<p>2.101s snapd.service</p>
+<p>1.450s cups.service</p>
+<p>0.980s bluetooth.service</code></pre></p>
+
+<p>На практике часто оказывается, что долгое ожидание сети (<code>NetworkManager-wait-online</code>) задерживает запуск других сервисов. Если компьютер не является сервером и не требует обязательного наличия сети для старта других программ, эту службу можно настроить как необязательную или изменить её тип запуска на <code>on-demand</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду systemd-analyze critical-chain, чтобы увидеть визуальное дерево зависимостей сервисов, которые больше всего тормозят загрузку.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>При настройке автозагрузки пользователи часто сталкиваются с повторяющимися проблемами, которые легко решаются при понимании принципов работы системы. Ниже приведены наиболее распространенные ошибки и способы их коррекции.</p>
+<ol>
+<li><strong>Приложение не запускается из-за отсутствия графического окружения</strong> — часто пользователи добавляют в автозагрузку <code>systemd</code> или системные скрипты программы, требующие графического интерфейса (X11/Wayland), но запускающиеся до его появления. Решение: используйте задержку в скрипте или добавьте зависимость от целевого юнита <code>graphical.target</code>.</li>
+<li><strong>Конфликты версий программ</strong> — если в системе установлено несколько версий приложения (например, через Snap, Flatpak и репозиторий), автозагрузка может выбирать не ту версию. Решение: в команде запуска указывайте полный абсолютный путь к исполняемому файлу, а не просто имя команды.</li>
+<li><strong>Отсутствие прав доступа</strong> — скрипт, добавленный в автозагрузку, может не иметь прав на выполнение. Решение: убедитесь, что у файла установлен флаг исполняемого, используя команду <code>chmod +x /путь/к/файлу</code>, или проверьте права на чтение для пользователя.</li>
+<li><strong>Игнорирование переменных окружения</strong> — скрипты, запущенные через автозагрузку, могут не видеть переменные окружения, определенные в <code>.bashrc</code>. Решение: явно прописывайте необходимые переменные внутри скрипта или в файле <code>.desktop</code> перед запуском основной команды.</li>
+</ol>
+
+<p>Понимание этих нюансов позволяет избежать большинства проблем со стабильностью системы. </p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Уровень доступа</th>
+<th>Зависимость от GUI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сеансы и запуск</td>
+<td>Пользовательский</td>
+<td>Требуется вход в сессию</td>
+</tr>
+<tr>
+<td>Systemd (system)</td>
+<td>Системный (Root)</td>
+<td>Независим от GUI</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Графический интерфейс автозагрузки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Простота использования</li><li>✅ Безопасность для новичков</li><li>✅ Мгновенное применение</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Ограниченный функционал</li><li>❌ Нет работы до входа в систему</li><li>❌ Не показывает системные службы</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-рекомендации">Резюме и рекомендации</h2>
+<p>Настройка автозагрузки в <em>Linux Mint</em> представляет собой многоуровневый процесс, требующий понимания различий между пользовательскими приложениями и системными службами. Использование стандартного инструмента «Сеансы и запуск» идеально подходит для повседневных задач, таких как запуск мессенджеров или облачных клиентов. Для более глубокой оптимизации и управления фоновыми процессами необходимо обращаться к конфигурационным файлам <code>.desktop</code> и утилите <code>systemctl</code>.</p>
+<p>Регулярный аудит автозагружаемых программ помогает поддерживать систему в чистоте и обеспечивать высокую скорость отклика. Не следует бездумно разрешать всем программам добавлять себя в автозагрузку при установке. Периодическая проверка списков в <code>~/.config/autostart/</code> и анализ загрузки через <code>systemd-analyze</code> станут полезной привыкой для любого продвинутого пользователя.</p>
+<p>Грамотное управление процессами запуска превращает операционную систему в персонализированный инструмент, работающий именно так, как этого требует пользователь. Соблюдение баланса между автоматизацией и контролем ресурсов является ключом к эффективной работе в среде Linux.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Контроль автозагрузки в Linux Mint осуществляется через графический интерфейс для приложений пользователя и systemd для системных служб, что позволяет гибко управлять производительностью.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vr/vr-ochki-virtualnoj-realnosti-aldm-electronic-vr-shinecon-sc-g07e.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка VR-очков ALDM Electronic Shinecon SC-G07E: инструкция</span>
+                <span class="pb-related-desc">Полное руководство по сборке, калибровке и устранению неисправностей очков виртуальной реальности AL</span>
+            </a><a href="/articles/p/pr/premer-kak-udalit-istoriyu-prosmotrov.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить историю просмотров на Премьер ТВ: полная инструкция</span>
+                <span class="pb-related-desc">Удаление истории просмотров на Премьер: пошаговые методы очистки через пульт, настройки системы и сб</span>
+            </a><a href="/articles/k/ka/kak-onlajn-posmotret-na-sebya-lysym.html" class="pb-related-card">
+                <span class="pb-related-title">Как посмотреть себя лысым онлайн: лучшие приложения и сайты</span>
+                <span class="pb-related-desc">Подробная инструкция по использованию онлайн-сервисов и приложений для примерки прически «лысый». Об</span>
+            </a><a href="/articles/k/ka/kak-proverit-usilitel-antenny-na-5-volt-multimetrom.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить усилитель антенны на 5 Вольт мультиметром: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по диагностике антенного усилителя. Узнайте, как измерить напряжение 5В мультим</span>
+            </a><a href="/articles/b/bq/bq-2822-dragon-blue-zvuk-ne-rabotaet.html" class="pb-related-card">
+                <span class="pb-related-title">BQ 2822 Dragon Blue: ремонт звука и динамиков</span>
+                <span class="pb-related-desc">Почему пропал звук на BQ 2822 Dragon Blue. Диагностика, сброс настроек, проверка драйверов и аппарат</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-alisu-k-kompyuteru-bez-blyutuza.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Алису к компьютеру без Bluetooth: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по настройке голосового помощника Яндекс через USB, Wi-Fi и проводные интерфейсы. Реше</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

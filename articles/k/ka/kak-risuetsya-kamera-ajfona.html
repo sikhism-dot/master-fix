@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как рисуются камеры iPhone: технический анализ и софт — Мастер Фикс</title>
+    <meta name="description" content="Подробный разбор алгоритмов рендеринга камеры iPhone, аппаратной архитектуры и процессов обработки изображений в iOS.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-risuetsya-kamera-ajfona.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как рисуются камеры iPhone: технический анализ и софт">
+    <meta property="og:description" content="Подробный разбор алгоритмов рендеринга камеры iPhone, аппаратной архитектуры и процессов обработки изображений в iOS.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/foto-kamery/">Фото и Камеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как рисуются камеры iPhone: технический анализ и софт</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурная-основа-взаимодействие-сенсора-и-isp">Архитектурная основа: взаимодействие сенсора и ISP</a></li><li><a href="#конвейер-обработки-изображения-от-raw-к-jpegheic">Конвейер обработки изображения: от RAW к JPEG/HEIC</a></li><li><a href="#программная-реализация-core-image-и-metal-performance-shaders">Программная реализация: Core Image и Metal Performance Shaders</a></li><li><a href="#типичные-ошибки-при-разработке-и-анализе">Типичные ошибки при разработке и анализе</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/gd/gde-posmotret-qr-kod-v-outlook-na-kompyutere.html">QR-код в Outlook на ПК: где найти и как использовать</a></li><li><a href="/articles/k/ka/kak-iz-zagruzok-perenesti-foto-v-galereyu.html">Как перенести фото из Загрузок в Галерею: Инструкция</a></li><li><a href="/articles/k/ka/kak-perebrosit-fotografii-s-fotoapparata-na-kompyuter-canon-eos-1100d.html">Как перекинуть фото с Canon EOS 1100D на компьютер: полная инструкция</a></li><li><a href="/articles/h/ho/hotdrv-fotorobot.html">hotdrv фоторобот: диагностика и восстановление драйверов</a></li><li><a href="/articles/s/sc/scan-tool-pro-2019-ne-podderzhivaetsya-ajfonom-cherez-blyutuz.html">Scan Tool Pro 2019 и iPhone: решение проблем Bluetooth</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ: как рисуется изображение на камере iPhone</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурная-основа-взаимодействие-сенсора-и-isp">Архитектурная основа: взаимодействие сенсора и ISP</a></li><li><a href="#конвейер-обработки-изображения-от-raw-к-jpegheic">Конвейер обработки изображения: от RAW к JPEG/HEIC</a></li><li><a href="#программная-реализация-core-image-и-metal-performance-shaders">Программная реализация: Core Image и Metal Performance Shaders</a></li><li><a href="#типичные-ошибки-при-разработке-и-анализе">Типичные ошибки при разработке и анализе</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Столкнувшись с необходимостью глубокой оптимизации приложения для обработки фотографий или разработки собственного алгоритма компьютерного зрения, разработчик часто задается вопросом о внутренней архитектуре конвейера обработки изображений в мобильных устройствах. Стандартные методы отладки и логирования не всегда позволяют понять, почему конкретный кадр был обработан именно так, а не иначе, особенно когда речь идет о проприетарных решениях Apple.</p>
+<p>Понимание того, как именно «рисуется» финальное изображение из сырых данных сенсора, требует детального рассмотрения взаимодействия аппаратного обеспечения и программных библиотек уровня ядра. Это не просто вопрос применения фильтра, а сложный многоступенчатый процесс, включающий демозаик, шумоподавление, тональное маппирование и применение нейросетевых моделей.</p>
+<p>В рамках данной технической спецификации будет произведен разбор полного цикла формирования кадра, начиная от физического захвата фотонов сенсором и заканчивая выводом итогового bitmap-изображения в буфер памяти. Особое внимание уделено роли ISP (Image Signal Processor) и работе фреймворка Core Image в контексте современных версий <em>iOS</em>.</p>
+
+<h2 id="архитектурная-основа-взаимодействие-сенсора-и-isp">Архитектурная основа: взаимодействие сенсора и ISP</h2>
+<p>Процесс формирования изображения начинается задолго до того, как данные попадут в оперативную память устройства для дальнейшей программной обработки. Фундаментальным этапом является преобразование аналогового сигнала, генерируемого фотодиодами матрицы, в цифровой поток данных. В устройствах <em>Apple</em> этот процесс жестко контролируется специализированным модулем — ISP, который интегрирован в систему-на-кристалле (SoC).</p>
+<p>Сенсоры, используемые в современных моделях <em>iPhone</em>, работают по принципу Байера, где каждый пиксель покрыт фильтром определенного цвета (красным, зеленым или синим). raw-данные, поступающие с матрицы, представляют собой мозаику яркостных значений, не несущую полноценной цветовой информации для каждого отдельного пикселя. Задача первичного этапа — интерполяция недостающих цветовых компонентов.</p>
+<p>На практике алгоритм демозаика (Demosaicing) в чипах <em>A-series</em> использует сложные адаптивные методы, анализирующие градиенты яркости в соседних пикселях. Это позволяет минизировать артефакты муара и цветовые искажения на границах контрастных объектов. Эффективность этого этапа напрямую влияет на детализацию финального изображения.</p>
+
+<h3>Специфика работы сенсоров в линейке iPhone Pro</h3>
+<p>Если рассматривать флагманские модели, такие как <em>iPhone 15 Pro</em> или <em>iPhone 14 Pro</em>, можно наблюдать существенные отличия в архитектуре захвата по сравнению с базовыми версиями. Здесь применяется технология объединения пикселей (pixel binning), когда данные с группы из четырех соседних фотодиодов считываются как один большой пиксель для повышения светочувствительности.</p>
+<p>В режиме высокого разрешения (48 Мп) этот процесс меняется: ISP переключается на попиксельное считывание, что требует значительно более высокой пропускной способности шины данных и вычислительной мощности. Алгоритмы шумоподавления в этом режиме работают агрессивнее, чтобы компенсировать меньший размер эффективной площади светособирающего элемента.</p>
+<p>Важно отметить, что калибровка каждого сенсора производится индивидуально на заводе. В память устройства записываются уникальные параметры коррекции (black level, white balance coefficients), которые загружаются в ISP при инициализации камеры. Без этих данных изображение выглядело бы неестественно окрашенным.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях с сенсором 48 Мп переключение между режимами 12 Мп и 48 Мп происходит аппаратно на уровне контроллера сенсора, а не программно в постобработке.</p></aside>
+
+<p>Таблица ниже демонстрирует различия в подходах к обработке сигнала в зависимости от режима работы сенсора:</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим 12 Мп (Binining)</th>
+<th>Режим 48 Мп (Full Resolution)</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Метод считывания</td>
+<td>Объединение 4 в 1 пиксель</td>
+<td>Попиксельное считывание</td>
+</tr>
+<tr>
+<td>Динамический диапазон</td>
+<td>Высокий (больше света на пиксель)</td>
+<td>Средний (меньше света на пиксель)</td>
+</tr>
+<tr>
+<td>Объем данных RAW</td>
+<td>~25 МБ (ProRAW)</td>
+<td>~75-100 МБ (ProRAW)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="конвейер-обработки-изображения-от-raw-к-jpegheic">Конвейер обработки изображения: от RAW к JPEG/HEIC</h2>
+<p>После первичной обработки в ISP данные передаются в буфер, где вступают в работу алгоритмы вычислительной фотографии. Именно на этом этапе формируется то, что пользователь видит на экране. Процессор изображения применяет каскад корректирующих слоев, каждый из которых отвечает за определенный аспект визуального качества.</p>
+<p>Первым критически важным этапом является коррекция черного уровня и баланс белого. Алгоритм анализирует гистограмму кадра и сцены, определяя точку черного (уровень шума в отсутствие света) и точку белого. Это необходимо для приведения цветовой гаммы к стандартизированным значениям.</p>
+<p>Далее следует этап локального тонального маппирования (Local Tone Mapping). В отличие от глобальной коррекции, которая применяет кривые ко всему изображению одинаково, локальное маппирование анализирует небольшие участки кадра. Это позволяет вытягивать детали из теней, не пересвечивая яркие участки, создавая эффект высокого динамического диапазона (HDR) в реальном времени.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Этапы конвейера ISP</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Считывание RAW данных с матрицы</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Коррекция черного уровня и Bad Pixel Correction</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Демозаик и интерполяция цвета</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Шумоподавление и детализация (Sharpening)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Применение цветовой матрицы и гамма-коррекция</span></div></div>
+
+<h3>Роль нейросетевого движка Neural Engine</h3>
+<p>В современных версиях <em>iOS</em> значительная часть задач по обработке изображения переложена на Neural Engine. Этот специализированный блок предназначен для выполнения матричных вычислений с высокой энергоэффективностью. Он используется для сценарного анализа (Scene Detection) и семантического рендеринга.</p>
+<p>Нейросеть анализирует кадр и распознает объекты: небо, траву, лица людей, текстуры одежды, шерсть животных. Для каждого типа объектов применяются отдельные алгоритмы обработки. Например, для неба может усиливаться насыщенность синего канала, а для кожи — смягчаться текстура и корректироваться оттенок.</p>
+<p>Процесс Deep Fusion, активируемый при среднем освещении, использует машинное обучение для объединения нескольких экспозиций на уровне пикселей. Алгоритм выбирает лучшие части каждого кадра (где меньше шума и больше деталей) и синтезирует итоговое изображение. Это происходит незаметно для пользователя, но требует значительных вычислительных ресурсов.</p>
+
+<p>Сравнение методов обработки в разных условиях освещения:</p>
+<table>
+<thead>
+<tr>
+<th>Условия</th>
+<th>Основной метод</th>
+<th>Вовлеченные модули</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Яркий свет</td>
+<td>Smart HDR (многокадровое слияние)</td>
+<td>ISP, GPU</td>
+</tr>
+<tr>
+<td>Средний свет</td>
+<td>Deep Fusion (текстурирование)</td>
+<td>Neural Engine, ISP</td>
+</tr>
+<tr>
+<td>Низкий свет</td>
+<td>Night Mode (длинная выдержка)</td>
+<td>Neural Engine, OIS</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="программная-реализация-core-image-и-metal-performance-shaders">Программная реализация: Core Image и Metal Performance Shaders</h2>
+<p>Для разработчиков, создающих приложения для работы с камерой, основным инструментом взаимодействия с графическим конвейером является фреймворк <em>Core Image</em>. Он предоставляет абстракцию над низкоуровневыми графическими API, позволяя применять сложные фильтры и эффекты, используя мощь GPU.</p>
+<p>Когда приложение запрашивает отрисовку кадра или применение фильтра, <em>Core Image</em> транслирует эти запросы в шейдеры языка <em>Metal</em>. Metal Performance Shaders (MPS) содержат оптимизированные библиотеки функций для обработки изображений, такие как свертки, гистограммы и морфологические операции, которые выполняются непосредственно на графическом процессоре.</p>
+<p>Важно понимать, что <em>Core Image</em> работает лениво (lazy evaluation). Фильтры не применяются сразу же после их назначения. Вместо этого строится граф вычислений (render graph), и реальная обработка происходит только в момент запроса итогового изображения (например, при вызове метода получения <em>CGImage</em> или отрисовке в <em>CIContext</em>).</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование тяжелых фильтров Core Image в реальном времени (real-time) на старых устройствах может привести к падению FPS ниже 24 кадров в секунду, что сделает интерфейс непригодным для использования.</p></aside>
+
+<h3>Оптимизация рендеринга в CIContext</h3>
+<p>Ключевым элементом производительности является правильный выбор контекста рендеринга. Создание <em>CIContext</em> — ресурсоемкая операция, поэтому рекомендуется создавать один контекст и переиспользовать его для всех операций обработки изображений в приложении. Контекст кэширует промежуточные результаты и состояния GPU.</p>
+<p>При работе с видео-потоком или предпросмотром камеры критически важно использовать асинхронную отрисовку. Метод <code>startPremultiplyingAlpha</code> и другие настройки контекста позволяют управлять цветом и альфа-каналом, минимизируя конвертацию форматов данных, что часто является узким местом в конвейере.</p>
+<p>Для максимального быстродействия стоит использовать аппаратное ускорение через <code>MPSImage</code> там, где стандартные фильтры <em>Core Image</em> не предоставляют достаточной гибкости или производительности. Прямая работа с Metal-шейдерами дает полный контроль над каждым пикселем, но требует глубоких знаний графического программирования.</p>
+
+<p>Пример конфигурации контекста для балансировки качества и скорости:</p>
+<pre><code>let contextOptions: [CIContextOption: Any] = [
+<p>.useSoftwareRenderer: false,</p>
+<p>.workingColorSpace: CGColorSpaceCreateWithName(kCGColorSpaceDisplayP3)!,</p>
+<p>.outputColorSpace: CGColorSpaceCreateWithName(kCGColorSpaceSRGB)!</p>
+<p>]</p>
+<p>let ciContext = CIContext(options: contextOptions)</p>
+</code></pre>
+
+<h2 id="типичные-ошибки-при-разработке-и-анализе">Типичные ошибки при разработке и анализе</h2>
+<p>В процессе анализа работы камеры или разработки собственных решений инженеры часто допускают ряд системных ошибок, которые приводят к некорректным выводам или падению производительности приложений.</p>
+<ol>
+<li><strong>Игнорирование цветового пространства</strong> — часто разработчики работают в sRGB, тогда как экраны <em>iPhone</em> используют Display P3. Это приводит к тусклым, ненасыщенным цветам на устройстве. Необходимо явно указывать цветовые профили при создании контекстов рендеринга.</li>
+<li><strong>Блокировка главного потока</strong> — выполнение тяжелых операций <em>Core Image</em> или синхронное чтение данных с <em>AVCaptureSession</em> на главном потоке вызывает фризы интерфейса. Все вычисления должны быть вынесены в фоновые очереди (GCD).</li>
+<li><strong>Некорректная работа с памятью</strong> — создание новых объектов изображений в цикле без освобождения ресурсов приводит к переполнению памяти (Memory Pressure) и вылету приложения. Следует использовать пулы объектов иautoreleasepool.</li>
+<li><strong>Ожидание идентичности результатов</strong> — попытка добиться идентичности изображения в стороннем приложении и стандартной камере <em>Apple</em> обречена на провал из-за закрытости алгоритмов Smart HDR и Deep Fusion. Доступен только базовый конвейер RAW.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества нативного API</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный доступ к RAW-данным сенсора</li><li>✅ Аппаратное ускорение через Metal</li><li>✅ Автоматическая оптимизация под конкретное железо</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Недостатки сторонних решений:Ограниченный доступ к ISP</li><li>❌ Высокое энергопотребление</li><li>❌ Сложность калибровки цветов</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+<p>Процесс «рисования» камеры <em>iPhone</em> представляет собой сложнейшее взаимодействие аппаратных модулей сенсора, ISP и нейросетевых ускорителей с программными алгоритмами вычислительной фотографии. Понимание этого пути необходимо для создания качественных приложений, работающих с графикой, и для корректного анализа характеристик устройства.</p>
+<p>Ключевым фактором успеха является эффективное использование фреймворка <em>Core Image</em> в связке с <em>Metal</em>, что позволяет переложить тяжелые вычисления на GPU. При этом важно учитывать ограничения мобильной платформы, такие как тепловыделение и энергопотребление, которые напрямую влияют на длительность и качество обработки.</p>
+<p>Технологии, внедряемые <em>Apple</em> в каждый новый цикл обновления <em>iOS</em>, смещают фокус с простой фиксации изображения на интеллектуальный анализ сцены. Будущее мобильной фотографии лежит в плоскости дальнейшего развития нейросетевой обработки, где роль ISP будет заключаться в предоставлении максимально чистых raw-данных для последующего синтеза изображения искусственным интеллектом.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Изображение на iPhone формируется путем сложного синтеза данных сенсора, аппаратной обработки в ISP и программных алгоритмов Neural Engine, требующих оптимизированного подхода при разработке.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/gd/gde-posmotret-qr-kod-v-outlook-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">QR-код в Outlook на ПК: где найти и как использовать</span>
+                <span class="pb-related-desc">Полная инструкция по генерации QR-кода в Outlook на компьютере. Узнайте, где найти код для быстрой а</span>
+            </a><a href="/articles/k/ka/kak-iz-zagruzok-perenesti-foto-v-galereyu.html" class="pb-related-card">
+                <span class="pb-related-title">Как перенести фото из Загрузок в Галерею: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по перемещению изображений из папки Downloads в Галерею на Android. Решение пр</span>
+            </a><a href="/articles/k/ka/kak-perebrosit-fotografii-s-fotoapparata-na-kompyuter-canon-eos-1100d.html" class="pb-related-card">
+                <span class="pb-related-title">Как перекинуть фото с Canon EOS 1100D на компьютер: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по передаче фото с Canon EOS 1100D на ПК. USB, картридер, EOS Utility. Решение</span>
+            </a><a href="/articles/h/ho/hotdrv-fotorobot.html" class="pb-related-card">
+                <span class="pb-related-title">hotdrv фоторобот: диагностика и восстановление драйверов</span>
+                <span class="pb-related-desc">Полный разбор компонента hotdrv в контексте фотороботов и систем безопасности. Методы восстановления</span>
+            </a><a href="/articles/s/sc/scan-tool-pro-2019-ne-podderzhivaetsya-ajfonom-cherez-blyutuz.html" class="pb-related-card">
+                <span class="pb-related-title">Scan Tool Pro 2019 и iPhone: решение проблем Bluetooth</span>
+                <span class="pb-related-desc">Почему Scan Tool Pro 2019 не видит iPhone через Bluetooth? Полный гид по настройке ELM327, iOS и уст</span>
+            </a><a href="/articles/k/ka/kak-raspechatat-foto-razmerov-4-na-6.html" class="pb-related-card">
+                <span class="pb-related-title">Как распечатать фото 4 на 6: подробная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по печати фотографий 10х15 см. Настройки DPI, выбор бумаги, калибровка принт</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

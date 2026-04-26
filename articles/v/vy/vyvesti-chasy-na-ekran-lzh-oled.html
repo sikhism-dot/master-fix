@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Вывод часов на экран ЛЖО OLED: техническое руководство — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по настройке вывода времени на экраны ЛЖО OLED. Разбор методов, кодов и типовых ошибок интеграции.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vy/vyvesti-chasy-na-ekran-lzh-oled.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Вывод часов на экран ЛЖО OLED: техническое руководство">
+    <meta property="og:description" content="Подробная инструкция по настройке вывода времени на экраны ЛЖО OLED. Разбор методов, кодов и типовых ошибок интеграции.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/zhelezo-remont/">Железо и Ремонт</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Вывод часов на экран ЛЖО OLED: техническое руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-аппаратной-совместимости-и-интерфейсов">Диагностика аппаратной совместимости и интерфейсов</a></li><li><a href="#программная-конфигурация-и-библиотеки">Программная конфигурация и библиотеки</a></li><li><a href="#синхронизация-времени-и-работа-с-rtc">Синхронизация времени и работа с RTC</a></li><li><a href="#оптимизация-энергопотребления-и-производительности">Оптимизация энергопотребления и производительности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-razdelit-ekran-dlya-vr-ochkov-na-pk.html">Разделение экрана для VR очков на ПК: полное руководство</a></li><li><a href="/articles/k/ka/kak-vyvesti-teleprogrammu-na-ekran.html">Как вывести телепрограмму на экран: настройка EPG для ТВ и IPTV</a></li><li><a href="/articles/g/ga/galaxy-s10-izognutyj-ekran.html">Изогнутый экран Samsung Galaxy S10: защита и настройки</a></li><li><a href="/articles/b/ba/barton-th-563-remont.html">Ремонт Barton TH-563: устранение неисправностей и диагностика</a></li><li><a href="/articles/k/ka/kak-ubrat-s-ekrana-filipsa-titry.html">Как убрать титры с экрана телевизора Philips: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническая инструкция по выводу времени на экран ЛЖО OLED</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-аппаратной-совместимости-и-интерфейсов">Диагностика аппаратной совместимости и интерфейсов</a></li><li><a href="#программная-конфигурация-и-библиотеки">Программная конфигурация и библиотеки</a></li><li><a href="#синхронизация-времени-и-работа-с-rtc">Синхронизация времени и работа с RTC</a></li><li><a href="#оптимизация-энергопотребления-и-производительности">Оптимизация энергопотребления и производительности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда устройство с дисплеем ЛЖО OLED остается без индикации времени после перезагрузки или смены прошивки, является распространенной проблемой при кастомизации электроники.</p>
+<p>Часто пользователь сталкивается с тем, что базовый интерфейс загрузился, но системный виджет времени либо отсутствует, либо отображает нулевые значения, игнорируя реальный ход часов.</p>
+<p>Решение требует последовательного подхода к настройке системных параметров, проверке аппаратной совместимости и корректной конфигурации программного обеспечения.</p>
+
+<h2 id="диагностика-аппаратной-совместимости-и-интерфейсов">Диагностика аппаратной совместимости и интерфейсов</h2>
+
+<p>Первым этапом работы становится проверка физического подключения и логической адресации дисплея, так как программные методы вывода времени бесполезны при отсутствии связи с контроллером.</p>
+<p>Допустим, что устройство базируется на распространенной микроконтроллерной платформе, где дисплей подключен через последовательный интерфейс SPI или параллельный 8080-й интерфейс.</p>
+<p>Необходимо убедиться, что вывод времени не блокируется конфликтом прерываний, когда таймер реального времени (RTC) пытается обновить буфер кадра в момент активной отрисовки других элементов.</p>
+
+<h3>Проверка подключения и адресации</h3>
+
+<p>На практике <strong>корректная инициализация</strong> начинается с верификации pin-кодов, назначенных для управления линиями данных и управления.</p>
+<p>Если используется библиотека <em>Adafruit_GFX</em> или аналогичная, стоит проверить, соответствует ли объявленный в коде объект дисплея физической разводке платы.</p>
+<p>Частой ошибкой является неверный выбор модели контроллера в коде инициализации, что приводит к появлению «снега» на экране или полному отсутствию реакции на команды.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для SPI</th>
+<th>Значение для I2C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Скорость передачи</td>
+<td>до 40 МГц</td>
+<td>до 400 кГц (стандарт)</td>
+</tr>
+<tr>
+<td>Количество проводов</td>
+<td>4-5 (MOSI, CLK, CS, DC, RST)</td>
+<td>2-4 (SDA, SCL, VCC, GND)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно учитывать, что некоторые дисплеи ЛЖО OLED требуют специфической последовательности сброса, без которой вывод графической информации невозможен.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях дисплеев с разрешением 128x64 пикселей часто используется контроллер SSD1306, в то время как для цветных экранов 1.54 дюйма характерен контроллер GC9A01.</p></aside>
+
+<h2 id="программная-конфигурация-и-библиотеки">Программная конфигурация и библиотеки</h2>
+
+<p>После подтверждения аппаратной части переходят к программной реализации, где ключевую роль играет выбор библиотеки и настройка шрифтов для отображения цифр.</p>
+<p>Если у вас используется среда разработки Arduino IDE или PlatformIO, необходимо подключить соответствующие заголовочные файлы и инициализировать объект дисплея в функции setup.</p>
+<p>Современные библиотеки позволяют гибко настраивать контрастность и поворот экрана, что критично для правильной ориентации циферблата.</p>
+
+<h3>Настройка шрифтов и кодировок</h3>
+
+<p>Для вывода времени часто требуется использование моноширинных шрифтов, чтобы цифры не «прыгали» при смене секунд.</p>
+<p>В коде это реализуется подключением готовых шрифтов, таких как <em>FreeMonoBold9pt7b</em> или созданием собственного массива битов для цифр.</p>
+<p>Следует помнить, что <strong>размер шрифта</strong> напрямую влияет на производительность отрисовки, особенно на медленных микроконтроллерах.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Инициализация дисплея</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите библиотеку дисплея</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создайте объект дисплея с правильными пинами</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Вызовите метод begin()</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите контраст через setContrast()</span></div></div>
+
+<p>При использовании кириллических обозначений дней недели или месяцев необходимо убедиться, что кодировка исходного файла совпадает с кодировкой шрифта.</p>
+<p>Оптимальным решением является использование UTF-8 и соответствующих шрифтов, поддерживающих расширенный набор символов.</p>
+
+<h2 id="синхронизация-времени-и-работа-с-rtc">Синхронизация времени и работа с RTC</h2>
+
+<p>Сам по себе вывод статичного изображения времени не имеет смысла без механизма актуализации данных, для чего требуется синхронизация с внешним или внутренним источником.</p>
+<p>Наиболее точным методом является подключение модуля реального времени (RTC), такого как <em>DS3231</em> или <em>PCF8563</em>, который сохраняет ход времени даже при отключении питания.</p>
+<p>Если внешний модуль отсутствует, можно использовать сетевую синхронизацию через протокол NTP, но это требует наличия активного подключения к Wi-Fi или Ethernet.</p>
+
+<h3>Алгоритм обновления экрана</h3>
+
+<p>В цикле программы необходимо реализовать логику, которая опрашивает источник времени и обновляет дисплей только при изменении значений.</p>
+<p>Постоянная перерисовка всего экрана каждую миллисекунду приведет к быстрому износу органического слоя OLED и мерцанию изображения.</p>
+<p>Рекомендуется использовать буферизацию: изменять в памяти только область с цифрами, а затем отправлять на экран обновленный фрагмент.</p>
+
+<pre><code>void loop() {
+<p>DateTime now = rtc.now();</p>
+<p>if (now.second() != lastSecond) {</p>
+<p>displayTime(now);</p>
+<p>lastSecond = now.second();</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<p>Такой подход позволяет снизить нагрузку на процессор и обеспечить стабильную работу устройства в течение длительного времени.</p>
+<p>Для устройств без батареи RTC стоит предусмотреть процедуру начальной установки времени при каждом включении или через веб-интерфейс.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Частая запись в одну и ту же область экрана (статичные элементы интерфейса) может вызвать эффект выгорания (burn-in) органических пикселей. Используйте скринсейверы или смещение изображения.</p></aside>
+
+<h2 id="оптимизация-энергопотребления-и-производительности">Оптимизация энергопотребления и производительности</h2>
+
+<p>Эффективный вывод времени на экран ЛЖО OLED требует баланса между яркостью изображения и потреблением энергии, особенно в автономных устройствах.</p>
+<p>Технология OLED позволяет отключать отдельные пиксели, что дает возможность создавать интерфейсы с глубоким черным цветом и минимальным энергопотреблением.</p>
+<p>Если устройство работает от батареи, стоит рассмотреть возможность использования режима глубокого сна микроконтроллера между обновлениями секунд.</p>
+
+<h3>Управление яркостью и контрастом</h3>
+
+<p>Динамическое изменение яркости в зависимости от времени суток или освещенности окружающей среды значительно продлевает срок службы дисплея.</p>
+<p>Команда <code>dim(true)</code> или установка низкой величины контрастности через <code>setContrast(10)</code> снижает ток потребления дисплея в разы.</p>
+<p>На практике <strong>оптимизация кода</strong> также играет роль: отказ от плавающей точки в вычислениях времени ускоряет работу программы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Режим работы</th>
+<th>Потребление (мА)</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Полная яркость (белый)</td>
+<td>20-30 мА</td>
+<td>Только при необходимости</td>
+</tr>
+<tr>
+<td>Низкая яркость (темный фон)</td>
+<td>< 5 мА</td>
+<td>Основной режим работы</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование инверсной цветовой схемы (светлый текст на черном фоне) является стандартом для OLED-дисплеев малого размера.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация вывода</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Плавная анимация секунд</li><li>✅ Читаемость при любом освещении</li><li>✅ Минимальное потребление</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность реализации буферизации</li><li>❌ Риск выгорания статичных элементов</li><li>❌ Зависимость от скорости МК</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки вывода времени на экран ЛЖО OLED пользователи часто сталкиваются с рядом типичных проблем, решение которых известно и описано в технической документации.</p>
+<p>Анализ этих ошибок позволяет сократить время отладки и избежать потенциальных повреждений оборудования или программных сбоев.</p>
+<p>Внимательное изучение логики работы программы часто выявляет простые mistakes, которые блокируют корректную работу системы.</p>
+
+<ol>
+<li><strong>Неверный адрес I2C</strong> — устройство не откликается на команды, так как в коде указан стандартный адрес 0x3C, в то время как дисплей имеет адрес 0x3D; необходимо просканировать шину сканером адресов.</li>
+<li><strong>Переполнение буфера</strong> — попытка записать больше данных, чем вмещает оперативная память микроконтроллера, приводит к перезагрузке; следует уменьшить размер шрифтов или использовать внешнюю память.</li>
+<li><strong>Отсутствие задержек</strong> — слишком частый опрос RTC или обновление экрана без задержки <code>delay()</code> или таймера блокирует другие процессы; нужно внедрить неблокирующую логику.</li>
+<li><strong>Конфликт библиотек</strong> — одновременное использование нескольких библиотек для работы с дисплеями или временем может вызвать ошибки линковки; стоит оставить только один совместимый набор библиотек.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте логирование через Serial порт для отслеживания значений времени и состояния дисплея в реальном времени. Это поможет понять, где именно происходит сбой.</p></aside>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+
+<p>Вывод часов на экран ЛЖО OLED представляет собой комплексную задачу, требующую согласованной работы аппаратной части и программного кода.</p>
+<p>Успешная реализация зависит от правильного выбора библиотеки, точной настройки шрифтов и грамотной организации цикла обновления данных.</p>
+<p>Соблюдение рекомендаций по энергопотреблению и защите от выгорания пикселей обеспечит долговечность устройства и стабильность работы.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к успеху — правильная инициализация дисплея и оптимизированный цикл обновления, меняющий только изменившиеся пиксели.</p></aside>
+
+<p>Дальнейшее развитие проекта может включать добавление будильников, таймеров или синхронизацию с погодными сервисами через интернет.</p>
+<p>Техническая грамотность и внимательность к деталям позволяют создавать надежные и эстетичные устройства отображения времени.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-razdelit-ekran-dlya-vr-ochkov-na-pk.html" class="pb-related-card">
+                <span class="pb-related-title">Разделение экрана для VR очков на ПК: полное руководство</span>
+                <span class="pb-related-desc">Техническая инструкция по настройке разделения экрана для VR гарнитур. Настройка SteamVR, Oculus и O</span>
+            </a><a href="/articles/k/ka/kak-vyvesti-teleprogrammu-na-ekran.html" class="pb-related-card">
+                <span class="pb-related-title">Как вывести телепрограмму на экран: настройка EPG для ТВ и IPTV</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке телепрограммы (EPG) на Smart TV, Android-приставках и в приложения</span>
+            </a><a href="/articles/g/ga/galaxy-s10-izognutyj-ekran.html" class="pb-related-card">
+                <span class="pb-related-title">Изогнутый экран Samsung Galaxy S10: защита и настройки</span>
+                <span class="pb-related-desc">Полная инструкция по настройке чувствительности, выбору защитного стекла и ремонту изогнутого диспле</span>
+            </a><a href="/articles/b/ba/barton-th-563-remont.html" class="pb-related-card">
+                <span class="pb-related-title">Ремонт Barton TH-563: устранение неисправностей и диагностика</span>
+                <span class="pb-related-desc">Подробная инструкция по ремонту Barton TH-563. Диагностика платы, устранение ошибок инициализации, з</span>
+            </a><a href="/articles/k/ka/kak-ubrat-s-ekrana-filipsa-titry.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать титры с экрана телевизора Philips: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению субтитров и телетекста на ТВ Philips Android TV и Smart TV. Реше</span>
+            </a><a href="/articles/k/ka/kak-razblokirovat-glavnyj-ekran-prilozheniya-lamoda-v-teleyone.html" class="pb-related-card">
+                <span class="pb-related-title">Как разблокировать приложение Lamoda: решение ошибок доступа</span>
+                <span class="pb-related-desc">Техническое руководство по устранению блокировок экрана в приложении Lamoda. Сброс кэша, проверка об</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

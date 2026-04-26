@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Автозапуск программ на Linux: полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по настройке автоматического старта приложений в Linux через systemd, rc.local и crontab.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-sdelat-na-ldzh-avtozapusk-s-prrogrammy.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Автозапуск программ на Linux: полное руководство">
+    <meta property="og:description" content="Техническое руководство по настройке автоматического старта приложений в Linux через systemd, rc.local и crontab.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Автозапуск программ на Linux: полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-systemd-для-управления-сервисами">Использование systemd для управления сервисами</a></li><li><a href="#автоматический-запуск-через-rclocal">Автоматический запуск через rc.local</a></li><li><a href="#планировщик-задач-cron-и-autostart">Планировщик задач Cron и Autostart</a></li><li><a href="#типичные-ошибки-при-настройке">Типичные ошибки при настройке</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/vo/vojti-cherez-yandeks-na-yutub.html">Как войти через Яндекс на YouTube: инструкция для Smart TV и ПК</a></li><li><a href="/articles/k/ka/kak-razblokirovat-klaviaturu-na-irbis-nb72.html">Как разблокировать клавиатуру на Irbis NB72: полное руководство</a></li><li><a href="/articles/z/za/zashel-v-zavodskie-nastrojki-i-magnitola-zavisla.html">Магнитола зависла после сброса: как восстановить систему</a></li><li><a href="/articles/k/ka/kak-podklyuchit-gp-035bth-black-green.html">GP-035BTH Black Green: Подключение и настройка Bluetooth</a></li><li><a href="/articles/k/ka/kak-vernut-insagram-do-obnovleniya-ajos-18.html">Как вернуть Instagram до iOS 18: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка автозапуска программ в Linux</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-systemd-для-управления-сервисами">Использование systemd для управления сервисами</a></li><li><a href="#автоматический-запуск-через-rclocal">Автоматический запуск через rc.local</a></li><li><a href="#планировщик-задач-cron-и-autostart">Планировщик задач Cron и Autostart</a></li><li><a href="#типичные-ошибки-при-настройке">Типичные ошибки при настройке</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>В процессе администрирования серверов или настройки рабочих станций часто возникает необходимость обеспечить автоматический старт критически важных приложений сразу после загрузки операционной системы. Это может быть база данных, веб-сервер, скрипт мониторинга или специализированный клиент для обмена данными. Отсутствие такой конфигурации приводит к простою сервисов после перезагрузки оборудования или планового обновления ядра, что недопустимо в производственной среде.</p>
+<p>Ручной запуск программ каждый раз после входа в систему не только отнимает время, но и увеличивает вероятность человеческой ошибки. В современных дистрибутивах Linux, таких как <em>Ubuntu Server 22.04</em>, <em>Debian 11</em> или <em>CentOS Stream 9</em>, механизмы инициализации претерпели значительные изменения, сместившись от классических скриптов к более сложным менеджерам процессов. Понимание этих механизмов позволяет создавать устойчивые и предсказуемые конфигурации.</p>
+<p>Существует несколько основных подходов к решению этой задачи, каждый из которых имеет свои сценарии использования. Выбор конкретного метода зависит от типа запускаемого приложения, требований к правам доступа и необходимости управления зависимостями между сервисами. Ниже будут детально рассмотрены наиболее актуальные способы реализации автозапуска.</p>
+
+<h2 id="использование-systemd-для-управления-сервисами">Использование systemd для управления сервисами</h2>
+<p>На практике большинство современных дистрибутивов Linux используют <strong>systemd</strong> в качестве основной системы инициализации. Этот подход является наиболее предпочтительным для долгосрочных сервисов, так как обеспечивает контроль зависимостей, автоматический перезапуск при сбоях и детальное логирование. Создание собственного юнита позволяет интегрировать пользовательское приложение в общую систему управления процессами.</p>
+<p>Для начала необходимо создать файл описания сервиса в директории <code>/etc/systemd/system/</code>. Файл должен иметь расширение <code>.service</code> и содержать секции <code>[Unit]</code>, <code>[Service]</code> и <code>[Install]</code>. В первой секции описываются зависимости, например, требование запустить сеть перед стартом приложения. Во второй секции указывается путь к исполняемому файлу и пользователь, от имени которого будет работать процесс.</p>
+<p>Допустим, требуется запустить Python-скрипт мониторинга. В поле <code>ExecStart</code> прописывается полный путь к интерпретатору и скрипту. Важно использовать абсолютные пути, так как systemd не всегда подставляет переменные окружения так, как это делает оболочка пользователя. Также стоит обратить внимание на параметр <code>Restart</code>, который позволяет автоматически поднимать упавший сервис.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Имя файла сервиса должно заканчиваться на.service, но при использовании команд systemctl расширение можно опускать.</p></aside>
+
+<p>После создания файла конфигурации необходимо уведомить менеджер systemd об изменениях. Для этого выполняется команда <code>systemctl daemon-reload</code>. Затем сервис активируется для автозапуска при загрузке и запускается немедленно. Статус работы можно проверить через <code>systemctl status</code>, где будет виден текущий статус и последние строки логов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание systemd сервиса</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создайте файл /etc/systemd/system/myapp.service</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Заполните секции Unit, Service, Install</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните systemctl daemon-reload</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Активируйте сервис командой systemctl enable --now myapp</span></div></div>
+
+<h3>Параметры файла юнита systemd</h3>
+<p>Конфигурационный файл сервиса требует внимательного заполнения полей. Ошибки в синтаксисе могут привести к тому, что сервис просто не запустится, и система проигнорирует запрос. Ниже приведена таблица с основными директивами, которые чаще всего используются при настройке пользовательских приложений.</p>
+
+<table>
+<thead>
+<tr>
+<th>Директива</th>
+<th>Описание</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>After</code></td>
+<td>Указывает порядок загрузки относительно других юнитов</td>
+<td><code>network.target</code></td>
+</tr>
+<tr>
+<td><code>ExecStart</code></td>
+<td>Команда для запуска основного процесса</td>
+<td><code>/usr/bin/python3 /opt/app/main.py</code></td>
+</tr>
+<tr>
+<td><code>User</code></td>
+<td>Пользователь, от имени которого запускается процесс</td>
+<td><code>www-data</code></td>
+</tr>
+<tr>
+<td><code>Restart</code></td>
+<td>Политика перезапуска при завершении работы</td>
+<td><code>always</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Если приложение требует специфических переменных окружения, их можно задать непосредственно в файле юнита с помощью директивы <code>Environment</code>. Это избавляет от необходимости прописывать экспорт переменных в профили пользователя. Для сложных сценариев допускается использование скрипта-обертки, который будет вызывать основное приложение с нужными параметрами.</p>
+
+<h2 id="автоматический-запуск-через-rclocal">Автоматический запуск через rc.local</h2>
+<p>Метод использования файла <code>rc.local</code> является классическим и до сих пор поддерживается во многих дистрибутивах ради обратной совместимости. Этот подход подходит для простых задач, когда нужно выполнить набор команд в самом конце процесса загрузки системы. В отличие от systemd, здесь нет сложной системы зависимостей, что делает метод простым, но менее гибким.</p>
+<p>В современных версиях <em>Ubuntu</em> и <em>Debian</em> поддержка <code>rc.local</code> может быть отключена по умолчанию. Для её активации необходимо создать файл <code>/etc/rc.local</code> и наделить его исполняемыми правами. Содержимое файла представляет собой обычный shell-скрипт, который должен начинаться с shebang <code>#!/bin/sh -e</code> и заканчиваться командой <code>exit 0</code>.</p>
+<p>Все команды в этом файле выполняются последовательно. Если одна из команд завершится с ошибкой (ненулевым кодом возврата) и стоит флаг <code>-e</code>, выполнение скрипта прекратится. Поэтому для критически важных сервисов этот метод менее надежен, так как ошибка в одном скрипте может предотвратить запуск остальных.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование rc.local не рекомендуется для сложных приложений, так как система не будет отслеживать их состояние после запуска.</p></aside>
+
+<p>Для проверки работоспособности метода достаточно создать файл, добавить в него команду записи времени в лог-файл, перезагрузить систему и проверить наличие записи. Если запись появилась, значит, механизм работает корректно. После этого можно добавлять реальные команды запуска приложений.</p>
+
+<h3>Сравнение systemd и rc.local</h3>
+<p>Выбор между современным менеджером systemd и классическим rc.local зависит от конкретных требований проекта. Для серверных приложений, требующих высокой доступности, предпочтительнее systemd. Для разовых задач илиlegacy-систем может оказаться удобным rc.local.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение методов автозапуска</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль и мониторинг состояния</li><li>✅ Автоматический перезапуск при сбоях</li><li>✅ Гибкая система зависимостей</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Простота настройки без создания лишних файлов</li><li>❌ Привычный синтаксис shell-скриптов</li><li>❌ Минимальные накладные расходы на конфигурацию</li></ul></div>
+</div></div>
+
+<p>Стоит учитывать, что в некоторых минималистичных сборках Linux файл <code>rc.local</code> может отсутствовать полностью. В таких случаях его создание вручную не всегда гарантирует работу, если соответствующий юнит systemd не активирован. Всегда проверяйте наличие и статус сервиса <code>rc-local.service</code>.</p>
+
+<h2 id="планировщик-задач-cron-и-autostart">Планировщик задач Cron и Autostart</h2>
+<p>Планировщик задач <code>cron</code> традиционно используется для запуска скриптов по расписанию, но он также позволяет выполнять команды при загрузке системы. Специальная директива <code>@reboot</code> указывает демону cron запустить задачу один раз сразу после старта службы cron. Это удобный способ для запуска пользовательских скриптов без необходимости создания системных сервисов.</p>
+<p>Для настройки необходимо открыть таблицу crontab текущего пользователя командой <code>crontab -e</code>. В открывшемся редакторе добавляется строка, начинающаяся с <code>@reboot</code>, за которой следует команда запуска. </p>
+<p>Если приложение требует графического интерфейса и запускается при входе пользователя в графическую оболочку (GNOME, KDE), то cron не подойдет. В этом случае используется механизм автозагрузки окружения рабочего стола. Файлы <code>.desktop</code>, помещенные в директорию <code>~/.config/autostart/</code>, автоматически исполняются после успешной авторизации пользователя.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для отладки cron-задач используйте команду tail -f /var/log/syslog или journalctl -u cron, чтобы видеть результаты выполнения в реальном времени.</p></aside>
+
+<p>Метод <code>@reboot</code> в cron хорош тем, что задачи привязаны к конкретному пользователю и не требуют root-прав для настройки. Однако, если демон cron стартует до того, как будут смонтированы все сетевые ресурсы или файловые системы, задача может не выполниться. В таких случаях помогает добавление задержки через команду <code>sleep</code> перед основным действием.</p>
+
+<h3>Настройка через crontab</h3>
+<p>Процесс настройки автозапуска через cron выглядит следующим образом. Сначала проверяется, запущен ли демон cron. Затем открывается конфигурация пользователя. В файл добавляется строка с директивой запуска. После сохранения изменения применяются автоматически.</p>
+
+<ol>
+<li>Выполните команду <code>crontab -e</code> для редактирования расписания.</li>
+<li>Добавьте строку <code>@reboot /path/to/script.sh</code> в конец файла.</li>
+<li>Сохраните файл и выйдите из редактора.</li>
+<li>Проверьте список задач командой <code>crontab -l</code>.</li>
+</ol>
+
+<p>В отличие от системных сервисов, задачи cron выполняются с правами владельца таблицы cron. Это обеспечивает изоляцию, но ограничивает доступ к системным ресурсам. Для запуска системных служб через cron потребуется редактирование системного crontab или использование sudo, что требует осторожности при настройке прав.</p>
+
+<h2 id="типичные-ошибки-при-настройке">Типичные ошибки при настройке</h2>
+<p>При реализации автозапуска программ администраторы часто сталкиваются с однотипными проблемами, связанными с путями к файлам, правами доступа и переменными окружения. Понимание этих нюансов позволяет сократить время на отладку конфигурации.</p>
+
+<ol>
+<li><strong>Отсутствие полных путей</strong> — в скриптах и конфигурационных файлах часто используются относительные пути или команды без указания полной директории, что приводит к ошибке «command not found», так как переменная PATH в системных сервисах ограничена.</
+<li><strong>Неверные права доступа</strong> — исполняемый файл или скрипт не имеет бита исполнения (<code>chmod +x</code>), либо пользователь, от имени которого запускается сервис, не имеет прав на чтение файла или запись в лог-директорию.</li>
+<li><strong>Игнорирование зависимостей</strong> — попытка запустить приложение до того, как полностью загрузится сеть или смонтируются удаленные файловые системы, что приводит к падению сервиса на старте.</li>
+<li><strong>Проблемы с интерпретатором</strong> — в скриптах забыта первая строка (shebang) или указан неверный путь к интерпретатору (например, <code>/bin/python</code> вместо <code>/usr/bin/python3</code>), из-за чего система не знает, чем открывать файл.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к успешному автозапуску — использование абсолютных путей и проверка прав доступа пользователя.</p></aside>
+
+<p>Особое внимание стоит уделить логированию. Если сервис не запускается, первым делом следует логи systemd через <code>journalctl -u service_name</code> или системные логи. Часто причина кроется в синтаксической ошибке в файле юнита или отсутствии необходимой библиотеки в PATH.</p>
+
+<h2 id="заключение">Заключение</h2>
+<p>Настройка автозапуска программ в Linux является фундаментальным навыком для обеспечения стабильности работы серверов и рабочих станций. Выбор метода зависит от типа приложения: для фоновых демонов идеален <strong>systemd</strong>, для простых пользовательских задач подойдет <strong>cron</strong>, а для legacy-скриптов может быть использован <code>rc.local</code>. Каждый метод имеет свои преимущества и область применения.</p>
+<p>Грамотная конфигурация автозапуска избавляет от необходимости ручного вмешательства после перезагрузок и гарантирует, что критическая инфраструктура восстановится автоматически. Рекомендуется всегда тестировать конфигурацию в безопасной среде перед внедрением на-production серверы, внимательно проверяя логи на предмет ошибок инициализации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/vo/vojti-cherez-yandeks-na-yutub.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти через Яндекс на YouTube: инструкция для Smart TV и ПК</span>
+                <span class="pb-related-desc">Подробная инструкция по авторизации в YouTube через Яндекс на телевизорах и компьютерах. Решение про</span>
+            </a><a href="/articles/k/ka/kak-razblokirovat-klaviaturu-na-irbis-nb72.html" class="pb-related-card">
+                <span class="pb-related-title">Как разблокировать клавиатуру на Irbis NB72: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению блокировки клавиатуры на ноутбуке Irbis NB72. Методы разблокировк</span>
+            </a><a href="/articles/z/za/zashel-v-zavodskie-nastrojki-i-magnitola-zavisla.html" class="pb-related-card">
+                <span class="pb-related-title">Магнитола зависла после сброса: как восстановить систему</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если автомобильная магнитола зависла после сброса к заводским наст</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-gp-035bth-black-green.html" class="pb-related-card">
+                <span class="pb-related-title">GP-035BTH Black Green: Подключение и настройка Bluetooth</span>
+                <span class="pb-related-desc">Полная инструкция по подключению GP-035BTH Black Green. Настройка, сопряжение, коды доступа и устран</span>
+            </a><a href="/articles/k/ka/kak-vernut-insagram-do-obnovleniya-ajos-18.html" class="pb-related-card">
+                <span class="pb-related-title">Как вернуть Instagram до iOS 18: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по откату версии Instagram после обновления iOS 18. Методы установки старых </span>
+            </a><a href="/articles/k/ka/kak-uznat-nazvanie-naushnikov-cherez-komp-esli-na-naushnikakh-nichego-napisano.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать модель наушников через ПК: методы определения</span>
+                <span class="pb-related-desc">Подробная инструкция по идентификации неизвестных наушников через Windows. Использование диспетчера </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

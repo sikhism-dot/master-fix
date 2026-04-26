@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Изменение файлов в корневом каталоге Android: Полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Как получить доступ к системным файлам Android, изменить root-каталог, настроить ADB и избежать ошибок при работе с разделом /system.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/iz/izmenenie-fajlov-v-kornevom-kataloge-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Изменение файлов в корневом каталоге Android: Полная инструкция">
+    <meta property="og:description" content="Как получить доступ к системным файлам Android, изменить root-каталог, настроить ADB и избежать ошибок при работе с разделом /system.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Изменение файлов в корневом каталоге Android: Полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-среды-и-получение-прав-суперпользователя">Подготовка среды и получение прав суперпользователя</a></li><li><a href="#использование-adb-для-удаленного-управления-файлами">Использование ADB для удаленного управления файлами</a></li><li><a href="#локальное-редактирование-через-файловые-менеджеры">Локальное редактирование через файловые менеджеры</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#заключение-и-рекомендации-по-безопасности">Заключение и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/p/pr/prilozhenie-soobshchenie-s-nastrojkami-dlya-chego.html">Настройки сообщений: скрытые функции и оптимизация</a></li><li><a href="/articles/c/co/com-android-stk.html">com android stk: что это за процесс и можно ли его отключить</a></li><li><a href="/articles/k/ka/kak-uznat-kogda-proizveden-telefon-khonor.html">Как узнать дату выпуска телефона Honor: все способы</a></li><li><a href="/articles/h/hu/huawei-remont-petli-kryshki-noutbuka.html">Ремонт петли крышки ноутбука Huawei: пошаговая инструкция</a></li><li><a href="/articles/s/se/sensor-test-tool-chto-eto-za-programma-na-android.html">Sensor Test Tool на Android: что это, зачем нужно и как пользоваться</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Работа с корневым каталогом Android: Доступ и редактирование</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-среды-и-получение-прав-суперпользователя">Подготовка среды и получение прав суперпользователя</a></li><li><a href="#использование-adb-для-удаленного-управления-файлами">Использование ADB для удаленного управления файлами</a></li><li><a href="#локальное-редактирование-через-файловые-менеджеры">Локальное редактирование через файловые менеджеры</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#заключение-и-рекомендации-по-безопасности">Заключение и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь часто сталкивается с ситуацией, когда стандартные средства операционной системы не позволяют удалить предустановленное приложение или изменить критически важный конфигурационный файл.</p>
+<p>Попытка скопировать файл в системную папку через обычный файловый менеджер завершается сообщением об ошибке доступа, даже если приложение имеет все запрашиваемые разрешения.</p>
+<p>Операционная система Android по умолчанию блокирует прямой доступ к корневым директориям в целях безопасности, что требует применения специализированных инструментов и прав администратора для модификации структуры.</p>
+
+<h2 id="подготовка-среды-и-получение-прав-суперпользователя">Подготовка среды и получение прав суперпользователя</h2>
+
+<p>Для начала работы необходимо обеспечить базовый доступ к отладочному интерфейсу устройства, так как без этого любые манипуляции с файловой системой будут невозможны.</p>
+<p>Включите режим разработчика, перейдя в <code>Настройки → О телефоне</code> и семь раз быстро нажав на номер сборки.</p>
+<p>После активации скрытого меню перейдите в <code>Настройки → Система → Для разработчиков</code> и активируйте переключатель <code>Отладка по USB</code>.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Получение прав суперпользователя (Root) аннулирует гарантию на устройство и может привести к необратимому повреждению системы при некорректных действиях.</p></aside>
+
+<p>Существует несколько методов получения привилегированного доступа, каждый из которых имеет свои особенности реализации и совместимости с конкретными моделями.</p>
+<p>Наиболее распространенным способом является разблокировка загрузчика и установка кастомного recovery, такого как <em>TWRP</em>, через который прошивается архив с утилитой <em>Magisk</em>.</p>
+<p>Альтернативный метод подразумевает использование эксплойтов ядра для временного или постоянного получения прав без перепрошивки, однако этот способ менее стабилен.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с процессорами MediaTek разблокировка загрузчика часто требует использования специализированных утилит от производителя, таких как SP Flash Tool.</p></aside>
+
+<p>После успешной установки прав суперпользователя в системе появляется соответствующее приложение для управления разрешениями.</p>
+<p>При первом запуске любого приложения, требующего глубокого доступа, на экране появится запрос на подтверждение прав.</p>
+<p>Важно внимательно читать запросы и предоставлять доступ только проверенным системным утилитам, чтобы избежать компрометации данных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод доступа</th>
+<th>Сложность</th>
+<th>Риск потери данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB Root (инженерные сборки)</td>
+<td>Низкая</td>
+<td>Отсутствует</td>
+</tr>
+<tr>
+<td>Magisk через TWRP</td>
+<td>Средняя</td>
+<td>Высокий (требует сброса)</td>
+</tr>
+<tr>
+<td>Одноклик-руты (KingRoot и аналоги)</td>
+<td>Низкая</td>
+<td>Средний (нестабильность)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Без активации отладки по USB и установки прав суперпользователя прямое редактирование системных файлов невозможно ни одним стандартным способом.</p></aside>
+
+<h2 id="использование-adb-для-удаленного-управления-файлами">Использование ADB для удаленного управления файлами</h2>
+
+<p>Инструментарий Android Debug Bridge позволяет взаимодействовать с файловой системой устройства с компьютера, что часто удобнее работы с маленького экрана.</p>
+<p>Подключите устройство к ПК кабелем и проверьте соединение командой <code>adb devices</code> в терминале.</p>
+<p>Если устройство отображается в списке, можно переходить к копированию файлов между компьютером и смартфоном.</p>
+
+<h3>Копирование и замена файлов через командную строку</h3>
+
+<p>Для загрузки файла на устройство используйте команду <code>adb push</code>, указав путь к исходному файлу и целевую директорию.</p>
+<p>Обратное действие — извлечение файла со смартфона на компьютер — выполняется командой <code>adb pull</code>.</p>
+<p>При попытке записи в системные разделы без прав root операция завершится ошибкой, поэтому предварительно нужно убедиться, что ADB запущен с правами root.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Загрузка файла в систему</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство и включите отладку</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите adb root (если доступно) или используйте su -c</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните adb push файл /system/bin/</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте наличие файла командой adb shell ls /system/bin</span></div></div>
+
+<p>Часто возникает необходимость изменить права доступа к скопированному файлу, чтобы система могла его исполнять.</p>
+<p>Делается это через команду <code>chmod</code>, запускаемую в оболочке устройства.</p>
+<p>Например, для исполняемого бинарного файла обычно устанавливаются права <code>755</code>.</p>
+
+<pre><code>adb shell
+<p>su</p>
+<p>chmod 755 /system/bin/имя_файла</p>
+<p>chown root:root /system/bin/имя_</p>
+</code></pre>
+
+<p>Изменение владельца файла также является критически важным шагом, так как системные процессы могут отказаться работать с файлами, принадлежащими пользователю.</p>
+<p>Владелец должен быть установлен в <code>root</code>, а группа обычно соответствует владельцу.</p>
+<p>Нарушение этих правил приводит к ошибкам загрузки или неработоспособности конкретной функции системы.</p>
+
+<h3>Работа с разделами в режиме только для чтения</h3>
+
+<p>Современные версии Android, начиная с <em>Android 10</em> и выше, монтируют системный раздел <code>/system</code> в режиме только для чтения (read-only) по умолчанию.</p>
+<p>Даже наличие прав root не позволяет напрямую записать файл в эту область без предварительного перемонтирования.</p>
+<p>Используйте команду <code>mount -o rw,remount /system</code> внутри оболочки с правами суперпользователя.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с внедренной системой разделов (system-as-root) путь монтирования может отличаться, например /, и требовать использования overlayfs.</p></aside>
+
+<p>После внесения изменений раздел рекомендуется снова смонтировать в режим чтения, чтобы обеспечить целостность данных при перезагрузке.</p>
+<p>Некоторые файловые менеджеры с root-доступом делают это автоматически при попытке редактирования.</p>
+<p>Однако при работе через ADB все команды необходимо вводить вручную.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Действие</th>
+<th>Необходимые права</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mount -o rw,remount</td>
+<td>Перемонтирование в режим записи</td>
+<td>Root</td>
+</tr>
+<tr>
+<td>adb push</td>
+<td>Копирование файла на устройство</td>
+<td>ADB</td>
+</tr>
+<tr>
+<td>chmod 755</td>
+<td>Изменение прав доступа</td>
+<td>Root</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества ADB</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Работа с клавиатуры ПК</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность автоматизации скриптами</li></ul></div>
+</div></div>
+
+<h2 id="локальное-редактирование-через-файловые-менеджеры">Локальное редактирование через файловые менеджеры</h2>
+
+<p>Для пользователей, предпочитающих графический интерфейс, существуют специализированные файловые менеджеры, работающие с правами суперпользователя.</p>
+<p>Популярные приложения, такие как <em>Root Explorer</em>, <em>MT Manager</em> или <em>Solid Explorer</em>, позволяют системные папки после подтверждения root-доступа.</p>
+<p>При первом входе в корневую директорию приложение запросит разрешение на использование привилегий, которое необходимо подтвердить.</p>
+
+<h3>Выбор подходящего инструмента для модификации</h3>
+<p>Не все файловые менеджеры одинаково хорошо справляются с системными файлами, особенно с бинарными данными и базами данных.</p>
+<p>Для редактирования текстовых конфигураций (<code>.prop</code>, <code>.conf</code>) подойдут простые редакторы с подсветкой синтаксиса.</p>
+<p>Для работы с <code>apk</code> файлами или библиотеками <code>.so</code> требуются более мощные инструменты, умеющие работать с hex-кодом.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При редактировании системных файлов всегда создавайте их резервную копию в той же папке с припиской.bak перед внесением изменений.</p></aside>
+
+<p>Процесс замены файла обычно выглядит как копирование новой версии в директорию с подтверждением замены существующего файла.</p>
+<p>Менеджер автоматически запросит права на запись и выполнит перемонтирование раздела, если это потребуется.</p>
+<p>Важно следить за тем, чтобы новый файл имел те же права доступа и владельца, что и оригинал.</p>
+
+<p>Многие менеджеры позволяют сразу после копирования изменить атрибуты файла через контекстное меню.</p>
+<p>Выберите файл, нажмите «Свойства» или «Permissions» и установите необходимые флаги чтения, записи и исполнения.</p>
+<p>Обычно для исполняемых файлов в <code>/system/bin</code> требуются права <code>rwxr-xr-x</code>.</p>
+
+<h3>Редактирование файла build.prop</h3>
+<p>Одним из самых частых сценариев является изменение файла <code>/system/build.prop</code> для тонкой настройки системы.</p>
+<p>Этот текстовый файл содержит параметры, определяющие поведение операционной системы, плотность экрана и идентификационные данные устройства.</p>
+<p>Для редактирования откройте файл встроенным или сторонним текстовым редактором с поддержкой кодировки UTF-8.</p>
+
+<p>Внесите необходимые строки, соблюдая формат <code>ключ=значение</code>.</p>
+<p>Любая синтаксическая ошибка в этом файле может привести к циклической перезагрузке устройства (bootloop).</p>
+<p>После сохранения изменений обязательно перезагрузите устройство для применения новых параметров.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неправильное редактирование build.prop может сделать устройство не загружаемым. Всегда имейте под рукой работающую резервную копию или возможность войти в Recovery.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе работы с корневыми файлами пользователи часто допускают ошибки, которые приводят к нестабильной работе системы.</p>
+<p>Понимание причин этих ошибок помогает избежать критических сбоев и потери данных.</p>
+<p>Ниже приведен список наиболее распространенных проблем и методы их решения.</p>
+
+<ol>
+<li><strong>Ошибка «Read-only file system» при записи</strong> — означает, что раздел не перемонтирован в режим записи; решение: используйте команду <code>mount -o rw,remount</code> или функцию файлового менеджера для включения записи.</li>
+<li><strong>Отказ приложения запускаться после замены файла</strong> — скорее всего, изменены права доступа или владелец файла; решение: проверьте атрибуты <code>chmod</code> и <code>chown</code>, они должны совпадать с оригиналом.</li>
+<li><strong>Bootloop после редактирования системных файлов</strong> — синтаксическая ошибка в критическом файле или удаление зависимого компонента; решение: загрузитесь в Recovery и восстановите оригинальный файл из бэкапа или сделайте сброс.</li>
+<li><strong>Невидимость файлов в обычном режиме</strong> — некоторые файловые менеджеры скрывают системные файлы по умолчанию; решение: включите отображение скрытых файлов в настройках приложения или используйте root-режим.</li>
+</ol>
+
+<p>Игнорирование требований к правам доступа является основной причиной неработоспособности модифицированных компонентов.</p>
+<p>Система Android строго следит за целостностью исполняемых файлов и библиотек.</p>
+<p>Если хэш-сумма или подписи не совпадают с ожидаемыми, процесс может быть заблокирован механизмами безопасности.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Внимательная проверка прав доступа и наличие резервной копии перед редактированием предотвращают 90% возможных проблем с загрузкой системы.</p></aside>
+
+<h2 id="заключение-и-рекомендации-по-безопасности">Заключение и рекомендации по безопасности</h2>
+
+<p>Модификация файлов в корневом каталоге Android предоставляет неограненные возможности по кастомизации и оптимизации устройства.</p>
+<p>Однако этот процесс требует высокой квалификации и понимания структуры файловой системы Linux, на которой базируется Android.</p>
+<p>Каждое изменение должно быть осознанным, а перед началом работ обязательно создается полная резервная копия данных.</p>
+
+<p>Использование проверенных инструментов и следование инструкциям минимизирует риски повреждения программного обеспечения.</p>
+<p>Регулярное обновление знаний о новых версиях Android и изменениях в политике безопасности Google позволяет оставаться в курсе актуальных методов работы.</p>
+<p>Грамотное управление правами доступа гарантирует стабильную работу операционной системы после внесения изменений.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/p/pr/prilozhenie-soobshchenie-s-nastrojkami-dlya-chego.html" class="pb-related-card">
+                <span class="pb-related-title">Настройки сообщений: скрытые функции и оптимизация</span>
+                <span class="pb-related-desc">Полный технический гид по скрытым настройкам сообщений. Как активировать RCS, настроить SMS-фильтры </span>
+            </a><a href="/articles/c/co/com-android-stk.html" class="pb-related-card">
+                <span class="pb-related-title">com android stk: что это за процесс и можно ли его отключить</span>
+                <span class="pb-related-desc">Подробный анализ системного процесса com android stk на Android. Стоит ли отключать SIM-меню, влияни</span>
+            </a><a href="/articles/k/ka/kak-uznat-kogda-proizveden-telefon-khonor.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать дату выпуска телефона Honor: все способы</span>
+                <span class="pb-related-desc">Подробная инструкция, как определить дату производства смартфона Honor по IMEI, коду SN, в меню наст</span>
+            </a><a href="/articles/h/hu/huawei-remont-petli-kryshki-noutbuka.html" class="pb-related-card">
+                <span class="pb-related-title">Ремонт петли крышки ноутбука Huawei: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по замене петли крышки ноутбука Huawei. Разборка, выбор запчастей, устранение т</span>
+            </a><a href="/articles/s/se/sensor-test-tool-chto-eto-za-programma-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Sensor Test Tool на Android: что это, зачем нужно и как пользоваться</span>
+                <span class="pb-related-desc">Подробный обзор Sensor Test Tool для Android. Диагностика датчиков, проверка акселерометра и гироско</span>
+            </a><a href="/articles/u/un/university-of-problems-kak-pomenyat-yazyk-na-russkij-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как поменять язык в University of Problems на Android: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по локализации University of Problems на русский язык. Решение проблем с кодир</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

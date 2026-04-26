@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как заблокировать доступ FL Studio к интернету: Скрипты и правила — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по блокировке сетевых запросов FL Studio через брандмауэр и скрипты для Windows. Настройка исключений и анализ трафика.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/sc/scripts-to-block-internet-access-for-fl-studio.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как заблокировать доступ FL Studio к интернету: Скрипты и правила">
+    <meta property="og:description" content="Техническое руководство по блокировке сетевых запросов FL Studio через брандмауэр и скрипты для Windows. Настройка исключений и анализ трафика.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как заблокировать доступ FL Studio к интернету: Скрипты и правила</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#анализ-сетевой-активности-и-целевых-процессов">Анализ сетевой активности и целевых процессов</a></li><li><a href="#создание-правил-блокировки-через-powershell-скрипты">Создание правил блокировки через PowerShell скрипты</a></li><li><a href="#ручная-настройка-брандмауэра-windows">Ручная настройка брандмауэра Windows</a></li><li><a href="#использование-сторонних-утилит-для-контроля-трафика">Использование сторонних утилит для контроля трафика</a></li><li><a href="#типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vytashchit-internet-kabel-iz-kompyutera.html">Как вытащить интернет кабель из компьютера: полная инструкция</a></li><li><a href="/articles/c/ch/chto-znachit-set-ne-nastroena-v-rostelekom.html">Ошибка «Сеть не настроена» Ростелеком: причины и решения</a></li><li><a href="/articles/k/ka/kak-otklyuchit-oflajn-rezhim-na-planshete.html">Как отключить офлайн режим на планшете: Полное руководство</a></li><li><a href="/articles/q/qu/query-stringkak-obnovit-clash-of-clans.html">Как обновить Clash of Clans: полная инструкция по версиям</a></li><li><a href="/articles/k/ka/kak-sdelat-iz-vtorogo-routera-repiter.html">Как сделать репитер из роутера: пошаговая настройка</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническая инструкция: Блокировка сетевых подключений FL Studio</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#анализ-сетевой-активности-и-целевых-процессов">Анализ сетевой активности и целевых процессов</a></li><li><a href="#создание-правил-блокировки-через-powershell-скрипты">Создание правил блокировки через PowerShell скрипты</a></li><li><a href="#ручная-настройка-брандмауэра-windows">Ручная настройка брандмауэра Windows</a></li><li><a href="#использование-сторонних-утилит-для-контроля-трафика">Использование сторонних утилит для контроля трафика</a></li><li><a href="#типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи профессионального музыкального софта часто сталкиваются с необходимостью полного отключения приложения от глобальной сети. Ситуация, когда <em>FL Studio</em> или сопутствующие процессы <em>Image-Line</em> пытаются установить соединение в фоновом режиме, может вызывать задержки в работе, конфликты лицензирования или просто раздражать постоянными запросами брандмауэра.</p>
+
+<p>Стандартные настройки внутри самой программы редко позволяют полностью изолировать приложение от внешнего мира, оставляя открытыми порты для проверки обновлений или облачной синхронизации. Для решения этой задачи требуется вмешательство на уровне операционной системы, где наиболее эффективным инструментом выступает встроенный брандмауэр Windows в связке со специализированными скриптами или ручными правилами.</p>
+
+<p>Реализация блокировки требует точности, так как ошибка в адресации исполняемого файла или выборе протокола может привести не только к неработоспособности плагина, но и к нестабильности всей аудиосистемы. Ниже представлены проверенные методы изоляции трафика, которые не требуют установки стороннего антивирусного ПО и базируются на системных утилитах.</p>
+
+<h2 id="анализ-сетевой-активности-и-целевых-процессов">Анализ сетевой активности и целевых процессов</h2>
+
+<p>Прежде чем применять блокирующие механизмы, необходимо четко идентифицировать исполняемые файлы, которые требуют ограничения. В экосистеме <em>FL Studio</em> сетевой трафик генерируют не только основной файл запуска, но и вспомогательные процессы, отвечающие за управление плагинами и лицензионными ключами.</p>
+
+<p>На практике основным объектом блокировки является файл <code>FL64.exe</code> (или <code>FL.exe</code> для 32-битных версий), расположенный в директории установки программы. Однако, если игнорировать фоновые службы, такие как <em>Image-Line License Manager</em>, блокировка будет неэффективной, так как эти компоненты могут инициировать повторное соединение при запуске DAW.</p>
+
+<p>Для точного определения путей к файлам стоит воспользоваться диспетчером задач или специализированными утилитами мониторинга сети. </p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>По умолчанию исполняемые файлы находятся по пути C:\Program Files\Image-Line\FL Studio 20\ или в пользовательской папке AppData.</p></aside>
+
+<p>Следующая таблица демонстрирует основные процессы, которые следует учитывать при составлении списка исключений:</p>
+
+<table>
+<thead>
+<tr>
+<th>Процесс</th>
+<th>Функция</th>
+<th>Приоритет блокировки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FL64.exe</code></td>
+<td>Основное приложение DAW</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td><code>FLRegKey.exe</code></td>
+<td>Менеджер лицензий</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td><code>Wrapper.exe</code></td>
+<td>Обертка для VST плагинов</td>
+<td>Средний</td>
+</tr>
+</tbody>
+</table>
+
+<p>После идентификации всех компонентов можно переходить к созданию правил фильтрации трафика. Использование скриптов автоматизирует этот процесс, минимизируя риск человеческой ошибки при ручном вводе путей.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Точная идентификация всех исполняемых файлов, связанных с FL Studio, является критически важным этапом перед настройкой блокировок.</p></aside>
+
+<h2 id="создание-правил-блокировки-через-powershell-скрипты">Создание правил блокировки через PowerShell скрипты</h2>
+
+<p>Наиболее гибким и воспроизводимым методом настройки является использование скриптов PowerShell. Этот подход позволяет развернуть конфигурацию на нескольких машинах или быстро восстановить настройки после переустановки системы без необходимости повторного прохождения всех этапов вручную.</p>
+
+<p>Скрипт для блокировки работает путем добавления правил в службу брандмауэра Windows (<em>Windows Defender Firewall with Advanced Security</em>). Команды выполняются от имени администратора, что требует соответствующих прав доступа. Если у вас нет опыта работы с командной строкой, внимательно следуйте инструкции.</p>
+
+<p>Основная логика скрипта строится на команде <code>New-NetFirewallRule</code>, которая создает новое правило с параметрами блокировки исходящего (<code>Outbound</code>) и входящего (<code>Inbound</code>) трафика. Важно указать полные пути к исполняемым файлам, полученные на предыдущем этапе.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Запуск скриптов из непроверенных источников может нанести вред системе. Всегда проверяйте код перед выполнением.</p></aside>
+
+<p>Ниже приведен пример структуры команды, которая используется внутри скрипта для создания правила блокировки:</p>
+
+<pre><code>New-NetFirewallRule -DisplayName "Block FL Studio" -Direction Outbound -Action Block -Program "C:\Путь\К\Файлу\FL64.exe" -Enabled True</code></pre>
+
+<p>Для автоматизации процесса можно создать файл с расширением <code>.ps1</code>, содержащий последовательность таких команд для всех выявленных процессов. Это обеспечивает единый стандарт конфигурации и упрощает аудит безопасности.</p>
+
+<ol>
+<li>Откройте блокнот и введите команды PowerShell для каждого целевого процесса.</li>
+<li>Сохраните файл с расширением <code>.ps1</code>, например, <code>block_fl.ps1</code>.</li>
+<li>Запустите PowerShell от имени администратора.</li>
+<li>Выполните скрипт командой <code>.\block_fl.ps1</code>.</li>
+</ol>
+
+<p>Использование скриптов особенно актуально для системных администраторов или владельцев студий, где требуется единая политика безопасности на всех рабочих местах.</p>
+
+<h2 id="ручная-настройка-брандмауэра-windows">Ручная настройка брандмауэра Windows</h2>
+
+<p>Если использование скриптов представляется сложным или требует дополнительной верификации, ручная настройка через графический интерфейс брандмауэра Windows является надежной альтернативой. Этот метод дает визуальный контроль над каждым создаваемым правилом.</p>
+
+<p>Для начала работы необходимо открыть расширенные настройки безопасности. Перейдите в панель управления, выберите <code>Брандмауэр Защитника Windows</code> и кликните на ссылку <code>Дополнительные параметры</code> в левом меню. Откроется консоль управления с деревом правил.</p>
+
+<p>В открывшемся окне выберите раздел <code>Правила для исходящего подключения</code>. Именно здесь создаются ограничения на отправку данных из приложения во внешнюю сеть. Нажав правой кнопкой мыши, выберите <code>Создать правило..</code> для запуска мастера настройки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание правила блокировки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите «Для программы»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите путь к FL64.exe</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите «Блокировать подключение»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Активируйте правило для всех профилей сети</span></div></div>
+
+<p>Мастер предложит несколько типов правил: для программы, порта или предопределенные. Необходимо выбрать вариант <code>Для программы</code>, так как блокировка по порту может быть неэффективной из-за динамического назначения портов современными приложениями.</p>
+
+<p>На этапе указания пути критически важно нажать <code>Обзор</code> и найти исполняемый файл <code>FL64.exe</code>. После выбора файла система предложит действие — здесь выбирается <code>Блокировать подключение</code>. Последний шаг — применение правила ко всем типам сетей (доменная, частная, общественная).</p>
+
+<p>Повторите процедуру для всех процессов, identified в первом разделе, включая лицензионный менеджер. После завершения списка правил они сразу вступают в силу, и повторный запуск программы не должен инициировать сетевую активность.</p>
+
+<h2 id="использование-сторонних-утилит-для-контроля-трафика">Использование сторонних утилит для контроля трафика</h2>
+
+<p>В некоторых случаях встроенных средств Windows может быть недостаточно для детального анализа или управления запросами. Сторонние утилиты, такие как <em>Simplewall</em> или <em>Malwarebytes Windows Firewall Control</em>, предоставляют более удобный интерфейс и расширенные функции логирования.</p>
+
+<p>Эти программы выступают в роли надстройки над стандартным брандмауэром, не заменяя его, а лишь упрощая управление правилами. Они позволяют видеть в реальном времени, какие процессы пытаются выйти в сеть, и блокировать их одним кликом.</p>
+
+<p>Преимущество таких инструментов заключается в возможности создания временных правил или правил с уведомлением. Например, можно настроить систему так, чтобы при попытке <em>FL Studio</em> выйти в интернет на экране появлялось всплывающее окно с запросом разрешения.</p>
+
+<ul>
+<li>Простота управления правилами через единый интерфейс.</li>
+<li>Наличие подробных логов всех сетевых попыток.</li>
+<li>Возможность импорта и экспорта конфигураций.</li>
+<li>Режим обучения, позволяющий пользователю самому решать, какие соединения разрешать.</li>
+</ul>
+
+<p>При использовании стороннего софта важно загрузить его с официального сайта разработчика, чтобы избежать внедрения вредоносного кода. После установки утилита предложит активировать фильтрацию, что приведет к временному разрыву всех сетевых соединений до настройки правил.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Удобный интерфейс и логи</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Минусы:Требуется установка дополнительного ПО:Минусы:Возможные конфликты с антивирусами</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul></ul></div>
+</div></div>
+
+<p>Для пользователей, которые часто переключаются между режимами работы (онлайн/офлайн), такие утилиты предлагают профили. Можно создать профиль «Музыка», в котором доступ к сети для DAW заблокирован, и профиль «Обычный», где действуют стандартные настройки.</p>
+
+<h2 id="типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</h2>
+
+<p>В процессе настройки блокировки пользователи часто сталкиваются с рядом типичных проблем, которые могут привести к ложному впечатлению о неработоспособности метода. Понимание этих нюансов поможет избежать лишних затрат времени на отладку.</p>
+
+<p>Одной из частых ошибок является блокировка только основного исполняемого файла. Как упоминалось ранее, <em>FL Studio</em> использует множество вспомогательных процессов, и если хотя бы один из них останется разблокированным, программа может успешно установить соединение.</p>
+
+<p>Другая распространенная проблема связана с обновлением программы. При обновлении <em>FL Studio</em> до новой версии может измениться хэш-сумма файла или его расположение, что приведет к игнорированию ранее созданных правил брандмауэром, так как они привязаны к конкретному пути или сигнатуре файла.</p>
+
+<ol>
+<li><strong>Блокировка только одного направления</strong> — часто пользователи создают правило только для исходящего трафика, забывая про входящий, что в некоторых сценариях оставляет лазейку для двустороннего обмена данными.</li>
+<li><strong>Неверный путь к файлу</strong> — если программа установлена в нестандартную папку или используется портативная версия, указание неверного пути в правиле сделает его бесполезным.</li>
+<li><strong>Конфликт с антивирусом</strong> — сторонние антивирусные комплексы могут иметь собственный брандмауэр, который игнорирует настройки Windows, требуя отдельной настройки внутри антивируса.</li>
+<li><strong>Игнорирование фоновых служб</strong> — блокировка основного процесса не всегда останавливает службы обновлений, которые могут работать как отдельные системные сервисы.</li>
+</ol>
+
+<p>Для проверки эффективности принятых мер можно использовать утилиты мониторинга сети, такие как <em>Wireshark</em> или встроенный монитор ресурсов Windows. Запустите мониторинг и попробуйте запустить <em>FL Studio</em>; если правила работают, никаких активных соединений от имени процессов <em>Image-Line</em> наблюдаться не будет.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду netstat -an в командной строке для быстрой проверки активных подключений перед запуском DAW и после.</p></aside>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+
+<p>Блокировка доступа <em>FL Studio</em> к интернету является эффективным способом предотвращения фоновой активности, проверки лицензий или сбора телеметрии. Наиболее надежным методом остается создание правил через брандмауэр Windows, будь то вручную или посредством PowerShell скриптов.</p>
+
+<p>Ключевым фактором успеха является комплексный подход: необходимо блокировать не только главный исполняемый файл, но и все связанные процессы-помощники. Регулярная проверка правил после обновления программного обеспечения гарантирует сохранение конфиденциальности и стабильности работы.</p>
+
+<p>Выбор между ручным методом и скриптами зависит от уровня подготовки пользователя и количества компьютеров, требующих настройки. В обоих случаях соблюдение точности путей и параметров протоколов обеспечивает желаемую изоляцию приложения от глобальной сети.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vytashchit-internet-kabel-iz-kompyutera.html" class="pb-related-card">
+                <span class="pb-related-title">Как вытащить интернет кабель из компьютера: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению Ethernet-кабеля от ПК. Разбор типов коннекторов, фиксаторов, пре</span>
+            </a><a href="/articles/c/ch/chto-znachit-set-ne-nastroena-v-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка «Сеть не настроена» Ростелеком: причины и решения</span>
+                <span class="pb-related-desc">Подробный гид по устранению ошибки «Сеть не настроена» на роутерах Ростелеком. Настройка PPPoE, VLAN</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-oflajn-rezhim-na-planshete.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить офлайн режим на планшете: Полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению офлайн режима на Android и iOS планшетах. Решение проблем с синхр</span>
+            </a><a href="/articles/q/qu/query-stringkak-obnovit-clash-of-clans.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить Clash of Clans: полная инструкция по версиям</span>
+                <span class="pb-related-desc">Узнайте, как правильно обновить Clash of Clans на Android и iOS. Решите ошибки загрузки, узнайте про</span>
+            </a><a href="/articles/k/ka/kak-sdelat-iz-vtorogo-routera-repiter.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать репитер из роутера: пошаговая настройка</span>
+                <span class="pb-related-desc">Техническое руководство по превращению старого роутера в усилитель Wi-Fi сигнала. Настройка режима к</span>
+            </a><a href="/articles/v/v-/v-rostelekom-kak-otklyuchit-roditelskij-kontrol.html" class="pb-related-card">
+                <span class="pb-related-title">Ростелеком: как отключить родительский контроль</span>
+                <span class="pb-related-desc">Подробная инструкция по снятию ограничений Родительского контроля Ростелеком через приложение, личны</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

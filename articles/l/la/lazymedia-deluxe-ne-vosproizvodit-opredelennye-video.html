@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>LazyMedia Deluxe: решение проблем с воспроизведением видео — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический гайд по устранению ошибок воспроизведения в LazyMedia Deluxe. Настройка кодеков, работа с SMB/NFS и оптимизация буфера.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/la/lazymedia-deluxe-ne-vosproizvodit-opredelennye-video.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="LazyMedia Deluxe: решение проблем с воспроизведением видео">
+    <meta property="og:description" content="Подробный технический гайд по устранению ошибок воспроизведения в LazyMedia Deluxe. Настройка кодеков, работа с SMB/NFS и оптимизация буфера.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">LazyMedia Deluxe: решение проблем с воспроизведением видео</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-кодеков-и-форматов-видео">Диагностика кодеков и форматов видео</a></li><li><a href="#оптимизация-сетевых-протоколов-и-буферизации">Оптимизация сетевых протоколов и буферизации</a></li><li><a href="#работа-с-внешним-плеером-и-системными-настройками">Работа с внешним плеером и системными настройками</a></li><li><a href="#специфика-устройств-и-версий-android">Специфика устройств и версий Android</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/j/jb/jbl-115-naushniki-besprovodnye-naushniki-podklyuchit.html">JBL 115 наушники беспроводные: как подключить и настроить</a></li><li><a href="/articles/l/ld/ld-player-ne-zagruzhaet-igru.html">LD Player не загружает игру: решение проблем с запуском</a></li><li><a href="/articles/k/ka/kak-osvobodit-pamyat-videokarty-na-vindovs-7.html">Как освободить память видеокарты на Windows 7: полное руководство</a></li><li><a href="/articles/j/jb/jbl-clip5-equalizer-apk.html">JBL Clip 5 Equalizer APK: Настройка звука и совместимость</a></li><li><a href="/articles/k/ka/kak-podklyuchit-kameru-videonablyudeniya-k-kompyuteru.html">Как подключить камеру видеонаблюдения к ПК: подробная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Устранение проблем с воспроизведением видео в LazyMedia Deluxe</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-кодеков-и-форматов-видео">Диагностика кодеков и форматов видео</a></li><li><a href="#оптимизация-сетевых-протоколов-и-буферизации">Оптимизация сетевых протоколов и буферизации</a></li><li><a href="#работа-с-внешним-плеером-и-системными-настройками">Работа с внешним плеером и системными настройками</a></li><li><a href="#специфика-устройств-и-версий-android">Специфика устройств и версий Android</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>В процессе эксплуатации мультимедийных приставок на базе Android TV часто возникает ситуация, когда интерфейс приложения реагирует корректно, но при запуске конкретного видеофайла происходит зависание, появление черного экрана или возврат в меню.</p>
+<p>Подобное поведение обычно указывает на несовместимость выбранного программного декодера с форматом исходного видеопотока или на недостаточную пропускную способность сетевого канала при стриминге высокого битрейта.</p>
+<p>На практике это означает, что стандартные настройки плеера не справляются с обработкой сложных контейнеров или специфических кодеков, требующих аппаратного ускорения, которое в данном случае может быть заблокировано или неправильно интерпретировано системой.</p>
+
+<h2 id="диагностика-кодеков-и-форматов-видео">Диагностика кодеков и форматов видео</h2>
+<p>Первым шагом в устранении неисправности является точное определение технических характеристик проблемного файла, так как именно они диктуют требования к вычислительным ресурсам устройства.</p>
+<p>Если у вас есть доступ к файлу на компьютере, стоит проверить его свойства, обратив внимание на кодек видео (например, H.265/HEVC, VP9, AV1) и аудиопоток (AC3, DTS, TrueHD), поскольку именно аудиокодеки часто становятся причиной отсутствия звука или полного отказа запуска.</p>
+<p>Внутри приложения <em>LazyMedia Deluxe</em> также можно получить базовую информацию, попытавшись запустить файл и наблюдая за поведением индикатора буферизации или сообщением об ошибке, которое может кратковременно появиться.</p>
+
+<h3>Аппаратное и программное декодирование</h3>
+<p>Ключевым параметром, влияющим на стабильность, является выбор между аппаратным (HW) и программным (SW) декодированием, который осуществляется в настройках плеера.</p>
+<p>Аппаратное декодирование задействует специализированные модули процессора, что экономит ресурсы, но ограничено списком поддерживаемых форматов, заложенным производителем чипа.</p>
+<p>Программное декодирование использует мощности центрального процессора и позволяет воспроизводить практически любые форматы, однако требует значительных вычислительных мощностей и может приводить к рассинхронизации аудио и видео на слабых устройствах.</p>
+<p>Для переключения режима необходимо перейти в раздел <code>Настройки → Плеер → Декодирование</code> и выбрать соответствующий приоритет, например, <code>Hardware (OMX)</code> или <code>Software (FFmpeg)</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях телевизоров с Android TV аппаратный декодер может быть заблокирован производителем для определенных разрешений, таких как 4K HDR.</p></aside>
+
+<p>В таблице ниже приведено сравнение методов декодирования для различных сценариев использования:</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Аппаратное (HW)</th>
+<th>Программное (SW)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Энергопотребление</td>
+<td>Низкое</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Поддержка форматов</td>
+<td>Ограничена чипом</td>
+<td>Практически полная</td>
+</tr>
+<tr>
+<td>Нагрузка на CPU</td>
+<td>Минимальная</td>
+<td>Максимальная</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если выбор программного декодера не решил проблему, стоит рассмотреть возможность установки внешних библиотек кодеков, если версия операционной системы позволяет это сделать.</p>
+<p>Частой ошибкой является игнорирование частоты кадров: видео с нестандартной частотой (например, 23.976 или 59.94 Гц) может требовать включения функции автоматической смены частоты обновления экрана.</p>
+<p>Для активации данной функции следует перейти в <code>Настройки → Видео → Частота кадров</code> и установить значение <code>Auto</code> или <code>Match content</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка декодера</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройки приложения</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в раздел «Плеер»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите пункт «Декодирование»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выберите «Software» для максимальной совместимости</span></div></div>
+
+<h2 id="оптимизация-сетевых-протоколов-и-буферизации">Оптимизация сетевых протоколов и буферизации</h2>
+<p>Когда проблема касается потокового воспроизведения по локальной сети, основным (узким местом) становится скорость передачи данных и стабильность соединения между сервером и клиентом.</p>
+<p>Протокол SMB, являясь наиболее популярным для доступа к файловым шарам Windows, часто демонстрирует низкую производительность при передаче больших объемов данных без должной настройки.</p>
+<p>В отличие от него, протокол NFS обеспечивает более высокую скорость и меньшую нагрузку на процессор, что критически важно для воспроизведения тяжеловесных файлов в разрешении 4K.</p>
+
+<h3>Настройка размера буфера и протокола</h3>
+<p>Для устранения рывков и заиканий необходимо увеличить размер буфера воспроизведения, что позволяет накапливать определенный объем данных перед началом проигрывания.</p>
+<p>В настройках <em>LazyMedia Deluxe</em> следует найти пункт <code>Размер буфера</code> и изменить его значение с <code>Default</code> на <code>Large</code> или вручную указать объем в мегабайтах, если такая опция доступна.</p>
+<p>Если используется протокол SMB, рекомендуется принудительно переключить версию протокола на SMBv2 или SMBv3, так как первая версия является морально устаревшей и неэффективной.</p>
+<p>Это делается в меню добавления сетевого ресурса: при создании нового соединения в поле <code>Протокол</code> или <code>Версия SMB</code> нужно выбрать соответствующий вариант.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование протокола SMBv1 на современных операционных системах Windows может быть заблокировано политиками безопасности по умолчанию.</p></aside>
+
+<p>Сравнение характеристик сетевых протоколов представлено в следующей таблице:</p>
+<table>
+<thead>
+<tr>
+<th>Протокол</th>
+<th>Скорость</th>
+<th>Совместимость</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SMB v1</td>
+<td>Низкая</td>
+<td>Высокая (старые ОС)</td>
+</tr>
+<tr>
+<td>SMB v2/v3</td>
+<td>Высокая</td>
+<td>Средняя (Win 7+)</td>
+</tr>
+<tr>
+<td>NFS</td>
+<td>Максимальная</td>
+<td>Требует настройки сервера</td>
+</tr>
+</tbody>
+</table>
+
+<p>Допустим, что сеть работает стабильно, но видео все равно прерывается: в таком случае стоит проверить, не используется ли Wi-Fi соединение на частоте 2.4 ГГц.</p>
+<p>Для стриминга высокого качества настоятельно рекомендуется использование проводного соединения Ethernet или Wi-Fi диапазона 5 ГГц.</p>
+<p>Также имеет смысл отключить в роутере функции энергосбережения для беспроводного модуля, если они активны, так как это может вызывать кратковременные разрывы соединения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для диагностики скорости сети используйте встроенные тесты скорости в файловых менеджерах или сторонние приложения вроде «Tuxera NFS Client» с функцией бенчмарка.</p></aside>
+
+<h2 id="работа-с-внешним-плеером-и-системными-настройками">Работа с внешним плеером и системными настройками</h2>
+<p>Встроенный движок воспроизведения <em>LazyMedia Deluxe</em> базируется на стандартных библиотеках Android, которые могут иметь ограничения в конкретных версиях прошивки.</p>
+<p>Обходным путем является использование внешнего плеера, такого как <em>VLC for Android</em> или <em>MX Player</em>, которые имеют собственные, независимо обновляемые наборы кодеков.</p>
+<p>Для реализации этого сценария необходимо в настройках <em>LazyMedia Deluxe</em> перейти в раздел <code>Плеер</code> и в пункте <code>Внешний плеер</code> выбрать установленное приложение из списка.</p>
+
+<h3>Настройка прав доступа и энергосбережения</h3>
+<p>Системы Android TV часто агрессивно управляют энергосбережением, что может приводить к принудительной остановке фоновых процессов или ограничению производительности приложения.</p>
+<p>Стоит перейти в системные настройки телевизора или приставки по пути <code>Настройки → Приложения → LazyMedia Deluxe</code>.</p>
+<p>В этом разделе необходимо найти пункт <code>Энергосбережение</code> или <code>Оптимизация батареи</code> и установить значение <code>Не ограничивать</code> или <code>Нет</code>.</p>
+<p>Кроме того, следует убедиться, что приложению выданы все необходимые разрешения на доступ к хранилищу и локальной сети, особенно на версиях Android 11 и выше, где требования к безопасности ужесточены.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подключение внешнего плеера</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите VLC или MX Player</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте настройки LazyMedia Deluxe</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите «Внешний плеер»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Укажите установленное приложение</span></div></div>
+
+<p>Если проблема сохраняется только с определенными файлами, возможно, поврежден сам файл или его индексная часть.</p>
+<p>Проверка целостности файла может быть выполнена путем его запуска на ПК или другом устройстве, что позволит исключить ошибку источника.</p>
+<p>В некоторых случаях помогает очистка кэша приложения через системное меню управления приложениями, что удаляет временные файлы, которые могли повредиться.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При использовании внешнего плеера навигация по меню (перемотка, выбор главы) может работать менее корректно, чем во встроенном движке.</p></aside>
+
+<h2 id="специфика-устройств-и-версий-android">Специфика устройств и версий Android</h2>
+<p>Различные производители оборудования реализуют поддержку мультимедийных функций по-разному, что приводит к уникальным сценариям ошибок на разных устройствах.</p>
+<p>На устройствах с чипами <em>Realtek</em> часто встречаются проблемы с воспроизведением звука в форматах DTS-HD и TrueHD через HDMI, требуя переключения вывода звука в режим <code>LPCM</code> или <code>Passthrough</code>.</p>
+<p>Устройства на базе <em>Amlogic</em>, напротив, могут испытывать трудности с программным декодированием тяжелых кодеков из-за ограничений драйверов в старых версиях Android.</p>
+
+<h3>Проблемы совместимости на разных версиях ОС</h3>
+<p>В Android 9 и более старых версиях могут отсутствовать современные API для работы с файловыми системами, что требует использования специальных методов доступа (SAF).</p>
+<p>На Android 11 и 12 введены строгие ограничения на доступ к файловой системе, что может блокировать сканирование сетевых дисков или локальных папок.</p>
+<p>Для решения проблем на новых версиях ОС рекомендуется использовать протокол WebDAV или настраивать доступ через специальные менеджеры файлов, имеющие права на работу с системными папками.</p>
+<p>Также стоит проверить наличие обновлений для самого приложения <em>LazyMedia Deluxe</em>, так как разработчики регулярно выпускают патчи для совместимости с новыми версиями Android.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование внешнего плеера</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантированная поддержка кодеков</li><li>✅ Независимость от системных библиотек</li><li>✅ Частые обновления движка</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Двойной расход оперативной памяти</li><li>❌ Сложность настройки интерфейса</li><li>❌ Возможные рассинхронизации пульта</li></ul></div>
+</div></div>
+
+<p>Если у вас устройство от известного бренда (например, <em>Nvidia Shield</em>, <em>Xiaomi Mi Box</em>), стоит поискать специфические настройки в разделе «Для разработчиков».</p>
+<p>В частности, опции, связанные с принудительным включением аппаратного ускорения или изменением плотности DPI, могут косвенно влиять на работу видеоплееров.</p>
+<p>Сброс настроек приложения до заводских значений иногда является единственным способом устранить конфликт конфигурационных файлов после обновления системы.</p>
+
+<h2 id="типичные-ошибки-пользователей">Типичные ошибки пользователей</h2>
+<p>В процессе настройки пользователи часто допускают ряд стандартных ошибок, которые сводят на нет все усилия по оптимизации.</p>
+<ol>
+<li><strong>Игнорирование версии протокола SMB</strong> — попытка использовать SMBv1 на современных скоростях приводит к постоянным буферизациям, необходимо переключаться на SMBv2/v3 или NFS.</li>
+<li><strong>Неверный выбор декодера для 4K</strong> — включение программного декодера для 4K видео на слабом процессоре вызывает слайд-шоу, нужно использовать аппаратный режим или снизить разрешение.</li>
+<li><strong>Отсутствие прав доступа в Android 11+</strong> — установка приложения без предоставления разрешений на управление файлами блокирует доступ к локальным видеофайлам.</li>
+<li><strong>Использование Wi-Fi 2.4 ГГц для тяжелого контента</strong> — пропускной способности и стабильности этой частоты недостаточно для битрейта выше 20-30 Мбит/с, требуется 5 ГГц или кабель.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректная работа LazyMedia Deluxe зависит от правильного pairing кодеков, сетевых настроек и прав доступа в конкретной версии Android.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+<p>Решение проблем с воспроизведением в <em>LazyMedia Deluxe</em> требует последовательного исключения факторов: от проверки сетевого протокола и размера буфера до выбора корректного метода декодирования.</p>
+<p>В большинстве случаев переход на протокол NFS, увеличение буфера и использование внешнего плеера для специфических форматов полностью устраняют неисправности.</p>
+<p>Регулярное обновление приложения и проверка системных ограничений энергосбережения позволяют поддерживать стабильную работу медиацентра на протяжении длительного времени.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/j/jb/jbl-115-naushniki-besprovodnye-naushniki-podklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">JBL 115 наушники беспроводные: как подключить и настроить</span>
+                <span class="pb-related-desc">Полная инструкция по подключению JBL 115. Настройка Bluetooth, сопряжение с Android и iOS, устранени</span>
+            </a><a href="/articles/l/ld/ld-player-ne-zagruzhaet-igru.html" class="pb-related-card">
+                <span class="pb-related-title">LD Player не загружает игру: решение проблем с запуском</span>
+                <span class="pb-related-desc">Подробный разбор причин, почему LD Player не загружает игру. Настройка эмулятора, драйверов и параме</span>
+            </a><a href="/articles/k/ka/kak-osvobodit-pamyat-videokarty-na-vindovs-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как освободить память видеокарты на Windows 7: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по очистке VRAM на Windows 7. Методы оптимизации драйверов, реестра и настроек </span>
+            </a><a href="/articles/j/jb/jbl-clip5-equalizer-apk.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Clip 5 Equalizer APK: Настройка звука и совместимость</span>
+                <span class="pb-related-desc">Полный гид по настройке эквалайзера JBL Clip 5. Обзор APK-файлов, совместимость с Android и iOS, аль</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-kameru-videonablyudeniya-k-kompyuteru.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить камеру видеонаблюдения к ПК: подробная инструкция</span>
+                <span class="pb-related-desc">Узнайте, как подключить IP или USB камеру к компьютеру через Wi-Fi, кабель или роутер. Настройка вид</span>
+            </a><a href="/articles/d/di/digma-led24sbb32nastrojki-video.html" class="pb-related-card">
+                <span class="pb-related-title">Digma LED24SBB32: настройка видео и изображения</span>
+                <span class="pb-related-desc">Полная инструкция по настройке изображения Digma LED24SBB32. Параметры контраста, цвета, шумоподавле</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

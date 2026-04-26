@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как инициализировать диск: пошаговая инструкция и ошибки — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по инициализации диска. Схемы разделов MBR и GPT, работа с Diskpart, устранение ошибок и выбор файловой системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/in/initsializirovat-disk.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как инициализировать диск: пошаговая инструкция и ошибки">
+    <meta property="og:description" content="Подробное руководство по инициализации диска. Схемы разделов MBR и GPT, работа с Diskpart, устранение ошибок и выбор файловой системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как инициализировать диск: пошаговая инструкция и ошибки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-оборудования-и-проверка-подключения">Подготовка оборудования и проверка подключения</a></li><li><a href="#выбор-стиля-разделов-mbr-против-gpt">Выбор стиля разделов: MBR против GPT</a></li><li><a href="#процедура-инициализации-через-графический-интерфейс">Процедура инициализации через графический интерфейс</a></li><li><a href="#инициализация-и-разметка-через-командную-строку-diskpart">Инициализация и разметка через командную строку Diskpart</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/n/ne/ne-rabotaet-media-station-x.html">Media Station X не работает: полное руководство по устранению</a></li><li><a href="/articles/i/iv/ivi-priglasit-v-podpisku.html">Как пригласить друга в ivi: инструкция по семейной подписке</a></li><li><a href="/articles/u/un/university-of-problems-versiya-155kak-v-nastrojkakh.html">University of Problems 1.5.5: Настройка параметров и устранение сбоев</a></li><li><a href="/articles/k/ka/kak-podklyuchit-sd-pleer-ot-firmy-daewoo-k-noutyuuku.html">Как подключить CD-плеер Daewoo к ноутбуку: пошаговая инструкция</a></li><li><a href="/articles/e/es/est-li-vybor-yazyka-v-magnitole-panasonik-cn-re06d.html">Смена языка в магнитоле Panasonic CN-RE06D: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Инициализация диска: полное руководство по настройке</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-оборудования-и-проверка-подключения">Подготовка оборудования и проверка подключения</a></li><li><a href="#выбор-стиля-разделов-mbr-против-gpt">Выбор стиля разделов: MBR против GPT</a></li><li><a href="#процедура-инициализации-через-графический-интерфейс">Процедура инициализации через графический интерфейс</a></li><li><a href="#инициализация-и-разметка-через-командную-строку-diskpart">Инициализация и разметка через командную строку Diskpart</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>После установки нового накопителя или подключения внешнего жесткого диска пользователь часто сталкивается с ситуацией, когда операционная система не отображает файлы и папки, а в «Моем компьютере» отсутствует новая буква диска. Вместо ожидаемого объема свободного пространства в диспетчере устройств виден неразмеченный раздел черного цвета с надписью «Не распределена» или «Не проинициализирован». Это состояние означает, что физическое устройство подключено, но логическая структура для хранения данных еще не создана, и ОС не знает, как с ним взаимодействовать.</p>
+<p>Если у вас возникла необходимость подготовить накопитель к работе, важно понимать, что процесс включает в себя не только создание разделов, но и выбор правильной схемы разметки. Ошибочный выбор между MBR и GPT может привести к невозможности загрузки системы или ограничению доступного объема памяти. Современные стандарты требуют внимательного отношения к параметрам секторов и таблицам разделов, особенно при работе с дисками объемом более 2 ТБ.</p>
+<p>На практике игнорирование этого этапа делает накопитель бесполезным для хранения информации, так как файловая система не может быть размещена на raw-устройстве без предварительной подготовки. Ниже представлен детальный алгоритм действий, который позволит корректно настроить оборудование, избежать потери данных и обеспечить совместимость с используемым оборудованием.</p>
+
+<h2 id="подготовка-оборудования-и-проверка-подключения">Подготовка оборудования и проверка подключения</h2>
+
+<p>Прежде чем переходить к программной настройке, необходимо убедиться в физической исправности устройства и корректности его подключения к материнской плате или внешнему порту. Допустим, вы только что установили новый SSD в системный блок, но в BIOS он может определяться, а в Windows — нет. В этом случае стоит проверить кабели SATA и питания, а также попробовать подключить устройство к другому порту контроллера. Для внешних накопителей критически важно использование исправного USB-кабеля и порта с достаточным энергопотреблением, особенно для моделей без собственного источника питания.</p>
+
+<p>Если оборудование определяется на уровне BIOS или UEFI, но не отображается в проводнике, требуется вход в интерфейс управления дисками. Для этого используется встроенная утилита операционной системы, доступ к которой можно получить через меню «Пуск» или командную строку. Следует нажать комбинацию клавиш <code>Win + R</code> и ввести команду <code>diskmgmt.msc</code>, после чего откроется окно «Управление дисками», где отображаются все подключенные накопители, включая те, которые требуют инициализации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В некоторых случаях диск может отображаться как «Неизвестный» или «Не проиницизирован» сразу после подключения, что является штатным поведением для новых устройств.</p></aside>
+
+<p>При обнаружении в списке устройств накопителя со статусом «Не проинициализирован» система автоматически предложит провести инициализацию при первом обращении к нему. Однако полагаться на автоматические всплывающие окна не всегда надежно, так как они могут блокироваться настройками безопасности или появляться в фоновом режиме. <strong>Ручной запуск процедуры</strong> через контекстное меню позволяет контролировать каждый этап процесса и выбрать оптимальные параметры разметки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная диагностика</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте «Управление дисками»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите диск со статусом «Не проинициализирован»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте объем и модель в нижней панели</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь, что это именно новый диск, а не системный</span></div></div>
+
+<p>Важно не перепутать целевой накопитель с системным диском, на котором установлена операционная система, особенно если в компьютере установлено несколько физических устройств. Ошибка в выборе диска на этом этапе может привести к полной потере данных на рабочем разделе и невозможности загрузки компьютера. Всегда ориентируйтесь на объем памяти и модель устройства, указанные в нижней части окна утилиты управления.</p>
+
+<h2 id="выбор-стиля-разделов-mbr-против-gpt">Выбор стиля разделов: MBR против GPT</h2>
+
+<p>Ключевым моментом перед началом работы является определение стиля разделов, который будет использоваться для разметки дискового пространства. Существует два основных стандарта: MBR (Master Boot Record) и GPT (GUID Partition Table). Выбор зависит от версии BIOS/UEFI, объема накопителя и операционной системы, с которой планируется взаимодействие. Для современных компьютеров с UEFI и дисками объемом более 2 ТБ единственно верным решением является использование GPT.</p>
+
+<p>Если у вас старый компьютер с классическим BIOS или требуется совместимость с очень древними операционными системами, такими как Windows XP или более ранние версии, целесообразно выбрать MBR. Этот стандарт поддерживает диски объемом до 2 ТБ и максимум 4 первичных раздела. Попытка использовать MBR на диске объемом 3 ТБ приведет к тому, что операционная система «увидит» только 2 ТБ, а остальное пространство останется недоступным без специальных манипуляций.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Смена стиля разделов (конвертация MBR в GPT или наоборот) без потери данных возможна только с помощью стороннего софта. Стандартными средствами Windows это приведет к полному удалению всех разделов на диске.</p></aside>
+
+<p>Сравнительная таблица поможет определиться с выбором стиля разделов в зависимости от ваших требований к совместимости и объему:</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>MBR (Master Boot Record)</th>
+<th>GPT (GUID Partition Table)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Максимальный объем диска</td>
+<td>2 ТБ</td>
+<td>9.4 ЗБ (практически без ограничений)</td>
+</tr>
+<tr>
+<td>Количество разделов</td>
+<td>4 первичных</td>
+<td>128 и более (в Windows)</td>
+</tr>
+<tr>
+<td>Совместимость с ОС</td>
+<td>Все версии Windows, включая XP</td>
+<td>Windows 7/8/10/11 (64-bit), Linux, macOS</td>
+</tr>
+<tr>
+<td>Защита данных</td>
+<td>Отсутствует (загрузчик в одном секторе)</td>
+<td>Контрольные суммы и резервные копии заголовка</td>
+</tr>
+</tbody>
+</table>
+
+<p>На практике для загрузочных дисков с Windows 10 или 11 в режиме UEFI использование MBR сделает загрузку системы невозможной. GPT включает в себя защитный MBR, который предотвращает повреждение данных старыми программами, GPT-диск как размеченный MBR. Кроме того, GPT хранит несколько копий заголовка и таблицы разделов по всему диску, что повышает отказоустойчивость структуры данных.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение стандартов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка больших объемов</li><li>✅ Высокая отказоустойчивость</li><li>✅ Неограниченное число разделов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Совместимость только с новыми ОС</li><li>❌ Требует UEFI для загрузки</li><li>❌ Сложнее в ручном редактировании</li></ul></div>
+</div></div>
+
+<h2 id="процедура-инициализации-через-графический-интерфейс">Процедура инициализации через графический интерфейс</h2>
+
+<p>После определения стиля разделов можно приступать непосредственно к инициализации. В окне «Управление дисками» (<code>diskmgmt.msc</code>) новый диск обычно помечен красной стрелкой вниз или значком с восклицательным знаком. Для запуска процесса необходимо нажать правой кнопкой мыши на область с названием диска (например, «Диск 1») и выбрать пункт «Инициализировать диск».</p>
+
+<p>В открывшемся диалоговом окне «Инициализация диска» потребуется подтвердить выбор стиля разделов (MBR или GPT), который был определен на предыдущем этапе. Если диск не выбран автоматически, его нужно отметить галочкой в списке доступных устройств. После нажатия кнопки «ОК» система запишет загрузочный сектор и таблицу разделов, изменив статус диска с «Не проинициализирован» на «Базовый» и «Онлайн».</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Инициализация в Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Нажмите правой кнопкой на «Диск X»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Инициализировать диск»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Отметьте стиль GPT или MBR</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите «ОК» для подтверждения</span></div></div>
+
+<p>После успешной инициализации статус изменится, но диск все еще не будет виден в «Моем компьютере», так как на нем нет логических разделов и файловой системы. В списке разделов появится область с черной полосой и надписью «Не распределена». Для дальнейшего использования необходимо создать простой том, щелкнув правой кнопкой мыши по этой области и выбрав соответствующий пункт меню.</p>
+
+<p>Мастер создания простого тома проведет пользователя через несколько шагов: указание размера раздела, назначение буквы диска и выбор файловой системы. Для Windows оптимальным выбором является файловая система <code>NTFS</code>, которая поддерживает файлы размером более 4 ГБ и обладает функциями журналирования. Если диск планируется использовать для обмена данными с macOS или Linux, можно рассмотреть варианты <code>exFAT</code> или <code>ext4</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При создании раздела можно зарезервировать 100% доступного пространства или выделить часть под будущие нужды. Изменить размер раздела позже можно без потери данных, используя функцию «Сжать том».</p></aside>
+
+<h2 id="инициализация-и-разметка-через-командную-строку-diskpart">Инициализация и разметка через командную строку Diskpart</h2>
+
+<p>Для опытных пользователей или в ситуациях, когда графический интерфейс работает некорректно, существует мощный инструмент <code>diskpart</code>. Работа с командной строкой требует точности, так как команды выполняются мгновенно и без дополнительных подтверждений. Чтобы запустить утилиту, откройте командную строку от имени администратора и введите команду <code>diskpart</code>, после чего появится приглашение <code>DISKPART></code>.</p>
+
+<p>Первым шагом в среде Diskpart является вывод списка всех дисков командой <code>list disk</code>. Это позволит увидеть нумерацию устройств и их объем. <strong>Критически важно</strong> правильно идентифицировать номер целевого диска, чтобы не выполнить команды очистки на системном накопителе. После идентификации вводится команда <code>select disk N</code>, где N — номер вашего диска.</p>
+
+<pre><code>list disk
+<p>select disk 1</p>
+<p>clean</p>
+<p>convert gpt</p>
+<p>create partition primary</p>
+<p>format fs=ntfs quick</p>
+<p>assign letter=E</p>
+<p>exit</code></pre></p>
+
+<p>Команда <code>clean</code> полностью удаляет все разделы и данные на выбранном диске, возвращая его в состояние чистой инициализации. Далее следует команда <code>convert gpt</code> (или <code>convert mbr</code>), которая задает стиль разделов. После этого создается первичный раздел, он форматируется в файловую систему NTFS с быстрой очисткой кластеров, и ему присваивается буква. Весь процесс занимает несколько секунд.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Команда clean в Diskpart безвозвратно удаляет все данные на выбранном диске. Убедитесь трижды, что вы выбрали правильный номер диска, прежде чем выполнять эту команду.</p></aside>
+
+<p>Использование командной строки особенно эффективно при работе с серверными системами или при автоматизации процессов развертывания. Скрипты Diskpart позволяют стандартизировать конфигурацию дисков на множестве компьютеров, исключая человеческий фактор и ошибки при нажатии кнопок в графическом интерфейсе.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе настройки накопителей пользователи часто сталкиваются с системными сообщениями об ошибках, которые могут заблокировать дальнейшие действия. Понимание причин их возникновения позволяет быстро решить проблему без обращения в сервисный центр. Ниже приведены наиболее распространенные сценарии сбоев и методы их устранения.</p>
+
+<ol>
+<li><strong>Ошибка «Размер раздела превышает максимально допустимый»</strong> — возникает при попытке создать раздел MBR объемом более 2 ТБ. Решение: Конвертировать диск в стиль GPT, предварительно сохранив данные, так как стандарт MBR физически не поддерживает адресацию блоков за пределом 2 ТБ.</li>
+<li><strong>Ошибка «Windows не удается отформатировать этот диск»</strong> — часто указывает на наличие поврежденных секторов или сбой файловой системы. Решение: Проверить диск на ошибки с помощью команды <code>chkdsk</code> или использовать утилиты низкоуровневого форматирования от производителя.</li>
+<li><strong>Диск отображается как «Динамический» вместо «Базовый»</strong> — динамические диски имеют ограничения при переносе между компьютерами и не поддерживают загрузку ОС в некоторых конфигурациях. Решение: Удалить все тома и конвертировать диск обратно в базовый через меню правой кнопки мыши или команду <code>convert basic</code> в Diskpart.</li>
+<li><strong>Отсутствие диска в списке «Управление дисками»</strong> — может быть вызвано отключенным контроллером в BIOS или драйверами RAID. Решение: Проверить настройки SATA Mode в BIOS (должен быть AHCI) и обновить драйверы чипсета материнской платы.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если диск периодически пропадает из системы или издает щелчки, это может свидетельствовать о физической неисправности. В таком случае программная инициализация не поможет, требуется диагностика оборудования.</p></aside>
+
+<p>Еще одной распространенной проблемой является конфликт драйверов или файловой системы, особенно при использовании переходников USB-SATA. В таких случаях система может некорректно определять тип устройства. Обновление драйверов контроллера USB или замена кабеля часто решают проблему видимости устройства.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство ошибок инициализации решаются правильным выбором стиля разделов (GPT/MBR) и проверкой физического подключения устройства к материнской плате.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</h2>
+
+<p>Инициализация диска является фундаментальным этапом подготовки накопителя к работе, от которого зависит стабильность хранения данных и производительность системы. Правильный выбор между MBR и GPT, а также аккуратное выполнение процедур разметки позволяют избежать множества проблем в будущем. Современные стандарты диктуют переход на GPT и UEFI, что обеспечивает поддержку больших объемов памяти и повышенную надежность структуры разделов.</p>
+
+<p>Регулярное обслуживание дискового пространства, включая дефрагментацию (для HDD) и проверку ошибок, продлевает срок службы оборудования. При работе с важными данными всегда следует придерживаться правила «трех копий»: оригинал, локальная резервная копия и копия в облаке или на внешнем носителе. Инициализация нового диска — это первый шаг к построению надежной системы хранения информации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/n/ne/ne-rabotaet-media-station-x.html" class="pb-related-card">
+                <span class="pb-related-title">Media Station X не работает: полное руководство по устранению</span>
+                <span class="pb-related-desc">Подробная инструкция по решению проблем с запуском Media Station X. Методы сброса, настройки DNS, ра</span>
+            </a><a href="/articles/i/iv/ivi-priglasit-v-podpisku.html" class="pb-related-card">
+                <span class="pb-related-title">Как пригласить друга в ivi: инструкция по семейной подписке</span>
+                <span class="pb-related-desc">Подробная инструкция: как пригласить друга в ivi, добавить устройство и настроить семейный доступ. Р</span>
+            </a><a href="/articles/u/un/university-of-problems-versiya-155kak-v-nastrojkakh.html" class="pb-related-card">
+                <span class="pb-related-title">University of Problems 1.5.5: Настройка параметров и устранение сбоев</span>
+                <span class="pb-related-desc">Техническое руководство по конфигурации University of Problems версии 1.5.5. Настройка параметров, и</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-sd-pleer-ot-firmy-daewoo-k-noutyuuku.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить CD-плеер Daewoo к ноутбуку: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению CD-плеера Daewoo к ПК через USB, RCA или оптический выход. Настр</span>
+            </a><a href="/articles/e/es/est-li-vybor-yazyka-v-magnitole-panasonik-cn-re06d.html" class="pb-related-card">
+                <span class="pb-related-title">Смена языка в магнитоле Panasonic CN-RE06D: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по переключению языка интерфейса в автомагнитоле Panasonic CN-RE06D. Настройки</span>
+            </a><a href="/articles/c/co/co-g-app-snova-proizoshla-oshibka-v-prilozhenii.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка в приложении: решение проблем с Co G App</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки «в приложении снова произошла ошибка» в Co G App. Методы с</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

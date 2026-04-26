@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Плата за видео по запросу: настройка биллинга и тарифов — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по внедрению системы оплаты за просмотр контента. Настройка биллинга, интеграция API и управление подписками.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/p/pl/plata-za-polzovanie-videokontentom-po-zaprosu.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Плата за видео по запросу: настройка биллинга и тарифов">
+    <meta property="og:description" content="Техническое руководство по внедрению системы оплаты за просмотр контента. Настройка биллинга, интеграция API и управление подписками.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Плата за видео по запросу: настройка биллинга и тарифов</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-системы-оплаты-и-авторизации-доступа">Архитектура системы оплаты и авторизации доступа</a></li><li><a href="#модели-тарификации-и-их-техническая-реализация">Модели тарификации и их техническая реализация</a></li><li><a href="#интеграция-с-платежными-шлюзами-и-api">Интеграция с платежными шлюзами и API</a></li><li><a href="#типичные-ошибки-при-внедрении-оплаты">Типичные ошибки при внедрении оплаты</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/is/ischez-parol-s-videofona-tantos.html">Пропал пароль от видеодомофона Tantos: причины и сброс</a></li><li><a href="/articles/k/ka/kak-nastroit-kameru-13-ajfona-chtob-snimat-video-pod-vodoj.html">Настройка iPhone 13 для подводной видеосъемки</a></li><li><a href="/articles/m/mi/mivideoglobal-chto-eto.html">Mivideoglobal: что это, безопасно ли и как удалить</a></li><li><a href="/articles/k/ka/kak-dobavit-v-poiskovik-fork-player-yandeks-poshagovo.html">Как добавить Fork Player в поисковик Яндекс: инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-kameru-videonablyudeniya-k-monitoru-napryamuyu-bez-videoregistratora.html">Подключение камеры видеонаблюдения к монитору без регистратора</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Организация платного доступа к видеоконтенту по запросу</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-системы-оплаты-и-авторизации-доступа">Архитектура системы оплаты и авторизации доступа</a></li><li><a href="#модели-тарификации-и-их-техническая-реализация">Модели тарификации и их техническая реализация</a></li><li><a href="#интеграция-с-платежными-шлюзами-и-api">Интеграция с платежными шлюзами и API</a></li><li><a href="#типичные-ошибки-при-внедрении-оплаты">Типичные ошибки при внедрении оплаты</a></li><li><a href="#резюме-и-рекомендации">Резюме и рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внедрение монетизации видеоконтента часто сталкивается с критической проблемой рассинхронизации статусов доступа и фактического списания средств, что приводит к финансовым потерям или блокировке легитимных пользователей.</p>
+<p>Ситуация усугубляется, когда платежный шлюз возвращает задержанный ответ, а сервер стриминга уже прекращает трансляцию, создавая разрыв в пользовательском опыте.</p>
+<p>Решение требует глубокой интеграции биллинговых систем с DRM-защитой и медиа-серверами для обеспечения непрерывности потока при подтвержденной оплате.</p>
+
+<h2 id="архитектура-системы-оплаты-и-авторизации-доступа">Архитектура системы оплаты и авторизации доступа</h2>
+
+<p>Фундаментальной основой любой платформы видео по запросу является надежная связка между модулем управления правами доступа и платежным шлюзом.</p>
+<p>При поступлении запроса на воспроизведение система должна мгновенно верифицировать активную подписку или наличие разовой оплаты в базе данных.</p>
+<p>Ключевым элементом здесь выступает <strong>токен авторизации</strong>, который генерируется после успешной транзакции и имеет строго ограниченный срок жизни.</p>
+<p>Если токен недействителен или истек, медиасервер обязан прервать соединение до начала буферизации основного видеопотока.</p>
+
+<h3>Взаимодействие DRM и биллинга</h3>
+
+<p>Системы цифрового управления правами (DRM) выступают финальным барьером, шифруя контент даже при наличии действующей подписки.</p>
+<p>Лицензионный сервер запрашивает подтверждение оплаты у биллингового модуля перед выдачей ключа дешифровки клиентскому устройству.</p>
+<p>На практике это означает, что даже при скачивании защищенного файла без актуального токена оплаты воспроизведение будет невозможно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс авторизации</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Пользователь инициирует просмотр</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Биллинг проверяет статус оплаты</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Генерируется временный токен доступа</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">DRM выдает ключ дешифровки</span></div></div>
+
+<p>Важно учитывать, что задержка между обновлением статуса в платежной системе и передачей данных в DRM-модуль не должна превышать нескольких сотен миллисекунд.</p>
+<p>Для обеспечения безопасности ключи шифрования должны ротироваться регулярно, а старые токены оплаты — немедленно аннулироваться при возврате средств.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте протокол OAuth 2.0 для безопасной передачи токенов между микросервисами биллинга и стриминга.</p></aside>
+
+<h2 id="модели-тарификации-и-их-техническая-реализация">Модели тарификации и их техническая реализация</h2>
+
+<p>Выбор модели монетизации напрямую влияет на структуру базы данных и логику работы бэкенд-приложений.</p>
+<p>Наиболее распространенными схемами являются подписка (SVOD), оплата за просмотр (TVOD) и гибридные модели с рекламой (AVOD).</p>
+<p>Каждая из этих моделей требует специфической настройки триггеров доступа и периодов валидации прав пользователя.</p>
+
+<h3>Настройка подписок и периодических платежей</h3>
+
+<p>Реализация подписки требует ведения учета периодов действия доступа и автоматического продления через рекуррентные платежи.</p>
+<p>Система должна заранее, обычно за 24 часа до окончания периода, пытаться списать средства с привязанной карты пользователя.</p>
+<p>В случае неудачи транзакции доступ не блокируется мгновенно, а переводится в статус «ожидание оплаты» с ограниченным функционалом.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип модели</th>
+<th>Частота проверок</th>
+<th>Сложность реализации</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SVOD (Подписка)</td>
+<td>Ежедневно / При входе</td>
+<td>Высокая (рекуррентность)</td>
+</tr>
+<tr>
+<td>TVOD (Покупка)</td>
+<td>Однократно</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>AVOD (Реклама)</td>
+<td>Не требуется</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Технически важно предусмотреть сценарии изменения тарифного плана в середине оплаченного периода.</p>
+<p>В таких случаях система должна пересчитывать остаток дней и корректировать сумму следующего списания пропорционально.</p>
+<p>Логирование всех изменений тарификации является обязательным требованием для аудита и решения споров с клиентами.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Гибкая настройка периодов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Автоматическое продление</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Учет пробных периодов</li></ul></div>
+</div></div>
+
+<h3>Оплата за единицу контента</h3>
+
+<p>Сценарий оплаты за конкретный фильм или событие требует мгновенной активации прав доступа после подтверждения платежа.</p>
+<p>Здесь критически важна атомарность транзакции: либо деньги списаны и доступ дан, либо ничего не произошло.</p>
+<p>Частой ошибкой является рассинхронизация, когда пользователь оплатил товар, но ссылка на контент еще не активировалась.</p>
+
+<p>Для предотвращения таких ситуаций используется механизм веб-хуков, где платежная система сама отправляет сигнал на сервер видео-платформы.</p>
+<p>Сервер обрабатывает сигнал, обновляет базу данных прав доступа и немедленно уведомляет клиентское приложение об успехе.</p>
+<p>Если сигнал не пришел в течение тайм-аута, клиентское приложение должно самостоятельно опросить сервер статуса заказа.</p>
+
+<h2 id="интеграция-с-платежными-шлюзами-и-api">Интеграция с платежными шлюзами и API</h2>
+
+<p>Выбор платежного провайдера определяет набор доступных методов интеграции и поддерживаемые валюты.</p>
+<p>Современные стандарты требуют поддержки 3-D Secure для верификации плательщика и токенизации данных карт.</p>
+<p>Интеграция осуществляется через REST API или специализированные SDK, предоставляемые провайдером услуг.</p>
+
+<h3>Обработка асинхронных уведомлений</h3>
+
+<p>Платежные системы работают асинхронно, поэтому сервер должен быть готов принять POST-запрос с результатом операции.</p>
+<p>Эндпоинт для получения уведомлений должен быть защищен проверкой подписи запроса для исключения мошенничества.</p>
+<p>После получения уведомления о successful payment система обновляет статус заказа и права доступа пользователя.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Никогда не доверяйте данным о статусе оплаты, пришедшим только от клиентского приложения. Всегда проверяйте статус на стороне сервера через API шлюза.</p></aside>
+
+<p>В случае временной недоступности вашего сервера платежный шлюз должен иметь возможность повторить отправку уведомления.</p>
+<p>Механизм ретраев (повторных попыток) на стороне провайдера гарантирует доставку статуса даже при кратковременных сбоях.</p>
+<p>Необходимо вести журнал всех входящих веб-хуков для последующего анализа расхождений в биллинге.</p>
+
+<pre><code>curl -X POST https://api.payment-provider.com/v1/charges \
+<p>-H"Authorization: Bearer sk_test_..." \</p>
+<p>-H"Content-Type: application/json" \</p>
+<p>-d'{"amount": 1000,"currency":"rub","source":"tok_visa"}'</code></pre></p>
+
+<p>Приведенный пример демонстрирует стандартный запрос на создание заряда, который инициирует процесс оплаты.</p>
+<p>Ответ сервера будет содержать идентификатор транзакции, который необходимо сохранить для дальнейшей сверки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Обязательность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amount</td>
+<td>Сумма в минорной валюте</td>
+<td>Да</td>
+</tr>
+<tr>
+<td>currency</td>
+<td>Код валюты (ISO 4217)</td>
+<td>Да</td>
+</tr>
+<tr>
+<td>idempotency_key</td>
+<td>Ключ для предотвращения дублей</td>
+<td>Рекомендуется</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Управление ошибками и откатами</h3>
+
+<p>Обработка ошибок платежного шлюза должна быть детальной и понятной для конечного пользователя.</p>
+<p>Система должна различать ошибки нехватки средств, истечения срока действия карты и блокировки банком.</p>
+<p>Для каждой категории ошибок предусмотрен соответствующий код ответа и сценарий поведения интерфейса.</p>
+
+<p>Если оплата прошла, но активация контента (failed), должна автоматически запускаться процедура отката (refund).</p>
+<p>Это защищает репутацию платформы и снижает нагрузку на службу поддержки клиентов.</p>
+<p>Автоматизация возвратов средств при технических сбоях является признаком зрелости системы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте идемпотентность запросов, чтобы повторная отправка формы оплаты пользователем не приводила к двойному списанию средств.</p></aside>
+
+<h2 id="типичные-ошибки-при-внедрении-оплаты">Типичные ошибки при внедрении оплаты</h2>
+
+<p>При развертывании систем монетизации видеоконтента разработчики часто допускают ряд системных ошибок, влияющих на надежность.</p>
+<p>Ниже перечислены наиболее критичные из них, требующие особого внимания при проектировании архитектуры.</p>
+
+<ol>
+<li><strong>Отсутствие проверки подписи веб-хука</strong> — позволяет злоумышленникам имитировать успешную оплату и получать доступ к контенту бесплатно, обходя платежный шлюз.</li>
+<li><strong>Кэширование прав доступа на слишком долгий срок</strong> — приводит к ситуации, когда пользователь оплатил подписку, но система продолжает считать его неоплатившим из-за старого кэша.</li>
+<li><strong>Игнорирование часовых поясов</strong> — вызывает ошибки в расчете периодов подписки, особенно при переходе на зимнее/летнее время или для пользователей в разных регионах.</li>
+<li><strong>Хранение чувствительных данных карт</strong> — категорически запрещено стандартами PCI DSS, данные карт должны храниться только у сертифицированного платежного провайдера.</li>
+</ol>
+
+<p>Своевременное выявление и исправление этих уязвимостей позволяет избежать финансовых потерь и юридических проблем.</p>
+<p>Регулярный аудит кода и тестирование сценариев отказа помогают поддерживать систему в рабочем состоянии.</p>
+
+<h2 id="резюме-и-рекомендации">Резюме и рекомендации</h2>
+
+<p>Организация платы за пользование видеоконтентом требует комплексного подхода, объединяющего надежный биллинг, безопасную передачу данных и гибкую систему прав доступа.</p>
+<p>Критически важным является обеспечение консистентности данных между платежным шлюзом и медиасервером в реальном времени.</p>
+<p>Внедрение описанных практик позволит создать устойчивую к сбоям и безопасную платформу для монетизации цифровых активов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная реализация оплаты зависит от синхронизации биллинга и DRM, а также строгой валидации всех транзакций на стороне сервера.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/is/ischez-parol-s-videofona-tantos.html" class="pb-related-card">
+                <span class="pb-related-title">Пропал пароль от видеодомофона Tantos: причины и сброс</span>
+                <span class="pb-related-desc">Исчез пароль с видеодомофона Tantos? Узнайте, как восстановить доступ, выполнить сброс и настроить з</span>
+            </a><a href="/articles/k/ka/kak-nastroit-kameru-13-ajfona-chtob-snimat-video-pod-vodoj.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка iPhone 13 для подводной видеосъемки</span>
+                <span class="pb-related-desc">Подробная инструкция по подготовке iPhone 13 к съемке под водой. Настройки камеры, защита аксессуаро</span>
+            </a><a href="/articles/m/mi/mivideoglobal-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Mivideoglobal: что это, безопасно ли и как удалить</span>
+                <span class="pb-related-desc">Подробный анализ процесса mivideoglobal. Определение назначения, проверка на вирусы, методы отключен</span>
+            </a><a href="/articles/k/ka/kak-dobavit-v-poiskovik-fork-player-yandeks-poshagovo.html" class="pb-related-card">
+                <span class="pb-related-title">Как добавить Fork Player в поисковик Яндекс: инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по настройке Fork Player. Как добавить приложение в поиск Яндекса на TV, Andro</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-kameru-videonablyudeniya-k-monitoru-napryamuyu-bez-videoregistratora.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение камеры видеонаблюдения к монитору без регистратора</span>
+                <span class="pb-related-desc">Техническое руководство по прямому выводу изображения с IP или аналоговой камеры на монитор без испо</span>
+            </a><a href="/articles/z/zv/zvukovaya-karta-live-sound-card-v8-instruktsiya-na-russkom.html" class="pb-related-card">
+                <span class="pb-related-title">Звуковая карта Live Sound Card V8: Полная инструкция и настройка</span>
+                <span class="pb-related-desc">Детальная инструкция по подключению, драйверам и настройке звуковой карты V8. Решения проблем с микр</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

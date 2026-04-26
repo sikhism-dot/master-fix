@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Перемещение прошивки в Knox: полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Техническая инструкция по ручной загрузке образов в Knox-контейнер Samsung. Настройка ADB, работа с ODIN, устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-peremestit-pr-lodeg-e-v-papku-knox.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Перемещение прошивки в Knox: полное руководство">
+    <meta property="og:description" content="Техническая инструкция по ручной загрузке образов в Knox-контейнер Samsung. Настройка ADB, работа с ODIN, устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Перемещение прошивки в Knox: полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-рабочего-окружения-и-проверка-совместимости">Подготовка рабочего окружения и проверка совместимости</a></li><li><a href="#алгоритм-загрузки-образа-через-download-mode">Алгоритм загрузки образа через Download Mode</a></li><li><a href="#манипуляции-с-файлами-внутри-защищенного-контейнера">Манипуляции с файлами внутри защищенного контейнера</a></li><li><a href="#диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</a></li><li><a href="#завершение-процедуры-и-верификация">Завершение процедуры и верификация</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vosstanovit-perepisku-na-mambe.html">Как восстановить переписку на Мамбе: способы и инструкции</a></li><li><a href="/articles/k/ka/kak-vyglyadit-spisok-chatov-programme-myata.html">Список чатов в Мята: устройство, фильтры и настройки</a></li><li><a href="/articles/x/xr/xr-kit.html">Инструкция по настройке XR Kit: установка и интеграция SDK</a></li><li><a href="/articles/r/re/rexant-38-01-02-universalnyj-pult-kak-nastroit.html">Настройка пульта Rexant 38-01-02: полная инструкция</a></li><li><a href="/articles/z/za/za-chego-telek-pishet-sverkhtok-na-antenne.html">Телевизор пишет сверхток на антенне: причины и устранение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническое руководство по перемещению прошивки в среду Knox</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-рабочего-окружения-и-проверка-совместимости">Подготовка рабочего окружения и проверка совместимости</a></li><li><a href="#алгоритм-загрузки-образа-через-download-mode">Алгоритм загрузки образа через Download Mode</a></li><li><a href="#манипуляции-с-файлами-внутри-защищенного-контейнера">Манипуляции с файлами внутри защищенного контейнера</a></li><li><a href="#диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</a></li><li><a href="#завершение-процедуры-и-верификация">Завершение процедуры и верификация</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке развернуть корпоративный профиль или запустить специализированное приложение на устройствах Samsung Galaxy часто возникает ситуация, когда стандартные методы обновления через OTA или MDM-сервер не срабатывают.</p>
+<p>Пользователь сталкивается с требованием системы вручную загрузить конкретный образ прошивки или файл конфигурации непосредственно в защищенный раздел, который часто ошибочно называют «папкой Knox», хотя технически речь идет о работе с контейнером безопасности или загрузке через Download Mode.</p>
+<p>Подобная задача требует точного соблюдения последовательности действий, так как вмешательство в загрузочные разделы устройства может привести к срабатыванию триггера безопасности KNOX Warranty Bit, что необратимо заблокирует работу банковских приложений и корпоративных сервисов.</p>
+
+<h2 id="подготовка-рабочего-окружения-и-проверка-совместимости">Подготовка рабочего окружения и проверка совместимости</h2>
+<p>Перед началом любых манипуляций с системными разделами необходимо убедиться, что используемое программное обеспечение соответствует версии аппаратной платформы устройства.</p>
+<p>На практике работа ведется с официальным инструментом <em>Odin3</em> для Windows или <em>Heimdall</em> для Linux/macOS, так как именно эти утилиты имеют права на запись в загрузочные области, обходя стандартные ограничения Android.</p>
+<p>Важно понимать, что термин «переместить в папку Knox» часто является упрощением: реальный процесс подразумевает прошивку образа в разделы, контролируемые платформой <em>Samsung Knox</em>, либо размещение конфигурационных файлов в защищенном контейнере через ADB.</p>
+<p>Если у вас устройство корпоративного сегмента, убедитесь, что у вас есть права администратора или специальный токен авторизации, без которого система безопасности заблокирует запись.</p>
+
+<h3>Установка драйверов и настройка ADB</h3>
+<p>Для успешной коммуникации ПК и смартфона требуется установка универсальных драйверов <em>Samsung USB Driver</em>, которые обеспечивают корректное определение устройства в диспетчере задач.</p>
+<p>После установки драйверов следует активировать режим отладки, перейдя в <code>Настройки → О телефоне → Сведения о ПО</code> и семь раз нажав на номер сборки.</p>
+<p>Затем в появившемся меню <code>Параметры разработчика</code> необходимо включить пункт <code>Отладка по USB</code> и, если требуется работа с файловой системой, выбрать режим <code>MTP</code> или <code>PTP</code>.</p>
+<p>Проверка соединения осуществляется командой <code>adb devices</code> в терминале, которая должна вывести серийный номер подключенного гаджета со статусом <code>device</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На операционных системах Windows 10 и 11 установка драйверов может требовать отключения проверки цифровой подписи драйверов в параметрах загрузки.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Версия / Тип</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Samsung USB Driver</td>
+<td>v1.7.50.0 и выше</td>
+<td>Базовая идентификация устройства в ОС</td>
+</tr>
+<tr>
+<td>Platform Tools (ADB)</td>
+<td>Latest Release</td>
+<td>Передача команд и файлов</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="алгоритм-загрузки-образа-через-download-mode">Алгоритм загрузки образа через Download Mode</h2>
+<p>Основной метод «перемещения» системных файлов в защищенную область заключается в использовании режима загрузки <em>Download Mode</em>, который имеет наивысший приоритет исполнения.</p>
+<p>Для входа в этот режим необходимо полностью выключить устройство, а затем зажать комбинацию клавиш, зависящую от модели: обычно это одновременное нажатие <em>Громкость Вниз</em> и <em>Громкость Вверх</em> при подключении кабеля USB к ПК.</p>
+<p>На устройствах с физической кнопкой <em>Home</em> (<em>Galaxy S7</em>, <em>Note 7</em>) используется комбинация <em>Громкость Вниз</em> + <em>Домой</em> + <em>Питание</em>.</p>
+<p>После появления предупреждающего экрана необходимо однократно нажать <em>Громкость Вверх</em> для подтверждения входа в режим прошивки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прерывание процесса прошивки или отключение кабеля во время записи может привести к кирпичу устройства (Hard Brick). Используйте исправный кабель и источник бесперебойного питания.</p></aside>
+
+<h3>Работа с утилитой Odin</h3>
+<p>Запустите исполняемый файл <em>Odin3.exe</em> от имени администратора, чтобы избежать проблем с правами доступа к портам.</p>
+<p>В логе программы должна появиться надпись <code>Added!</code>, а поле <code>ID:COM</code> подсветиться синим или желтым цветом, что сигнализирует об успешном подключении.</p>
+<p>Нажмите кнопку <code>AP</code> (или <code>PDA</code> в старых версиях) и выберите файл прошивки, который необходимо переместить в систему; обычно это файл с расширением <code>.tar</code> или <code>.tar.md5</code>.</p>
+<p>Убедитесь, что в разделе <code>Options</code> активны только пункты <code>Auto Reboot</code> и <code>F. Reset Time</code>; включение <code>Re-Partition</code> без соответствующего PIT-файла категорически запрещено.</p>
+<p>Запуск процесса производится нажатием кнопки <code>Start</code>, после чего в логе пойдет прогресс-бар, а на экране телефона — индикатор загрузки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Процесс прошивки в Odin</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство в Download Mode</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Загрузите файл в поле AP в Odin</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку Start</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь статуса PASS в логе</span></div></div>
+
+<h2 id="манипуляции-с-файлами-внутри-защищенного-контейнера">Манипуляции с файлами внутри защищенного контейнера</h2>
+<p>Если под «перемещением в папку Knox» подразумевается работа с файлами внутри запущенного контейнера <em>Secure Folder</em> или корпоративного профиля, процесс осуществляется иначе.</p>
+<p>Стандартный файловый менеджер не имеет прямого доступа к содержимому контейнера без использования специальных мостов или API.</p>
+<p>Для перемещения данных используется встроенный механизм «Добавить файлы», который копирует выбранные объекты из общего хранилища в изолированную среду с шифрованием.</p>
+<p>При работе через <em>ADB</em> доступ к путям вида <code>/data/knox</code> или <code>/data/secure_folder</code> возможен только на рутированных устройствах или с правами enterprise owner.</p>
+
+<h3>Использование командной строки ADB для файлового обмена</h3>
+<p>Для автоматизации процесса можно использовать скрипты, отправляющие команды на устройство.</p>
+<p>Сначала необходимо получить список пакетов, отвечающих за безопасность, командой <code>adb shell pm list packages | grep knox</code>.</p>
+<p>Если устройство позволяет, можно попытаться скопировать файл командой <code>adb push file.txt /sdcard/Android/data/com.samsung.knox.securefolder/files/</code>, однако современные версии Android ограничивают доступ к папке <code>Android/data</code>.</p>
+<p>В корпоративной среде часто используется <em>Knox Manage</em>, который позволяет дистанционно push-ить конфигурации без физического доступа к файловой системе.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Прямое копирование файлов в системные директории Knox без подписи может привести к повреждению базы данных контейнера и потере доступа к данным.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Метод доступа</th>
+<th>Необходимые права</th>
+<th>Риск блокировки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Secure Folder UI</td>
+<td>Пользователь</td>
+<td>Низкий</td>
+</tr>
+<tr>
+<td>ADB (без root)</td>
+<td>Отладка по USB</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>Root / System Write</td>
+<td>Superuser</td>
+<td>Критический (eFuse)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</h2>
+<p>В процессе работы могут возникать различные сбои, связанные с несовместимостью версий ПО, повреждением кабелей или блокировками со стороны оператора связи.</p>
+<p>Одной из частых проблем является зависание процесса на этапе <code>SetupConnection</code> или <code>File transfer</code>.</p>
+<p>Это часто указывает на конфликт версий загрузчика или использование USB-порта с недостаточным энергопотреблением.</p>
+<p>Рекомендуется использовать оригинальный кабель производителя и подключать его непосредственно к портам материнской платы, избегая USB-хабов.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор метода подключения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Стабильное соединение по USB-C</li><li>✅ Высокая скорость передачи данных</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск повреждения порта при частом подключении</li><li>❌ Необходимость специфичных драйверов</li></ul></div>
+</div></div>
+
+<h3>Типичные ошибки</h3>
+<ol>
+<li><strong>Ошибка AUTH FAILED в Odin</strong> — возникает при попытке прошить unofficial прошивку на устройство с заблокированным загрузчиком; требуется разблокировка через OEM Unlock в настройках разработчика.</li>
+<li><strong>Secure Folder не открывается после перемещения</strong> — повреждение базы данных контейнера; необходимо выполнить сброс настроек Secure Folder в меню приложений, что удалит данные внутри него.</li>
+<li><strong>ADB device unauthorized</strong> — на экране телефона появилось окно запроса разрешения; необходимо нажать «Разрешить» и подтвердить отпечаток или пин-код.</li>
+<li><strong>Knox Warranty Bit: 0x1</strong> — критическая ошибка, означающая срабатывание Fuse; возврат в состояние 0x0 невозможен, функционал Knox будет урезан навсегда.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда проверяйте регион устройства (CSC код) перед прошивкой; использование файлов от другого региона может привести к неработоспособности NFC и звонков.</p></aside>
+
+<h2 id="завершение-процедуры-и-верификация">Завершение процедуры и верификация</h2>
+<p>После успешного завершения операции устройство автоматически перезагрузится.</p>
+<p>Первый запуск может занять больше обычного времени, так как система проводит проверку целостности разделов и оптимизацию приложений.</p>
+<p>Необходимо дождаться полной загрузки рабочего стола и появления значка уведомлений.</p>
+
+<h3>Проверка статуса безопасности</h3>
+<p>Для убедительности в том, что система работает корректно, следует перейти в <code>Настройки → Обслуживание устройства → Статус устройства</code>.</p>
+<p>В строке «Состояние платформы Knox» должно быть указано «Безопасно».</p>
+<p>Если требуется было переместить конкретный файл, проверьте его наличие по целевому пути через файловый менеджер с доступом к системным папкам.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное перемещение файлов в среду Knox требует использования режима Download Mode для системных образов или штатных средств Secure Folder для пользовательских данных, при строгом соблюдении мер безопасности.</p></aside>
+
+<p>Выполнение описанных действий позволяет гибко управлять конфигурацией защищенной среды Samsung.</p>
+<p>Главным условием остается внимательность к деталям и использование только проверенных источников файлов прошивки.</p>
+<p>Регулярное резервное копирование данных перед началом любых технических работ минимизирует риски потери информации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vosstanovit-perepisku-na-mambe.html" class="pb-related-card">
+                <span class="pb-related-title">Как восстановить переписку на Мамбе: способы и инструкции</span>
+                <span class="pb-related-desc">Полное руководство по восстановлению переписки на Мамбе. Разбор причин удаления, методы возврата диа</span>
+            </a><a href="/articles/k/ka/kak-vyglyadit-spisok-chatov-programme-myata.html" class="pb-related-card">
+                <span class="pb-related-title">Список чатов в Мята: устройство, фильтры и настройки</span>
+                <span class="pb-related-desc">Подробный обзор интерфейса списка чатов в программе Мята. Разбор статусов, сортировки, настроек увед</span>
+            </a><a href="/articles/x/xr/xr-kit.html" class="pb-related-card">
+                <span class="pb-related-title">Инструкция по настройке XR Kit: установка и интеграция SDK</span>
+                <span class="pb-related-desc">Подробное руководство по подключению XR Kit. Настройка окружения, интеграция библиотек, устранение о</span>
+            </a><a href="/articles/r/re/rexant-38-01-02-universalnyj-pult-kak-nastroit.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка пульта Rexant 38-01-02: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по программированию универсального пульта Rexant 38-01-02. Коды, поиск бренда,</span>
+            </a><a href="/articles/z/za/za-chego-telek-pishet-sverkhtok-na-antenne.html" class="pb-related-card">
+                <span class="pb-related-title">Телевизор пишет сверхток на антенне: причины и устранение</span>
+                <span class="pb-related-desc">Подробная инструкция: почему ТВ пишет сверхток на антенне, как проверить питание, устранить короткое</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-v-vattsap-funktsiyu-gruppovoj-zvonok.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить групповой звонок WhatsApp: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по блокировке групповых вызовов в WhatsApp. Настройки уведомлений, скрытие зво</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

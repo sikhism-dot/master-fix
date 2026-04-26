@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Windows Server 2019: настройка стандартного просмотрщика JPG — Мастер Фикс</title>
+    <meta name="description" content="Как настроить открытие файлов JPG и PNG в Windows Server 2019. Установка компонента «Фотографии», сброс ассоциаций и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/windows-server-2019-standartnyj-prosmotrshchik-jpg.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Windows Server 2019: настройка стандартного просмотрщика JPG">
+    <meta property="og:description" content="Как настроить открытие файлов JPG и PNG в Windows Server 2019. Установка компонента «Фотографии», сброс ассоциаций и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Windows Server 2019: настройка стандартного просмотрщика JPG</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#установка-компонента-фотографии-через-powershell">Установка компонента «Фотографии» через PowerShell</a></li><li><a href="#настройка-ассоциаций-файлов-через-реестр">Настройка ассоциаций файлов через реестр</a></li><li><a href="#классический-просмотрщик-изображений-windows">Классический просмотрщик изображений Windows</a></li><li><a href="#диагностика-и-устранение-типовых-проблем">Диагностика и устранение типовых проблем</a></li><li><a href="#резюме-и-рекомендации-по-поддержке">Резюме и рекомендации по поддержке</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-na-noutbuke-vyglyadit-kamera-na-klavishakh.html">Индикатор камеры на клавиатуре ноутбука: как найти и включить</a></li><li><a href="/articles/k/ka/kak-sbrosit-protsessor-na-noutbuke.html">Как сбросить процессор на ноутбуке: полное руководство</a></li><li><a href="/articles/k/ka/kak-v-bios-na-acer-swift-3-vybrat-zagruzku-s-fleshki.html">Как в BIOS Acer Swift 3 выбрать загрузку с флешки: инструкция</a></li><li><a href="/articles/v/vo/vospalenie-zagruzchika-windows-pri-pomoshchi-bootice.html">Восстановление загрузчика Windows через Bootice: пошаговая инструкция</a></li><li><a href="/articles/m/mi/migaet-rabochij-stol-windows-10-i-ne-rabotaet-pusk.html">Мигает рабочий стол Windows 10 и не работает Пуск: решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка стандартного просмотрщика изображений в Windows Server 2019</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#установка-компонента-фотографии-через-powershell">Установка компонента «Фотографии» через PowerShell</a></li><li><a href="#настройка-ассоциаций-файлов-через-реестр">Настройка ассоциаций файлов через реестр</a></li><li><a href="#классический-просмотрщик-изображений-windows">Классический просмотрщик изображений Windows</a></li><li><a href="#диагностика-и-устранение-типовых-проблем">Диагностика и устранение типовых проблем</a></li><li><a href="#резюме-и-рекомендации-по-поддержке">Резюме и рекомендации по поддержке</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Администраторы часто сталкиваются с ситуацией, когда после установки операционной системы Windows Server 2019 на рабочем столе или в папках с логами невозможно открыть файлы изображений формата JPG или PNG двойным кликом. Вместоного просмотра появляется системное окно с вопросом «Как вы хотите открыть этот файл?» или запускается браузер, что крайне неудобно при работе с графическими отчетами или скриншотами ошибок.</p>
+
+<p>Проблема кроется в минималистичном подходе Microsoft к серверным редакциям ОС, где по умолчанию отключены мультимедийные компоненты и не заданы ассоциации файлов для пользовательских приложений. Стандартный механизм открытия файлов не может найти подходящее приложение, так как компонент «Фотографии» (Microsoft Photos) не установлен в базовой конфигурации, а классический просмотрщик Windows 7 отсутствует в коде системы.</p>
+
+<p>Для решения этой задачи необходимо вручную установить недостающие компоненты через диспетчер серверов или PowerShell, а затем корректно прописать ассоциации файлов в реестре или через графический интерфейс. Ниже представлен подробный алгоритм действий, позволяющий восстановить функциональность просмотра графики без установки стороннего программного обеспечения.</p>
+
+<h2 id="установка-компонента-фотографии-через-powershell">Установка компонента «Фотографии» через PowerShell</h2>
+
+<p>Наиболее эффективным и современным способом восстановления функционала просмотра изображений является установка официального приложения <em>Microsoft Photos</em> из репозиториев Microsoft. В отличие от старых методов, этот подход обеспечивает совместимость с новыми форматами сжатия и поддерживает аппаратное ускорение.</p>
+
+<p>Для начала работы требуется запустить консоль PowerShell с правами администратора. Это можно сделать через меню «Пуск», найдя соответствующий ярлык, или через диспетчер задач, выбрав «Файл» → «Запустить новую задачу» и введя <code>powershell</code>, предварительно поставив галочку «Создать задачу с правами администратора».</p>
+
+<p>В открывшемся окне консоли необходимо выполнить команду для поиска пакета приложений, отвечающего за работу с мультимедиа. Система должна иметь доступ к интернету или к локальному репозиторию WSUS, если политики безопасности запрещают прямое подключение к магазину Microsoft Store.</p>
+
+<pre><code>Get-AppxPackage -AllUsers *Microsoft.Windows.Photos*</code></pre>
+
+<p>Если команда возвращает пустой результат, значит, приложение полностью удалено или никогда не устанавливалось. В этом случае потребуется использовать команду установки из онлайн-каталога, что является стандартной процедурой для серверных сборок.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование командлетов установки приложений требует активного подключения к серверам Microsoft. Убедитесь, что брандмауэр не блокирует доступ к доменам microsoft.com и windows.com.</p></aside>
+
+<p>Для принудительной установки приложения используется следующий синтаксис, который скачает и зарегистрирует пакет в системе для всех пользователей:</p>
+
+<pre><code>Add-AppxPackage -Register"C:\Program Files\WindowsApps\Microsoft.Windows.Photos_*_x64__8wekyb3d8bbwe\AppxManifest.xml" -DisableDevelopmentMode</code></pre>
+
+<p>Однако, если пакет отсутствует в системе полностью, проще воспользоваться командой поиска и установки через встроенный менеджер пакетов, если он доступен, или скачать Appx-пакет вручную. В большинстве случаев достаточно выполнить команду восстановления:</p>
+
+<pre><code>Get-AppxPackage -AllUsers Microsoft.Windows.Photos | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register"$($_.InstallLocation)\AppXManifest.xml"}</code></pre>
+
+<p>После успешного выполнения скрипта в списке установленных программ появится приложение «Фотографии». Оно автоматически зарегистрирует себя как обработчик основных графических форматов, но в некоторых случаях требуется ручная настройка ассоциаций.</p>
+
+<h3>Альтернативный метод через Store для бизнеса</h3>
+
+<p>Если сервер находится в корпоративной сети с жесткими ограничениями, установка может производиться через портал <em>Store for Business</em>. Администратор загружает офлайн-инсталлятор приложения <em>Microsoft Photos</em> и развертывает его через групповые политики или SCCM.</p>
+
+<p>Этот метод предпочтителен для сред с закрытым контуром безопасности, где прямой доступ к интернету с сервера запрещен политиками информационной безопасности. Пакет передается локально и устанавливается через PowerShell командой <code>Add-AppxPackage -Path</code> с указанием пути к файлу.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка через PowerShell</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите PowerShell от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду Get-AppxPackage для проверки наличия</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните команду Add-AppxPackage для регистрации</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте наличие приложения в меню Пуск</span></div></div>
+
+<h2 id="настройка-ассоциаций-файлов-через-реестр">Настройка ассоциаций файлов через реестр</h2>
+
+<p>В серверных операционных системах часто отсутствует графический интерфейс для выбора программ по умолчанию, либо он работает некорректно без установленных компонентов. В таких случаях наиболее надежным способом является прямое внесение изменений в системный реестр.</p>
+
+<p>Для начала необходимо открыть редактор реестра, выполнив команду <code>regedit</code> в окне «Выполнить» (Win+R). Важно соблюдать осторожность, так как некорректное изменение ключей может привести к нестабильной работе оболочки Explorer.</p>
+
+<p>Необходимо перейти по пути <code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\FileExts\.jpg</code>. Здесь создается или модифицируется раздел <code>OpenWithList</code>, где указывается исполняемый файл приложения. Однако более эффективным методом является работа с ключами <code>HKEY_CLASSES_ROOT</code>.</p>
+
+<p>Создайте текстовый файл с расширением.reg и внесите в него следующие данные для принудительной привязки расширений JPG и PNG к стандартному приложению:</p>
+
+<pre><code>Windows Registry Editor Version 5.00
+
+<p>[HKEY_CLASSES_ROOT\.jpg]</p>
+<p>@="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc"</p>
+
+<p>[HKEY_CLASSES_ROOT\.png]</p>
+<p>@="AppX43hnxtbyyps62jhe9sqpdzxn1790zetc"</p>
+
+<p>[HKEY_CLASSES_ROOT\AppX43hnxtbyyps62jhe9sqpdzxn1790zetc\shell\open\command]</p>
+<p>@="\"C:\\Program Files\\WindowsApps\\Microsoft.Windows.Photos_2019.10000.22711.0_x64__8wekyb3d8bbwe\\Microsoft.Windows.Photos.exe\" \"%1\""</code></pre></p>
+
+<p>Обратите внимание, что версия приложения в пути может отличаться. Для получения актуального пути используйте команду PowerShell <code>(Get-AppxPackage -Name Microsoft.Windows.Photos).InstallLocation</code>.</p>
+
+<p>После применения изменений реестра необходимо перезапустить процесс <code>explorer.exe</code> или выполнить выход из системы и повторный вход, чтобы изменения вступили в силу. Проверка осуществляется двойным кликом по любому файлу изображения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр реестра</th>
+<th>Значение</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>.jpg</td>
+<td>AppX...</td>
+<td>Связь расширения с AppX пакетом</td>
+</tr>
+<tr>
+<td>shell\open\command</td>
+<td>Путь к exe</td>
+<td>Команда запуска приложения</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Использование групповых политик для массового внедрения</h3>
+
+<p>В доменной среде настройку просмотрщика можно централизованно распространить на все серверы. Для этого создается объект групповой политики (GPO), который применяет скрипт реестра при загрузке системы или входе пользователя.</p>
+
+<p>Файл реестра размещается в общей сетевой папке с правами только на чтение. В редакторе управления групповыми политиками (<code>gpmc.msc</code>) создается задача в разделе «Конфигурация компьютера» → «Конфигурация Windows» → «Сценарии» → «Загрузка».</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При использовании GPO убедитесь, что учетная запись компьютера имеет права на чтение сетевой ресурса с файлом реестра.</p></aside>
+
+<p>Альтернативно, можно использовать предпочтения групповых политик (GPP) в разделе «Реестр», чтобы напрямую прописать необходимые ключи на целевых серверах, что является более гибким методом управления конфигурацией.</p>
+
+<h2 id="классический-просмотрщик-изображений-windows">Классический просмотрщик изображений Windows</h2>
+
+<p>Многие администраторы предпочитают возвращать классический, легкий просмотрщик изображений Windows, который был стандартным в Windows 7. В Windows Server 2019 он формально присутствует в системе, но скрыт из списка доступных программ.</p>
+
+<p>Для активации классического просмотрщика необходимо внести изменения в реестр, добавляя соответствующие ключи для каждого поддерживаемого формата. Это позволяет использовать старый, быстрый интерфейс без загрузки тяжелых библиотек UWP-приложений.</p>
+
+<p>Создайте файл реестра со следующим содержимым, чтобы активировать компонент <em>Imaging Viewer</em> для форматов JPEG и PNG:</p>
+
+<pre><code>Windows Registry Editor Version 5.00
+
+<p>[HKEY_CLASSES_ROOT\Applications\imaging.dll\shell\open\command]</p>
+<p>@="\"C:\\Windows\\System32\\rundll32.exe\" \"C:\\Windows\\System32\\shimgvw.dll\",ImageView_Fullscreen %1"</p>
+
+<p>[HKEY_CLASSES_ROOT\.jpg\OpenWithList\imaging.dll]</p>
+<p>@=""</p>
+
+<p>[HKEY_CLASSES_ROOT\.png\OpenWithList\imaging.dll]</p>
+<p>@=""</code></pre></p>
+
+<p>После применения этого скрипта в контекстном меню «Открыть с помощью» появится опция выбора классического просмотрщика. Чтобы сделать его стандартным, необходимо один раз выбрать его вручную через меню «Свойства» файла.</p>
+
+<p>Этот метод особенно полезен на серверах с ограниченными ресурсами, где запуск тяжелого приложения <em>Microsoft Photos</em> может занимать избыточное количество оперативной памяти или процессорного времени.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение методов просмотра</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Современный интерфейс</li><li>✅ Поддержка RAW</li><li>✅ Интеграция с облаком</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минимальное потребление ресурсов</li><li>❌ Привычный интерфейс</li><li>❌ Отсутствие зависимостей</li></ul></div>
+</div></div>
+
+<h3>Настройка через свойства файла</h3>
+
+<p>Если реестр изменен, но система продолжает предлагать выбор приложения, следует использовать диалоговое окно свойств. Нажмите правой кнопкой мыши на файл JPG, выберите «Свойства» и нажмите кнопку «Изменить» в поле «Приложение».</p>
+
+<p>В открывшемся списке выберите «Найти другое приложение на этом компьютере». Перейдите в папку <code>C:\Windows\System32</code> и выберите файл <code>rundll32.exe</code> (для классического метода) или найдите исполняемый файл Photos.</p>
+
+<p>Важно установить галочку «Всегда использовать это приложение для открытия.jpg файлов». Это действие принудительно запишет ассоциацию в ветку реестра пользователя, переопределяя системные настройки по умолчанию.</p>
+
+<h2 id="диагностика-и-устранение-типовых-проблем">Диагностика и устранение типовых проблем</h2>
+
+<p>Даже после выполнения всех настроек могут возникать ситуации, когда изображения перестают открываться или открываются в неправильном приложении. Чаще всего это связано с повреждением кэша ассоциаций файлов или конфликтом обновлений безопасности.</p>
+
+<p>Первым шагом диагностики является проверка целостности системных файлов. Запустите командную строку от имени администратора и выполните команду <code>sfc /scannow</code>. Эта утилита проверит хэш-суммы системных библиотек, отвечающих за работу оболочки и графики.</p>
+
+<p>Если проверка не выявила ошибок, но проблема сохраняется, стоит очистить кэш ассоциаций. Для этого можно воспользоваться утилитой <code>assoc</code> и <code>ftype</code> в командной строке, сбросив расширения к состоянию по умолчанию, а затем повторить процедуру настройки.</p>
+
+<p>В некоторых случаях антивирусное ПО или политики AppLocker могут блокировать запуск UWP-приложений (таких как Photos). Необходимо проверить журналы событий Windows в разделе «Приложения и службы» → «Microsoft» → «Windows» → «AppxDeployment-Server».</p>
+
+<ol>
+<li><strong>Ошибка «Приложение не запущено»</strong> — возникает при повреждении пакета приложения; требуется переустановка через PowerShell с флагом <code>-Register</code>.</li>
+<li><strong>Открытие в браузере Edge</strong> — означает, что ассоциация сбита на уровень протокола HTTP или дефолтный handler браузера; требуется правка реестра для расширений.jpg/.png.</li>
+<li><strong>Черный экран при открытии</strong> — часто вызвано отсутствием кодеков или конфликтом драйверов видеокарты в сеансе RDP; рекомендуется переключить renderer в настройках приложения.</li>
+<li><strong>Невозможность выбрать приложение по умолчанию</strong> — блокировка групповыми политиками; проверьте наличие политик запрета изменения ассоциаций.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой диагностики используйте команду PowerShell Get-AppxPackage -Name Microsoft.Windows.Photos | Select InstallLocation, Version для проверки состояния пакета.</p></aside>
+
+<h3>Работа в терминальном сеансе (RDP)</h3>
+
+<p>При работе через удаленный рабочий стол графические приложения могут работать медленнее из-за передачи bitmap-кадра. Приложение «Фотографии» может долго загружать превью изображений высокого разрешения.</p>
+
+<p>Для оптимизации работы в RDP рекомендуется в настройках подключения (<code>mstsc.exe</code>) на вкладке «Взаимодействие» выбрать максимальную скорость соединения, чтобы отключить фоновые элементы рабочего стола и сглаживание шрифтов, что освободит канал для передачи изображения.</p>
+
+<p>Также стоит проверить, не включен ли режим «Использовать аппаратное ускорение» в настройках самого приложения Photos, так как в виртуальных средах (Hyper-V, VMware) проброс GPU может быть не настроен, что вызывает зависания.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>Рекомендуемое решение</th>
+<th>Комментарий</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Локальный сервер</td>
+<td>Microsoft Photos</td>
+<td>Полный функционал и поддержка</td>
+</tr>
+<tr>
+<td>RDP / VDI</td>
+<td>Classic Viewer</td>
+<td>Меньше трафика, выше скорость</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Восстановление просмотрщика JPG в Windows Server 2019 требует установки UWP-компонента Photos или активации классического viewer через реестр.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-поддержке">Резюме и рекомендации по поддержке</h2>
+
+<p>Настройка стандартного просмотрщика изображений в Windows Server 2019 является необходимой операционной задачей для обеспечения комфортной работы администратора. Использование PowerShell для установки компонента <em>Microsoft Photos</em> является наиболее поддерживаемым Microsoft методом, гарантирующим совместимость с будущими обновлениями безопасности.</p>
+
+<p>Для сред с высокими требованиями к производительности или в условиях ограниченного сетевого доступа целесообразно использовать классический просмотрщик через правку реестра. Это обеспечивает минимальное потребление ресурсов и независимость от внешних репозиториев.</p>
+
+<p>Регулярный аудит установленных приложений и проверка ассоциаций файлов должны быть включены в стандартные процедуры обслуживания сервера. Автоматизация этого процесса через групповые политики позволяет поддерживать единую конфигурацию рабочей среды на всех узлах инфраструктуры.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-na-noutbuke-vyglyadit-kamera-na-klavishakh.html" class="pb-related-card">
+                <span class="pb-related-title">Индикатор камеры на клавиатуре ноутбука: как найти и включить</span>
+                <span class="pb-related-desc">Подробный разбор расположения индикаторов и клавиш для управления веб-камерой. Инструкция по активац</span>
+            </a><a href="/articles/k/ka/kak-sbrosit-protsessor-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Как сбросить процессор на ноутбуке: полное руководство</span>
+                <span class="pb-related-desc">Техническая инструкция по сбросу настроек процессора и BIOS на ноутбуках. Методы аппаратного и прогр</span>
+            </a><a href="/articles/k/ka/kak-v-bios-na-acer-swift-3-vybrat-zagruzku-s-fleshki.html" class="pb-related-card">
+                <span class="pb-related-title">Как в BIOS Acer Swift 3 выбрать загрузку с флешки: инструкция</span>
+                <span class="pb-related-desc">Подробная настройка Boot Menu и BIOS на Acer Swift 3. Как включить F12, отключить Secure Boot и запу</span>
+            </a><a href="/articles/v/vo/vospalenie-zagruzchika-windows-pri-pomoshchi-bootice.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление загрузчика Windows через Bootice: пошаговая инструкция</span>
+                <span class="pb-related-desc">Как восстановить загрузчик Windows с помощью утилиты Bootice. Подробное руководство по MBR и PBR, ис</span>
+            </a><a href="/articles/m/mi/migaet-rabochij-stol-windows-10-i-ne-rabotaet-pusk.html" class="pb-related-card">
+                <span class="pb-related-title">Мигает рабочий стол Windows 10 и не работает Пуск: решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению мигания экрана и отказа меню Пуск в Windows 10. Диагностика драйв</span>
+            </a><a href="/articles/w/wi/windows-10-pro-del-apps-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Windows 10 Pro: что такое Del Apps и как удалить приложения</span>
+                <span class="pb-related-desc">Полное руководство по удалению встроенных и сторонних приложений в Windows 10 Pro. Разбор термина De</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

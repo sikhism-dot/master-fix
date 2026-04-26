@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>BubbleUPnP: управление DLNA сервером и плеером — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по настройке BubbleUPnP, управлению воспроизведением с DLNA сервера, устранению ошибок буферизации и кодеков.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-upravlyat-vosproizvedeniem-dlna-server-v-programme-bubble-upnp.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="BubbleUPnP: управление DLNA сервером и плеером">
+    <meta property="og:description" content="Подробная инструкция по настройке BubbleUPnP, управлению воспроизведением с DLNA сервера, устранению ошибок буферизации и кодеков.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">BubbleUPnP: управление DLNA сервером и плеером</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#базовая-настройка-сети-и-обнаружение-устройств">Базовая настройка сети и обнаружение устройств</a></li><li><a href="#механика-управления-воспроизведением-и-выбор-рендерера">Механика управления воспроизведением и выбор рендерера</a></li><li><a href="#использование-облачного-прокси-и-транскодирования">Использование облачного прокси и транскодирования</a></li><li><a href="#настройка-аудио-выхода-и-hi-res-режимов">Настройка аудио-выхода и Hi-Res режимов</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/s/st/storage-emulated.html">Storage Emulated: Что это в Android и как освободить место</a></li><li><a href="/articles/p/ph/philips-47pfl6907t12-kak-zapustit-blok-pitaniya-otdelno-bez-materinki.html">Запуск блока питания Philips 47PFL6907T/12 без материнской платы</a></li><li><a href="/articles/k/ka/kak-sokhranit-trek-iz-yandeks-muzyki-na-ajfon.html">Как сохранить треки Яндекс Музыки на iPhone: полная инструкция</a></li><li><a href="/articles/z/za/zachem-zenkitpartnerconfig.html">ZenkitPartnerConfig: назначение, функции и решение проблем</a></li><li><a href="/articles/g/ge/gej-mem-s-lysym.html">Как найти оригинал мема с лысым: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Управление DLNA сервером в BubbleUPnP: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#базовая-настройка-сети-и-обнаружение-устройств">Базовая настройка сети и обнаружение устройств</a></li><li><a href="#механика-управления-воспроизведением-и-выбор-рендерера">Механика управления воспроизведением и выбор рендерера</a></li><li><a href="#использование-облачного-прокси-и-транскодирования">Использование облачного прокси и транскодирования</a></li><li><a href="#настройка-аудио-выхода-и-hi-res-режимов">Настройка аудио-выхода и Hi-Res режимов</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда мощный NAS или компьютер с медиатекой не «видит» телевизор или смартфон, знакома многим владельцам мультимедийных систем. Пользователь сталкивается с тем, что файлы физически находятся в сети, но воспроизвести их на целевом устройстве невозможно без дополнительных манипуляций.</p>
+<p>Часто стандартные средства операционных систем или встроенные плееры Smart TV не справляются с современными форматами видео и аудио, требуя установки громоздких кодеков или конвертации файлов. Это создает барьер для комфортного просмотра контента высокого разрешения.</p>
+<p>Решением становится использование специализированного программного обеспечения, такого как BubbleUPnP, которое берет на себя функции универсального контроллера и транскодера. Приложение позволяет не просто находить файлы в сети, но и управлять их потоковой передачей, обходя ограничения рендереров и обеспечивая совместимость форматов на лету.</p>
+
+<h2 id="базовая-настройка-сети-и-обнаружение-устройств">Базовая настройка сети и обнаружение устройств</h2>
+<p>Для начала работы необходимо обеспечить физическую и логическую связность всех участников процесса. Все устройства, включая сервер с файлами, управляющий смартфон и рендерер (телевизор или аудиосистема), должны находиться в одной локальной сети, предпочтительно подключенные через Ethernet или стабильный Wi-Fi 5 ГГц.</p>
+<p>После установки приложения <em>BubbleUPnP</em> на мобильное устройство следует проверить, включена ли функция UPnP/DLNA в роутере, так как именно этот протокол отвечает за автоматическое обнаружение устройств в сети без ручной настройки IP-адресов.</p>
+<p>В интерфейсе программы необходимо перейти в раздел <code>Библиотеки</code>, где отобразятся все доступные медиа-серверы. Если сервер не появился автоматически, стоит проверить настройки брандмауэра на компьютере или параметры доступа на NAS, разрешив входящие соединения для портов 1900 (UDP) и 49152-49200 (TCP).</p>
+<p>Важно учитывать, что некоторые антивирусные пакеты могут блокировать широковещательные запросы SSDP, используемые для поиска устройств. В таком случае потребуется добавить исключение в правила сетевого экрана для исполняемого файла сервера и самого приложения BubbleUPnP.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых роутерах функция «AP Isolation» должна быть отключена, иначе устройства не смогут видеть друг друга, даже находясь в одной сети Wi-Fi.</p></aside>
+
+<p>После успешного обнаружения сервера в списке библиотек, он становится доступен для навигации по папкам и файлам. Корректное отображение структуры каталогов свидетельствует о том, что базовый уровень взаимодействия между клиентом и сервером настроен верно.</p>
+
+<h2 id="механика-управления-воспроизведением-и-выбор-рендерера">Механика управления воспроизведением и выбор рендерера</h2>
+<p>Ключевой особенностью архитектуры UPnP/DLNA является разделение функций контроллера, сервера и рендерера. В приложении BubbleUPnP пользователь выступает оператором, который выбирает контент на сервере и указывает устройство, на котором этот контент должен быть воспроизведен.</p>
+<p>Для запуска воспроизведения необходимо выбрать нужный файл в библиотеке сервера, нажать на него и в появившемся меню выбрать опцию <code>Play on...</code> или <code>Воспроизвести на...</code>. После этого откроется список доступных в сети рендереров, таких как Smart TV, игровые консоли или сетевые аудиоплееры.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Запуск воспроизведения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите файл в библиотеке сервера</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите кнопку Play on</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите целевое устройство из списка</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Ожидайте буферизации на рендерере</span></div></div>
+
+<p>Управление процессом воспроизведения осуществляется через панель контроллера в нижней части экрана приложения. Здесь доступны стандартные функции: пауза, перемотка, изменение громкости и переключение треков, команды с которых транслируются на рендерер через сеть.</p>
+<p>Если целевое устройство поддерживает протокол <em>OpenHome</em> или имеет расширенную поддержку DLNA, приложение может отображать обложки альбомов и метаданные непосредственно на экране телевизора, а не только на смартфоне.</p>
+<p>В случае, если рендерер не поддерживает формат выбранного файла, воспроизведение может не начаться или сопровождаться ошибкой. В этой ситуации стоит обратить внимание на встроенные возможности транскодирования, которые позволяют конвертировать поток данных в реальном времени.</p>
+
+<h2 id="использование-облачного-прокси-и-транскодирования">Использование облачного прокси и транскодирования</h2>
+<p>Когда встроенные кодеки телевизора не поддерживают формат видео (например, HEVC/H.265 или FLAC в аудио), в дело вступает механизм облачного прокси или локального транскодера. BubbleUPnP предлагает уникальную возможность перенаправления потока через свои сервера для перекодирования на лету.</p>
+<p>Для активации этой функции необходимо перейти в настройки приложения, выбрать раздел <code>Локальные и облачные серверы</code> и включить опцию <code>Облачный прокси</code>. Это потребует авторизации в аккаунте разработчика, что позволяет пробросить трафик через внешние сервера для обработки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование облачного прокси увеличивает нагрузку на интернет-канал и может привести к задержкам при воспроизведении видео высокого битрейта (4K HDR).</p></aside>
+
+<p>Альтернативой облачному методу является использование локального транскодера, если он настроен на стороне сервера (например, через <em>MiniDLNA</em> или <em>Universal Media Server</em>). В этом случае BubbleUPnP запрашивает у сервера альтернативный поток, уже перекодированный в совместимый формат.</p>
+<p>Параметры транскодирования можно гибко настраивать, выбирая целевой профиль устройства. Это особенно актуально для старых моделей телевизоров, которые не понимают современные контейнеры <em>MKV</em> или аудиокодеки <em>DTS-HD</em>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод обработки</th>
+<th>Требования к сети</th>
+<th>Нагрузка на CPU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Прямое воспроизведение</td>
+<td>Низкая (только чтение)</td>
+<td>Отсутствует</td>
+</tr>
+<tr>
+<td>Облачный прокси</td>
+<td>Высокая (двойной трафик)</td>
+<td>Серверная (облако)</td>
+</tr>
+<tr>
+<td>Локальный транскодер</td>
+<td>Средняя/Высокая</td>
+<td>Высокая (локальный ПК/NAS)</td>
+</tr>
+</tbody>
+</table>
+
+<p>При использовании прокси важно следить за стабильностью соединения, так как разрыв связи приведет к остановке буферизации и необходимости перезапуска файла. Для локальных сетей с гигабитным Ethernet предпочтительнее использовать прямое воспроизведение или мощный локальный транскодер.</p>
+
+<h2 id="настройка-аудио-выхода-и-hi-res-режимов">Настройка аудио-выхода и Hi-Res режимов</h2>
+<p>Для аудиофилов, использующих внешние ЦАПы через USB или сетевые стримеры, критически важна передача битовой копии сигнала без искажений. BubbleUPnP поддерживает режим Exclusive Mode, который позволяет обойти системный микшер Android и передавать поток напрямую на USB-интерфейс.</p>
+<p>Чтобы активировать этот режим, необходимо в настройках приложения перейти в раздел <code>Аудио</code> и включить опцию <code>Использовать USB Audio</code>. При подключении совместимого ЦАФ приложение автоматически переключится в режим прямого доступа к оборудованию.</p>
+<p>В случае сетевых рендереров, таких как <em>Chromecast Audio</em> или специализированные стримеры, важно правильно настроить формат передачи. Приложение может предлагать выбор между PCM и RAW (passthrough), что актуально для многоканального звука.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для проверки качества передачи сигнала используйте встроенный анализатор в разделе «О приложении» или сторонние утилиты, отображающие текущую частоту дискретизации ЦАПа.</p></aside>
+
+<p>Если при воспроизведении файлов высокого разрешения (24-bit/192kHz) возникает треск или заикания, следует проверить пропускную способность Wi-Fi канала. В таких случаях рекомендуется принудительно снизить буферизацию или переключиться на проводное соединение.</p>
+<p>Также стоит обратить внимание на настройки энергосбережения операционной системы смартфона, которые могут ограничивать фоновую активность приложения и прерывать поток данных при выключенном экране.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе эксплуатации пользователи могут сталкиваться с различными проблемами, связанными с совместимостью, сетевыми задержками или программными сбоями. Понимание природы этих ошибок позволяет быстро вернуть систему в рабочее состояние.</p>
+<ol>
+<li><strong>Буферизация и рывки видео</strong> — чаще всего вызваны низкой скоростью Wi-Fi или перегрузкой канала. Решение: перейти на 5 ГГц, снизить битрейт транскодирования или использовать кабель Ethernet для рендерера.</li>
+<li><strong>Формат не поддерживается</strong> — рендерер не может декодировать файл. Решение: включить облачный прокси для транскодирования или выбрать другой рендерер с более широкой поддержкой кодеков.</li>
+<li><strong>Устройство не найдено</strong> — проблема с multicast-трафиком или изоляцией клиентов. Решение: проверить настройки роутера, отключить AP Isolation, убедиться, что антивирус не блокирует порты.</li>
+<li><strong>Отсутствие звука при наличии видео</strong> — несовместимость аудиокодека. Решение: в настройках BubbleUPnP выбрать опцию перекодирования аудио в PCM или AAC перед отправкой на рендерер.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества BubbleUPnP</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка огромного числа форматов</li><li>✅ Гибкое облачное транскодирование</li><li>✅ Удобный интерфейс контроллера</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Недостатки решения:Зависимость от сторонних серверов прокси</li><li>❌ Сложность первоначальной настройки сети</li><li>❌ Возможные задержки при потоковой передаче</li></ul></div>
+</div></div>
+
+<p>Отдельного внимания заслуживает проблема с метаданными и обложками. Если они не отображаются корректно, возможно, сервер DLNA не передает теги ID3 или JPEG-изображения в правильном формате. В этом случае помогает перестройка библиотеки на стороне сервера или использование встроенного кэша обложек в приложении.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Вероятная причина</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Черный экран</td>
+<td>Несовместимый видеокодек</td>
+<td>Включить транскодинг</td>
+</tr>
+<tr>
+<td>Нет звука</td>
+<td>Неподдерживаемый аудиоформат</td>
+<td>Переключить на PCM</td>
+</tr>
+<tr>
+<td>Рассинхрон</td>
+<td>Перегрузка буфера</td>
+<td>Уменьшить размер буфера</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотная настройка BubbleUPnP превращает разрозненные устройства в единую мультимедийную экосистему, устраняя проблемы совместимости форматов.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Интеграция BubbleUPnP в домашнюю сеть позволяет эффективно управлять воспроизведением контента с DLNA серверов на любых совместимых устройствах. Гибкость настроек, поддержка транскодирования и широкий спектр управляемых рендереров делают это приложение незаменимым инструментом для организации домашнего кинотеатра.</p>
+<p>Регулярное обновление приложения и проверка сетевых настроек обеспечат стабильную работу системы даже при воспроизведении тяжелых файлов высокого разрешения. Правильная конфигурация устраняет большинство проблем совместимости, делая процесс просмотра и прослушивания максимально комфортным.</p>
+<p>Освоив базовые и продвинутые функции управления, пользователь получает полный контроль над медиатекой, независимый от ограничений встроенного программного обеспечения телевизоров и аудиосистем. Это открывает доступ к качественному контенту без необходимости конвертации файлов вручную.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/s/st/storage-emulated.html" class="pb-related-card">
+                <span class="pb-related-title">Storage Emulated: Что это в Android и как освободить место</span>
+                <span class="pb-related-desc">Полный разбор storage emulated 0 в Android. Инструкция по очистке, переносу данных, работе с root-пр</span>
+            </a><a href="/articles/p/ph/philips-47pfl6907t12-kak-zapustit-blok-pitaniya-otdelno-bez-materinki.html" class="pb-related-card">
+                <span class="pb-related-title">Запуск блока питания Philips 47PFL6907T/12 без материнской платы</span>
+                <span class="pb-related-desc">Подробная инструкция по автономному запуску БП Philips 47PFL6907T/12. Проверка напряжений, схема рас</span>
+            </a><a href="/articles/k/ka/kak-sokhranit-trek-iz-yandeks-muzyki-na-ajfon.html" class="pb-related-card">
+                <span class="pb-related-title">Как сохранить треки Яндекс Музыки на iPhone: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по загрузке и прослушиванию музыки Яндекс на iPhone без интернета. Настройка к</span>
+            </a><a href="/articles/z/za/zachem-zenkitpartnerconfig.html" class="pb-related-card">
+                <span class="pb-related-title">ZenkitPartnerConfig: назначение, функции и решение проблем</span>
+                <span class="pb-related-desc">Технический анализ ZenkitPartnerConfig. Зачем нужен системный процесс, можно ли его удалять и как ис</span>
+            </a><a href="/articles/g/ge/gej-mem-s-lysym.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти оригинал мема с лысым: инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по поиску, верификации и анализу популярного интернет-мема. Методы обратн</span>
+            </a><a href="/articles/k/ka/kak-na-ivi-otklyuchit-zamytost-kadrov.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать замытость кадров на Иви: устранение артефактов</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению размытия и артефактов сжатия на Иви. Настройки скорости интернета</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

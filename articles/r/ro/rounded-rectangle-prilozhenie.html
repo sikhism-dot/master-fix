@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Приложение Rounded Rectangle: создание фигур и UI — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию скругленных прямоугольников в интерфейсах приложений. Настройка радиусов, CSS-свойства и работа с Canvas API.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/r/ro/rounded-rectangle-prilozhenie.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Приложение Rounded Rectangle: создание фигур и UI">
+    <meta property="og:description" content="Техническое руководство по созданию скругленных прямоугольников в интерфейсах приложений. Настройка радиусов, CSS-свойства и работа с Canvas API.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Приложение Rounded Rectangle: создание фигур и UI</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-подходы-к-рендерингу-скруглений">Архитектурные подходы к рендерингу скруглений</a></li><li><a href="#реализация-через-css-и-web-стандарты">Реализация через CSS и Web-стандарты</a></li><li><a href="#программная-отрисовка-на-canvas-api">Программная отрисовка на Canvas API</a></li><li><a href="#специфика-мобильных-платформ-и-нативная-разработка">Специфика мобильных платформ и нативная разработка</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otpravit-skrinshot-s-telefona-na-vatsap.html">Как отправить скриншот в WhatsApp: подробная инструкция</a></li><li><a href="/articles/k/ka/kak-ubrat-umnuyu-kameru-na-telefone.html">Как отключить умную камеру на телефоне: полная инструкция</a></li><li><a href="/articles/k/ka/kak-obnovit-os-na-androide-khonor-7s-do-9-versii.html">Обновление Honor 7C до Android 9: полная инструкция</a></li><li><a href="/articles/k/ka/kak-posmotret-foto-v-telefone-vivo-u19s.html">Как посмотреть фото на vivo Y19c: полный гид по галерее</a></li><li><a href="/articles/b/br/breeno-na-russkom-realme-skachat.html">Breeno на русском для Realme: Инструкция по установке и настройке</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Реализация Rounded Rectangle в приложении: технические аспекты</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-подходы-к-рендерингу-скруглений">Архитектурные подходы к рендерингу скруглений</a></li><li><a href="#реализация-через-css-и-web-стандарты">Реализация через CSS и Web-стандарты</a></li><li><a href="#программная-отрисовка-на-canvas-api">Программная отрисовка на Canvas API</a></li><li><a href="#специфика-мобильных-платформ-и-нативная-разработка">Специфика мобильных платформ и нативная разработка</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>В процессе разработки пользовательского интерфейса часто возникает задача, когда стандартные прямоугольные формы выглядят слишком грубо и не вписываются в современный дизайн-код. Острые углы могут создавать визуальный шум, нарушать баланс композиции и снижать общее эстетическое восприятие продукта.</p>
+
+<p>Необходимость внедрения элемента «rounded rectangle» (скругленный прямоугольник) становится критичной при создании кнопок, карточек контента, полей ввода и фоновых плашек. Ошибки в реализации этого элемента приводят к артефактам рендеринга, «пикселизации» краев на экранах с высокой плотностью и проблемам с доступностью.</p>
+
+<p>На практике разработчик сталкивается с выбором метода реализации: использовать нативные CSS-свойства, рисовать фигуру через Canvas API или применять SVG-графику. Каждый подход имеет свои ограничения по производительности и совместимости, требуя четкого понимания архитектуры приложения для правильного выбора инструмента.</p>
+
+<h2 id="архитектурные-подходы-к-рендерингу-скруглений">Архитектурные подходы к рендерингу скруглений</h2>
+
+<p>Выбор технологии для отрисовки скругленных углов напрямую зависит от контекста использования в приложении. Если речь идет о стандартных элементах DOM-дерева, наиболее эффективным решением остается каскадная таблица стилей. Для более сложных графических сценариев, таких как динамическая генерация форм или работа с 2D-контекстом, требуются иные методы.</p>
+
+<p>Основная сложность заключается в согласовании радиуса скругления с размерами контейнера. Если радиус превышает половину меньшей стороны прямоугольника, браузер или движок рендеринга должен автоматически скорректировать значение, чтобы избежать схлопывания фигуры. Понимание математики процесса позволяет предсказывать поведение интерфейса на разных устройствах.</p>
+
+<p>При работе с нативными мобильными платформами, такими как <em>iOS</em> или <em>Android</em>, механизмы отрисовки могут отличаться. В то время как веб-технологии полагаются на движки вроде <em>WebKit</em> или <em>Blink</em>, нативные приложения используют аппаратное ускорение графических процессоров, что требует специфических настроек для достижения идеальной гладкости краев.</p>
+
+<p>Важно учитывать, что <strong>производительность рендеринга</strong> сложных форм может снижаться при анимации. Если скругленный прямоугольник меняет свои размеры или радиус в реальном времени, это может вызвать перерисовку всего кадра, что приведет к падению FPS и ухудшению пользовательского опыта.</p>
+
+<p>Для статических элементов использование векторной графики или CSS является предпочтительным, так как эти методы оптимизированы браузерами. Динамические сценарии, где форма зависит от пользовательского ввода, требуют более глубокой интеграции с JavaScript и графическим контекстом.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование CSS для скругления углов является наиболее производительным методом для стандартных веб-элементов, так как оно не требует перерисовки DOM-дерева.</p></aside>
+
+<h3>Сравнение методов реализации</h3>
+
+<p>При проектировании системы стоит провести сравнительный анализ доступных инструментов. Таблица ниже демонстрирует ключевые различия между основными подходами к созданию rounded rectangle в современной разработке.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сценарий использования</th>
+<th>Влияние на производительность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSS border-radius</td>
+<td>Стандартные UI-компоненты</td>
+<td>Минимальное (аппаратное ускорение)</td>
+</tr>
+<tr>
+<td>SVG Path</td>
+<td>Сложные формы и иконки</td>
+<td>Низкое (векторная масштабируемость)</td>
+</tr>
+<tr>
+<td>HTML5 Canvas</td>
+<td>Игры и динамическая графика</td>
+<td>Высокое (зависит от сложности сцены)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="реализация-через-css-и-web-стандарты">Реализация через CSS и Web-стандарты</h2>
+
+<p>В веб-разработке создание скругленного прямоугольника базируется на свойстве <code>border-radius</code>. Это свойство позволяет задавать радиус скругления для каждого угла отдельно или для всех сразу. Синтаксис позволяет комбинировать пиксельные значения и проценты, что дает гибкость в адаптивном дизайне.</p>
+
+<p>Если требуется создать эллиптическое скругление, используется двойная запись значений через слэш. Например, запись <code>border-radius: 10px / 20px</code> задаст горизонтальный радиус 10 пикселей и вертикальный 20 пикселей. Это позволяет создавать более органичные и мягкие формы, имитирующие природные объекты.</p>
+
+<p>Для обеспечения кроссбраузерности и корректного отображения на старых версиях мобильных браузеров, таких как <em>Android WebView</em> версий ниже 4.4, иногда требуется добавление вендорных префиксов, хотя в современном стеке технологий это встречается все реже. Основное внимание следует уделить совместимости с темной темой и режимами высокой контрастности.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка CSS скругления</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Задайте базовый радиус border-radius: 8px</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Для адаптивности используйте проценты (50% для круга)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте отображение границ и теней</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Протестируйте на мобильных устройствах</span></div></div>
+
+<p>Сложные случаи возникают, когда необходимо скруглить только определенные углы или создать асимметричную форму. В таких ситуациях применяется перечисление четырех значений, где порядок соответствует углам: верхний-левый, верхний-правый, нижний-правый, нижний-левый. Это дает полный контроль над геометрией элемента.</p>
+
+<h3>Работа с border-image и градиентами</h3>
+
+<p>Часто скругленный прямоугольник должен иметь не просто цветную границу, а градиентную заливку или сложную текстуру. Стандартное свойство <code>border</code> не поддерживает градиенты напрямую, что вынуждает разработчиков использовать обходные пути. Одним из популярных методов является использование псевдоэлементов <code>::before</code> и <code>::after</code>.</p>
+
+<p>При наложении градиента на скругленные углы важно следить за тем, чтобы фоновое изображение или цвет не вылезали за пределы заданного радиуса. Для этого используется свойство <code>background-clip: padding-box</code> или <code>border-box</code>, которое обрезает контент по внутреннему краю границы.</p>
+
+<p>Если в приложении требуется анимация изменения радиуса скругления, стоит учитывать, что интерполяция между разными значениями <code>border-radius</code> может выглядеть неестественно. Браузеры вычисляют промежуточные состояния математически, что иногда приводит к временным искажениям формы в начале и конце анимации.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Избегайте использования больших значений border-radius на элементах с толстыми границами, так как это может привести к артефактам отображения углов в некоторых браузерах.</p></aside>
+
+<h2 id="программная-отрисовка-на-canvas-api">Программная отрисовка на Canvas API</h2>
+
+<p>Когда стандартных средств CSS недостаточно, например, при разработке графического редактора или игры, вступает в силу HTML5 Canvas API. Здесь разработчик получает полный контроль над каждым пикселем, но берет на себя ответственность за математику построения фигуры. Отрисовка rounded rectangle в Canvas требует ручного расчета дуг и линий.</p>
+
+<p>Алгоритм построения фигуры начинается с перемещения «пера» в начальную точку. Затем последовательно рисуются линии до точки начала скругления, после чего вызывается метод <code>arcTo</code> или <code>arc</code> для создания дуги. Процесс повторяется для всех четырех сторон прямоугольника.</p>
+
+<p>Ключевым моментом является правильное управление состоянием контекста. Перед началом рисования новой фигуры необходимо вызывать <code>beginPath</code>, а после завершения — <code>closePath</code>. Это гарантирует, что скругленный прямоугольник будет восприниматься как единый объект для заливки или обводки.</p>
+
+<pre><code>function drawRoundedRect(ctx, x, y, width, height, radius) {
+<p>ctx.beginPath;</p>
+<p>ctx.moveTo(x + radius, y);</p>
+<p>ctx.lineTo(x + width - radius, y);</p>
+<p>ctx.quadraticCurveTo(x + width, y, x + width, y + radius);</p>
+<p>ctx.lineTo(x + width, y + height - radius);</p>
+<p>ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);</p>
+<p>ctx.lineTo(x + radius, y + height);</p>
+<p>ctx.quadraticCurveTo(x, y + height, x, y + height - radius);</p>
+<p>ctx.lineTo(x, y + radius);</p>
+<p>ctx.quadraticCurveTo(x, y, x + radius, y);</p>
+<p>ctx.closePath;</p>
+<p>}</code></pre></p>
+
+<p>В представленном выше коде используется метод <code>quadraticCurveTo</code> для создания плавных переходов. Это позволяет избежать резких углов в точках соединения линий и дуг. Параметры <em>x, y, width, height</em> определяют габариты, а <em>radius</em> задает степень скругления.</p>
+
+<p>При работе с Canvas важно помнить о разрешении экрана. На дисплеях с высокой плотностью пикселей (Retina) координаты нужно масштабировать, иначе линии будут выглядеть размытыми. Для этого контекст трансформируется перед началом рисования.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование Canvas API дает полный контроль над формой, но требует ручных вычислений и масштабирования для экранов высокой плотности.</p></aside>
+
+<h3>Оптимизация производительности Canvas</h3>
+
+<p>Отрисовка множества скругленных прямоугольников в каждом кадре анимации может стать узким местом. Если приложение содержит сотни таких объектов, стоит рассмотреть возможность кэширования отрисованного изображения. Метод <code>createImageBitmap</code> или использование off-screen canvas позволяет подготовить текстуру заранее.</p>
+
+<p>Еще одним аспектом оптимизации является минимизация вызовов методов изменения состояния контекста, таких как <code>fillStyle</code> или <code>strokeStyle</code>. Если цвет не меняется, устанавливать его заново внутри цикла отрисовки нет необходимости, что экономит вычислительные ресурсы процессора.</p>
+
+<p>Для сложных сцен, где форма rounded rectangle меняется динамически, можно использовать WebGL вместо 2D-контекста. Это позволяет переложить вычисления на графический процессор, освобождая главный поток JavaScript для обработки логики приложения и взаимодействия с пользоват.</p>
+
+<h2 id="специфика-мобильных-платформ-и-нативная-разработка">Специфика мобильных платформ и нативная разработка</h2>
+
+<p>В среде мобильной разработки, будь то <em>SwiftUI</em> для iOS или <em>Jetpack Compose</em> для Android, концепция скругленного прямоугольника реализована на уровне фреймворка. Однако механизмы работы отличаются от веба. Здесь важнее понимать, как операционная система обрабатывает маски обрезки (clipping masks).</p>
+
+<p>На платформе <em>iOS</em> свойство <code>cornerRadius</code> применяется к слою представления (<code>CALayer</code>). Для статических элементов лучше задавать скругление один раз при инициализации.</p>
+
+<p>В экосистеме <em>Android</em> используется класс <code>RoundRectShape</code> или модификаторы в Compose. Особенностью является то, что скругление может применяться не только к границам, но и к фону drawable-объекта. Это позволяет создавать сложные эффекты, такие как рябь (ripple effect) внутри скругленных границ.</p>
+
+<p>Проблемы совместимости часто возникают при использовании кастомных шрифтов или нестандартных толщин линий внутри скругленных контейнеров. Операционная система может по-разному сглаживать шрифты внутри clipped-областей, что требует тщательного тестирования на реальных устройствах.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На Android 10 и новее улучшена поддержка скругления углов окон приложений, что позволяет создавать более согласованный визуальный стиль системы.</p></aside>
+
+<h3>Адаптация под различные плотности пикселей</h3>
+
+<p>Мобильные устройства имеют широкий спектр плотностей пикселей (DPI). Значение радиуса в 8 пунктов (points/dp) будет физически отличаться на разных экранах, но визуально должно оставаться пропорциональным. При верстке важно использовать относительные единицы измерения, принятые в платформе.</p>
+
+<p>Если приложение поддерживает планшеты и складные устройства, геометрия скругленного прямоугольника может требовать адаптации. На больших экранах элементы интерфейса часто делают крупнее, и фиксированный радиус скругления может выглядеть непропорционально маленьким.</p>
+
+<p>Стоит также учитывать системные скругления, применяемые самой ОС к окнам приложений. Внутренние элементы интерфейса должны гармонировать с внешними границами приложения, создавая единое визуальное пространство без резких контрастов геометрии.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе внедрения rounded rectangle разработчики часто допускают ряд типичных ошибок, которые влияют на качество финального продукта. Анализ этих ошибок помогает избежать проблем с версткой и производительностью.</p>
+
+<ol>
+<li><strong>Игнорирование переполнения контента</strong> — если внутри скругленного контейнера находится изображение или видео, оно может вылезать за пределы радиуса. Решение: использовать свойство <code>overflow: hidden</code> или соответствующие модификаторы клипа в нативных фреймворках.</li>
+<li><strong>Несоответствие радиуса и размера</strong> — попытка задать радиус скругления больше половины ширины элемента. Это приводит к непредсказуемым результатам, часто превращая прямоугольник в овал или капсулу. Решение: динамически рассчитывать максимальный радиус в коде.</li>
+<li><strong>Размытие границ при масштабировании</strong> — использование нецелочисленных значений координат или размеров на экранах с высокой плотностью пикселей. Решение: выравнивать координаты по сетке пикселей или использовать векторные форматы.</li>
+<li><strong>Конфликты слоев и теней</strong> — применение тени (<code>box-shadow</code> или <code>drop-shadow</code>) к скругленному элементу может привести к тому, что тень не будет повторять форму скругления. Решение: использовать специфичные свойства теней для форм или SVG-фильтры.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества скругленных форм</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Визуальная привлекательность</li><li>✅ Улучшенная фокусировка внимания</li><li>✅ Современный стиль</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Недостатки реализации:Сложнее в математических расчетах</li><li>❌ Возможные проблемы производительности</li><li>❌ Трудности с адаптивностью</li></ul></div>
+</div></div>
+
+<p>Отдельного внимания заслуживает ошибка, связанная с наследованием стилей. В сложных иерархических структурах DOM или View-деревьях свойства скругления могут конфликтовать с родительскими контейнерами. Всегда стоит проверять вычисленные стили в инструментах разработчика.</p>
+
+<p>Еще одной распространенной проблемой является доступность. Скругленные углы могут визуально уменьшать площадь кликабельной области, если не соблюдены минимальные размеры тач-таргетов. Согласно рекомендациям <em>WCAG</em>, минимальный размер интерактивного элемента должен составлять 44x44 пикселя, независимо от визуального оформления.</p>
+
+<h2 id="заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</h2>
+
+<p>Реализация элемента rounded rectangle является фундаментальной задачей в современном дизайне интерфейсов, требующей баланса между эстетикой и технической эффективностью. Правильный выбор метода — будь то CSS, Canvas или нативные API — определяет не только внешний вид, но и отзывчивость приложения.</p>
+
+<p>Следование лучшим практикам, таким как оптимизация рендеринга, учет плотности пикселей и соблюдение принципов доступности, позволяет создавать качественные продукты. </p>
+
+<p>Технологии постоянно развиваются, и стандарты отображения графики становятся строже. Постоянное обновление знаний о новых свойствах CSS, возможностях графических движков и требованиях платформ поможет поддерживать интерфейс приложения актуальным и производительным в долгосрочной перспективе.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otpravit-skrinshot-s-telefona-na-vatsap.html" class="pb-related-card">
+                <span class="pb-related-title">Как отправить скриншот в WhatsApp: подробная инструкция</span>
+                <span class="pb-related-desc">Узнайте, как быстро сделать и отправить скриншот в WhatsApp на Android и iPhone. Решения проблем с п</span>
+            </a><a href="/articles/k/ka/kak-ubrat-umnuyu-kameru-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить умную камеру на телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по отключению умных функций камеры на Android и iOS. Настройка AI-сцен, удаление видже</span>
+            </a><a href="/articles/k/ka/kak-obnovit-os-na-androide-khonor-7s-do-9-versii.html" class="pb-related-card">
+                <span class="pb-related-title">Обновление Honor 7C до Android 9: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по обновлению Honor 7C до Android 9 Pie. Методы OTA, HiSuite и ручная установк</span>
+            </a><a href="/articles/k/ka/kak-posmotret-foto-v-telefone-vivo-u19s.html" class="pb-related-card">
+                <span class="pb-related-title">Как посмотреть фото на vivo Y19c: полный гид по галерее</span>
+                <span class="pb-related-desc">Подробная инструкция по просмотру изображений на vivo Y19c. Настройка галереи, работа с облаком, скр</span>
+            </a><a href="/articles/b/br/breeno-na-russkom-realme-skachat.html" class="pb-related-card">
+                <span class="pb-related-title">Breeno на русском для Realme: Инструкция по установке и настройке</span>
+                <span class="pb-related-desc">Полное руководство по установке Breeno на русском языке для смартфонов Realme. Смена региона, скачив</span>
+            </a><a href="/articles/a/ar/artillerijskie-programmy-na-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Артиллерийские программы на телефон: обзор и настройка</span>
+                <span class="pb-related-desc">Технический гид по мобильным артиллерийским приложениям. Настройка GPS, работа с баллистическими кал</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

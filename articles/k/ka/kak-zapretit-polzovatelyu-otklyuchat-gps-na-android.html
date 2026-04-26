@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Блокировка GPS на Android: методы для корпоративных устройств — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по запрету отключения геолокации на Android через MDM, ADB и Device Policy Controller для корпоративного сегмента.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-zapretit-polzovatelyu-otklyuchat-gps-na-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Блокировка GPS на Android: методы для корпоративных устройств">
+    <meta property="og:description" content="Техническое руководство по запрету отключения геолокации на Android через MDM, ADB и Device Policy Controller для корпоративного сегмента.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Блокировка GPS на Android: методы для корпоративных устройств</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-android-enterprise-и-профилей-владения">Использование Android Enterprise и профилей владения</a></li><li><a href="#манипуляции-через-adb-и-отладку-по-usb">Манипуляции через ADB и отладку по USB</a></li><li><a href="#разработка-собственного-приложения-агента">Разработка собственного приложения-агента</a></li><li><a href="#ограничения-современных-версий-android">Ограничения современных версий Android</a></li><li><a href="#типичные-ошибки-при-настройке-блокировки">Типичные ошибки при настройке блокировки</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/zv/zvuk-media-v-telefone-chto-eto-takoe.html">Звук медиа в телефоне: что это за канал и как его настроить</a></li><li><a href="/articles/p/pl/playautolstall-chto-za-prilozhenie.html">PlayAutoInstall что это: анализ процесса Android</a></li><li><a href="/articles/f/fr/front-mission-3-android.html">Front Mission 3 на Android: запуск эмулятора PS1</a></li><li><a href="/articles/k/ka/kak-uznat-nomer-telefona-cherez-stim.html">Как узнать номер телефона через Steam: анализ возможностей платформы</a></li><li><a href="/articles/k/ka/kak-obvesti-tekst-na-foto-v-telefone-android.html">Как обвести текст на фото в Android: Полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технологии принудительного управления GPS на Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-android-enterprise-и-профилей-владения">Использование Android Enterprise и профилей владения</a></li><li><a href="#манипуляции-через-adb-и-отладку-по-usb">Манипуляции через ADB и отладку по USB</a></li><li><a href="#разработка-собственного-приложения-агента">Разработка собственного приложения-агента</a></li><li><a href="#ограничения-современных-версий-android">Ограничения современных версий Android</a></li><li><a href="#типичные-ошибки-при-настройке-блокировки">Типичные ошибки при настройке блокировки</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда сотрудник курьерской службы или водитель такси произвольно отключает геолокацию на корпоративном смартфоне, приводит к критическим сбоям в логистике и потере контроля над перемещением активов. Администраторы безопасности часто сталкиваются с необходимостью обеспечить непрерывный трекинг местоположения устройства в рамках выполнения служебных обязанностей, однако стандартные настройки Android позволяют пользователю легко деактивировать эту функцию одним касанием.</p>
+<p>Проблема усугубляется тем, что операционная система Android изначально спроектирована с приоритетом приватности конечного пользователя, предоставляя ему полный контроль над датчиками устройства, включая модули GPS. Для корпоративного сектора, где устройство является инструментом работы, а не личным гаджетом, такая модель поведения создает уязвимости в процессах мониторинга и безопасности данных.</p>
+<p>Решение задачи требует перехода от потребительских настроек к методам административного управления мобильными устройствами (EMM/MDM) или использованию специализированных профилей владения. Существует несколько уровней реализации запрета, зависящих от версии операционной системы, прав доступа и типа владения устройством, каждый из которых имеет свои технические ограничения и сценарии применения.</p>
+
+<h2 id="использование-android-enterprise-и-профилей-владения">Использование Android Enterprise и профилей владения</h2>
+<p>Наиболее эффективным и официально поддерживаемым методом блокировки функций системы является внедрение режима владения устройством (Device Owner). В этом режиме приложение-администратор получает расширенные права, позволяющие диктовать политику безопасности и ограничивать действия пользователя, включая управление геолокацией. Стандартные пользовательские профили не позволяют полностью заблокировать переключатель GPS, оставляя пользователю возможность его активировать.</p>
+<p>Для реализации данной схемы необходимо, чтобы устройство было либо новым (не настроенным), либо сброшенным до заводских настроек. На уже настроенных устройствах с активными пользовательскими данными переход в режим Device Owner без потери данных возможен не всегда и зависит от производителя и версии <em>Android</em>. Корпоративные MDM-решения, такие как <em>Hexnode</em>, <em>Scalefusion</em> или <em>MobileIron</em>, используют API Android Enterprise для применения политик.</p>
+<p>После регистрации устройства как корпоративно управляемого, администратор может применить политику, запрещающую изменение настроек местоположения. В этом случае ползунок GPS в шторке уведомлений и в настройках становится неактивным (затененным) или полностью скрытым. Это достигается через использование <code>DevicePolicyManager</code> и соответствующих флагов конфигурации.</p>
+
+<h3>Настройка через MDM-консоль</h3>
+<p>Процесс настройки обычно не требует прямого вмешательства в код, а выполняется через веб-интерфейс консоли управления. Администратор создает профиль политики, в котором явно указывает запрет на изменение настроек геолокации. После применения политики к группе устройств, на смартфонах сотрудников интерфейс управления GPS блокируется.</p>
+<p>Важно учитывать, что некоторые производители, такие как <em>Samsung</em> или <em>Xiaomi</em>, могут иметь собственные надстройки над стандартным Android, которые влияют на поведение системных переключателей. В таких случаях стандартные политики Android Enterprise могут работать некорректно без использования специфических плагинов от производителя устройства.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Регистрация Device Owner</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подготовьте чистое устройство или выполните сброс</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите процесс первичной настройки (NFC или QR-код)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Отсканируйте код регистрации из MDM-консоли</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь установки профиля администратора</span></div></div>
+
+<p>При использовании сторонних MDM-решений критически важно проверять совместимость конкретной версии прошивки устройства с функционалом блокировки. Часто обновления безопасности Android вносят изменения в API, что может временно нарушить работу политик до обновления-agent'а MDM.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип владения</th>
+<th>Уровень контроля GPS</th>
+<th>Требования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Device Owner</td>
+<td>Полная блокировка</td>
+<td>Сброс или чистое устройство</td>
+</tr>
+<tr>
+<td>Profile Owner</td>
+<td>Только в рабочем профиле</td>
+<td>Поддержка работы нескольких профилей</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с Android 10 и выше требования к регистрации Device Owner стали строже, часто требуется использование NFC-тега или QR-кода на этапе первоначальной загрузки (Zero Touch Enrollment).</p></aside>
+
+<h2 id="манипуляции-через-adb-и-отладку-по-usb">Манипуляции через ADB и отладку по USB</h2>
+<p>Альтернативным методом, не требующим полноценной MDM-инфраструктуры, является использование инструментария отладки Android (ADB). Этот подход позволяет внедрять устройства в режим, близкий к корпоративному, или напрямую изменять системные настройки через командную строку. Метод подходит для разовых конфигураций или тестирования, но менее устойчив к сбросам настроек пользоват</p>
+<p>Для начала работы необходимо включить режим разработчика на целевом устройстве. Делается это путем многократного нажатия на номер сборки в разделе <code>Настройки → О телефоне</code>. После активации меню разработчика следует включить пункт <code>Отладка по USB</code>.</p>
+<p>Подключив устройство к компьютеру, можно выполнить команду для назначения приложения-администратора устройством. Это позволяет обойти стандартные ограничения интерфейса. Команда выполняется через терминал на компьютере с установленным платформенным инструментарием Android SDK.</p>
+
+<pre><code>adb shell dpm set-device-owner com.example.admin/.AdminReceiver</code></pre>
+
+<p>Если устройство уже используется и на нем есть аккаунты Google, команда может не выполниться. В таком случае требуется либо удаление аккаунтов, либо использование более сложных скриптов, модифицирующих системные файлы, что несет риски нарушения гарантии. Успешное выполнение команды подтверждается сообщением об активации владельца устройства.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование ADB-команд для изменения системных настроек может привести к нестабильной работе устройства или потере данных при некорректном вводе параметров. Все действия выполняются на ваш страх и риск.</p></aside>
+
+<h3>Прямое изменение системных флагов</h3>
+<p>В некоторых случаях, когда полноценный Device Owner не требуется, можно попытаться изменить глобальные настройки через ADB без назначения владельца. Команда <code>settings put global location_providers_allowed</code> позволяет управлять списком разрешенных провайдеров, однако в современных версиях Android это часто не блокирует интерфейс пользователя, а лишь программно отключает модуль.</p>
+<p>Более глубокая интеграция возможна через изменение флагов в <code>secure</code> или <code>global</space> таблицах настроек, но Google активно борется с такими методами, закрывая уязвимости в новых версиях ОС. На <em>Android 11-14</em> такие методы работают крайне ограниченно и часто требуют root-прав.</p>
+<p>Стоит отметить, что использование ADB для массовой настройки парка устройств неэффективно из-за необходимости физического подключения каждого гаджета. Этот метод хорош для единичных случаев или отладки политик перед массовым внедрением через MDM.</p>
+
+<ul>
+<li>Требуется физический доступ к устройству и ПК</li>
+<li>Необходима предварительная подготовка (включение отладки)</li>
+<li>Настройки могут сброситься при factory reset</li>
+<li>Не подходит для устройств без предварительной подготовки</li>
+</ul>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Метод ADB эффективен для точечной настройки и тестирования, но не масштабируется на большие парки устройств без автоматизации.</p></aside>
+
+<h2 id="разработка-собственного-приложения-агента">Разработка собственного приложения-агента</h2>
+<p>Для крупных организаций, имеющих штат разработчиков, оптимальным решением становится создание собственного приложения-агента, использующего API <code>DeviceAdminReceiver</code> или <code>DeviceOwner</code>. Это позволяет гибко управлять поведением устройства, скрывать ненужные элементы интерфейса и жестко контролировать состояние GPS.</p>
+<p>Приложение должно быть зарегистрировано как администратор устройства. В манифесте приложения (<code>AndroidManifest.xml</code>) описываются необходимые разрешения и политики. Ключевым моментом является реализация класса, наследующего <code>DeviceAdminReceiver</code>, который будет обрабатывать системные события и применять ограничения.</p>
+<p>В коде приложения используется класс <code>DevicePolicyManager</code>. Метод <code>setLocationEnabled</code> (доступный в определенных API уровнях) или управление через <code>setGlobalSetting</code> позволяет программно запрещать пользователю изменять состояние геолокации. Однако, начиная с Android 9 (API 28), прямое управление переключателем GPS сторонними приложениями ограничено.</p>
+
+<h3>Использование Lock Task Mode</h3>
+<p>Одним из мощных инструментов является режим блокировки задач (Lock Task Mode), часто называемый «режимом киоска». В этом состоянии пользователь не может выйти из запущенного приложения, access к настройкам системы полностью перекрывается. GPS в таком режиме работает принудительно, если это разрешено политикой.</p>
+<p>Для реализации необходимо whitelist-ировать приложение в настройках Device Owner. Это создает среду, где единственной доступной функцией становится работа с корпоративным софтом, а все системные переключатели, включая GPS, Wi-Fi и Bluetooth, либо скрыты, либо заблокированы.</p>
+<p>Разработка такого решения требует глубоких знаний архитектуры Android. Необходимо учитывать различные сценарии выхода из приложения, обработку ошибок и совместимость с десятками моделей устройств. Ошибки в коде могут привести к тому, что устройство «зависнет» в режиме киоска без возможности выхода.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент API</th>
+<th>Функция</th>
+<th>Ограничения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DevicePolicyManager</td>
+<td>Управление политиками</td>
+<td>Требует прав Device Owner</td>
+</tr>
+<tr>
+<td>LockTaskController</td>
+<td>Блокировка интерфейса</td>
+<td>Ограничивает функциональность устройства</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Собственная разработка</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над логикой</li><li>✅ Гибкость настроек</li><li>✅ Независимость от вендоров MDM</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокая стоимость разработки</li><li>❌ Необходимость поддержки кода</li><li>❌ Риски совместимости</li></ul></div>
+</div></div>
+
+<h2 id="ограничения-современных-версий-android">Ограничения современных версий Android</h2>
+<p>С каждым обновлением операционной системы Google усиливает защиту приватности, что напрямую влияет на возможности администраторов. В версиях <em>Android 12, 13 и 14</em> были введены дополнительные индикаторы работы геолокации и ужесточены правила фоновой активности.</p>
+<p>Теперь даже при наличии прав администратора устройства, система может визуально уведомлять пользователя о том, что геолокация используется конкретным приложением, и в некоторых сценариях позволять временно приостанавливать доступ. Полностью скрыть факт отслеживания становится практически невозможно без модификации системного образа (root).</p>
+<p>Кроме того, производители устройств часто добавляют свои уровни абстракции. Например, на устройствах <em>Huawei</em> с оболочкой EMUI или <em>Samsung</em> с One UI стандартные команды ADB могут работать иначе, чем на чистом <em>Android</em> от Google. Это требует индивидуального тестирования сценариев блокировки для каждой модели.</p>
+
+<h3>Проблемы совместимости и обходные пути</h3>
+<p>В ситуациях, когда стандартные методы не работают, администраторы иногда прибегают к использованию специальных лаунчеров (оболочек рабочего стола), которые заменяют стандартный интерфейс. Лаунчер, запущенный в режиме киоска, не дает пользователю доступа к шторке уведомлений и меню настроек.</p>
+<p>Однако и этот метод не идеален: пользователь может попытаться перезагрузить устройство в безопасном режиме или воспользоваться голосовым помощником для вызова настроек. Поэтому надежнее всего комбинировать программные методы с организационными мерами контроля.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для максимальной надежности используйте комбинацию MDM-профиля Device Owner и кастомного лаунчера в режиме киоска, что полностью исключит доступ пользователя к системным настройкам.</p></aside>
+
+<h2 id="типичные-ошибки-при-настройке-блокировки">Типичные ошибки при настройке блокировки</h2>
+<p>В процессе внедрения ограничений на управление GPS администраторы часто допускают ряд ошибок, которые сводят усилия к нулю или приводят к неработоспособности устройств.</p>
+<ol>
+<li><strong>Попытка настройки на работающем устройстве без сброса</strong> — режим Device Owner требует чистого состояния системы; попытка «накатить» права на настроенный телефон приведет к ошибке выполнения команды или потребует сложной процедуры миграции данных.</li>
+<li><strong>Игнорирование версии Android</strong> — команды и API, работающие на <em>Android 8</em>, могут быть полностью заблокированы или изменены в <em>Android 13</em>; отсутствие проверки совместимости приводит к неработающим политикам.</li>
+<li><strong>Отсутствие тестирования на разных брендах</strong> — политика, идеально работающая на <em>Pixel</em>, может игнорироваться оболочкой <em>MIUI</em> или <em>OneUI</em>; необходимо тестировать сценарий на целевых моделях перед массовым развертыванием.</li>
+<li><strong>Неучтенный сброс настроек пользователем</strong> — если не настроена защита от Factory Reset (через FRP или MDM), пользователь может просто сбросить устройство до заводских настроек и обойти все ограничения.</li>
+</ol>
+
+<p>Завершая обзор, следует подчеркнуть, что полное и надежное запрещение отключения GPS возможно только при комплексном подходе, сочетающем технические средства управления (MDM, Device Owner) и организационные меры. Использование устаревших методов через ADB или модификацию системных файлов на современных версиях Android не обеспечивает должного уровня безопасности и стабильности.</p>
+<p>Для бизнеса критически важно выбирать сертифицированные решения класса Enterprise, которые гарантируют поддержку новых версий Android и совместимость с аппаратным обеспечением различных вендоров. Только в этом случае можно обеспечить непрерывность бизнес-процессов, зависящих от геолокации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/zv/zvuk-media-v-telefone-chto-eto-takoe.html" class="pb-related-card">
+                <span class="pb-related-title">Звук медиа в телефоне: что это за канал и как его настроить</span>
+                <span class="pb-related-desc">Подробный разбор функции «Звук медиа» в Android и iOS. Как управлять громкостью приложений, игр и ви</span>
+            </a><a href="/articles/p/pl/playautolstall-chto-za-prilozhenie.html" class="pb-related-card">
+                <span class="pb-related-title">PlayAutoInstall что это: анализ процесса Android</span>
+                <span class="pb-related-desc">Полный разбор процесса com.google.android.playautoinstall. Зачем нужен, можно ли удалять, исправлени</span>
+            </a><a href="/articles/f/fr/front-mission-3-android.html" class="pb-related-card">
+                <span class="pb-related-title">Front Mission 3 на Android: запуск эмулятора PS1</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску Front Mission 3 на Android через эмулятор. Настройка, устранение гра</span>
+            </a><a href="/articles/k/ka/kak-uznat-nomer-telefona-cherez-stim.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать номер телефона через Steam: анализ возможностей платформы</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке привязки номера в Steam. Реальные методы верификации аккаунта, наст</span>
+            </a><a href="/articles/k/ka/kak-obvesti-tekst-na-foto-v-telefone-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как обвести текст на фото в Android: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по обводке текста на фото в Android. Встроенные редакторы, приложения и методы для Sam</span>
+            </a><a href="/articles/k/ka/kak-ubrat-rekomendatsii-v-khonore.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать рекомендации на Honor: полное руководство по MagicUI</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению рекламы, умных рекомендаций и папки рекомендаций на смартфонах Ho</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

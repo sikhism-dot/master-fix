@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Настройка эмулятора Bluetooth на Android: Полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по эмуляции Bluetooth на Android. Разбор AOSP, GATT-сервера, команды ADB и устранение типичных ошибок разработчиков.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-nastroit-blyutuz-emulyator-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Настройка эмулятора Bluetooth на Android: Полная инструкция">
+    <meta property="og:description" content="Подробное руководство по эмуляции Bluetooth на Android. Разбор AOSP, GATT-сервера, команды ADB и устранение типичных ошибок разработчиков.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Настройка эмулятора Bluetooth на Android: Полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-ограничения-и-выбор-метода-эмуляции">Архитектурные ограничения и выбор метода эмуляции</a></li><li><a href="#настройка-эмулятора-android-studio-для-ble">Настройка эмулятора Android Studio для BLE</a></li><li><a href="#использование-команд-adb-для-управления-bluetooth">Использование команд ADB для управления Bluetooth</a></li><li><a href="#эмуляция-gatt-сервера-и-периферийных-устройств">Эмуляция GATT-сервера и периферийных устройств</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/c/co/com-mfashiongallery-emag-chto-eto-za-programma-na-xiaomi.html">com.mfashiongallery.emag: что это и можно ли удалить</a></li><li><a href="/articles/k/ka/kak-izbavitsya-ot-temneyushchego-ekrana-na-telefone-pri-prosmotre-filmov.html">Почему тускнеет экран при просмотре видео: полное руководство</a></li><li><a href="/articles/i/ic/ice-book-reader-dlya-android-na-russkom-skachat.html">Ice Book Reader для Андроид на русском: скачивание и настройка</a></li><li><a href="/articles/a/an/android-magnitola-perezagruzhaetsya-pri-zapuske-i-ne-vklyuchaetsya.html">Андроид магнитола перезагружается и не включается: решение</a></li><li><a href="/articles/r/ru/ru-store-s-drugim-paketom-prilozhenie-ne-ustanovleno-tak-kak-ono-konfliktuet.html">Ошибка установки приложений в RuStore: решение конфликтов пакетов</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническое руководство по настройке эмулятора Bluetooth на Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-ограничения-и-выбор-метода-эмуляции">Архитектурные ограничения и выбор метода эмуляции</a></li><li><a href="#настройка-эмулятора-android-studio-для-ble">Настройка эмулятора Android Studio для BLE</a></li><li><a href="#использование-команд-adb-для-управления-bluetooth">Использование команд ADB для управления Bluetooth</a></li><li><a href="#эмуляция-gatt-сервера-и-периферийных-устройств">Эмуляция GATT-сервера и периферийных устройств</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При разработке приложений, использующих беспроводные интерфейсы, разработчики часто сталкиваются с невозможностью полноценного тестирования на физическом устройстве, особенно если требуется эмулятор Bluetooth Android. Стандартные эмуляторы, поставляемые в составе Android Studio, исторически не поддерживали Bluetooth Low Energy (BLE) или классический протокол в полной мере, что вынуждало искать обходные пути.</p>
+<p>Отсутствие реального радиомодуля в виртуальной машине создает иллюзию работающего стека, однако при попытке сканирования или подключения приложение выдает ошибки или просто не находит периферийные устройства. Это критическая проблема для IoT-проектов, где взаимодействие с датчиками и гаджетами является основной функцией продукта.</p>
+<p>Решение задачи требует понимания архитектуры эмуляции, использования специализированных утилит командной строки и, в некоторых случаях, проброса физических устройств хоста. Ниже представлен детальный разбор методов настройки, позволяющих имитировать работу Bluetooth-стека для отладки кода.</p>
+
+<h2 id="архитектурные-ограничения-и-выбор-метода-эмуляции">Архитектурные ограничения и выбор метода эмуляции</h2>
+
+<p>Фундаментальная сложность заключается в том, что эмулятор Android (AVD) по умолчанию работает в изолированной среде без доступа к физическому оборудованию хоста. <strong>Эмуляция Bluetooth</strong> в классическом понимании (полная программная имитация радиомодуля) поддерживается не во всех версиях системы и требует специфических образов.</p>
+<p>Существует два основных подхода к решению этой задачи: использование встроенных возможностей эмулятора (начиная с определенных версий API) и проброс физического адаптера Bluetooth с хост-машины. Первый метод предпочтителен для CI/CD pipelines, где физическое оборудование недоступно, а второй необходим для тестирования реальных сценариев взаимодействия.</p>
+
+<h3>Поддержка в разных версиях Android API</h3>
+
+<p>Начиная с Android 11 (API level 30), Google внедрила базовую поддержку Bluetooth в эмулятор, однако функционал ограничен. Более старые версии, такие как <em>Android 10</em> или <em>9 Pie</em>, требуют использования сторонних патчей или полностью полагаются на заглушки (stubs), которые возвращают фиктивные данные.</p>
+<p>Для полноценной работы необходимо выбирать образы системы с пометкой «Google APIs» или «Google Play», так как в них присутствуют необходимые проприетарные драйверы и сервисы Google Play Services, отвечающие за абстракцию Bluetooth-стека.</p>
+
+<table>
+<thead>
+<tr>
+<th>Версия Android</th>
+<th>Тип поддержки</th>
+<th>Стабильность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Android 13+ (API 33+)</td>
+<td>Нативная эмуляция GATT</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Android 11-12 (API 30-32)</td>
+<td>Частичная (требует флагов)</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Android 10 и ниже</td>
+<td>Отсутствует / Заглушки</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно учитывать, что даже при наличии поддержки, эмулятор не может выполнять сканирование эфирного пространства так, как это делает реальное устройство, если не настроен специальный режим симуляции окружения.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование эмулятора Bluetooth на старых версиях API может привести к нестабильной работе IDE и падению процесса эмулятора. Рекомендуется использовать API 30 и выше.</p></aside>
+
+<p>Если проект требует поддержки legacy-устройств, единственным выходом остается использование физических девайсов или сложных схем проброса USB-адаптеров, что выходит за рамки стандартной эмуляции.</p>
+
+<h2 id="настройка-эмулятора-android-studio-для-ble">Настройка эмулятора Android Studio для BLE</h2>
+
+<p>Процесс конфигурации начинается с создания или модификации существующего виртуального устройства. Стандартные настройки AVD Manager не активируют Bluetooth автоматически, необходимо вручную добавить параметры запуска.</p>
+<p>Первым шагом является выбор правильного системного образа. В окне создания устройства следует выбрать образ с поддержкой Google APIs. После выбора образа переходят к расширенным настройкам (Show Advanced Settings).</p>
+
+<h3>Конфигурация через AVD Manager</h3>
+
+<p>В разделе «Emulated Performance» необходимо убедиться, что графический движок установлен в режим «Hardware - GLES 2.0/3.0», так как программная отрисовка может конфликтовать с низкоуровневыми вызовами Bluetooth-стека.</p>
+<p>Далее следует найти раздел «Custom AVD config» или поле «VM heap», куда добавляются специфические флаги. Для активации эмуляции Bluetooth часто требуется добавление строки <code>-feature-bluetooth</code> или аналогичной, в зависимости от версии эмулятора.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Активация Bluetooth в AVD</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте AVD Manager в Android Studio</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите Edit (карандаш) у нужного устройства</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">В поле «Custom AVD config» добавьте строку hw.bluetooth=yes</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните и запустите эмулятор</span></div></div>
+
+<p>После запуска системы стоит проверить наличие Bluetooth-адаптера в настройках. Для этого переходят в <code>Настройки → Подключенные устройства</code>. Если пункт «Bluetooth» отсутствует или неактивен, значит, образ системы не поддерживает эмуляцию или не установлены необходимые драйверы.</p>
+<p>В некоторых случаях требуется ручная активация сервиса через ADB. Для этого открывают терминал и вводят команду для проверки статуса:</p>
+
+<pre><code>adb shell pm list packages | grep bluetooth</code></pre>
+
+<p>Если пакеты присутствуют, но интерфейс скрыт, можно попытаться включить его программно или через настройки разработчика. На практике, для API 30+ интерфейс должен появиться автоматически при правильной конфигурации образа.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На эмуляторах с API ниже 30 интерфейс Bluetooth может отображаться, но попытки включения будут завершаться ошибкой из-за отсутствия драйвера HAL.</p></aside>
+
+<h2 id="использование-команд-adb-для-управления-bluetooth">Использование команд ADB для управления Bluetooth</h2>
+
+<p>Управление эмулируемым Bluetooth-стеком часто невозможно через графический интерфейс, особенно в ранних сборках или специфических конфигурациях. В таких случаях на помощь приходит Android Debug Bridge (ADB), позволяющий отправлять низкоуровневые команды напрямую в систему.</p>
+<p>Основной инструмент — утилита <code>bluetoothctl</code> (если доступна в образе) или встроенные команды <code>service call</code>. Однако наиболее универсальным методом является использование <code>settings</code> и <code>am</code> (Activity Manager) для принудительного запуска сервисов.</p>
+
+<h3>Команды активации и сканирования</h3>
+
+<p>Для включения Bluetooth через ADB используется команда изменения глобальных настроек. Это аналогично переключению ползунка в интерфейсе, но выполняется на уровне базы данных настроек Android.</p>
+
+<pre><code>adb shell settings put global bluetooth_on 1</code></pre>
+
+<p>После включения адаптера можно инициировать процесс сканирования. В эмуляторе это запустит поиск «виртуальных» устройств, если настроена симуляция окружения, или вернет пустой список в стандартном режиме.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка статуса через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите adb shell svc bluetooth enable</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверьте логcat командой adb logcat -b bluetooth</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Убедитесь, что статус изменился на ON</span></div></div>
+
+<p>Для отладки приложений полезно знать MAC-адрес эмулятора. Его можно получить через команду:</p>
+
+<pre><code>adb shell settings get global bluetooth_address</code></pre>
+
+<p>Если требуется эмулировать конкретное устройство, например, для тестирования подключения, можно использовать команды для добавления устройства в список спаренных, хотя это требует root-доступа и знания точных UUID сервисов.</p>
+
+<ul>
+<li>Команда <code>svc bluetooth enable</code> активирует модуль.</li>
+<li>Команда <code>svc bluetooth disable</code> деактивирует модуль.</li>
+<li>Команда <code>svc bluetooth status</code> возвращает текущее состояние.</li>
+<li>Использование <code>logcat</code> с фильтром <code>Bluetooth</code> позволяет видеть детальный лог работы стека.</li>
+</ul>
+
+<p> Если устройство не отображается в списке <code>adb devices</code>, управление невозможно.</p>
+
+<h2 id="эмуляция-gatt-сервера-и-периферийных-устройств">Эмуляция GATT-сервера и периферийных устройств</h2>
+
+<p>Для разработчиков, создающих приложения-клиенты, критически важно иметь возможность тестировать взаимодействие с периферийными устройствами (GATT-серверами). Стандартный эмулятор Android не умеет «притворяться» датчиком температуры или фитнес-трекером из коробки.</p>
+<p>Решением является использование специализированных приложений-эмуляторов GATT, которые устанавливаются на эмулятор как обычные APK. Такие приложения создают виртуальный сервер, который видит основное приложение.</p>
+
+<h3>Установка приложений-симуляторов</h3>
+
+<p>Существует ряд open-source проектов, таких как <em>nRF Connect for Mobile</em> (если доступен для эмулятора) или специализированные GATT Server симуляторы. Их необходимо скачать в формате APK и установить через ADB или перетащив в окно эмулятора.</p>
+<p>После установки приложение запускается и настраивает профили UUID, характеристики и дескрипторы. Основное приложение-клиент, запущенное на том же эмуляторе, должно видеть этот виртуальный сервер при сканировании.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для эмуляции</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UUID Service</td>
+<td>0000180F-0000-1000-8000-00805F9B34FB</td>
+<td>Стандартный Battery Service</td>
+</tr>
+<tr>
+<td>Advertising Interval</td>
+<td>100-200 мс</td>
+<td>Для быстрой обнаруживаемости</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если стандартные методы не работают, можно использовать проброс физического устройства с хоста. В этом случае приложение на эмуляторе подключается к реальному устройству, подключенному к компьютеру, через виртуальный туннель.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование GATT симуляторов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость тестирования</li><li>✅ Не требуется дополнительное железо</li><li>✅ Воспроизводимость сценариев</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Ограниченный набор профилей</li><li>❌ Возможны расхождения с реальным железом</li><li>❌ Сложность отладки низкоуровневых ошибок</li></ul></div>
+</div></div>
+
+<p>При тестировании важно проверять не только подключение, но и разрыв связи, таймауты и обработку некорректных данных, что легко симулируется программными средствами.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки эмуляции разработчики часто сталкиваются с повторяющимися проблемами, связанными с правами доступа, версиями образов и конфигурацией окружения. Понимание природы этих ошибок позволяет сократить время отладки.</p>
+<p>Ниже приведен список наиболее частых сбоев и способы их решения. Обратите внимание, что некоторые ошибки могут быть связаны с антивирусным ПО хоста, блокирующим виртуализацию сетевых интерфейсов.</p>
+
+<ol>
+<li><strong>Bluetooth не включается (серый переключатель)</strong> — чаще всего это означает, что выбран образ системы без поддержки Google APIs или версия Android слишком старая (ниже API 30). Решение: пересоздайте AVD с образом «Google APIs Intel x86 Atom».</li>
+<li><strong>Ошибка «Bluetooth adapter not available» в логах</strong> — возникает, если в конфигурации AVD не добавлен флаг <code>hw.bluetooth=yes</code> или эмулятор запущен в режиме совместимости. Решение: отредактируйте файл <code>config.ini</code> устройства и добавьте необходимую строку.</li>
+<li><strong>Приложение крашится при вызове getBluetoothAdapter()</strong> — возможно, в манифесте приложения отсутствуют необходимые разрешения или эмулятор не имеет прав на использование Bluetooth-сервиса. Решение: проверьте наличие <code>android.permission.BLUETOOTH</code> и <code>android.permission.BLUETOOTH_ADMIN</code>.</li>
+<li><strong>Сканирование возвращает пустой результат</strong> — в стандартном режиме эмулятор не сканирует эфир. Решение: используйте приложения-симуляторы GATT внутри эмулятора или настройте проброс физического адаптера.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для детальной диагностики используйте команду adb logcat -s Bluetooth, которая отфильтрует только сообщения, относящиеся к Bluetooth-стеку.</p></aside>
+
+<p>Если ни один из методов не помогает, имеет смысл проверить логи хост-машины (особенно на Linux или macOS), так как проблемы с правами доступа к USB или сетевым сокетам могут блокировать работу эмулятора на более низком уровне.</p>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Настройка эмулятора Bluetooth на Android представляет собой комплексную задачу, требующую выбора правильного системного образа (минимум API 30) и ручной конфигурации параметров запуска. Несмотря на ограничения, современные инструменты Android Studio позволяют эффективно эмулировать GATT-серверы и клиентские подключения для большинства сценариев разработки.</p>
+<p>Использование команд ADB и специализированных симуляторов внутри виртуальной машины дает необходимый уровень контроля для отладки логики приложения без постоянного перепрошивания физических устройств. Однако для финального тестирования производительности и стабильности соединения использование реального оборудования остается обязательным этапом.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Эмуляция Bluetooth возможна на API 30+ с использованием образов Google APIs и дополнительных флагов конфигурации, но для полного тестирования требуется комбинация виртуальных и физических устройств.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/c/co/com-mfashiongallery-emag-chto-eto-za-programma-na-xiaomi.html" class="pb-related-card">
+                <span class="pb-related-title">com.mfashiongallery.emag: что это и можно ли удалить</span>
+                <span class="pb-related-desc">Технический анализ системного процесса com.mfashiongallery.emag на Xiaomi. Инструкция по отключению,</span>
+            </a><a href="/articles/k/ka/kak-izbavitsya-ot-temneyushchego-ekrana-na-telefone-pri-prosmotre-filmov.html" class="pb-related-card">
+                <span class="pb-related-title">Почему тускнеет экран при просмотре видео: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению самопроизвольного снижения яркости экрана на смартфонах Android и</span>
+            </a><a href="/articles/i/ic/ice-book-reader-dlya-android-na-russkom-skachat.html" class="pb-related-card">
+                <span class="pb-related-title">Ice Book Reader для Андроид на русском: скачивание и настройка</span>
+                <span class="pb-related-desc">Полное руководство по установке Ice Book Reader на Android. Скачать на русском, настроить шрифты, TT</span>
+            </a><a href="/articles/a/an/android-magnitola-perezagruzhaetsya-pri-zapuske-i-ne-vklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Андроид магнитола перезагружается и не включается: решение</span>
+                <span class="pb-related-desc">Подробная инструкция, если андроид магнитола перезагружается при запуске. Методы диагностики, сброса</span>
+            </a><a href="/articles/r/ru/ru-store-s-drugim-paketom-prilozhenie-ne-ustanovleno-tak-kak-ono-konfliktuet.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка установки приложений в RuStore: решение конфликтов пакетов</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки&#x27;приложение не установлено из-за конфликта пакетов&#x27; в RuSto</span>
+            </a><a href="/articles/i/is/ispolzovano-prilozhenie-comandroidlauncher3.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка com.android.launcher3: причины и методы устранения</span>
+                <span class="pb-related-desc">Подробное руководство по диагностике и исправлению сбоев в приложении com.android.launcher3. Методы </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

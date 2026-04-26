@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>JFFS2 распаковать Windows: полная инструкция и утилиты — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство, как распаковать образы JFFS2 на Windows. Обзор утилит, методы конвертации в SquashFS и работа с raw-данными.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/j/jf/jffs2-raspakovat-windows.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="JFFS2 распаковать Windows: полная инструкция и утилиты">
+    <meta property="og:description" content="Подробное руководство, как распаковать образы JFFS2 на Windows. Обзор утилит, методы конвертации в SquashFS и работа с raw-данными.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">JFFS2 распаковать Windows: полная инструкция и утилиты</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#особенности-файловой-системы-jffs2-и-подготовка-окружения">Особенности файловой системы JFFS2 и подготовка окружения</a></li><li><a href="#использование-утилиты-jffs2-tools-для-windows">Использование утилиты JFFS2 Tools для Windows</a></li><li><a href="#конвертация-jffs2-в-squashfs-для-удобного-доступа">Конвертация JFFS2 в SquashFS для удобного доступа</a></li><li><a href="#применение-подсистемы-wsl-для-нативной-работы">Применение подсистемы WSL для нативной работы</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-oslabit-nereguliruemye-petli-na-noutbuke-dexp.html">Как ослабить петли ноутбука DEXP: полная инструкция</a></li><li><a href="/articles/k/ka/kak-vklyuchit-rasshirennyj-bios-msi-katana.html">Как включить расширенный BIOS на MSI Katana: полная инструкция</a></li><li><a href="/articles/w/wi/windows-11-ne-vidit-kompyutery-v-lokalnoj-seti.html">Windows 11 не видит компьютеры в сети: полное руководство</a></li><li><a href="/articles/r/rm/rmn-na-noutbuke-chto-eto-takoe.html">RMN на ноутбуке: расшифровка, функции и устранение ошибок</a></li><li><a href="/articles/w/wi/windows-ne-udalos-poluchit-svedeniya-o-diskakh-na-dannom-kompyutere.html">Ошибка: Windows не удалось получить сведения о дисках — Решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Распаковка файлов JFFS2 в среде Windows: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#особенности-файловой-системы-jffs2-и-подготовка-окружения">Особенности файловой системы JFFS2 и подготовка окружения</a></li><li><a href="#использование-утилиты-jffs2-tools-для-windows">Использование утилиты JFFS2 Tools для Windows</a></li><li><a href="#конвертация-jffs2-в-squashfs-для-удобного-доступа">Конвертация JFFS2 в SquashFS для удобного доступа</a></li><li><a href="#применение-подсистемы-wsl-для-нативной-работы">Применение подсистемы WSL для нативной работы</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда необходимо извлечь содержимое прошивки роутера, IP-камеры или IoT-устройства, часто возникает при анализе безопасности или восстановлении поврежденного ПО.</p>
+<p>Проблема заключается в том, что файловая система JFFS2, широко используемая во флеш-памяти NAND, не имеет нативной поддержки в операционной системе Windows.</p>
+<p>Попытка открыть такой файл стандартными средствами или даже популярными архиваторами вроде WinRAR приводит лишь к ошибке чтения или отображению нечитаемых данных.</p>
+<p>На практике это означает, что пользователю приходится искать специализированный инструментарий или создавать виртуальное окружение Linux для выполнения базовой операции.</p>
+<p>Существуют проверенные методы обхода этих ограничений, позволяющие работать с образом напрямую или через промежуточную конвертацию без потери целостности данных.</p>
+
+<h2 id="особенности-файловой-системы-jffs2-и-подготовка-окружения">Особенности файловой системы JFFS2 и подготовка окружения</h2>
+
+<p>JFFS2 (Journalling Flash File System version 2) разработана специально для работы с флеш-памятью и существенно отличается от привычных NTFS или FAT32.</p>
+<p>Главной особенностью является отсутствие единой таблицы размещения файлов, так как метаданные распределены по всему объему памяти вместе с самими данными.</p>
+<p><strong>Специфика хранения</strong> требует особого подхода при чтении, поскольку простая посекторная копия может содержать «дыры» или неактуальные версии узлов.</p>
+<p>Если у вас есть raw-дамп памяти, он может содержать несколько логических разделов, и важно точно определить начало и конец нужного раздела JFFS2.</p>
+<p>Для работы в среде Windows потребуется установка дополнительного программного обеспечения, так как системные вызовы API не поддерживают этот формат.</p>
+
+<h3>Анализ структуры raw-образа</h3>
+<p>Перед началом извлечения файлов необходимо убедиться, что вы работаете именно с JFFS2, а не с другим форматом сжатия или шифрования.</p>
+<p>Используйте HEX-редактор для просмотра заголовка файла: магические числа обычно указывают на тип файловой системы.</p>
+<p>В некоторых случаях прошивка может быть упакована в контейнер производителя, который снять перед работой с файловой системой.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Магические байты JFFS2 часто выглядят как 0x1985 или 0x8519 (в зависимости от порядка байлов) в начале узлов.</p></aside>
+
+<p>Важно определить размер блока стирания (erase block size), так как неправильный выбор этого параметра приведет к ошибкам при монтировании.</p>
+<p>Эту информацию часто можно найти в документации к устройству или определить эмпирическим путем, анализируя повторяющиеся паттерны в HEX-коде.</p>
+<p>Без точных данных о геометрии памяти инструменты распаковки могут некорректно интерпретировать смещения файлов внутри образа.</p>
+
+<h2 id="использование-утилиты-jffs2-tools-для-windows">Использование утилиты JFFS2 Tools для Windows</h2>
+
+<p>Наиболее эффективным способом работы с такими образами является использование портированных версий утилит из набора <em>jffs2-tools</em>.</p>
+<p>Существуют готовые сборки для Windows, которые не требуют эмуляции Linux и запускаются из командной строки.</p>
+<p><strong>Утилита jffs2reader</strong> позволяет рекурсивно обходить структуру файловой системы и выгружать файлы в обычную папку.</p>
+<p>Процесс распаковки занимает немного времени, так как программа должна последовательно прочитать все узлы и восстановить иерархию.</p>
+<p>Для успешного выполнения операции необходимо скачать актуальную версию инструмента с доверенного источника, например, с репозиториев OpenWrt или GitHub.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Распаковка через jffs2reader</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте и распакуйте архив с утилитой jffs2reader для Windows</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Поместите образ прошивки в ту же папку, где лежит exe-файл</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Откройте командную строку (cmd) в этой директории</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите команду jffs2reader -r output_folder firmware.bin</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Проверьте папку output_folder на наличие извлеченных файлов</span></div></div>
+
+<h3>Работа с командной строкой</h3>
+<p>Запуск программ осуществляется через терминал, что требует базовых знаний синтаксиса командной строки Windows.</p>
+<p>Необходимо перейти в директорию с утилитой, используя команду <code>cd</code>, или сразу указать полный путь к исполняемому файлу.</p>
+<p>Ключевым параметром часто является указание пути вывода, иначе файлы могут быть сохранены в текущую директорию, создавая хаос.</p>
+<p>Если программа завершается ошибкой, стоит проверить, не заблокирован ли файл антивирусом, так как работа с дампами памяти часто вызывает ложные срабатывания.</p>
+<p>В некоторых сборках требуется явно указывать размер страницы памяти, если он не определяется автоматически из заголовка.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При работе с командной строкой внимательно проверяйте пути: ошибка в одном символе может привести к перезаписи важных системных файлов.</p></aside>
+
+<p>Для автоматизации процесса можно создать BAT-скрипт, который будет запускать утилиту с нужными параметрами.</p>
+<p>Это особенно удобно, если требуется обработать большое количество однотипных файлов прошивок.</p>
+<p>Логи работы утилиты обычно выводятся в консоль, и их рекомендуется сохранять в текстовый файл для последующего анализа ошибок.</p>
+
+<h2 id="конвертация-jffs2-в-squashfs-для-удобного-доступа">Конвертация JFFS2 в SquashFS для удобного доступа</h2>
+
+<p>Альтернативным и часто более удобным методом является конвертация образа JFFS2 в формат SquashFS, который лучше поддерживается сторонним софтом.</p>
+<p>SquashFS является сжимаемой файловой системой только для чтения, что идеально подходит для анализа содержимого прошивок.</p>
+<p><strong>Преимущество метода</strong> заключается в возможности использования графических интерфейсов, таких как WinSquashfs или плагинов для Total Commander.</p>
+<p>Конвертация требует наличия исходного инструмента <em>unsquashfs</em> или специализированных конвертеров, работающих в среде Windows.</p>
+<p>После преобразования вы получаете файл, который можно смонтировать как виртуальный диск или просто открыть как архив.</p>
+
+<h3>Графические интерфейсы и плагины</h3>
+<p>Для пользователей, избегающих командной строки, существуют программы с графическим интерфейсом, поддерживающие чтение SquashFS.</p>
+<p>Плагин <em>plugin_squashfs</em> для Total Commander позволяетровать содержимое образа как обычные папки.</p>
+<p>Это значительно ускоряет поиск конкретных конфигурационных файлов или бинарных исполняемых модулей внутри прошивки.</p>
+<p>Однако стоит помнить, что прямое чтение JFFS2 через такие плагины невозможно без предварительной конвертации.</p>
+<p>Некоторые современные версии архиваторов, такие как 7-Zip с определенными плагинами, также могут отображать содержимое после конвертации.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод доступа</th>
+<th>Необходимые инструменты</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Прямое чтение (CLI)</td>
+<td>jffs2reader, jffs2dump</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Конвертация в SquashFS</td>
+<td>Конвертер, WinSquashfs</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>WSL (Linux под Windows)</td>
+<td>Подсистема Windows для Linux</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Удобство графического интерфейса</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Возможность быстрого поиска файлов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Поддержка drag-and-drop</li></ul></div>
+</div></div>
+
+<h2 id="применение-подсистемы-wsl-для-нативной-работы">Применение подсистемы WSL для нативной работы</h2>
+
+<p>Наиболее надежным и профессиональным решением для работы с файловыми системами устройств является использование WSL (Windows Subsystem for Linux).</p>
+<p>Эта технология позволяет запускать полноценный дистрибутив Linux (например, Ubuntu) непосредственно внутри Windows без виртуализации.</p>
+<p>В среде Linux инструменты для работы с JFFS2, такие как <em>extract-jffs2</em> или <em>jefferson</em>, устанавливаются через пакетный менеджер одной командой.</p>
+<p>Это гарантирует полную совместимость и корректную обработку всех особенностей файловой системы, включая права доступа и символические ссылки.</p>
+<p>Файловая система Windows становится доступной внутри Linux, поэтому вы можете сразу сохранять результаты распаковки в удобную папку.</p>
+
+<h3>Установка и настройка инструментов в WSL</h3>
+<p>Для начала необходимо активировать компонент WSL в панели управления Windows и установить дистрибутив из Microsoft Store.</p>
+<p>После запуска терминала Linux следует обновить списки пакетов и установить необходимые утилиты.</p>
+<p>Часто требуется компиляция некоторых инструментов из исходных кодов, если они отсутствуют в репозиториях.</p>
+<p>Для компиляции понадобятся пакеты развития, такие как <code>build-essential</code> и библиотеки <code>zlib</code>.</p>
+<p>Команды для установки часто выглядят как <code>sudo apt-get install git make gcc liblzo-dev</code>.</p>
+
+<pre><code>git clone https://github.com/devttys0/jefferson.git
+<p>cd jefferson</p>
+<p>sudo python setup.py install</code></pre></p>
+
+<p>После установки <em>jefferson</em> или аналогичного инструмента процесс распаковки занимает считанные секунды.</p>
+<p>Вы получаете полный доступ ко всем файлам, включая скрытые и системные, с сохранением их атрибутов.</p>
+<p>Этот метод рекомендуется для специалистов по информационной безопасности и разработчиков систем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду wsl --install в PowerShell для быстрой активации подсистемы Linux на Windows 10 и 11.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе работы с образами JFFS2 пользователи часто сталкиваются с рядом типовых проблем, связанных с некорректной подготовкой данных.</p>
+<p>Понимание причин этих ошибок позволяет быстро диагностировать проблему и выбрать правильный метод решения.</p>
+<p>Часто ошибка кроется не в инструменте, а в неверном понимании структуры исходного файла прошивки.</p>
+
+<ol>
+<li><strong>Ошибка «Magic number mismatch»</strong> — возникает, когда утилита не может найти сигнатуру JFFS2; скорее всего, файл содержит заголовок прошивки, который нужно предварительно удалить HEX-редактором.</li>
+<li><strong>Неверный размер блока</strong> — если при распаковке файлы оказываются поврежденными или обрезанными, необходимо подобрать правильный параметр erase block size (часто 64KB или 128KB).</li>
+<li><strong>Отсутствие файлов в выгрузке</strong> — может означать, что файловая система сжата алгоритмом, не поддерживаемым вашей версией утилиты (например, LZMA вместо ZLIB).</li>
+<li><strong>Ошибка доступа к файлу</strong> — часто возникает, если файл прошивки открыт в другом программе или заблокирован антивирусом; закройте все лишние приложения.</li>
+</ol>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Вероятная причина</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Пустая папка вывода</td>
+<td>Неверное смещение начала FS</td>
+<td>Найти смещение через binwalk</td>
+</tr>
+<tr>
+<td>Файлы нулевого размера</td>
+<td>Ошибка чтения узлов</td>
+<td>Проверить целостность дампа</td>
+</</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-oslabit-nereguliruemye-petli-na-noutbuke-dexp.html" class="pb-related-card">
+                <span class="pb-related-title">Как ослабить петли ноутбука DEXP: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по регулировке жесткости петель ноутбука DEXP. Разбор методов смазки, замены вт</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-rasshirennyj-bios-msi-katana.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить расширенный BIOS на MSI Katana: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по активации скрытых настроек BIOS на ноутбуках MSI Katana. Методы входа, сбро</span>
+            </a><a href="/articles/w/wi/windows-11-ne-vidit-kompyutery-v-lokalnoj-seti.html" class="pb-related-card">
+                <span class="pb-related-title">Windows 11 не видит компьютеры в сети: полное руководство</span>
+                <span class="pb-related-desc">Решение проблемы: Windows 11 не отображает ПК в локальной сети. Настройка SMB, DNS, служб и политик </span>
+            </a><a href="/articles/r/rm/rmn-na-noutbuke-chto-eto-takoe.html" class="pb-related-card">
+                <span class="pb-related-title">RMN на ноутбуке: расшифровка, функции и устранение ошибок</span>
+                <span class="pb-related-desc">Что такое RMN в ноутбуке? Подробный разбор ролика магнитного носителя, его влияния на определение кр</span>
+            </a><a href="/articles/w/wi/windows-ne-udalos-poluchit-svedeniya-o-diskakh-na-dannom-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка: Windows не удалось получить сведения о дисках — Решение</span>
+                <span class="pb-related-desc">Появилась ошибка&#x27;Windows не удалось получить сведения о дисках&#x27;? Узнайте, как исправить проблему чер</span>
+            </a><a href="/articles/u/ue/uefi-shell-commands-install-windows-from-usb.html" class="pb-related-card">
+                <span class="pb-related-title">UEFI Shell: Установка Windows с USB через консоль</span>
+                <span class="pb-related-desc">Подробное руководство по запуску установки Windows 10/11 из UEFI Shell. Команды, разметка разделов и</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

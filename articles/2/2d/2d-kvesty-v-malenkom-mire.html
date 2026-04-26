@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>2D квесты в маленьком мире: Гайд по разработке и дизайну — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию 2D квестов с ограниченным пространством. Механики, оптимизация движков и дизайн уровней.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/2/2d/2d-kvesty-v-malenkom-mire.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="2D квесты в маленьком мире: Гайд по разработке и дизайну">
+    <meta property="og:description" content="Техническое руководство по созданию 2D квестов с ограниченным пространством. Механики, оптимизация движков и дизайн уровней.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">2D квесты в маленьком мире: Гайд по разработке и дизайну</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#концептуализация-ограниченного-пространства-и-механики">Концептуализация ограниченного пространства и механики</a></li><li><a href="#техническая-реализация-взаимодействий-и-инвентаря">Техническая реализация взаимодействий и инвентаря</a></li><li><a href="#дизайн-уровней-и-навигация-в-микро-масштабе">Дизайн уровней и навигация в микро-масштабе</a></li><li><a href="#оптимизация-и-кроссплатформенность">Оптимизация и кроссплатформенность</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/v-/v-rezhime-fastboot-idet-zaryadka.html">Fastboot зарядка: почему телефон заряжается в режиме загрузчика</a></li><li><a href="/articles/k/ka/kak-v-anroide-posmotret-skrytye-tefony.html">Как скрыть номер на Android: полные инструкции</a></li><li><a href="/articles/v/vy/vyjti-so-vsekh-sessij-vtb.html">Как выйти со всех сессий ВТБ Онлайн: полная инструкция</a></li><li><a href="/articles/k/ka/kak-udalit-virtualnuyu-kartu-trojka.html">Как удалить виртуальную карту Тройка с телефона: инструкция</a></li><li><a href="/articles/d/de/debugloggerui-perevod.html">DebugLoggerUI перевод: как включить и отключить отладку на Android</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка 2D квестов в ограниченном пространстве</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#концептуализация-ограниченного-пространства-и-механики">Концептуализация ограниченного пространства и механики</a></li><li><a href="#техническая-реализация-взаимодействий-и-инвентаря">Техническая реализация взаимодействий и инвентаря</a></li><li><a href="#дизайн-уровней-и-навигация-в-микро-масштабе">Дизайн уровней и навигация в микро-масштабе</a></li><li><a href="#оптимизация-и-кроссплатформенность">Оптимизация и кроссплатформенность</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда разработчик сталкивается с жесткими ограничениями аппаратной платформы или концептуальным решением «маленького мира», часто приводит к тупику в проектировании игрового процесса.</p>
+<p>Попытка впихнуть стандартные механики point-and-click или платформенного экшена в рамки одного экрана или микро-локации вызывает у игрока чувство клаустрофобии и быстро исчерпывает интерес.</p>
+<p>На практике создание качественного 2D квеста в замкнутом пространстве требует отказа от привычных паттернов масштабирования и перехода к глубинной проработке взаимодействий, где каждый пиксель становится значимым элементом геймплея.</p>
+
+<h2 id="концептуализация-ограниченного-пространства-и-механики">Концептуализация ограниченного пространства и механики</h2>
+
+<p>Если у вас есть задача разработать игру, действие которой разворачивается в одной комнате, корабельной каюте или даже внутри одного механизма, первостепенной задачей становится переосмысление понятия «исследование».</p>
+<p>Вместо горизонтального перемещения по карте внимание смещается на вертикальные слои взаимодействия и изменение состояния объектов, что требует внедрения механик трансформации окружения.</p>
+<p>Допустим, игрок находится в статичной комнате; чтобы создать иллюзию прогресса, необходимо, чтобы успешное решение головоломки физически меняло геометрию уровня или открывало новые плоскости для взаимодействия.</p>
+<p>Ключевым элементом здесь становится <strong>многофункциональность объектов</strong>, когда один и тот же предмет меняет свои свойства в зависимости от контекста или использованного инструмента.</p>
+
+<h3>Динамическая геометрия и слоистость уровней</h3>
+
+<p>В движках вроде <em>Unity</em> или <em>Godot</em> реализация изменяемой геометрии часто достигается через переключение спрайтовых наборов или активацию различных коллайдеров в зависимости от состояния игры.</p>
+<p>На практике это означает, что «маленький мир» не является статичной картинкой, а представляет собой сложную систему триггеров, где открытие одного ящика может опустить потолок, создавая новую платформу.</p>
+<p>Стоит рассмотреть возможность использования параллакс-эффекта даже в 2D пространстве, чтобы создать ощущение глубины и объема там, где физически его быть не может.</p>
+<p>Для управления состояниями объектов эффективно применяется система флагов, где каждый элемент сцены имеет уникальный идентификатор и набор свойств, зависящих от глобальных переменных.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм изменения состояния уровня</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Инициализация объекта с флагом «interactable»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверка условия наличия ключевого предмета в инвентаре</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Активация анимации трансформации спрайта</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Изменение физики коллайдера (например, включение твердости)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Обновление глобальной переменной прогресса</span></div></div>
+
+<p>Важно понимать, что в ограниченном пространстве визуальный шум недопустим, поэтому каждый элемент интерфейса и декорация должны нести смысловую нагрузку или подсказку.</p>
+
+<h2 id="техническая-реализация-взаимодействий-и-инвентаря">Техническая реализация взаимодействий и инвентаря</h2>
+
+<p>Когда площадь игрового поля ограничена, система инвентаря и взаимодействий становится центральным элементом интерфейса, требуя максимальной эргономичности и отзывчивости.</p>
+<p>Традиционные методы перетаскивания (drag-and-drop) могут быть неудобны на сенсорных экранах или при управлении с геймпада, поэтому стоит внедрить контекстно-зависимые меню действий.</p>
+<p>Если игрок наводит курсор на объект, система должна мгновенно анализировать содержимое инвентаря и предлагать только релевантные действия, исключая лишние клики.</p>
+<p>Особое внимание следует уделить <strong>логике комбинирования предметов</strong>, которая в маленьких мирах часто является единственным способом продвижения по сюжету.</p>
+
+<h3>Архитектура системы предметов и событий</h3>
+
+<p>Для хранения данных о предметах лучше всего использовать JSON-структуры или ScriptableObjects (в случае <em>Unity</em>), где прописаны не только графические ассеты, но и логические теги.</p>
+<p>Каждый предмет должен иметь поле <code>interaction_type</code>, определяющее, является ли он ключом, инструментом или составной частью механизма.</p>
+<p>В коде это реализуется через создание базового класса <code>Item</code>, от которого наследуются специфические типы, позволяя гибко настраивать поведение без переписывания основной логики.</p>
+
+<pre><code>public class QuestItem : Item {
+<p>public string targetObjectId;</p>
+<p>public string requiredState;</p>
+
+<p>public override void Use(GameObject target) {</p>
+<p>if (target.id == targetObjectId) {</p>
+<p>target.ChangeState(requiredState);</p>
+<p>}</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<p>Подобная структура позволяет легко масштабировать количество предметов, не нарушая целостности кодовой базы, что критично для инди-разработчиков.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте префабы для предметов, чтобы менять их визуальное отображение в зависимости от состояния (например, ржавый ключ против чистого ключа) без создания новых объектов в памяти.</p></aside>
+
+<p>Оптимизация поиска предметов в инвентаре осуществляется через хэш-таблицы, что обеспечивает мгновенный отклик интерфейса даже при большом количестве собранных артефактов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип взаимодействия</th>
+<th>Описание логики</th>
+<th>Пример использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>OnClick</code></td>
+<td>Простое действие при клике</td>
+<td>Подбор предмета, открытие диалога</td>
+</tr>
+<tr>
+<td><code>OnCombine</code></td>
+<td>Слияние двух объектов</td>
+<td>Создание отмычки из скрепки и пилки</td>
+</tr>
+<tr>
+<td><code>OnStateChange</code></td>
+<td>Реакция на изменение мира</td>
+<td>Дверь открывается после починки механизма</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="дизайн-уровней-и-навигация-в-микро-масштабе">Дизайн уровней и навигация в микро-масштабе</h2>
+
+<p>Проектирование уровня, который fits на один экран, требует отказа от линейности в пользу циклической или радиальной структуры, где игрок постоянно возвращается к центру.</p>
+<p>Навигация в таких условиях часто заменяется зумом камеры или переключением между детализированными видами (макро-режим) и общим планом.</p>
+<p>Если пользователь привык исследовать миры, бегая персонажем, то в «маленьком мире» он исследует детали, используя курсор как основной инструмент взаимодействия.</p>
+<p>Важно обеспечить визуальную ясность: даже в хаотичном окружении игрок должен четко видеть интерактивные зоны, для чего используется подсветка или изменение формы курсора.</p>
+
+<h3>Визуальные подсказки и атмосфера</h3>
+
+<p>Атмосфера в замкнутом пространстве создается через освещение и звуковой дизайн, так как возможности для смены декораций ограничены.</p>
+<p>Динамическое освещение, даже в 2D, может кардинально менять восприятие комнаты, скрывая одни объекты в тени и выделяя другие.</p>
+<p>Звуковые cues должны быть точными: щелчок механизма, скрип двери или гул machinery помогают игроку ориентироваться без визуального контакта.</p>
+<p>Использование <strong>партикл-эффектов</strong> (пыль, искры, пар) добавляет живости статичной сцене и направляет внимание игрока в нужную точку.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Избегайте размещения интерактивных объектов слишком близко к краям экрана, где они могут перекрываться элементами интерфейса или быть неудобными для клика на мобильных устройствах.</p></aside>
+
+<p>Для мобильных платформ необходимо увеличивать хитбоксы взаимодействий, так как точность пальца ниже, чем у курсора мыши.</p>
+
+<ol>
+<li>Создайте базовую схему комнаты с обозначением всех интерактивных зон.</li>
+<li>Распределите объекты по приоритету: ключевые для сюжета должны быть заметнее второстепенных.</li>
+<li>Протестируйте сцену на разных разрешениях экрана, чтобы убедиться, что важные детали не обрезаются.</li>
+<li>Добавьте слой «подсказок», который можно включать для отладки или помощи игроку.</li>
+</ol>
+
+<p>Грамотная композиция кадра позволяет скрыть ограничения движка и создать иллюзию большого, сложного мира внутри маленького окна.</p>
+
+<h2 id="оптимизация-и-кроссплатформенность">Оптимизация и кроссплатформенность</h2>
+
+<p>Несмотря на простоту графики, 2D квесты могут требовать значительных ресурсов при активной физике и большом количестве объектов в кадре.</p>
+<p>Оптимизация спрайтов и атласов текстур является обязательным этапом, особенно если целевой платформой являются мобильные устройства с ограниченной памятью.</p>
+<p>Использование <em>Sprite Atlas</em> позволяет уменьшить количество вызовов отрисовки (draw calls), что критично для поддержания стабного FPS на слабых устройствах.</p>
+<p>Код должен быть написан с учетом асинхронной загрузки ресурсов, чтобы переходы между состояниями игры происходили без видимых задержек.</p>
+
+<h3>Адаптация интерфейса и управления</h3>
+
+<p>Интерфейс в «маленьком мире» занимает значительную часть экрана, поэтому его адаптивность становится вопросом выживания проекта.</p>
+<p>Необходимо предусмотреть несколько схем управления: клавиатура и мышь, тач-скрин и геймпад, каждая из которых требует своей логики навигации.</p>
+<p>Для тач-управления часто применяется система «умного курсора», который автоматически перемещается к ближайшему интерактивному объекту при касании экрана.</p>
+
+<table>
+<thead>
+<tr>
+<th>Платформа</th>
+<th>Особенности управления</th>
+<th>Рекомендуемое решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PC / Console</td>
+<td>Высокая точность курсора</td>
+<td>Прямое наведение, хоткеи для инвентаря</td>
+</tr>
+<tr>
+<td>Mobile</td>
+<td>Отсутствие курсора, палец закрывает обзор</td>
+<td>Контекстное меню, зум по двойному тапу</td>
+</tr>
+<tr>
+<td>Tablet</td>
+<td>Большой экран, гибридное использование</td>
+<td>Адаптивный UI, поддержка обоих методов</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества микро-квестов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая детализация каждого объекта</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы микро-квестов:Сложность создания разнообразия</li></ul></div>
+</div></div>
+
+<p>Тестирование на реальных устройствах помогает выявить проблемы с размером шрифтов и кнопок, которые не видны на мониторе разработчика.</p>
+
+<h2 id="типичные-ошибки-при-разработке">Типичные ошибки при разработке</h2>
+
+<p>В процессе создания 2D квестов в ограниченном пространстве разработчики часто наступают на одни и те же грабли, снижая качество продукта.</p>
+<ol>
+<li><strong>Игнорирование масштабирования интерфейса</strong> — элементы UI остаются фиксированными, становясь слишком мелкими на высоких разрешениях или перекрывая игру на низких, что делает игру неиграбельной.</li>
+<li><strong>Логические тупики без подсказок</strong> — в маленьком мире, где все на виду, игрок ожидает линейной логики; если решение требует абстрактного мышления без намеков, это вызывает фрустрацию.</li>
+<li><strong>Перегруженность визуального ряда</strong> — попытка уместить слишком много деталей на одном экране превращает игру в «где Уолли», мешая находить интерактивные объекты.</li>
+<li><strong>Отсутствие обратной связи</strong> — если игрок взаимодействует с объектом, но не видит реакции (звуковой или визуальной), он теряет нить повествования и понимание причинно-следственных связей.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда добавляйте журнал выполненных действий или визуальную историю изменений в комнате, чтобы игрок помнил, что уже было сделано.</p></aside>
+
+<p>Избегание этих ошибок позволит создать сбалансированный и увлекательный опыт, даже в самых тесных рамках.</p>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Разработка 2D квестов в маленьком мире — это искусство ограничения, где глубина механик компенсирует отсутствие пространства.</p>
+<p>Успех проекта зависит от тщательной проработки взаимодействий, оптимизации кода и создания атмосферы, которая заставляет игрока забыть о том, что он находится в одной комнате.</p>
+<p>Следование техническим стандартам и внимание к деталям интерфейса превращает потенциальную claustrophobia в увлекательное интеллектуальное приключение.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к успеху — в балансе между визуальной насыщенностью и логической ясностью механик в ограниченном пространстве.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/v-/v-rezhime-fastboot-idet-zaryadka.html" class="pb-related-card">
+                <span class="pb-related-title">Fastboot зарядка: почему телефон заряжается в режиме загрузчика</span>
+                <span class="pb-related-desc">Подробный разбор ситуации, когда устройство заряжается в режиме Fastboot. Причины входа в Bootloader</span>
+            </a><a href="/articles/k/ka/kak-v-anroide-posmotret-skrytye-tefony.html" class="pb-related-card">
+                <span class="pb-related-title">Как скрыть номер на Android: полные инструкции</span>
+                <span class="pb-related-desc">Полное руководство по скрытию номера телефона на Android. Настройки SIM, коды USSD, приложения и реш</span>
+            </a><a href="/articles/v/vy/vyjti-so-vsekh-sessij-vtb.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти со всех сессий ВТБ Онлайн: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по завершению всех активных сессий в ВТБ Онлайн. Удаленный выход с телефона, пл</span>
+            </a><a href="/articles/k/ka/kak-udalit-virtualnuyu-kartu-trojka.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить виртуальную карту Тройка с телефона: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по удалению виртуальной карты Тройка с Android, iOS и Huawei. Решение ошибок о</span>
+            </a><a href="/articles/d/de/debugloggerui-perevod.html" class="pb-related-card">
+                <span class="pb-related-title">DebugLoggerUI перевод: как включить и отключить отладку на Android</span>
+                <span class="pb-related-desc">Полный гид по DebugLoggerUI перевод: что это, как включить режим отладки, расшифровка ошибок и безоп</span>
+            </a><a href="/articles/w/wg/wgt-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Что такое WGT приложения и как их использовать на Android</span>
+                <span class="pb-related-desc">Подробная инструкция по работе с WGT приложениями. Установка, настройка виджетов, устранение ошибок </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

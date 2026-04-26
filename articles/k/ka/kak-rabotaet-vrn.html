@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как работает VRN: настройка и устранение ошибок — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по работе VRN. Разбор протокола, настройка на MikroTik, анализ пакетов и решение типовых проблем.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-rabotaet-vrn.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как работает VRN: настройка и устранение ошибок">
+    <meta property="og:description" content="Техническое руководство по работе VRN. Разбор протокола, настройка на MikroTik, анализ пакетов и решение типовых проблем.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как работает VRN: настройка и устранение ошибок</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-основы-протокола-vrn">Архитектурные основы протокола VRN</a></li><li><a href="#настройка-серверной-части-vrn">Настройка серверной части VRN</a></li><li><a href="#интеграция-клиентских-устройств">Интеграция клиентских устройств</a></li><li><a href="#диагностика-и-анализ-трафика">Диагностика и анализ трафика</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#итоговое-резюме">Итоговое резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-podklyuchit-tajm-kapsulu-k-vinde.html">Как подключить Time Capsule к Windows: полная инструкция</a></li><li><a href="/articles/k/ka/kak-pochinit-shteker-vilki-zaryadki.html">Как починить штекер вилки зарядки: полная инструкция</a></li><li><a href="/articles/k/ka/kak-prikrepit-nozhki.html">Как прикрепить ножки к мебели: пошаговая инструкция</a></li><li><a href="/articles/2/2d/2d-atmos-chto-eto-takoe-v-kino.html">2D Atmos в кино: как работает звук и зачем он нужен</a></li><li><a href="/articles/i/id/idei-dlya-ajfona.html">Идеи для iPhone: скрытые функции, настройки и сценарии</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Протокол VRN: устройство, настройка и отладка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-основы-протокола-vrn">Архитектурные основы протокола VRN</a></li><li><a href="#настройка-серверной-части-vrn">Настройка серверной части VRN</a></li><li><a href="#интеграция-клиентских-устройств">Интеграция клиентских устройств</a></li><li><a href="#диагностика-и-анализ-трафика">Диагностика и анализ трафика</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#итоговое-резюме">Итоговое резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Администраторы микротиков и специалисты по сетевой безопасности часто сталкиваются с ситуацией, когда стандартные методы удаленного доступа оказываются недоступны или неэффективны.</p>
+<p>Представим сценарий: вы управляете распределенной сетью из сотен роутеров, и вам необходимо срочно извлечь логи или изменить конфигурацию устройства, находящегося за NAT, но SSH-порт закрыт, а проброс сделать невозможно.</p>
+<p>Именно в этот момент на сцену выходит технология VRN, позволяющая обойти ограничения NAT и обеспечить безопасный туннель для управления, однако отсутствие документации часто ставит инженеров в тупик.</p>
+<p>Понимание внутренних механизмов работы этого протокола критически важно для построения отказоустойчивой инфраструктуры управления сетевым оборудованием.</p>
+
+<h2 id="архитектурные-основы-протокола-vrn">Архитектурные основы протокола VRN</h2>
+
+<p>Протокол VRN представляет собой специализированное программное решение, предназначенное для организации удаленного управления сетевыми устройствами через сложные топологии.</p>
+<p>В отличие от стандартных туннелей, таких как GRE или IPIP, данный механизм ориентирован на сценарии, где клиентское устройство не имеет статического IP-адреса или находится глубоко за трансляцией адресов.</p>
+<p>Принцип действия базируется на постоянном соединении, инициируемом самим устройством к центральному серверу, что позволяет обходить большинство файерволов.</p>
+<p>Если у вас есть роутер <em>MikroTik</em> с версией <em>RouterOS 7.x</em>, то взаимодействие происходит на уровне пользовательского пространства через специфические демоны.</p>
+<p>Соединение устанавливается по TCP, что гарантирует доставку пакетов, но накладывает требования к стабильности канала связи между клиентом и сервером.</p>
+
+<h3>Механизм установления соединения</h3>
+
+<p>Процесс инициации связи начинается с отправки клиентом специального пакета-запроса на заранее определенный порт сервера.</p>
+<p>Сервер, получив запрос, проверяет авторизационные данные и, в случае успеха, регистрирует сессию в своей таблице активных подключений.</p>
+<p>Дальнейший обмен данными происходит в рамках установленного TCP-сокета, который поддерживается активным с помощью регулярных служебных пакетов.</p>
+<p>Важно понимать, что <strong>инициатором всегда выступает клиент</strong>, поэтому серверная часть должна быть доступна из внешней сети, но не наоборот.</p>
+<p>На практике это означает, что для работы системы достаточно, чтобы клиент имел доступ в интернет, даже если он получает динамический IP-адрес.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для работы протокола необходимо, чтобы на клиентском устройстве было корректно настроено время, так как сертификаты и токены чувствительны к рассинхронизации.</p></aside>
+
+<p>Стабильность соединения напрямую зависит от качества маршрутизации между узлами и отсутствия агрессивных таймаутов на промежуточных устройствах.</p>
+<p>Если канал связи прерывается, клиент автоматически пытается восстановить соединение, используя экспоненциальную задержку между попытками.</p>
+
+<h2 id="настройка-серверной-части-vrn">Настройка серверной части VRN</h2>
+
+<p>Развертывание серверного компонента требует выделенного хоста с публичным IP-адресом и установленной операционной системой Linux.</p>
+<p>Чаще всего используется дистрибутив <em>Ubuntu Server</em> или <em>Debian</em>, так как пакеты собираются именно под эти платформы.</p>
+<p>Первым шагом является установка необходимых зависимостей, включая библиотеки шифрования и сетевого стека.</p>
+<p>Далее необходимо скачать бинарный файл сервера с официального репозитория и разместить его в директории <code>/opt/vrn-server</code>.</p>
+<p>Конфигурационный файл требует указания порта прослушивания, пути к сертификатам и списка разрешенных клиентов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка сервера</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите пакеты зависимостей</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Скачайте бинарник сервера</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Создайте конфиг файл</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите службу через systemd</span></div></div>
+
+<p>Для обеспечения безопасности рекомендуется использовать TLS-шифрование, что требует генерации пары ключей (публичного и приватного).</p>
+<p>Команда генерации ключей выполняется в терминале и создает файлы, которые затем прописываются в конфигурации.</p>
+<pre><code>openssl genrsa -out server.key 2048
+<p>openssl req -new -key server.key -out server.csr</p>
+<p>openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt</code></pre></p>
+<p>После подготовки файлов необходимо настроить службу <em>systemd</em> для автоматического запуска при загрузке системы.</p>
+<p>Файл юнита размещается в <code>/etc/systemd/system/vrn-server.service</code> и содержит параметры запуска исполняемого файла.</p>
+<p>Запуск службы производится командой <code>systemctl start vrn-server</code>, а проверка статуса — <code>systemctl status vrn-server</code>.</p>
+
+<h3>Параметры конфигурации и порты</h3>
+
+<p>Основной файл конфигурации содержит ключевые параметры, определяющие поведение сервера и политику безопасности.</p>
+<p>Здесь указывается порт, по умолчанию это часто 8765, но в продакшене его лучше сменить на нестандартный.</p>
+<p>Также прописываются пути к логам, уровень детализации записи событий и ограничения по количеству одновременных подключений.</p>
+<p>Стоит обратить внимание на параметр <code>keepalive_interval</code>, который регулирует частоту проверки живости клиентов.</p>
+<p>Слишком короткий интервал может создать лишнюю нагрузку на сеть, а слишком длинный — привести к долгому обнаружению обрывов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>listen_port</code></td>
+<td>8765</td>
+<td>TCP порт для входящих соединений</td>
+</tr>
+<tr>
+<td><code>max_clients</code></td>
+<td>100</td>
+<td>Лимит одновременных подключений</td>
+</tr>
+<tr>
+<td><code>log_level</code></td>
+<td>info</td>
+<td>Уровень детализации логов</td>
+</tr>
+</tbody>
+</table>
+
+<p>Изменение любого параметра требует перезагрузки службы для вступления изменений в силу.</p>
+<p>Для применения изменений используйте команду <code>systemctl restart vrn-server</code>.</p>
+<p>Убедитесь, что брандмауэр операционной системы разрешает входящие соединения на выбранный порт.</p>
+
+<h2 id="интеграция-клиентских-устройств">Интеграция клиентских устройств</h2>
+
+<p>Настройка клиентской части на роутерах <em>MikroTik</em> производится через интерфейс WinBox или командную строку.</p>
+<p>Необходимо перейти в раздел меню, отвечающий за облачные сервисы или удаленное управление, в зависимости от версии <em>RouterOS</em>.</p>
+<p>В поле адреса сервера вводится публичный IP или доменное имя вашего сервера, а также порт подключения.</p>
+<p>Далее вводятся авторизационные данные: логин и пароль, или же загружается сгенерированный сертификат.</p>
+<p>После активации функции устройство пытается установить соединение, статус которого отображается в интерфейсе.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При настройке клиента убедитесь, что на роутере корректно выставлены DNS-серверы, иначе он не сможет_resolve_ить доменное имя сервера.</p></aside>
+
+<p>Если соединение установлено успешно, в логах клиента появится запись о регистрации на сервере.</p>
+<p>В случае неудачи стоит проверить доступность порта с помощью утилиты <code>telnet</code> или <code>ping</code>.</p>
+<p>Для диагностики можно включить расширенное логирование на клиенте, что позволит увидеть этапы рукопожатия.</p>
+<p>Команда для проверки статуса соединения в терминале выглядит как <code>/system remote-vrn print</code>.</p>
+<p>Важно, чтобы версия прошивки клиента была совместима с версией серверного ПО, иначе возможны ошибки протокола.</p>
+
+<h3>Сценарии использования на разных платформах</h3>
+
+<p>На устройствах с ограниченной памятью, таких как старые модели <em>hAP lite</em>, рекомендуется отключать неисзуемые функции VRN.</p>
+<p>Это освободит ресурсы CPU для обработки трафика и предотвратит перегрев оборудования при высокой нагрузке.</p>
+<p>На мощных маршрутизаторах серии <em>CCR</em> можно использовать VRN для управления тысячами туннелей одновременно.</p>
+<p>В этом случае целесообразно вынести логику управления на отдельный VLAN для изоляции трафика.</p>
+<p>Для мобильных устройств существуют специальные приложения-клиенты, позволяющие подключаться к сети через VRN.</p>
+
+<ul>
+<li>Поддержка работы через NAT и прокси-серверы</li>
+<li>Автоматическое переподключение при разрыве связи</li>
+<li>Шифрование всего трафика управления</li>
+<li>Минимальное потребление ресурсов на клиенте</li>
+<li>Возможность группового управления устройствами</li>
+</ul>
+
+<p>Гибкость настройки позволяет адаптировать протокол под самые разные сетевые архитектуры.</p>
+<p>Можно создавать сложные цепочки туннелей, пробрасывать не только управляющий трафик, но и данные пользователей.</p>
+<p>Однако следует помнить, что пропускная способность туннеля ограничена производительностью CPU роутера.</p>
+
+<h2 id="диагностика-и-анализ-трафика">Диагностика и анализ трафика</h2>
+
+<p>Эффективное устранение неполадок невозможно без глубокого понимания того, как выглядят пакеты VRN в сети.</p>
+<p>Для анализа трафика используется утилита <em>tcpdump</em> или встроенный сниффер в <em>WinBox</em>.</p>
+<p>Фильтр для захвата пакетов должен быть настроен на конкретный порт и IP-адрес сервера.</p>
+<p>При просмотре дампа можно увидеть этапы установки соединения: SYN, SYN-ACK, ACK, followed by data exchange.</p>
+<p>Если вы видите постоянные переподключения, стоит обратить внимание на таймауты или потерю пакетов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте фильтр Wireshark "tcp.port == 8765" для быстрой изоляции трафика VRN от остального шума в сети.</p></aside>
+
+<p>Анализ логов сервера часто дает больше информации, чем анализ сетевых пакетов.</p>
+<p>В логах фиксируются причины отключения клиентов: таймаут, ошибка авторизации или некорректный пакет.</p>
+<p>Для глубокой отладки можно включить режим отладки (debug mode), который выводит подробную информацию о каждом байте.</p>
+<p>Однако стоит помнить, что в продакшене этот режим лучше не включать, так как он сильно нагружает диск.</p>
+<p>Команда для включения отладки зависит от конкретной реализации, часто это флаг <code>--debug</code> при запуске.</p>
+
+<h3>Типичные проблемы при отладке</h3>
+
+<p>Одной из частых проблем является рассинхронизация времени между клиентом и сервером.</p>
+<p>Это приводит к ошибкам проверки сертификатов и невозможности установить безопасное соединение.</p>
+<p>Решением является настройка NTP-клиента на обоих концах туннеля.</p>
+<p>Другая распространенная ошибка — блокировка порта фаерволом провайдера или промежуточного оборудования.</p>
+<p>В этом случае пакеты просто не доходят до адресата, и соединение зависает в состоянии ожидания.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Возможная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Connection Refused</td>
+<td>Сервер не запущен</td>
+<td>Проверить статус службы</td>
+</tr>
+<tr>
+<td>Timeout</td>
+<td>Блокировка файерволом</td>
+<td>Проверить правила iptables</td>
+</tr>
+<tr>
+<td>Auth Failed</td>
+<td>Неверный пароль</td>
+<td>Сбросить credentials</td>
+</tr>
+</tbody>
+</table>
+
+<p>Также проблемы могут возникать из-за MTU, если размер пакетов превышает допустимый лимит канала.</p>
+<p>В таком случае наблюдается фрагментация пакетов или их потеря, что снижает производительность.</p>
+<p>Рекомендуется установить MTU на интерфейсе туннеля чуть меньше, чем на физическом интерфейсе.</p>
+
+<h2 id="типичные-ошибки">Типичные ошибки</h2>
+
+<ol>
+<li><strong>Игнорирование обновлений безопасности</strong> — использование старых версий ПО может привести к уязвимостям, поэтому следует регулярно обновлять сервер и клиенты.</li>
+<li><strong>Неправильная настройка таймаутов</strong> — слишком агрессивные настройки могут рвать стабильные соединения, необходимо подбирать значения экспериментально.</li>
+<li><strong>Отсутствие мониторинга</strong> — если не следить за логами, можно пропустить момент, когда сервис перестал отвечать на запросы.</li>
+<li><strong>Слабые пароли</strong> — использование простых паролей для авторизации в VRN делает сеть уязвимой для брутфорс-атак.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Плюсы VRN</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Обход NAT без статического IP</li><li>✅ Безопасное шифрование</li><li>✅ Минимальная нагрузка</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы VRN:Требует выделенного сервера</li><li>❌ Зависимость от TCP</li><li>❌ Сложность отладки</li></ul></div>
+</div></div>
+
+<p>Соблюдение правил конфигурации и регулярный аудит настроек позволяют избежать большинства проблем.</p>
+<p>Важно документировать все изменения, вносимые в конфигурационные файлы, чтобы иметь возможность отката.</p>
+
+<h2 id="итоговое-резюме">Итоговое резюме</h2>
+
+<p>Технология VRN зарекомендовала себя как надежный инструмент для удаленного управления сетевым оборудованием в сложных условиях.</p>
+<p>Понимание принципов его работы, правильная настройка серверной и клиентской частей обеспечивают стабильный доступ к инфраструктуре.</p>
+<p>Соблюдение мер безопасности и регулярный мониторинг позволяют минимизировать риски и обеспечивать бесперебойную работу сети.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>VRN — это эффективное решение для обхода NAT, требующее правильной настройки времени и портов для стабильной работы.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-podklyuchit-tajm-kapsulu-k-vinde.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить Time Capsule к Windows: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговая инструкция по подключению Apple Time Capsule к ПК с Windows. Настройка сети, общего доступ</span>
+            </a><a href="/articles/k/ka/kak-pochinit-shteker-vilki-zaryadki.html" class="pb-related-card">
+                <span class="pb-related-title">Как починить штекер вилки зарядки: полная инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по восстановлению разъема питания. Замена штекера, пайка контактов, диагн</span>
+            </a><a href="/articles/k/ka/kak-prikrepit-nozhki.html" class="pb-related-card">
+                <span class="pb-related-title">Как прикрепить ножки к мебели: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке опор на мебель. Выбор крепежа, разметка, монтаж на саморезы и эпо</span>
+            </a><a href="/articles/2/2d/2d-atmos-chto-eto-takoe-v-kino.html" class="pb-related-card">
+                <span class="pb-related-title">2D Atmos в кино: как работает звук и зачем он нужен</span>
+                <span class="pb-related-desc">Технический анализ технологии 2D Atmos. Как плоский звук превращается в объемный? Разбор кодеков, ре</span>
+            </a><a href="/articles/i/id/idei-dlya-ajfona.html" class="pb-related-card">
+                <span class="pb-related-title">Идеи для iPhone: скрытые функции, настройки и сценарии</span>
+                <span class="pb-related-desc">Полный гид по скрытым возможностям iPhone. Идеи для автоматизации, безопасности и оптимизации работы</span>
+            </a><a href="/articles/k/ka/kak-ubrat-umnuyu-kameru-v-yandekse.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить и убрать умную камеру Яндекс: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению, удалению и настройке приватности умных камер Яндекс. Решение пр</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

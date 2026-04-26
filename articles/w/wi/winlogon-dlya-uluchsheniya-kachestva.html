@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Winlogon: анализ процессов для диагностики и ускорения загрузки — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по мониторингу и оптимизации службы winlogon.exe для устранения ошибок авторизации и повышения стабильности системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/winlogon-dlya-uluchsheniya-kachestva.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Winlogon: анализ процессов для диагностики и ускорения загрузки">
+    <meta property="og:description" content="Подробная инструкция по мониторингу и оптимизации службы winlogon.exe для устранения ошибок авторизации и повышения стабильности системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Winlogon: анализ процессов для диагностики и ускорения загрузки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-процесса-авторизации-и-загрузки">Диагностика процесса авторизации и загрузки</a></li><li><a href="#управление-параметрами-реестра-и-gina">Управление параметрами реестра и GINA</a></li><li><a href="#настройка-групповых-политик-для-оптимизации">Настройка групповых политик для оптимизации</a></li><li><a href="#анализ-сторонних-модулей-и-автозагрузки">Анализ сторонних модулей и автозагрузки</a></li><li><a href="#действия-в-среде-восстановления-winre">Действия в среде восстановления (WinRE)</a></li><li><a href="#типичные-ошибки-при-оптимизации">Типичные ошибки при оптимизации</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-bez-pulta-pereklyuchat-kanaly-na-haier-s7.html">Как переключать каналы на Haier S7 без пульта: все способы</a></li><li><a href="/articles/k/ka/kak-na-televizore-ldzhi-50ur78-vklyuchit-russkij-yazyk-pokazat-poetapno.html">Как включить русский язык на LG 50UR78: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-obnovit-prilozhenie-lm-deluxe-na-televizore.html">Как обновить LM Deluxe на телевизоре: полная инструкция</a></li><li><a href="/articles/v/vl/vlc-dlya-samsung-smart-tv.html">VLC для Samsung Smart TV: Установка и Настройка</a></li><li><a href="/articles/k/ka/kak-na-televizore-hyunday-ustanovit-vink.html">Как установить Wink на телевизор Hyundai: пошаговая инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация службы Winlogon для стабильной загрузки системы</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-процесса-авторизации-и-загрузки">Диагностика процесса авторизации и загрузки</a></li><li><a href="#управление-параметрами-реестра-и-gina">Управление параметрами реестра и GINA</a></li><li><a href="#настройка-групповых-политик-для-оптимизации">Настройка групповых политик для оптимизации</a></li><li><a href="#анализ-сторонних-модулей-и-автозагрузки">Анализ сторонних модулей и автозагрузки</a></li><li><a href="#действия-в-среде-восстановления-winre">Действия в среде восстановления (WinRE)</a></li><li><a href="#типичные-ошибки-при-оптимизации">Типичные ошибки при оптимизации</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Пользователь сталкивается с ситуацией, когда после включения питания компьютер зависает на этапе приветствия, экран гаснет или появляется черный курсор, а вход в систему становится невозможным. Такая проблема часто указывает на сбой в критически важном системном процессе, отвечающем за безопасный вход и управление сеансами.</p>
+<p>Вместо привычного рабочего стола операционная система может демонстрировать циклическую перезагрузку или выдавать сообщения об ошибках, связанных с DLL-библиотеками. В этот момент штатные средства диагностики часто оказываются недоступны, так как графическая оболочка еще не инициализирована или работает с критическими ошибками.</p>
+<p>Решение требует вмешательства в работу системных служб на низком уровне, проверки целостности исполняемых файлов и анализа автозагрузки сторонних модулей. Грамотная настройка и контроль за процессом <strong>winlogon.exe</strong> позволяют устранить зависания и обеспечить корректный старт пользовательского сеанса.</p>
+
+<h2 id="диагностика-процесса-авторизации-и-загрузки">Диагностика процесса авторизации и загрузки</h2>
+<p>На практике анализ начинается с определения текущего состояния исполняемого файла и проверки его подписи цифровым сертификатом. Системный процесс <em>winlogon</em> является ядром механизма входа в Windows, и любое его повреждение ведет к неработоспособности всей системы.</p>
+<p>Допустим, диспетчер задач показывает высокую загрузку ЦП этим процессом в фоновом режиме даже после успешного входа. Это может свидетельствовать о конфликте драйверов или попытке внедрения вредоносного кода, маскирующегося под системный файл.</p>
+<p>Если у вас есть доступ к системе, первым шагом становится проверка расположения файла. Легитимный исполняемый модуль всегда находится в директории <code>C:\Windows\System32</code>. Наличие файла в любой другой папке является верным признаком заражения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В 64-битных версиях операционной системы также может присутствовать копия файла в папке SysWOW64 для обеспечения совместимости с 32-битными приложениями, но активный процесс обычно запускается из System32.</p></aside>
+
+<p>Для первичной оценки состояния можно использовать встроенные средства мониторинга ресурсов. Откройте командную строку с правами администратора и введите команду для проверки хеш-сумм системных файлов.</p>
+<pre><code>sfc /scannow</code></pre>
+<p>Эта утилита просканирует защищенные системные файлы и заменит incorrectные версии правильными копиями из кэша. Если сканирование обнаружит ошибки, которые не удается исправить, потребуется более глубокое вмешательство через среду восстановления.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр проверки</th>
+<th>Нормальное состояние</th>
+<th>Признаки проблемы</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Расположение файла</td>
+<td>C:\Windows\System32</td>
+<td>Любая другая директория</td>
+</tr>
+<tr>
+<td>Цифровая подпись</td>
+<td>Microsoft Windows</td>
+<td>Отсутствует или неизвестный издатель</td>
+</tr>
+<tr>
+<td>Загрузка ЦП в простое</td>
+<td>0% - 1%</td>
+<td>Постоянная высокая активность</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно понимать, что процесс <strong>winlogon</strong> не может быть просто завершен через диспетчер задач в обычной ситуации, так как это приведет к немедленной блокировке системы или перезагрузке. Его работа критична для поддержания безопасности сеанса.</p>
+
+<h2 id="управление-параметрами-реестра-и-gina">Управление параметрами реестра и GINA</h2>
+<p>В более старых версиях операционных систем, таких как <em>Windows XP</em> или <em>Windows Server 2003</em>, интерфейс графической авторизации управлялся библиотеками GINA. В современных версиях, начиная с <em>Vista</em> и выше, используется механизм Credential Providers, однако ключи реестра остаются важными для настройки поведения входа.</p>
+<p>Для доступа к настройкам необходимо перейти в ветку реестра <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon</code>. Здесь хранятся параметры, определяющие, какие программы запускаются вместе с процессом входа.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Внесение изменений в системный реестр без создания резервной копии может привести к невозможности загрузки операционной системы. Всегда создавайте точку восстановления перед правкой.</p></aside>
+
+<p>Особое внимание следует уделить параметру <code>Shell</code>. По умолчанию он должен содержать только значение <code>explorer.exe</code>. Если в этом поле прописаны дополнительные исполняемые файлы или пути к скриптам, это может замедлять вход или вызывать ошибки.</p>
+<p>Также проверяется параметр <code>Userinit</code>. Он указывает на программу, которая запускается сразу после входа пользователя. Стандартное значение — <code>C:\Windows\system32\userinit.exe,</code> (обратите внимание на запятую в конце).</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Редактирование ключей Winlogon</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите regedit через Win+R</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите по пути к разделу Winlogon</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите параметр Shell и проверьте его значение</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь, что в Userinit нет лишних путей</span></div></div>
+
+<p>Если в параметре <code>VMApplet</code> или <code>Taskman</code> прописаны нестандартные значения, их следует вернуть к исходным или очистить, если они не требуются специфическим корпоративным ПО. Часто вирусы прописывают себя именно в эти строки для автозагрузки.</p>
+<p>На практике, очистка этих ключей от посторонних записей часто решает проблему «черного экрана» после ввода пароля, когда курсор мыши виден, но рабочий стол не появляется.</p>
+
+<h2 id="настройка-групповых-политик-для-оптимизации">Настройка групповых политик для оптимизации</h2>
+<p>В корпоративных средах или версиях <em>Windows Pro</em> и <em>Enterprise</em> управление поведением входа осуществляется через редактор локальных групповых политик. Это позволяет отключить лишние функции, которые могут тормозить процесс авторизации.</p>
+<p>Перейдите в раздел <code>Конфигурация компьютера → Административные шаблоны → Система → Вход в систему</code>. Здесь можно найти настройки, влияющие на ожидание сетей при загрузке и отображение статуса.</p>
+<p>Если у вас настроены сетевые диски или скрипты входа, система может долго висеть на экране приветствия, ожидая ответа от сетевого контроллера домена. Отключение ожидания сети при загрузке может ускорить этот процесс для локальных пользователей.</p>
+
+<table>
+<thead>
+<tr>
+<th>Политика</th>
+<th>Рекомендуемое значение</th>
+<th>Эффект</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ожидание сети при загрузке</td>
+<td>Отключено</td>
+<td>Ускорение входа для локальных профилей</td>
+</tr>
+<tr>
+<td>Отображение статуса</td>
+<td>Включено</td>
+<td>Понимание пользователем процесса загрузки</td>
+</tr>
+</tbody>
+</table>
+
+<p>Также стоит проверить политики, связанные с экраном блокировки. Отключение ненужных приложений на экране блокировки снижает нагрузку на процесс <strong>winlogon</strong> в момент перехода к рабочему столу.</p>
+<p>Допустим, вы используете биометрическую авторизацию. В таком случае в политиках безопасности следует убедиться, что соответствующие службы не конфликтуют со стандартным механизмом входа.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду gpupdate /force в командной строке для немедленного применения измененных политик без перезагрузки, хотя для некоторых настроек вход в систему все же потребуется.</p></aside>
+
+<h2 id="анализ-сторонних-модулей-и-автозагрузки">Анализ сторонних модулей и автозагрузки</h2>
+<p>Часто причиной нестабильности становятся сторонние программы, внедряющие свои DLL-библиотеки в процесс входа. Это могут быть антивирусы, инструменты мониторинга или утилиты для настройки интерфейса.</p>
+<p>Для выявления таких модулей удобно использовать утилиту <em>Autoruns</em> от Sysinternals. Она отображает все точки автозагрузки, включая те, что скрыты от стандартного диспетчера задач.</p>
+<p>Вкладка <code>Logon</code> в этой улите покажет все скрипты и программы, запускаемые при входе. Вкладка <code>Winlogon</code> отобразит именно те модули, которые загружаются вместе с процессом авторизации.</p>
+<ul>
+<li>Отфильтруйте список, скрыв записи Microsoft, чтобы видеть только стороннее ПО.</li>
+<li>Проверьте пути к файлам: отсутствие файла по указанному пути вызовет ошибку при старте.</li>
+<li>Обратите внимание на DLL с неизвестным издателем или странными именами.</li>
+</ul>
+<p>Если вы обнаружите подозрительную запись, связанную с <strong>winlogon</strong>, попробуйте временно отключить ее и перезагрузиться. Это поможет изолировать источник проблемы без удаления файла.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование сторонних оптимизаторов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Отключение ненужных служб</li><li>✅ Автоматическое исправление реестра</li><li>✅ Удобный интерфейс</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск удаления системных файлов</li><li>❌ Возможность нарушения работы легитимного ПО</li><li>❌ Не всегда точное определение угроз</li></ul></div>
+</div></div>
+
+<h2 id="действия-в-среде-восстановления-winre">Действия в среде восстановления (WinRE)</h2>
+<p>Если система не загружается вообще и вход невозможен, необходимо использовать среду восстановления Windows. Загрузитесь с установочного носителя или используйте раздел восстановления, доступный через меню Boot.</p>
+<p>Выберите пункт «Поиск и устранение неисправностей» → «Дополнительные параметры» → «Командная строка». В этом режиме вы получите доступ к файловой системе без запуска основного процесса <em>winlogon</em>.</p>
+<p>Здесь можно выполнить проверку диска на наличие логических ошибок, которые могли повредить системные файлы. Используйте команду <code>chkdsk C: /f /r</code> для поиска и исправления_bad секторов.</p>
+<p>Также в этом режиме доступен редактор реестра. Вы можете загрузить куст реестра поврежденной системы, чтобы исправить ключи, о которых шла речь во втором разделе инструкции.</p>
+<ol>
+<li>В командной строке введите <code>regedit</code>.</li>
+<li>Выделите <code>HKEY_LOCAL_MACHINE</code>.</li>
+<li>В меню выберите «Файл» → «Загрузить куст».</li>
+<li>Укажите путь к файлу <code>C:\Windows\System32\config\SOFTWARE</code> (или SYSTEM).</li>
+</ol>
+<p>После внесения исправлений обязательно выгрузите куст через меню «Файл» → «Выгрузить куст», иначе изменения не сохранятся. Это критически важный шаг для целостности данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При работе в среде восстановления буквы дисков могут отличаться от привычных. Системный диск может быть обозначен как D: или E:, проверьте содержимое папок перед выполнением команд.</p></aside>
+
+<h2 id="типичные-ошибки-при-оптимизации">Типичные ошибки при оптимизации</h2>
+<ol>
+<li><strong>Удаление процесса winlogon.exe</strong> — это системный процесс, его удаление или замена приведет к полной неработоспособности Windows, восстановить которую можно только переустановкой системы.</li>
+<li><strong>Игнорирование запятой в параметре Userinit</strong> — в реестре значение должно заканчиваться запятой, ее отсутствие может вызвать ошибку запуска оболочки или циклический вход.</li>
+<li><strong>Отключение всех служб входа</strong> — чрезмерная оптимизация и отключение служб, необходимых для проверки паролей или смарт-карт, заблокирует возможность авторизации даже легитимному пользователю.</li>
+<li><strong>Редактирование реестра без бэкапа</strong> — любая ошибка в синтаксисе ключей реестра в разделе Winlogon делает систему незагружаемой, требуя сложных процедур восстановления извне.</li>
+</ol>
+
+<h2 id="резюме">Резюме</h2>
+<p>Процесс <strong>winlogon</strong> является фундаментальным компонентом безопасности и стабильности операционной системы Windows. Его правильная работа обеспечивает не только вход пользователя, но и управление сеансами, блокировку экрана и обработку системных событий.</p>
+<p>Оптимизация качества работы этого механизма сводится к поддержанию целостности системных файлов, контролю за автозагрузкой сторонних модулей и грамотной настройке параметров реестра. Регулярная диагностика и отсутствие необоснованных вмешательств в стандартные настройки гарантируют быструю и безопасную загрузку.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Стабильность winlogon зависит от целостности системных файлов и отсутствия конфликтов в автозагрузке, а не от его принудительной перезагрузки или удаления.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-bez-pulta-pereklyuchat-kanaly-na-haier-s7.html" class="pb-related-card">
+                <span class="pb-related-title">Как переключать каналы на Haier S7 без пульта: все способы</span>
+                <span class="pb-related-desc">Полная инструкция по управлению ТВ Haier S7 без пульта. Настройка смартфона, USB-клавиатуры, кнопок </span>
+            </a><a href="/articles/k/ka/kak-na-televizore-ldzhi-50ur78-vklyuchit-russkij-yazyk-pokazat-poetapno.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить русский язык на LG 50UR78: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене языка интерфейса на телевизоре LG 50UR78. Решение проблем с локализац</span>
+            </a><a href="/articles/k/ka/kak-obnovit-prilozhenie-lm-deluxe-na-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить LM Deluxe на телевизоре: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по обновлению приложения LM Deluxe на Smart TV. Решение проблем с установкой, </span>
+            </a><a href="/articles/v/vl/vlc-dlya-samsung-smart-tv.html" class="pb-related-card">
+                <span class="pb-related-title">VLC для Samsung Smart TV: Установка и Настройка</span>
+                <span class="pb-related-desc">Полная инструкция по использованию VLC на Samsung Smart TV. Методы запуска, установка через DLNA, на</span>
+            </a><a href="/articles/k/ka/kak-na-televizore-hyunday-ustanovit-vink.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить Wink на телевизор Hyundai: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по установке приложения Wink на Smart TV Hyundai. Методы через APK, магазин при</span>
+            </a><a href="/articles/k/ka/kak-snyat-zadnyuyu-kryshku-na-televizore-ld-49lk6100pla.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять заднюю крышку LG 49LK6100PLA: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по разборке телевизора LG 49LK6100PLA. Снятие задней крышки, доступ к платам, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

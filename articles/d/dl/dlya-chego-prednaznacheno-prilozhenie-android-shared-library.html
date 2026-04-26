@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Android Shared Library: назначение и работа системной библиотеки — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический анализ Android Shared Library. Назначение, влияние на память, решение конфликтов версий и методы отладки системного процесса.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/dl/dlya-chego-prednaznacheno-prilozhenie-android-shared-library.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Android Shared Library: назначение и работа системной библиотеки">
+    <meta property="og:description" content="Подробный технический анализ Android Shared Library. Назначение, влияние на память, решение конфликтов версий и методы отладки системного процесса.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Android Shared Library: назначение и работа системной библиотеки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурное-назначение-системной-библиотеки">Архитектурное назначение системной библиотеки</a></li><li><a href="#взаимодействие-приложений-и-системных-сервисов">Взаимодействие приложений и системных сервисов</a></li><li><a href="#диагностика-и-мониторинг-потребления-ресурсов">Диагностика и мониторинг потребления ресурсов</a></li><li><a href="#методы-оптимизации-и-устранения-неисправностей">Методы оптимизации и устранения неисправностей</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/in/interaktivnoe-kino-s-russkoj-ozvuchkoj-na-android.html">Интерактивное кино с русской озвучкой на Андроид: гид</a></li><li><a href="/articles/k/ka/kak-udalit-prilozhenie-na-android-magnitole-kitajskoj.html">Удаление приложений на китайской Android магнитоле: полная инструкция</a></li><li><a href="/articles/z/za/zachem-nuzhen-forum-khonor-v-telefone.html">Зачем нужен форум Хонор в телефоне: функции и настройки</a></li><li><a href="/articles/m/ma/magnitola-android-postoyanno-perezagruzhaetsya.html">Магнитола Андроид перезагружается: диагностика и ремонт своими руками</a></li><li><a href="/articles/k/ka/kak-dobavit-gifku-v-prezentatsiyu-powerpoint-na-telefone.html">Как добавить GIF в PowerPoint на телефоне: пошаговая инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Назначение и функции системного процесса Android Shared Library</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурное-назначение-системной-библиотеки">Архитектурное назначение системной библиотеки</a></li><li><a href="#взаимодействие-приложений-и-системных-сервисов">Взаимодействие приложений и системных сервисов</a></li><li><a href="#диагностика-и-мониторинг-потребления-ресурсов">Диагностика и мониторинг потребления ресурсов</a></li><li><a href="#методы-оптимизации-и-устранения-неисправностей">Методы оптимизации и устранения неисправностей</a></li><li><a href="#типичные-ошибки-пользователей">Типичные ошибки пользователей</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь может столкнуться с ситуацией, когда в списке запущенных процессов или в меню управления приложениями неожиданно появляется запись «Android Shared Library» или «com.android.sharedlibrary», потребляющая значительный объем оперативной памяти.</p>
+<p>Возникает естественное беспокойство: является ли это системной ошибкой, вирусом или критическим сбоем, требующим немедленного вмешательства в работу операционной системы.</p>
+<p>На практике подобные процессы часто вызывают ложные у владельцев устройств, хотя в реальности они представляют собой стандартный механизм работы среды выполнения Android.</p>
+<p>Понимание архитектуры операционной системы позволяет правильно интерпретировать поведение данного компонента и избежать необоснованных действий по его удалению или модификации.</p>
+
+<h2 id="архитектурное-назначение-системной-библиотеки">Архитектурное назначение системной библиотеки</h2>
+
+<p>В основе операционной системы Android лежит принцип модульности, где общие функции вынесены в отдельные исполняемые файлы, доступные для использования сразу несколькими запущенными программами.</p>
+<p>Android Shared Library представляет собой набор динамически подключаемых библиотек (DLL в терминологии Windows, но в формате.so для Linux-ядра), которые содержат общий код для работы с графикой, мультимедиа, сетевыми протоколами и базовыми функциями интерфейса.</p>
+<p>Если у вас запущено несколько приложений, использующих камеру, они не будут загружать отдельные драйверы для каждого процесса, а обратятся к общей библиотеке, что существенно экономит ресурсы процессора.</p>
+<p>Основной задачей этого компонента является обеспечение единого стандарта доступа к аппаратным ресурсам устройства для всех установленных программ без необходимости дублирования кода.</p>
+
+<h3>Механизм разделения ресурсов памяти</h3>
+<p>Операционная система Android, базирующаяся на ядре Linux, использует механизм отображения памяти, позволяющий нескольким процессам читать один и тот же физический участок памяти.</p>
+<p>Когда приложение <em>Instagram</em> или <em>Telegram</em> требует доступа к библиотеке обработки изображений, система не копирует код в новую область RAM, а создает ссылку на уже загруженный в память блок Android Shared Library.</p>
+<p>Это означает, что даже если в диспетчере задач отображается высокая загрузка памяти данным процессом, физически она может быть распределена между десятками запущенных приложений, использующих общие функции.</p>
+<p>Такой подход критически важен для мобильных устройств с ограниченным объемом оперативной памяти, позволяя запускать больше фоновых задач одновременно.</p>
+
+<h3>Зависимость от версий Android Runtime (ART)</h3>
+<p>Начиная с версии Android 5.0 Lollipop, среда выполнения Dalvik была заменена на ART, что изменило способ компиляции и исполнения приложений.</p>
+<p>Библиотека <code>libandroid_runtime.so</code> и связанные с ней компоненты теперь теснее интегрированы с системными сервисами, обеспечивая более эффективное управление жизненным циклом приложений.</p>
+<p>На устройствах под управлением <em>Android 10</em> и новее наблюдается еще более глубокое внедрение библиотек в системные процессы, что делает их отключение невозможным без потери функциональности интерфейса.</p>
+<p>Каждое крупное обновление операционной системы вносит изменения в структуру этих библиотек, добавляя новые API для разработчиков и оптимизируя старые вызовы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с оболочками MIUI, OneUI или ColorOS системный процесс может называться иначе, например, «System Framework» или иметь префикс производителя, но выполнять те же функции.</p></aside>
+
+<h2 id="взаимодействие-приложений-и-системных-сервисов">Взаимодействие приложений и системных сервисов</h2>
+
+<p>Подавляющее большинство сторонних приложений не пишут свой код для работы с базовыми функциями телефона, а используют готовые вызовы системных библиотек.</p>
+<p>Когда пользователь открывает галерею, приложение обращается к медиа-библиотекам, которые, в свою очередь, активируют процесс Android Shared Library для декодирования изображения.</p>
+<p>Если у вас установлено множество приложений от одного разработчика или использующих одинаковые сторонние SDK (например, рекламные модули или карты), нагрузка на общую библиотеку возрастает пропорционально.</p>
+<p>Системные сервисы, такие как синхронизация аккаунтов Google, push-уведомления и геолокация, также постоянно обращаются к этим общим ресурсам в фоновом режиме.</p>
+
+<h3>Сценарии высокой нагрузки на процесс</h3>
+<p>Резкий скачок потребления ресурсов процессом Android Shared Library часто наблюдается при запуске тяжелых игр или приложений дополненной реальности.</p>
+<p>В этот момент происходит активная загрузка графических шейдеров и текстурных библиотек, которые временно остаются в памяти для ускорения работы.</p>
+<p>Допустим, вы одновременно обновляете приложения в Google Play, загружаете фото в облако и слушаете музыку через стриминговый сервис — все три операции задействуют разные части общей библиотеки.</p>
+<p>В таких сценариях система может приоритизировать выполнение задач, временно увеличивая объем выделенной памяти для обеспечения плавности интерфейса.</p>
+
+<h3>Конфликты версий и совместимость</h3>
+<p>Одной из технических проблем является ситуация, когда старое приложение требует версию библиотеки, отличную от той, что предоставляется современной операционной системой.</p>
+<p>Разработчики Android решают это через механизмы обратной совместимости, но иногда это приводит к увеличению размера процесса, так как в памяти могут находиться фрагменты кода для разных API.</p>
+<p>Приложения, не оптимизированные для последних версий Android, могут некорректно освобождать ресурсы, создавая иллюзию утечки памяти в системном процессе.</p>
+<p>Проверка обновлений всех установленных приложений в <code>Google Play → Управление приложениями и устройством</code> помогает минимизировать такие конфликты.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка использования памяти</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройки → О телефоне → Версия ПО</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Настройки → Память</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите процесс в списке активных</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сравните динамику изменения объема</span></div></div>
+
+<h2 id="диагностика-и-мониторинг-потребления-ресурсов">Диагностика и мониторинг потребления ресурсов</h2>
+
+<p>Для технического специалиста или продвинутого пользователя важно уметь различать нормальную работу библиотеки и аномальное поведение, указывающее на сбой.</p>
+<p>Стандартными средствами системы можно получить базовую информацию о том, сколько памяти занимает процесс и как долго он работает в активном состоянии.</p>
+<p>Если процесс Android Shared Library потребляет более 15-20% памяти в состоянии покоя устройства, стоит провести более глубокую диагностику.</p>
+<p>Важно отслеживать не только статический объем, но и динамику: если память постоянно растет и не освобождается после закрытия приложений, это признак проблемы.</p>
+
+<h3>Использование режима разработчика</h3>
+<p>Активация режима разработчика позволяет получить доступ к расширенным инструментам мониторинга, скрытым от обычного пользователя.</p>
+<p>Необходимо перейти в <code>Настройки → О телефоне</code> и семь раз нажать на номер сборки, после чего в меню появится раздел «Для разработчиков».</p>
+<p>В разделе «Память» или «Running Services» можно увидеть детализированный список процессов и объем занимаемой ими оперативной памяти в реальном времени.</p>
+<p>Здесь же доступна функция «Показать процессы в фоне», которая визуализирует, какие именно службы используют общие библиотеки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение настроек в разделе «Для разработчиков» может привести к нестабильной работе системы. Не отключайте фоновые процессы принудительно без понимания последствий.</p></aside>
+
+<h3>Анализ логов через ADB</h3>
+<p>Для глубокого анализа используется инструмент Android Debug Bridge (ADB), позволяющий подключиться к устройству с компьютера и получить доступ к системным логам.</p>
+<p>Команда <code>adb shell dumpsys meminfo</code> выводит подробный отчет о распределении памяти по всем процессам, включая системные библиотеки.</p>
+<p>В выводе можно найти строки, содержащие <code>com.android.sharedlibrary</code> или похожие названия, и проанализировать параметры Private Dirty и Shared Dirty.</p>
+<p>Эти данные позволяют понять, какая часть памяти является уникальной для процесса, а какая разделяется с другими приложениями.</p>
+
+<pre><code>adb shell dumpsys meminfo | grep -i shared</code></pre>
+
+<p>Выполнение данной команды в терминале покажет строки, где упоминаются общие библиотеки и объем занимаемой ими памяти.</p>
+<p>Анализ логов требует знаний в области системного администрирования Android, но дает наиболее точную картину происходящего.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Нормальное значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Total PSS</code></td>
+<td>Общий объем памяти процесса</td>
+<td>Зависит от нагрузки</td>
+</tr>
+<tr>
+<td><code>Private Dirty</code></td>
+<td>Уникальная память процесса</td>
+<td>Минимальное</td>
+</tr>
+<tr>
+<td><code>Shared Dirty</code></td>
+<td>Разделяемая память библиотек</td>
+<td>Высокое</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Нормальная работа Android Shared Library характеризуется стабильным потреблением памяти без постоянного роста после закрытия приложений.</p></aside>
+
+<h2 id="методы-оптимизации-и-устранения-неисправностей">Методы оптимизации и устранения неисправностей</h2>
+
+<p>В большинстве случаев вмешательство в работу системной библиотеки не требуется, так как Android автоматически управляет выделением ресурсов.</p>
+<p>Однако, если наблюдаются явные признаки нестабильности, такие как самопроизвольные перезагрузки или сильное нагревание корпуса, можно применить ряд методов оптимизации.</p>
+<p>Первым шагом всегда должна быть проверка наличия обновлений операционной системы, так как производители часто выпускают патчи, исправляющие утечки памяти.</p>
+<p>Перейдите в <code>Настройки → Система → Обновление системы</code> и убедитесь, что установлена последняя доступная версия прошивки.</p>
+
+<h3>Очистка кэша и сброс настроек</h3>
+<p>Накопление временных файлов может приводить к конфликтам при обращении приложений к общим библиотекам.</p>
+<p>Очистка кэша системы не удаляет личные данные, но освобождает место и может устранить ошибки в работе процессов.</p>
+<p>Для этого перейдите в <code>Настройки → Хранилище → Кэшированные данные</code> и подтвердите очистку.</p>
+<p>В более сложных случаях может потребоваться сброс настроек сети или даже полный сброс до заводских настроек, но это крайняя мера.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Очистка кэша системы</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройки → Хранилище</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите «Кэшированные данные»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подтвердите действие «ОК»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите устройство</span></div></div>
+
+<h3>Удаление конфликтующих приложений</h3>
+<p>Часто источником проблемы является конкретное приложение, которое некорректно работает с системными библиотеками.</p>
+<p>Если проблема появилась после установки новой программы, стоит попробовать удалить её и проверить поведение системы.</p>
+<p>Особое внимание следует уделить приложениям, требующим глубокой интеграции в систему, таким как лаунчеры, антивирусы или инструменты для очистки памяти.</p>
+<p>Безопасный режим позволяет запустить устройство только с системными приложениями, что помогает выявить виновника.</p>
+
+<ul>
+<li>Зажмите кнопку выключения на экране.</li>
+<li>Нажмите и удерживайте пункт «Выключить» на экране.</li>
+<li>Подтвердите переход в безопасный режим.</li>
+<li>Проверьте потребление памяти процессом Android Shared Library.</li>
+</ul>
+
+<p>Если в безопасном режиме проблема исчезла, значит, дело в одном из установленных пользователем приложений.</p>
+<p>Последовательное удаление недавно установленных программ поможет найти источник конфликта.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация системы</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Экономия заряда батареи</li><li>✅ Увеличение свободной памяти</li><li>✅ Стабильная работа интерфейса</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск удаления нужных данных</li><li>❌ Время на настройку заново</li><li>❌ Возможная потеря настроек приложений</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-пользователей">Типичные ошибки пользователей</h2>
+
+<p>Непонимание принципов работы операционной системы Android часто приводит пользователей к совершению ошибок, которые могут навредить устройству.</p>
+<p>Многие пытаются применить методы, эффективные для настольных компьютеров, что в мобильной среде может иметь негативные последствия.</p>
+<p>Ниже приведен список распространенных заблуждений и действий, которых следует избегать при работе с системными процессами.</p>
+
+<ol>
+<li><strong>Попытка удаления системного файла через Root-права</strong> — пользователи с правами суперпользователя иногда пытаются удалить файлы библиотеки, считая их мусором, что приводит к «кирпичеванию» устройства и невозможности загрузки.</li>
+<li><strong>Использование агрессивных «чистильщиков» памяти</strong> — приложения, которые постоянно forcibly закрывают процесс Android Shared Library, вызывают циклическую перезагрузку служб, что только увеличивает расход батареи и нагрев.</li>
+<li><strong>Игнорирование обновлений безопасности</strong> — отказ от установки патчей безопасности оставляет уязвимости в системных библиотеках открытыми, что может быть использовано вредоносным кодом.</li>
+<li><strong>Паника при высоком потреблении памяти</strong> — пользователи часто видят высокий процент использования RAM и начинают закрывать все процессы, не понимая, что свободная память в Android — это расточительная память, и система сама эффективно управляет ресурсами.</li>
+</ol>
+
+<p>Важно понимать, что Android спроектирован так, чтобы максимально заполнять доступную оперативную память для ускорения запуска приложений.</p>
+<p>Процесс Android Shared Library является критически важным компонентом, и любые манипуляции с ним должны быть обоснованы точной диагностикой.</p>
+<p>Современные версии операционной системы обладают развитыми механизмами самовосстановления и управления памятью.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для поддержания здоровья системы достаточно регулярно перезагружать устройство (раз в неделю) и держать свободными 10-15% внутреннего хранилища.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Android Shared Library — это фундаментальный компонент операционной системы, обеспечивающий эффективное разделение ресурсов и стабильную работу приложений.</p>
+<p>Его появление в списке процессов и потребление памяти является нормальным рабочим состоянием, а не признаком вируса или сбоя.</p>
+<p>Грамотное использование встроенных инструментов диагностики и своевременное обновление системы позволяют поддерживать устройство в оптимальном состоянии без необходимости глубокого вмешательства в системные файлы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/in/interaktivnoe-kino-s-russkoj-ozvuchkoj-na-android.html" class="pb-related-card">
+                <span class="pb-related-title">Интерактивное кино с русской озвучкой на Андроид: гид</span>
+                <span class="pb-related-desc">Полная инструкция по запуску интерактивного видео на Android. Настройка плееров, выбор кодеков, реше</span>
+            </a><a href="/articles/k/ka/kak-udalit-prilozhenie-na-android-magnitole-kitajskoj.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление приложений на китайской Android магнитоле: полная инструкция</span>
+                <span class="pb-related-desc">Как удалить лишние программы с китайской магнитолы на Android. Методы через настройки, ADB, File Man</span>
+            </a><a href="/articles/z/za/zachem-nuzhen-forum-khonor-v-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Зачем нужен форум Хонор в телефоне: функции и настройки</span>
+                <span class="pb-related-desc">Подробная инструкция по управлению сервисом Honor Forum. Узнайте, зачем он нужен, как отключить и чт</span>
+            </a><a href="/articles/m/ma/magnitola-android-postoyanno-perezagruzhaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Магнитола Андроид перезагружается: диагностика и ремонт своими руками</span>
+                <span class="pb-related-desc">Штатная магнитола на Андроид постоянно перезагружается? Подробный гид по устранению циклических пере</span>
+            </a><a href="/articles/k/ka/kak-dobavit-gifku-v-prezentatsiyu-powerpoint-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как добавить GIF в PowerPoint на телефоне: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по вставке анимированных изображений в презентацию PowerPoint на iOS и Android</span>
+            </a><a href="/articles/f/fm/fm-tyuner-dlya-magnitoly-android.html" class="pb-related-card">
+                <span class="pb-related-title">FM тюнер для магнитолы Андроид: выбор, настройка и устранение проблем</span>
+                <span class="pb-related-desc">Как настроить FM тюнер на магнитоле Андроид. Выбор модели, схемы подключения, частотные диапазоны и </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

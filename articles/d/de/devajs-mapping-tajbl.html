@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Device Mapping Table: настройка и отладка в Android — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию Device Mapping Table в Android. Настройка переопределения устройств, отладка через ADB и решение проблем совместимости.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/de/devajs-mapping-tajbl.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Device Mapping Table: настройка и отладка в Android">
+    <meta property="og:description" content="Техническое руководство по созданию Device Mapping Table в Android. Настройка переопределения устройств, отладка через ADB и решение проблем совместимости.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Device Mapping Table: настройка и отладка в Android</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-и-архитектура-маппинга-устройств">Принципы работы и архитектура маппинга устройств</a></li><li><a href="#настройка-окружения-через-adb-и-командную-строку">Настройка окружения через ADB и командную строку</a></li><li><a href="#маппинг-в-android-studio-и-эмуляторах">Маппинг в Android Studio и эмуляторах</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/d/dz/dzen-ne-zagruzhaetsya-video.html">Дзен не загружается видео: полное руководство по устранению ошибок</a></li><li><a href="/articles/b/by/byuti-filtry-dlya-video.html">Бьюти-фильтры для видео: настройка и применение</a></li><li><a href="/articles/g/gt/gta-4-vidit-tolko-512-mb-videopamyati-stim-versiya.html">GTA 4 видит 512 МБ видеопамяти в Steam: решение</a></li><li><a href="/articles/v/vi/video-zapisany-bez-zvuka-kak-vosstanovit.html">Видео без звука: как восстановить аудио на Android, iPhone и ПК</a></li><li><a href="/articles/v/vi/video-s-ajfona-tormozyat-na-kompyutere.html">Видео с iPhone тормозит на ПК: причины и решения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Device Mapping Table: настройка и отладка в Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-и-архитектура-маппинга-устройств">Принципы работы и архитектура маппинга устройств</a></li><li><a href="#настройка-окружения-через-adb-и-командную-строку">Настройка окружения через ADB и командную строку</a></li><li><a href="#маппинг-в-android-studio-и-эмуляторах">Маппинг в Android Studio и эмуляторах</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Работа с эмуляторами и физическими устройствами часто сталкивается с жесткими ограничениями, когда приложение отказывается запускаться из-за несовместимости модели или версии прошивки.</p>
+<p>Разработчики и QA-инженеры регулярно сталкиваются с ситуацией, когда необходимо протестировать функционал на конкретном устройстве, которого нет в наличии, или требуется скрыть реальные характеристики девайса для обхода блокировок со стороны сервера.</p>
+<p>Именно здесь на помощь приходит механизм маппинга устройств, позволяющий программно изменять отчетливые параметры гаджета, такие как модель, производитель или плотность экрана, без физического вмешательства в железо.</p>
+<p>Понимание принципов работы Device Mapping Table необходимо для эффективной отладки сложных сценариев использования и обеспечения кросс-платформенной стабильности программного обеспечения в условиях разнородного парка устройств.</p>
+
+<h2 id="принципы-работы-и-архитектура-маппинга-устройств">Принципы работы и архитектура маппинга устройств</h2>
+
+<p>В основе механизма лежит подмена системных свойств (System Properties), которые считываются приложениями при старте или в процессе работы для определения окружения.</p>
+<p>Android использует набор ключей, таких как <code>ro.product.model</code> и <code>ro.product.manufacturer</code>, для идентификации устройства, и изменение этих значений в таблице маппинга позволяет создать виртуальный профиль.</p>
+<p>Допустим, требуется запустить приложение, которое блокирует работу на root-устройствах или эмуляторах, тогда маппинг позволяет замаскировать среду исполнения под стандартный потребительский смартфон.</p>
+<p>На практике это реализуется через модификацию конфигурационных файлов или использование специализированных инструментов отладки, внедряемых в процесс запуска приложения.</p>
+
+<h3>Системные свойства и их приоритеты</h3>
+<p>Каждое свойство в Android имеет свой уровень приоритета, и значения, заданные через таблицу маппинга, часто перекрывают стандартные системные настройки.</p>
+<p>Важно понимать, что не все свойства можно изменить «на лету», некоторые требуют перезагрузки контекста или полного рестарта службы <code>zygote</code> для вступления в силу.</p>
+<p><strong>Критически важным</strong> является соблюдение синтаксиса при описании правил маппинга, так как одна ошибка может привести к циклической перезагрузке системы.</p>
+<p>Если у вас возникли сомнения в корректности значения, стоит свериться с официальной документацией AOSP или базами данных известных устройств.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Изменение системных свойств требует наличия прав суперпользователя (root) или доступа к отладочному интерфейсу через ADB с соответствующими разрешениями.</p></aside>
+
+<p>Механизм маппинга активно используется не только для тестирования, но и для локализации проблем, когда баг воспроизводится только наной модели смартфона.</p>
+<p>Создание точной копии окружения пользователя позволяет инженерам поддержки быстрее находить и устранять дефекты, связанные с конкретными драйверами или версиями ОС.</p>
+
+<h2 id="настройка-окружения-через-adb-и-командную-строку">Настройка окружения через ADB и командную строку</h2>
+
+<p>Наиболее распространенным способом управления параметрами устройства является использование Android Debug Bridge (ADB), который предоставляет прямой доступ к shell-интерфейсу.</p>
+<p>Для начала работы необходимо подключить устройство по USB или установить соединение по сети, убедившись, что отладка по USB активирована в меню разработчика.</p>
+<p>Команды вводятся последовательно, и каждая из них требует подтверждения успешного выполнения перед переходом к следующему шагу конфигурации.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка соединения ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство кабелем</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Включите отладку по USB в меню разработчика</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду adb devices в терминале</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте появление серийного номера устройства</span></div></div>
+
+<h3>Использование команд setprop и getprop</h3>
+<p>Базовая манипуляция свойствами осуществляется через утилиты <code>getprop</code> для чтения текущих значений и <code>setprop</code> для их изменения.</p>
+<p>Выполнение команды <code>setprop</code> изменяет значение в памяти процесса, но не всегда сохраняет его после перезагрузки, что удобно для временных тестов.</p>
+<p>Например, чтобы изменить отображаемую модель, используется команда, прописывающая новое строковое значение в соответствующий ключ реестра свойств.</p>
+<p>Стоит учитывать, что некоторые свойства помечены как read-only, и их изменение требует более глубокого вмешательства в систему или использования специальных модулей.</p>
+
+<pre><code>adb shell setprop ro.product.model"Pixel 6 Pro"
+<p>adb shell setprop ro.product.manufacturer"Google"</p>
+<p>adb shell getprop ro.product.model</code></pre></p>
+
+<p>После выполнения команд необходимо проверить, приняло ли приложение новые значения, иногда требуется принудительная остановка процесса.</p>
+<p>В таблице ниже приведены основные свойства, которые чаще всего подлежат изменению при тестировании совместимости.</p>
+
+<table>
+<thead>
+<tr>
+<th>Свойство</th>
+<th>Описание</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ro.product.model</td>
+<td>Модель устройства</td>
+<td>SM-G998B</td>
+</tr>
+<tr>
+<td>ro.build.version.release</td>
+<td>Версия Android</td>
+<td>12</td>
+</tr>
+<tr>
+<td>ro.product.manufacturer</td>
+<td>Производитель</td>
+<td>Samsung</td>
+</tr>
+<tr>
+<td>ro.build.fingerprint</td>
+<td>Уникальный отпечаток сборки</td>
+<td>google/sdk_gphone_x86...</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Некорректное изменение критических системных свойств, таких как ro.bootloader или ro.baseband, может привести к неработоспособности устройства (bootloop).</p></aside>
+
+<h3>Автоматизация через скрипты</h3>
+<p>Для ускорения процесса тестирования на множестве конфигураций целесообразно использовать bash-скрипты, которые автоматически применяют набор свойств.</p>
+<p>Скрипт может последовательно перебирать списки устройств, запуская автотесты и фиксируя результаты для каждого профиля.</p>
+<p>Это особенно актуально для CI/CD пайплайнов, где требуется гарантия покрытия широкого спектра устройств перед релизом.</p>
+
+<h2 id="маппинг-в-android-studio-и-эмуляторах">Маппинг в Android Studio и эмуляторах</h2>
+
+<p>Среда разработки Android Studio предоставляет встроенные инструменты для создания виртуальных устройств (AVD) с заранее заданными параметрами маппинга.</p>
+<p>При создании нового эмулятора можно выбрать готовый профиль устройства или создать кастомную конфигурацию, изменив разрешения экрана, плотность DPI и версию API.</p>
+<p>Гибкость настройки позволяет симулировать как флагманские смартфоны, так и бюджетные устройства с ограниченными ресурсами памяти.</p>
+
+<h3>Конфигурация hardware.ini и config.ini</h3>
+<p>Параметры эмулятора хранятся в файлах конфигурации, расположенных в директории пользователя, где можно вручную прописать необходимые свойства.</p>
+<p>Файл <code>config.ini</code> содержит настройки конкретного виртуального устройства, включая путь к образу системы и параметры аппаратного ускорения.</p>
+<p>Изменение параметра <code>hw.device.name</code> или <code>skin.name</code> позволяет изменить визуальное представление и отчетливые характеристики эмулятора.</p>
+<p>Для продвинутого маппинга можно использовать флаги запуска эмулятора, передавая аргументы напрямую через командную строку или схему запуска.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте функцию"Snapshot" в Android Studio для быстрого сохранения состояния эмулятора с примененными настройками маппинга, чтобы не настраивать его каждый заново.</p></aside>
+
+<p>При тестировании приложений с защитой от эмуляторов часто требуется дополнительная настройка через флаги запуска, скрывающая признаки виртуализации.</p>
+<p>Например, добавление параметра <code>-no-skin</code> или изменение значения <code>ro.kernel.qemu</code> может помочь в обходе простых проверок.</p>
+<p>Однако современные системы защиты анализируют множество косвенных признаков, поэтому простой смены модели может быть недостаточно.</p>
+
+<h3>Сравнение методов эмуляции</h3>
+<p>Выбор между стандартным эмулятором Android Studio и сторонними решениями зависит от целей тестирования и требуемой глубины маппинга.</p>
+<p>Стандартный эмулятор лучше интегрирован с IDE, но сторонние решения могут гибкие возможности по изменению идентификаторов.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Android Studio AVD</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полная интеграция с IDE</li><li>✅ Поддержка последних версий Android</li><li>✅ Стабильность работы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Genymotion/Другие:Высокая производительность</li><li>❌ Готовые шаблоны устройств</li><li>❌ Сложнее в настройке для глубокого маппинга</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки Device Mapping Table специалисты часто допускают ряд характерных ошибок, которые сводят на нет все усилия по тестированию.</p>
+<p>Одной из самых распространенных проблем является несоответствие формата значений, когда строковые literals передаются без кавычек или с лишними пробелами.</p>
+<p>Также часто игнорируется необходимость перезапуска целевого приложения, которое могло закэшировать старые значения системных свойств при первом запуске.</p>
+
+<ol>
+<li><strong>Игнорирование зависимостей свойств</strong> — изменение модели без обновления соответствующего fingerprint приводит к рассинхронизации и ошибкам верификации безопасности.</li>
+<li><strong>Некорректный синтаксис команд ADB</strong> — использование неправильных флагов или опечатки в имени свойства делают команду неэффективной, хотя терминал может не выдать ошибку.</li>
+<li><strong>Отсутствие прав доступа</strong> — попытка изменить read-only свойства без root-прав или соответствующей конфигурации adb вызывает тихий отказ в выполнении.</li>
+<li><strong>Неучтенный кэш приложения</strong> — приложение продолжает работать со старыми данными, если не очистить его кэш или данные перед повторным запуском после маппинга.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешный маппинг требует комплексного подхода: изменения свойств, очистки кэша и проверки зависимых параметров системы.</p></aside>
+
+<p>Для диагностики проблем рекомендуется использовать логирование через <code>logcat</code>, фильтруя сообщения по тегам, связанным с запуском приложения и проверкой окружения.</p>
+<p>Анализ логов позволяет увидеть, какие именно свойства считывает приложение и где происходит сбой валидации.</p>
+<p>Если приложение использует нативные библиотеки для проверки устройства, стандартные методы маппинга через <code>setprop</code> могут быть обойдены, требуя более сложных решений.</p>
+
+<h2 id="резюме-и-лучшие-практики">Резюме и лучшие практики</h2>
+
+<p>Device Mapping Table является мощным инструментом в арсенале разработчика и тестировщика, позволяющим гибко управлять окружением исполнения.</p>
+<p>Грамотное использование маппинга ускоряет поиск багов, связанных с конкретными устройствами, и помогает обеспечивать высокое качество продукта.</p>
+<p>Соблюдение осторожности при изменении системных свойств и регулярное резервное копирование данных минимизируют риски повреждения тестовых устройств.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/d/dz/dzen-ne-zagruzhaetsya-video.html" class="pb-related-card">
+                <span class="pb-related-title">Дзен не загружается видео: полное руководство по устранению ошибок</span>
+                <span class="pb-related-desc">Подробная инструкция: если Дзен не грузит видео. Решения для Android, iOS и ПК. Настройка сети, кэша</span>
+            </a><a href="/articles/b/by/byuti-filtry-dlya-video.html" class="pb-related-card">
+                <span class="pb-related-title">Бьюти-фильтры для видео: настройка и применение</span>
+                <span class="pb-related-desc">Техническое руководство по внедрению бьюти-фильтров в видеопоток. Анализ алгоритмов, настройка парам</span>
+            </a><a href="/articles/g/gt/gta-4-vidit-tolko-512-mb-videopamyati-stim-versiya.html" class="pb-related-card">
+                <span class="pb-related-title">GTA 4 видит 512 МБ видеопамяти в Steam: решение</span>
+                <span class="pb-related-desc">GTA 4 видит только 512 МБ видеопамяти? Полный гид по исправлению ошибки через config.xml, реестр и н</span>
+            </a><a href="/articles/v/vi/video-zapisany-bez-zvuka-kak-vosstanovit.html" class="pb-related-card">
+                <span class="pb-related-title">Видео без звука: как восстановить аудио на Android, iPhone и ПК</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению отсутствия звука в видеофайлах. Восстановление аудиодорожки, драй</span>
+            </a><a href="/articles/v/vi/video-s-ajfona-tormozyat-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Видео с iPhone тормозит на ПК: причины и решения</span>
+                <span class="pb-related-desc">Почему видео с Айфона лагает на компьютере? Полное руководство по настройке HEVC, H.264, кодеков и э</span>
+            </a><a href="/articles/o/ot/ottplayer-ne-otkryvaetsya-programma-peredach.html" class="pb-related-card">
+                <span class="pb-related-title">ОТТ-плеер не показывает программу передач: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок EPG в ОТТ-плеерах. Настройка XMLTV, проверка URL, исправле</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

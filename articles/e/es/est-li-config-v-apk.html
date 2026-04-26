@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Config в APK: Где искать и как извлечь файлы настроек — Мастер Фикс</title>
+    <meta name="description" content="Подробный технический разбор структуры Android-приложений. Поиск файлов конфигурации, XML и JSON внутри APK, методы распаковки и анализа.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/e/es/est-li-config-v-apk.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Config в APK: Где искать и как извлечь файлы настроек">
+    <meta property="og:description" content="Подробный технический разбор структуры Android-приложений. Поиск файлов конфигурации, XML и JSON внутри APK, методы распаковки и анализа.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Config в APK: Где искать и как извлечь файлы настроек</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#структура-apk-и-расположение-конфигурационных-файлов">Структура APK и расположение конфигурационных файлов</a></li><li><a href="#методы-извлечения-и-анализа-содержимого-apk">Методы извлечения и анализа содержимого APK</a></li><li><a href="#типы-конфигурационных-файлов-и-их-форматы">Типы конфигурационных файлов и их форматы</a></li><li><a href="#анализ-androidmanifest-и-метаданных">Анализ AndroidManifest и метаданных</a></li><li><a href="#типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/t/ts/ts7-magnitola-podklyuchenie-sim.html">TS7 магнитола: подключение SIM, настройка 4G и устранение ошибок</a></li><li><a href="/articles/k/ka/kak-postavit-drob-v-vorde.html">Как поставить дробь в Ворде: все способы (2026)</a></li><li><a href="/articles/z/za/zachem-nuzhen-znachok-moj-kompyuter-shtaty-s-tyumen.html">Значок Мой компьютер и регион США: зачем меняют иконку</a></li><li><a href="/articles/k/ka/kak-proverit-pojdet-li-vindovs-10-na-moj-pk.html">Проверка совместимости Windows 10 с ПК: требования и тесты</a></li><li><a href="/articles/p/po/podklyuchit-televizionnuyu-antennu-v-podezde-chitok.html">Как подключить антенну в подъезде: инструкция и схема</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Поиск и анализ файлов конфигурации внутри APK-файлов</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#структура-apk-и-расположение-конфигурационных-файлов">Структура APK и расположение конфигурационных файлов</a></li><li><a href="#методы-извлечения-и-анализа-содержимого-apk">Методы извлечения и анализа содержимого APK</a></li><li><a href="#типы-конфигурационных-файлов-и-их-форматы">Типы конфигурационных файлов и их форматы</a></li><li><a href="#анализ-androidmanifest-и-метаданных">Анализ AndroidManifest и метаданных</a></li><li><a href="#типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке изменить параметры работы приложения или провести глубокий анализ безопасности часто возникает необходимость доступа к внутренним файлам конфигурации. Пользователь сталкивается с ситуацией, когда стандартные настройки в интерфейсе ограничены, а требуемые опции скрыты разработчиком или вынесены в отдельные файлы. В этот момент встает вопрос о наличии и расположении файла config внутри APK-архива.</p>
+<p>APK-файл представляет собой сжатый архив, содержащий исполняемый код, ресурсы и метаданные. Структура этого архива строго регламентирована спецификацией Android, однако размещение конфигурационных данных может варьироваться в зависимости от версии операционной системы и методов сборки проекта. Понимание внутренней архитектуры необходимо для успешного извлечения или модификации нужных параметров.</p>
+<p>Допустим, требуется изменить адрес сервера для тестирования или убрать рекламный баннер, прописанный в статическом файле. В таких случаях поиск конкретного файла config становится первостепенной задачей. Процесс требует использования специализированного инструментария и четкого понимания, где именно могут скрываться текстовые данные настроек.</p>
+
+<h2 id="структура-apk-и-расположение-конфигурационных-файлов">Структура APK и расположение конфигурационных файлов</h2>
+<p>Внутренняя организация Android-пакета напоминает файловую систему с четким разделением на исполняемую часть и ресурсы. Файлы конфигурации редко лежат в корне архива с очевидным именем. Чаще всего они интегрированы в каталог ресурсов или бинарные файлы манифеста. Для поиска необходимо знать стандартные пути, по которым система и приложение обращаются к настройкам.</p>
+<p>Если у вас есть доступ к распакованному архиву, первым делом следует обратить внимание на директорию <code>res</code>. Именно здесь хранятся XML-файлы, которые часто используются для хранения статических конфигураций, таких как списки серверов, ключи API или флаги функциональности. Эти файлы могут быть скомпилированы в бинарный формат, что усложняет их чтение без декомпиляции.</p>
+<p>На практике значительная часть настроекована в файл <code>AndroidManifest.xml</code>. В отличие от десктопных программ, здесь метаданные содержат не только права доступа, но и начальные параметры активности. Внутри тега <code>application</code> или <code>activity</code> можно встретить метатеги <code>meta-data</code>, которые выступают в роли config-файлов для инициализации библиотек и SDK.</p>
+<p>Современные приложения часто используют формат JSON для гибкости настроек. Такие файлы могут находиться в папке <code>assets</code>. В отличие от ресурсов, ассеты не получают автоматических идентификаторов и доступны по именам путей, что делает их удобным местом для хранения больших конфигурационных массивов. Поиск файла с именем <code>config.json</code> или <code>settings.json</code> в этой директории — стандартная процедура анализа.</p>
+
+<h3>Различия между res, assets и raw</h3>
+<p>Каталог <code>res</code> подвергается компиляции ресурсами Android (aapt), превращая XML в бинарный формат, понятный системе, но неудобный для человека без декодера. Файлы здесь получают идентификаторы вида <code>R.xml.config</code>. Изменение таких файлов требует обратной компиляции всего проекта.</p>
+<p>Директория <code>assets</code> сохраняет файлы в исходном виде. Если разработчик поместил туда текстовый config, он останется читаемым сразу после распаковки APK любым архиватором. Это наиболее вероятное место для поиска пользовательских конфигураций, которые не требуют компиляции.</p>
+<p>Папка <code>res/raw</code> занимает промежуточное положение. Файлы здесь не компилируются в бинарный XML, но также получают числовые идентификаторы. Они часто используются для хранения локализаций, звуков или крупных текстовых файлов настроек, которые должны быть доступны как ресурсы, но не как код.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Файлы в папке assets не имеют генерируемых ID и доступны только по полному пути относительно корня assets.</p></aside>
+
+<h2 id="методы-извлечения-и-анализа-содержимого-apk">Методы извлечения и анализа содержимого APK</h2>
+<p>Для работы с содержимым APK-файла недостаточно стандартных средств операционной системы. Требуется применение инструментов, способных работать с форматом ZIP (так как APK — это ZIP-архив) и декодировать ресурсы Android. Выбор метода зависит от цели: нужно ли просто посмотреть текст или требуется внести изменения и собрать пакет обратно.</p>
+<p>Базовый метод предполагает переименование расширения файла с <code>.apk</code> на <code>.zip</code> и открытие любым архиватором. Этот способ позволяет быстроеть структуру папок <code>assets</code> и <code>res</code>. Однако он не дает возможности прочитать бинарные XML-файлы, которые составляют большую часть конфигурации системы и приложений.</p>
+<p>Для глубокого анализа используется инструмент <code>apktool</code>. Он позволяет декодировать ресурсы в читаемый XML и собрать проект обратно. Это стандарт индустрии для модификации APK. Процесс требует установки Java Runtime Environment и правильного настройки переменных окружения для работы из командной строки.</p>
+<p>Если цель заключается только в чтении, можно использовать декомпиляторы с графическим интерфейсом, такие как <em>JADX</em> или <em>APK Editor</em> на Android. Они автоматически преобразуют бинарные ресурсы в XML и позволяют искать строки по всему проекту, что значительно ускоряет поиск конкретного параметра config.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовое извлечение файлов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Переименуйте файл.apk в.zip</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Откройте архиватором и перейдите в папку assets</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите файл config.json или settings.xml</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Извлеките файл для просмотра содержимого</span></div></div>
+
+<h3>Использование Apktool для декодирования</h3>
+<p>Процесс декодирования начинается с команды распаковки. Инструмент создает директорию с именем проекта, куда помещает все ресурсы в декодированном виде. Это позволяет редактировать XML-файлы конфигурации в текстовом редакторе.</p>
+<pre><code>apktool d application_name.apk -o output_folder</code></pre>
+<p>После внесения изменений в файлы конфигурации, например, в <code>res/values/strings.xml</code> или <code>assets/config.json</code>, необходимо собрать проект обратно. Важно использовать тот же инструмент и версию фреймворка, чтобы избежать ошибок подписи и совместимости.</p>
+<pre><code>apktool b output_folder -o modified_app.apk</code></pre>
+<p>Собранный APK-файл не запустится на устройстве без цифровой подписи. Поэтому финальным этапом всегда является подписывание пакета ключом отладки или.production-ключом, если он доступен. Без этого шага система безопасности Android блокирует установку.</p>
+
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Тип работы</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Архиватор (ZIP)</td>
+<td>Только просмотр/извлечение</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Apktool</td>
+<td>Декомпиляция и сборка</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>JADX/GUI</td>
+<td>Анализ кода и ресурсов</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типы-конфигурационных-файлов-и-их-форматы">Типы конфигурационных файлов и их форматы</h2>
+<p>Внутри Android-приложений конфигурация может принимать различные формы. Понимание формата критически важно для правильного редактирования. Ошибка в синтаксисе может привести к крашу приложения при запуске (Force Close).</p>
+<p>XML (Extensible Markup Language) является нативным форматом для Android. Файлы <code>strings.xml</code>, <code>arrays.xml</code> и <code>bools.xml</code> часто содержат ключевые настройки интерфейса и логики. В современных версиях Android эти файлы могут быть бинаризированы, но после декодирования представляют собой стандартный XML.</p>
+<p>JSON (JavaScript Object Notation) набирает популярность благодаря своей легкости и читаемости. Файлы <code>config.json</code> часто используются для хранения динамических настроек, которые могут обновляться с сервера, но имеют локальный дефолт. Структура JSON строже, чем у XML, и требует внимательного обращения с запятыми и кавычками.</p>
+<p>Properties-файлы (<code>.properties</code>) также встречаются, особенно в старых проектах или в конфигурациях сторонних библиотек. Они представляют собой простой текст в формате <code>ключ=значение</code>. Несмотря на простоту, они часто содержат критические параметры подключения и флаги отладки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение бинарных ресурсов (Arsc) без правильной перекомпиляции приведет к неработоспособности приложения. Всегда делайте резервную копию оригинального APK.</p></aside>
+
+<h3>Бинарные и текстовые ресурсы</h3>
+<p>Основная масса ресурсов в каталоге <code>res</code> компилируется в файл <code>resources.arsc</code> и бинарные XML. Это делается для оптимизации скорости загрузки и уменьшения размера. Прямое редактирование таких файлов невозможно без специальных инструментов.</p>
+<p>Текстовые файлы в <code>assets</code> и <code>res/raw</code> остаются в исходном формате. Если config находится здесь, его можно править обычным блокнотом, соблюдая синтаксис JSON или XML. Это наиболее безопасный вариант для новичков.</p>
+<p>Проверка целостности конфигурации после редактирования обязательна. Даже лишняя запятая в JSON или незакрытый тег в XML сделают файл невалидным. Приложения обычно не имеют встроенной защиты от ошибок в config-файлах и просто перестают запускаться.</p>
+
+<ul>
+<li>XML: Строгая иерархическая структура, нативная поддержка Android.</li>
+<li>JSON: Легковесный, удобен для парсинга, популярен для сетевых конфигов.</li>
+<li>Properties: Простой формат ключ-значение, используется для флагов.</li>
+<li>Binary XML: Оптимизированный формат, требует декодирования.</li>
+</ul>
+
+<h2 id="анализ-androidmanifest-и-метаданных">Анализ AndroidManifest и метаданных</h2>
+<p>Файл <code>AndroidManifest.xml</code> — это паспорт приложения. Помимо declarations, он содержит секцию <code>meta-data</code>, которая часто игнорируется при поиске config-файлов, хотя содержит важнейшие настройки. Здесь прописываются API-ключи, настройки аналитики, параметры push-уведомлений и флаги конфигурации SDK.</p>
+<p>Поиск осуществляется по тегу <code>meta-data</code> внутри блока <code>application</code>. Атрибут <code>android:name</code> указывает на имя параметра, а <code>android:value</code> или <code>android:resource</code> содержат значение. Это статическая конфигурация, которая не меняется без переустановки приложения.</p>
+<p>На практике многие разработчики выносят сюда настройки для Firebase, Google Maps, AdMob и других сервисов. Изменение этих значений может перенаправить трафик приложения или отключить определенные модули. Доступ к манифесту возможен только после декодирования APK.</p>
+<p>Стоит учитывать, что некоторые значения в манифесте могут быть ссылками на ресурсы (например, <code>@string/api_key</code>). В таком случае реальное значение хранится в файлах ресурсов <code>res/values/strings.xml</code>. Необходимо отслеживать такие ссылки для полного понимания конфигурации.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Манифест содержит статические метаданные, критичные для работы сторонних SDK и базовой функциональности приложения.</p></aside>
+
+<h3>Работа с динамической конфигурацией</h3>
+<p>Современные приложения редко полагаются только на встроенные файлы. Часто используется механизм Remote Config, когда config загружается с сервера при старте. В этом случае локальный файл может содержать только адрес сервера или дефолтные значения.</p>
+<p>Для анализа такой ситуации нужно искать в config-файлах URL-адреса или доменные имена. Часто в <code>assets/config.json</code> прописан endpoint, по которому приложение запрашивает актуальные настройки. Модификация этого адреса позволяет перенаправить запросы на свой сервер.</p>
+<p>Если локального файла нет, параметры могут быть зашиты непосредственно в код (hardcoded). В этом случае поиск строковых констант в коде (файлы <code>classes.dex</code>, декодированные в <code>smali</code> или <code>java</code>) является единственным способом найти конфигурацию.</p>
+
+<table>
+<thead>
+<tr>
+<th>Расположение</th>
+<th>Тип данных</th>
+<th>Частота обновления</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AndroidManifest</td>
+<td>Метаданные, ключи</td>
+<td>Только при обновлении APK</td>
+</tr>
+<tr>
+<td>Assets / Res</td>
+<td>Статические настройки</td>
+<td>Только при обновлении APK</td>
+</tr>
+<tr>
+<td>Remote Server</td>
+<td>Динамические параметры</td>
+<td>При каждом запуске или по таймеру</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-проблемы-совместимости">Типичные ошибки и проблемы совместимости</h2>
+<p>Процесс работы с конфигурацией APK сопряжен с рядом технических сложностей. Ошибки на любом этапе могут привести к неработоспособности результата. Ниже приведены наиболее частые проблемы, с которыми сталкиваются при анализе и модификации.</p>
+
+<ol>
+<li><strong>Игнорирование версии SDK</strong> — попытки декодировать APK, собранный для новой версии Android, старым инструментарием приводят к ошибкам парсинга. <em>Решение:</em> Всегда обновляйте <code>apktool</code> и фреймворки до последних версий перед работой.</li>
+<li><strong>Нарушение целостности подписи</strong> — после любого изменения файла внутри APK цифровая подпись становится невалидной. <em>Решение:</em> Обязательно подписывайте модифицированный APK ключом (debug или release) перед установкой.</li>
+<li><strong>Ошибки синтаксиса JSON/XML</strong> — малейшая опечатка в конфигурационном файле вызывает краш приложения при старте. <em>Решение:</em> Используйте валидаторы JSON/XML и проверяйте файлы перед внедрением в архив.</li>
+<li><strong>Поиск не в том месте</strong> — ожидание найти текстовый файл config в корне, когда он скомпилирован в <code>resources.arsc</code>. <em>Решение:</em> Используйте декодеры для перевода бинарных ресурсов в читаемый вид.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Работа с APK-конфигами</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Возможность тонкой настройки</li><li>✅ Отключение рекламы</li><li>✅ Тестирование серверов</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск нарушения работы приложения</li><li>❌ Необходимость переподписи</li><li>❌ Сложность при обфускации</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</h2>
+<p>Поиск файла config в APK — это процесс, требующий понимания структуры Android-приложений и владения инструментами анализа. Конфигурация может находиться в различных местах: от текстовых файлов в папке <code>assets</code> до бинарных ресурсов и метаданных манифеста. Успех зависит от правильного выбора инструмента для декодирования и внимательности при редактировании.</p>
+<p>Для разработчиков важно осознавать, что любая информация, попавшая в клиентское приложение (APK), потенциально доступна для извлечения. Хранение секретных ключей или чувствительных настроек в открытом виде внутри APK является уязвимостью. Рекомендуется использовать серверную конфигурацию и обфускацию кода для защиты логики приложения.</p>
+<p>При проведении модификаций всегда сохраняйте оригинальные копии файлов. Использование эмуляторов для тестирования измененных APK позволяет избежать повреждения основного устройства. Грамотный подход к анализу структуры APK открывает широкие возможности для отладки, тестирования и кастомизации программного обеспечения.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/t/ts/ts7-magnitola-podklyuchenie-sim.html" class="pb-related-card">
+                <span class="pb-related-title">TS7 магнитола: подключение SIM, настройка 4G и устранение ошибок</span>
+                <span class="pb-related-desc">Полная инструкция по установке SIM-карты в магнитолу TS7. Настройка APN, выбор модема и решение проб</span>
+            </a><a href="/articles/k/ka/kak-postavit-drob-v-vorde.html" class="pb-related-card">
+                <span class="pb-related-title">Как поставить дробь в Ворде: все способы (2026)</span>
+                <span class="pb-related-desc">Полная инструкция: как вставить дробь в Word через код, меню или автозамену. Горизонтальные, косые и</span>
+            </a><a href="/articles/z/za/zachem-nuzhen-znachok-moj-kompyuter-shtaty-s-tyumen.html" class="pb-related-card">
+                <span class="pb-related-title">Значок Мой компьютер и регион США: зачем меняют иконку</span>
+                <span class="pb-related-desc">Зачем меняют иконку Мой компьютер на флаг США и Тюмень. Разбор системных ошибок, правки реестра и ви</span>
+            </a><a href="/articles/k/ka/kak-proverit-pojdet-li-vindovs-10-na-moj-pk.html" class="pb-related-card">
+                <span class="pb-related-title">Проверка совместимости Windows 10 с ПК: требования и тесты</span>
+                <span class="pb-related-desc">Подробная инструкция: как проверить, потянет ли компьютер Windows 10. Анализ процессора, ОЗУ, видеок</span>
+            </a><a href="/articles/p/po/podklyuchit-televizionnuyu-antennu-v-podezde-chitok.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить антенну в подъезде: инструкция и схема</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению ТВ-антенны в подъезде. Выбор кабеля, схемы разводки, монтаж усил</span>
+            </a><a href="/articles/k/ka/kak-sdelat-skrinshot-na-kompe.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать скриншот на компьютере: Полная инструкция для Windows и macOS</span>
+                <span class="pb-related-desc">Подробный технический гайд по созданию скриншотов на ПК. Горячие клавиши, встроенные утилиты, сторон</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

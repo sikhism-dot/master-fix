@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>LSI RAID 10: Настройка массива через BIOS и MegaRAID SAS — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по настройке RAID 10 на контроллерах LSI. Создание виртуального тома, выбор алгоритмов кэширования и оптимизация производительности.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/ls/lsi-raid-10-nastrojka.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="LSI RAID 10: Настройка массива через BIOS и MegaRAID SAS">
+    <meta property="og:description" content="Подробная инструкция по настройке RAID 10 на контроллерах LSI. Создание виртуального тома, выбор алгоритмов кэширования и оптимизация производительности.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">LSI RAID 10: Настройка массива через BIOS и MegaRAID SAS</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-оборудования-и-проверка-состояния-дисков">Подготовка оборудования и проверка состояния дисков</a></li><li><a href="#создание-виртуального-тома-raid-10-через-storcli">Создание виртуального тома RAID 10 через StorCLI</a></li><li><a href="#настройка-политик-кэширования-и-параметров-доступа">Настройка политик кэширования и параметров доступа</a></li><li><a href="#мониторинг-состояния-и-типичные-ошибки">Мониторинг состояния и типичные ошибки</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-kidat-khae-kak-pro-v-papg.html">Как кидать хай-хай в PUBG: Техническая инструкция</a></li><li><a href="/articles/k/ka/kak-ustanovit-drajvera-na-kompyuter-dlya-printera-workcentre-3215.html">Установка драйверов Xerox WorkCentre 3215: полная инструкция</a></li><li><a href="/articles/k/ka/kak-ubrat-obnovlenie-v-tt.html">Как отключить обновление TikTok: полное руководство</a></li><li><a href="/articles/k/ka/kak-udalit-ospanel.html">Как удалить Ospanel с Android: полная инструкция</a></li><li><a href="/articles/t/tc/tcl-me-rt41dt-s1-tupit.html">TCL RT41DT S1 тормозит: как ускорить Android TV</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка RAID 10 на контроллерах LSI: Полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-оборудования-и-проверка-состояния-дисков">Подготовка оборудования и проверка состояния дисков</a></li><li><a href="#создание-виртуального-тома-raid-10-через-storcli">Создание виртуального тома RAID 10 через StorCLI</a></li><li><a href="#настройка-политик-кэширования-и-параметров-доступа">Настройка политик кэширования и параметров доступа</a></li><li><a href="#мониторинг-состояния-и-типичные-ошибки">Мониторинг состояния и типичные ошибки</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда сервер или рабочая станция требует одновременного повышения скорости дисковой подсистемы и обеспечения отказоустойчивости, часто приводит администратора к необходимости развернуть массив RAID 10. Перед специалистом стоит задача объединить минимум четыре накопителя в единый логический том, чтобы в случае выхода из строя одного или даже двух дисков (при условии, что они не являются зеркальными парами) система продолжила работу без потери данных. Ошибка на этапе конфигурации контроллера хранения данных может привести к некорректной работе операционной системы или, что хуже, к потере критически важной информации при сбое оборудования.</p>
+
+<p>Контроллеры семейства <em>LSI MegaRAID</em>, включая популярные модели серий 92xx, 93xx и более новые 94xx, являются стандартом де-факто в корпоративном сегменте, предоставляя мощный инструментарий для управления дисковыми массивами. Процесс настройки может осуществляться через утилиты <em>LSI MegaRAID Storage Manager</em> (MSM) из-под операционной системы или, что более надежно на этапе первичного развертывания, через консольные утилиты <em>MegaCLI</em>, <em>StorCLI</em> или встроенный BIOS-конфигуратор <em>LSI Configuration Utility</em>. Важно понимать, что создание массива уровня 10 подразумевает компромисс: полезный объем хранилища составит лишь 50% от суммы емкостей всех установленных дисков, однако скорость записи и чтения вырастет практически вдвое по сравнению с одиночным накопителем.</p>
+
+<p>Прежде чем приступать к манипуляциям с конфигурацией, необходимо убедиться в физической исправности всех подключаемых HDD или SSD, а также в актуальности прошивки контроллера, так как устаревший <em>firmware</em> может содержать ошибки, влияющие на стабность работы RAID-массивов. В процессе настройки будут затронуты параметрыStrip Size, Read/Write Policy и Cache Settings, каждый из которых напрямую влияет на итоговую производительность дисковой подсистемы в конкретных сценариях нагрузки. Игнорирование особенностей кэширования при использовании массивов без батарейного модуля BBU может привести к потере данных при внезапном отключении электропитания.</p>
+
+<h2 id="подготовка-оборудования-и-проверка-состояния-дисков">Подготовка оборудования и проверка состояния дисков</h2>
+
+<p>Первым этапом работы является физическая установка накопителей и первичная диагностика их доступности для контроллера. Допустим, в серверный корпус установлены четыре новых диска одинакового объема, и теперь необходимо убедиться, что контроллер LSI видит их и они находятся в состоянии <em>Unconfigured Good</em>. Если диски ранее использовались в других массивах, они могут иметь статус <em>Foreign</em>, что потребует предварительной очистки конфигурации перед созданием нового массива. Проверка состояния выполняется через консольную утилиту, которая является основным инструментом администрирования в среде Linux или DOS.</p>
+
+<p>Для получения полной информации о подключенных устройствах и их текущем статусе используется команда вывода списка физических дисков. В старых версиях утилит применяется <em>MegaCLI</em>, в то время как современные системы требуют использования <em>StorCLI</em>, обладающего более понятным синтаксисом и расширенными возможностями мониторинга. Запуск команды позволяет увидеть не только модель и серийный номер диска, но и его состояние SMART, количество переназначенных секторов и текущий статус в логике контроллера.</p>
+
+<pre><code>storcli /c0 show all</code></pre>
+
+<p>Если в выводе команды некоторые диски помечены как <em>UGood</em> (Unconfigured Good), это означает, что они готовы к использованию. В случае наличия дисков со статусом <em>Foreign</em>, что часто бывает при замене вышедшего из строя элемента или переносе дисков из другого сервера, необходимо выполнить импорт или очистку чужой конфигурации. Очистка производится командой, которая принудительно удаляет метаданные RAID с физических носителей, делая их «чистыми» для новой разметки.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Все операции по очистке конфигурации (Clear Config) безвозвратно удаляют данные с дисков. Убедитесь, что на дисках нет важной информации, требующей сохранения.</p></aside>
+
+<p>Важно также проверить состояние модуля батарейного питания (BBU) или суперконденсатора (CacheVault), если он установлен в контроллере. Наличие исправной батареи позволяет использовать политики кэширования записи <em>WriteBack</em>, что значительно ускоряет работу системы. Если батарея отсутствует или неисправна, контроллер автоматически переключит политику на <em>WriteThrough</em>,вывая производительность ради безопасности данных, так как в случае сбоя питания данные в кэше будут утеряны.</p>
+
+<table>
+<thead>
+<tr>
+<th>Статус диска</th>
+<th>Описание состояния</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UGood</td>
+<td>Unconfigured Good — диск готов к работе</td>
+<td>Можно добавлять в массив</td>
+</tr>
+<tr>
+<td>Foreign</td>
+<td>На диске есть чужая конфигурация RAID</td>
+<td>Требуется Clear или Import</td>
+</tr>
+<tr>
+<td>Bad</td>
+<td>Диск неисправен или определен как сбойный</td>
+<td>Замена диска</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная подготовка дисков заключается в приведении их всех к статусу Unconfigured Good и проверке исправности модуля кэширования BBU.</p></aside>
+
+<h2 id="создание-виртуального-тома-raid-10-через-storcli">Создание виртуального тома RAID 10 через StorCLI</h2>
+
+<p>Процесс непосредственного создания массива RAID 10 требует точного указания параметров, таких как уровень RAID, список используемых дисков и размер блока (Strip Size). Уровень 10 (Stripe + Mirror) требует четного количества дисков, начиная с четырех, и обеспечивает высокую производительность за счет параллельной записи данных на несколько дисков с одновременным дублированием. Для создания массива используется команда создания виртуального диска (VD), где указываются физические диски (PD) через их идентификаторы или диапазоны.</p>
+
+<p>Ключевым параметром при создании является размер Stripe, который определяет объем данных, записываемых на один диск перед переходом к следующему в полосе. Для большинства сценариев использования, включая базы данных и файловые серверы, оптимальным значением считается 64 КБ или 128 КБ, однако для специфических нагрузок, таких как большие последовательные файлы мультимедиа, значение может быть увеличено до 256 КБ или 512 КБ. Неправильный выбор этого параметра может привести к снижению производительности при работе с мелкими файлами.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Создание RAID 10</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Проверка статусов дисков</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выбор размера Stripe (64K-256K)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Формирование команды создания VD</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Инициализация массива</span></div></div>
+
+<p>Команда создания массива в <em>StorCLI</em> выглядит компактно, но содержит все необходимые директивы. Ниже приведен пример создания RAID 10 из четырех дисков (с ID 0, 1, 2, 3) на контроллере 0 с именем <code>DataVol1</code>. Обратите внимание на указание типа RAID (<code>r10</code>) и перечисление дисков через запятую или тире для диапазонов.</p>
+
+<pre><code>storcli /c0 add vd r10 drives=0:0-3 name=DataVol1 strip=128k</code></pre>
+
+<p>После выполнения команды создания логического тома, массив переходит в состояние инициализации. Фоновая инициализация (Background Initialization) позволяет начать использование тома операционной системой немедленно, пока контроллер продолжает размечать структуры данных в фоновом режиме. Это стандартное поведение, однако для критически важных систем иногда предпочитают полную инициализацию, которая занимает больше времени, но гарантирует полную проверку поверхности дисков перед началом эксплуатации.</p>
+
+<p>Параметр <code>WB</code> (Write Back) или <code>WT</code> (Write Through) в команде создания определяет политику записи. Если в системе есть исправная батарея BBU, рекомендуется использовать <code>WB</code> для максимальной скорости. Если же батарея отсутствует, использование <code>WB</code> без принудительного флага может быть заблокировано контроллером, и он автоматически перейдет в режим <code>WT</code>, что существенно снизит скорость записи, но обезопасит данные.</p>
+
+<h2 id="настройка-политик-кэширования-и-параметров-доступа">Настройка политик кэширования и параметров доступа</h2>
+
+<p>После создания виртуального тома необходимо тонко настроить политики доступа и кэширования, чтобы адаптировать работу массива под конкретную нагрузку. По умолчанию контроллеры LSI используют балансированные настройки, но для достижения максимальной производительности в сценариях LSI RAID 10 часто требуется ручная корректировка. Основные параметры, подлежащие изменению, включают метод чтения (Direct или Cached), предварительное чтение (Read Ahead) и, конечно, метод записи.</p>
+
+<p>Политика чтения <em>Direct</em> означает, что данные передаются в оперативную память сервера минуя кэш контроллера, что эффективно для случайного чтения. Режим <em>Cached</em> предполагает буферизацию данных в кэше контроллера перед отправкой хосту, что может ускорить повторные запросы. Для большинства баз данных и файловых хранилищ оптимальным выбором является режим <em>Direct</em> в сочетании с включенным предвыборкой (Read Ahead), который позволяет контроллеру заранее считывать смежные блоки данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На контроллерах серии 93xx и новее настройки кэширования могут применяться автоматически в зависимости от типа подключенных SSD/HDD и профиля нагрузки, но ручная проверка желательна.</p></aside>
+
+<p>Для изменения параметров существующего виртуального диска используется команда модификации свойств VD. Например, для включения политики WriteBack и установки размера блока предвыборки можно выполнить следующую команду. </p>
+
+<pre><code>storcli /c0/v0 set wbcache ra direct</code></pre>
+
+<p>В таблице ниже приведено сравнение основных политик записи и их влияние на производительность и безопасность данных. Выбор правильной комбинации параметров позволяет выжать максимум из аппаратной конфигурации без риска потери целостности данных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение</th>
+<th>Влияние</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Write Policy</td>
+<td>WriteBack (WB)</td>
+<td>Высокая скорость, риск потери данных без BBU</td>
+</tr>
+<tr>
+<td>Write Policy</td>
+<td>WriteThrough (WT)</td>
+<td>Низкая скорость, высокая безопасность данных</td>
+</tr>
+<tr>
+<td>Read Policy</td>
+<td>Direct</td>
+<td>Оптимально для баз данных и случайного доступа</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация кэша</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость отклика</li><li>✅ Уменьшение задержек ввода-вывода</li><li>✅ Эффективная работа с БД</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск потери данных при сбое питания</li><li>❌ Сложность настройки для новичков</li><li>❌ Требует исправного BBU</li></ul></div>
+</div></div>
+
+<h2 id="мониторинг-состояния-и-типичные-ошибки">Мониторинг состояния и типичные ошибки</h2>
+
+<p>После завершения настройки и ввода массива в эксплуатацию критически важным становится постоянный мониторинг его состояния. Контроллеры LSI предоставляют обширные логи событий и статистику SMART, анализ которых позволяет предсказать выход диска из строя до наступления критической ситуации. Регулярная проверка статусов помогает избежать перехода массива в деградировавшее состояние (Degraded) или полной потери данных (Offline).</p>
+
+<p>Для получения сводной информации о здоровье всех компонентов контроллера используется команда общего статуса. Она показывает состояние виртуальных дисков, физических накопителей, модуля батареи и температуру системы. Наличие предупреждающих сообщений (Alerts) в этом отчете требует немедленного внимания администратора.</p>
+
+<pre><code>storcli /c0 show all | grep -i"status\|alert"</code></pre>
+
+<p>В процессе эксплуатации администраторы часто сталкиваются с рядом типичных проблем, решение которых требует понимания логики работы RAID-контроллера. Ниже перечислены наиболее распространенные ошибки и способы их устранения.</p>
+
+<ol>
+<li><strong>Массив в статусе Degraded</strong> — один из дисков вышел из строя или отключился; необходимо заменить диск и запустить процедуру Rebuild, убедившись, что новый диск исправен и имеет достаточный объем.</li>
+<li><strong>Невозможность включения WriteBack</strong> — чаще всего вызвано неисправностью или разрядом батареи BBU; требуется проверка модуля питания или замена, либо использование команды форсирования (не рекомендуется).</li>
+<li><strong>Диск в статусе Foreign</strong> — на диске осталась конфигурация от другого контроллера; необходимо выполнить очистку конфигурации (Clear Config) перед добавлением в новый массив.</li>
+<li><strong>Низкая производительность записи</strong> — часто обусловлена работой в режиме WriteThrough из-за отсутствия BBU или неправильным размером Stripe; следует проверить статус батареи и пересоздать массив с оптимальным Stripe Size.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Настройте отправку SNMP-трапов или используйте мониторинговые системы (Zabbix, Prometheus) для автоматического оповещения о изменении статуса RAID-массива.</p></aside>
+
+<p>Для глубокого анализа проблем можно воспользоваться утилитой логирования, которая выгрузит детальный отчет о всех событиях, произошедших с контроллером. Анализ логов позволяет выявить паттерны ошибок, например, периодические таймауты дисков, которые могут указывать на проблемы с кабелями SAS или блоком питания сервера, а не на неисправность самих дисков.</p>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+
+<p>Настройка RAID 10 на контроллерах LSI представляет собой хорошо отлаженный процесс, который при соблюдении последовательности действий гарантирует создание высокопроизводительного и отказоустойчивого хранилища. Ключевыми моментами успеха являются тщательная предварительная проверка дисков, правильный выбор размера блока (Strip Size) в зависимости от типа нагрузки и грамотная настройка политик кэширования с учетом состояния батарейного модуля. Использование современных утилит командной строки, таких как <em>StorCLI</em>, значительно упрощает управление и автоматизацию этих процессов.</p>
+
+<p>Внедрение массива уровня 10 обеспечивает оптимальный баланс между скоростью и надежностью, делая его предпочтительным выбором для виртуализации, баз данных и файловых серверов. Однако Регулярный мониторинг состояния массива и своевременная замена компонентов позволяют поддерживать инфраструктуру в состоянии полной готовности к любым нагрузкам.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-kidat-khae-kak-pro-v-papg.html" class="pb-related-card">
+                <span class="pb-related-title">Как кидать хай-хай в PUBG: Техническая инструкция</span>
+                <span class="pb-related-desc">Подробный разбор механики High Throw в PUBG Mobile. Настройки гироскопа, углы броска, тактика и пред</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-drajvera-na-kompyuter-dlya-printera-workcentre-3215.html" class="pb-related-card">
+                <span class="pb-related-title">Установка драйверов Xerox WorkCentre 3215: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке драйверов для МФУ Xerox WorkCentre 3215. Настройка печати и скани</span>
+            </a><a href="/articles/k/ka/kak-ubrat-obnovlenie-v-tt.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить обновление TikTok: полное руководство</span>
+                <span class="pb-related-desc">Инструкция по остановке автообновления ТикТок на Android и iOS. Методы отключения через Google Play,</span>
+            </a><a href="/articles/k/ka/kak-udalit-ospanel.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Ospanel с Android: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по удалению Ospanel. Способы деинсталляции системного приложения через ADB, пра</span>
+            </a><a href="/articles/t/tc/tcl-me-rt41dt-s1-tupit.html" class="pb-related-card">
+                <span class="pb-related-title">TCL RT41DT S1 тормозит: как ускорить Android TV</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению зависаний TCL RT41DT S1. Сброс кэша, обновление прошивки, оптимиз</span>
+            </a><a href="/articles/v/vi/vivo-x-note-nastroit-s-kitajskogo-na-russkij.html" class="pb-related-card">
+                <span class="pb-related-title">vivo X Note: перевод с китайского на русский язык, пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по смене языка на vivo X Note с китайского на русский. Методы настройки, устано</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

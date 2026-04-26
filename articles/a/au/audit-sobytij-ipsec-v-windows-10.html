@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Аудит событий IPSec в Windows 10: полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Детальное руководство по настройке аудита IPSec, анализу журналов событий и устранению ошибок подключения VPN в Windows 10.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/a/au/audit-sobytij-ipsec-v-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Аудит событий IPSec в Windows 10: полная инструкция">
+    <meta property="og:description" content="Детальное руководство по настройке аудита IPSec, анализу журналов событий и устранению ошибок подключения VPN в Windows 10.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Аудит событий IPSec в Windows 10: полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#активация-расширенного-аудита-политик-безопасности">Активация расширенного аудита политик безопасности</a></li><li><a href="#навигация-и-фильтрация-журналов-событий">Навигация и фильтрация журналов событий</a></li><li><a href="#использование-командной-строки-для-диагностики">Использование командной строки для диагностики</a></li><li><a href="#анализ-причин-сбоев-и-типичные-ошибки">Анализ причин сбоев и типичные ошибки</a></li><li><a href="#резюме-и-рекомендации-по-мониторингу">Резюме и рекомендации по мониторингу</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/zv/zvuk-tolko-v-levom-naushnike-windows-10.html">Звук только в левом наушнике Windows 10: полное руководство по устранению</a></li><li><a href="/articles/k/ka/kak-pomenyat-ikonku-fleshki-v-windows-10.html">Как поменять иконку флешки в Windows 10: инструкция</a></li><li><a href="/articles/d/di/diod-pch.html">Диод PCH: Проверка, характеристики и типичные неисправности</a></li><li><a href="/articles/d/di/diagonal-11-6-v-santimetrakh-noutbuk.html">Диагональ 11.6 дюймов в сантиметрах: точный размер экрана</a></li><li><a href="/articles/t/th/thunderbird-start-auto-with-windows-start-up.html">Автозагрузка Thunderbird с Windows: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Аудит событий IPSec в Windows 10: настройка и анализ</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#активация-расширенного-аудита-политик-безопасности">Активация расширенного аудита политик безопасности</a></li><li><a href="#навигация-и-фильтрация-журналов-событий">Навигация и фильтрация журналов событий</a></li><li><a href="#использование-командной-строки-для-диагностики">Использование командной строки для диагностики</a></li><li><a href="#анализ-причин-сбоев-и-типичные-ошибки">Анализ причин сбоев и типичные ошибки</a></li><li><a href="#резюме-и-рекомендации-по-мониторингу">Резюме и рекомендации по мониторингу</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда критически важное соединение с удаленным сервером внезапно обрывается без видимых причин, часто ставит системного администратора в тупик. Стандартные средства диагностики сети могут показывать стабильный физический линк и корректные IP-адреса, однако пакеты данных просто перестают проходить через границу безопасности. В таких случаях наиболее вероятным виновником становится протокол IPSec, который блокирует трафик из-за несоответствия политик безопасности или истекших ключей шифрования, не предоставляя при этом понятного интерфейса для конечного пользователя.</p>
+
+<p>Отсутствие детальной информации о причинах разрыва туннеля или отказа в доступе делает невозможным оперативное восстановление работоспособности сервисов. Логи по умолчанию в операционной системе <em>Windows 10</em> часто не содержат достаточного уровня детализации, регистрируя лишь факт ошибки без указания конкретного правила фильтрации или фазы negotiation, на которой произошел сбой. Без включения специализированных журналов аудита поиск корневой проблемы превращается в длительный процесс методом проб и ошибок, что недопустимо в условиях производственной необходимости.</p>
+
+<p>Для получения полной картины происходящего необходимо активировать расширенное логирование событий безопасности и проанализировать специфические идентификаторы событий, генерируемые подсистемой фильтрации Windows. Только глубокое понимание структуры журналов и умение правильно интерпретировать коды ошибок позволяет эффективно диагностировать конфликты политик, проблемы с сертификатами и ошибки конфигурации брандмауэра. Ниже представлен подробный алгоритм действий по включению, сбору и анализу данных о работе IPSec.</p>
+
+<h2 id="активация-расширенного-аудита-политик-безопасности">Активация расширенного аудита политик безопасности</h2>
+
+<p>Первоочередной задачей является настройка групповых политик для принудительного включения логирования событий аудита, так как стандартных настроек недостаточно для детального анализа. Необходимо открыть редактор локальной групповой политики, введя команду <code>gpedit.msc</code> в диалоговом окне «Выполнить», и перейти по пути <code>Конфигурация компьютера → Конфигурация Windows → Параметры безопасности → Локальные политики → Политика аудита</code>. В правой части окна потребуется найти параметр «Аудит событий входа в систему» и «Аудит управления доступом к объектам», установив для них значение «Успех и отказ». </p>
+
+<p>Более тонкая настройка производится через расширенные параметры аудита, доступные через командную строку с правами администратора. Использование утилиты <code>auditpol</code> позволяет гибко управлять уровнями логирования для конкретных подкатегорий, отвечающих за сетевую безопасность. Например, для включения детального отслеживания переговоров IPSec и создания туннелей выполняется команда, активирующая аудит для категории «IPsec» с уровнем «Success» и «Failure». Это гарантирует, что в журнал будут попадать записи как об успешных подключениях, так и о попытках, заблокированных политиками.</p>
+
+<p>Важно учитывать, что изменения в политиках аудита могут вступить в силу не мгновенно, а после обновления групповых политик или перезагрузки системы. Для принудительного применения настроек без перезагрузки используется команда <code>gpupdate /force</code> в терминале. После выполнения данной операции система начнет генерировать значительно больший объем записей в журнале безопасности, поэтому важно убедиться, что на диске имеется sufficient свободного пространства, а политики ротации логов настроены корректно, чтобы старые записи не перезаписывались слишком быстро.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Включение аудита IPSec</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте gpedit.msc и перейдите в Политику аудита</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите «Аудит событий входа» в режим «Успех и отказ»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запустите cmd от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выполните команду auditpol /set /subcategory:"IPsec" /success:enable /failure:enable</span></div></div>
+
+<p>Существует различие между базовым аудитом и аудитом расширенных возможностей безопасности, внедренным в более новые версии Windows. Если в организации используется централизованное управление через Active Directory, настройки могут переопределяться контроллером домена, и локальные изменения не будут применены. В таком случае необходимо проверять результирующую политику с помощью команды <code>gpresult /h report.html</code>, чтобы убедиться, что требуемые параметры аудита действительно активны на целевом компьютере.</p>
+
+<h2 id="навигация-и-фильтрация-журналов-событий">Навигация и фильтрация журналов событий</h2>
+
+<p>После активации необходимых параметров система начинает записывать события в специальный журнал, доступ к которому осуществляется через оснастку «Просмотр событий». Открывается она командой <code>eventvwr.msc</code>, после чего в дереве навигации следует развернуть узел <code>Журналы Windows → Безопасность</code>. Именно здесь аккумулируются все записи, связанные с проверкой подлинности и применением политик IPSec, однако общий объем лога может быть огромным, поэтому прямое чтение без фильтрации неэффективно.</p>
+
+<p>Для выделения только релевантных записей необходимо использовать встроенный фильтр по кодам событий. Ключевыми идентификаторами для диагностики IPSec являются события с ID 4648 (попытка входа с использованием явных учетных данных), 4650 (сеанс IPSec установлен), 4651 (сеанс IPSec установлен повторно) и 4653 (сеанс IPSec не установлен). Фильтрация по этим кодам позволяет мгновенно отсечь шум и сосредоточиться на моментах установления или разрыва защищенного соединения, что критически важно при анализе инцидентов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Код события (ID)</th>
+<th>Описание</th>
+<th>Значение для анализа</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4650</td>
+<td>Сеанс IPSec установлен</td>
+<td>Успешное создание туннеля, проверка параметров шифрования</td>
+</tr>
+<tr>
+<td>4653</td>
+<td>Сеанс IPSec не установлен</td>
+<td>Ошибка согласования параметров, проблема с сертификатами или ключами</td>
+</tr>
+<tr>
+<td>4648</td>
+<td>Попытка входа (Logon)</td>
+<td>Инициация процесса аутентификации для защищенного канала</td>
+</tr>
+</tbody>
+</table>
+
+<p>При анализе конкретного события, например 4653, особое внимание следует уделять полю «Код ошибки» и «Основная причина». Эти данные часто содержат hexadecimal-коды, которые указывают на точную причину отказа, будь то истечение срока действия сертификата, несоответствие хэш-сумм или блокировка правилами брандмауэра. события открывает детальное окно, где во вкладке «Подробности» можно найти XML-представление лога, содержащее полные пути к правилам фильтрации и имена профилей безопасности.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В Windows 10 версии 2004 и новее структура XML-логов может содержать дополнительные поля, такие как «AppContainer» или «PackageId», которые помогают идентифицировать приложение, инициировавшее соединение.</p></aside>
+
+<h2 id="использование-командной-строки-для-диагностики">Использование командной строки для диагностики</h2>
+
+<p>Графический интерфейс не всегда удобен для быстрого сбора статистики или выполнения скриптов мониторинга, поэтому знание командной строки является обязательным навыком. Утилита <code>netsh</code> предоставляет мощный инструментарий для управления и диагностики IPSec, позволяя выводить текущие активные ассоциации безопасности (SA) и правила фильтрации в текстовом виде. Команда <code>netsh ipsec static show all</code> выдает полную конфигурацию статических правил, что полезно для сверки с требуемым состоянием безопасности.</p>
+
+<p>Для динамического анализа в реальном времени применяется контекст <code>dyn</code> вместо <code>static</code>. Команда <code>netsh ipsec dynamic show all</code> отображает активные в данный момент соединения, negotiated параметры шифрования и счетчики пакетов. Если счетчики не растут при наличии сетевого трафика, это явный признак того, что пакеты отбрасываются на уровне драйвера или не соответствуют ни одному активному правилу фильтрации, даже если формально соединение считается установленным.</p>
+
+<pre><code>netsh ipsec dynamic show sa
+<p>netsh ipsec static show gpoassignedpolicy</p>
+<p>netsh interface ip show config</code></pre></p>
+
+<p>Еще одним мощным инструментом является PowerShell, который позволяет автоматизировать поиск событий и экспорт их в удобные форматы. С помощью модуля <em>Microsoft.Windows.Firewall</em> или стандартных cmdlet можно выгрузить последние 100 событий с кодом 4653 в CSV-файл для последующего анализа в Excel. Это особенно актуально при расследовании инцидентов, произошедших в прошлом, когда требуется сопоставить время сбоя с действиями пользователей или обновлением системы.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Выполнение команд сброса IPSec, таких как «netsh ipsec static delete all», приведет к полному удалению всех настроенных правил и разрыву активных VPN-соединений. Используйте с осторожностью только в тестовых средах.</p></aside>
+
+<p>При работе с командной строкой важно помнить о правах доступа: большинство диагностических команд требуют запуска консоли от имени администратора. Попытка выполнить запрос к динамическим данным без повышенных привилегий приведет к ошибке доступа, что может быть ложно интерпретировано как неисправность службы IPSec. Всегда проверяйте строку заголовка окна терминала на наличие слова «Администратор» перед вводом команд.</p>
+
+<h2 id="анализ-причин-сбоев-и-типичные-ошибки">Анализ причин сбоев и типичные ошибки</h2>
+
+<p>Наиболее частой причиной невозможности установить IPSec-соединение является рассинхронизация времени между клиентом и сервером. Протокол Kerberos и механизмы обмена ключами IKEv2 крайне чувствительны к временным меткам: если расхождение превышает 5 минут (стандартный порог), аутентификация будет отвергнута. В логах это отражается кодами ошибок, указывающими на «Invalid timestamp» или «Clock skew», и решается принудительной синхронизацией через протокол NTP.</p>
+
+<p>Второй распространенной проблемой является конфликт правил фильтрации, когда более приоритетное правило блокирует трафик, который должен обрабатываться IPSec. В Windows 10 правила обрабатываются в определенном порядке, и наличие запрещающего правила (Block) с высоким приоритетом может перекрывать разрешающее правило для VPN. Анализ порядка применения политик через <code>netsh</code> помогает выявить такие коллизии и перераспределить приоритеты.</p>
+
+<table>
+<thead>
+<tr>
+<th>Проблема</th>
+<th>Симптом в логе</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Несовпадение Pre-Shared Key</td>
+<td>Event ID 4653, код 0x536</td>
+<td>Проверить и синхронизировать ключи на обоих концах</td>
+</tr>
+<tr>
+<td>Истекший сертификат</td>
+<td>Event ID 4653, код 0x800b0109</td>
+<td>Обновить сертификат в хранилище «Личные»</td>
+</tr>
+<tr>
+<td>Блокировка портов UDP 500/4500</td>
+<td>Отсутствие событий negotiation</td>
+<td>Проверить правила брандмауэра и NAT</td>
+</tr>
+</tbody>
+</table>
+
+<p>Особое внимание следует уделить совместимости алгоритмов шифрования. Если одна сторона туннеля настроена на использование только AES-256, а другая поддерживает только AES-128, согласование параметров не пройдет. В современных условиях безопасности также часто отключаются устаревшие алгоритмы (например, 3DES или SHA1), что может привести к неработоспособности соединения со старым оборудованием, которое не поддерживает новые стандарты.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы диагностики IPSec</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая детализация данных</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует глубоких знаний кодов ошибок</li></ul></div>
+</div></div>
+
+<ol>
+<li><strong>Игнорирование времени жизни (Lifetime) SA</strong> — если время жизни ассоциации безопасности истекает, а renegotiation не происходит из-за блокировки портов, соединение рвется; необходимо проверять настройки таймеров на совместимость.</li>
+<li><strong>Некорректный порядок правил брандмауэра</strong> — правило, разрешающее IPSec, может стоять ниже правила, запрещающего весь входящий трафик, что делает его бесполезным; приоритеты должны быть пересмотрены.</li>
+<li><strong>Отсутствие доверия к корневым сертификатам</strong> — если сертификат сервера выдан ЦС, не входящим в хранилище доверенных корневых центров сертификации клиента, соединение будет отклонено; требуется импорт цепочки сертификатов.</li>
+<li><strong>Блокировка NAT-T (NAT Traversal)</strong> — если между узлами находится устройство NAT, а поддержка NAT-T отключена или блокируется, инкапсуляция ESP в UDP не сработает; нужно проверить порт 4500.</li>
+</ol>
+
+<h2 id="резюме-и-рекомендации-по-мониторингу">Резюме и рекомендации по мониторингу</h2>
+
+<p>Эффективный аудит событий IPSec в Windows 10 требует комплексного подхода, сочетающего правильную предварительную настройку групповых политик, регулярный мониторинг журналов безопасности и умение интерпретировать коды ошибок. Включение детального логирования является первым и необходимым шагом, без которого дальнейшая диагностика слепа. Систематический анализ событий с ID 4650 и 4653 позволяет выявлять проблемы на ранних стадиях, предотвращая длительные простои критически важных сетевых сервисов.</p>
+
+<p>Для поддержания стабильности работы защищенных каналов рекомендуется внедрить автоматизированные системы сбора логов (SIEM), которые будут агрегировать события с рабочих станций и серверов в едином центре. Это позволит отслеживать тенденции, выявлять аномалии в поведении сете трафика и оперативно реагировать на попытки несанкционированного доступа или конфигурационные дрейфы политик безопасности.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотная настройка аудита IPSec превращает скрытые процессы шифрования в прозрачный и контролируемый механизм, позволяя администратору точно знать статус каждого защищенного соединения.</p></aside>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для постоянного контроля создайте custom view в Event Viewer, сохранив фильтр по кодам IPSec, чтобы всегда иметь быстрый доступ к актуальной статистике подключений без ручной фильтрации.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/zv/zvuk-tolko-v-levom-naushnike-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Звук только в левом наушнике Windows 10: полное руководство по устранению</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если звук идет только в левом наушнике в Windows 10. Проверка бала</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-ikonku-fleshki-v-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как поменять иконку флешки в Windows 10: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по замене значка USB-накопителя в Windows 10. Создайте autorun.inf, настройте </span>
+            </a><a href="/articles/d/di/diod-pch.html" class="pb-related-card">
+                <span class="pb-related-title">Диод PCH: Проверка, характеристики и типичные неисправности</span>
+                <span class="pb-related-desc">Техническое руководство по диагностике диодов PCH на материнских платах. Методы прозвонки, таблица н</span>
+            </a><a href="/articles/d/di/diagonal-11-6-v-santimetrakh-noutbuk.html" class="pb-related-card">
+                <span class="pb-related-title">Диагональ 11.6 дюймов в сантиметрах: точный размер экрана</span>
+                <span class="pb-related-desc">Полный расчет диагонали 11.6 дюймов в сантиметры. Размеры ноутбуков, разрешение экрана, совместимост</span>
+            </a><a href="/articles/t/th/thunderbird-start-auto-with-windows-start-up.html" class="pb-related-card">
+                <span class="pb-related-title">Автозагрузка Thunderbird с Windows: полная инструкция</span>
+                <span class="pb-related-desc">Как настроить автоматический запуск Mozilla Thunderbird при старте Windows. Проверенные методы через</span>
+            </a><a href="/articles/w/wi/windows-11-ne-vidit-kompyutery-v-lokalnoj-seti.html" class="pb-related-card">
+                <span class="pb-related-title">Windows 11 не видит компьютеры в сети: полное руководство</span>
+                <span class="pb-related-desc">Решение проблемы: Windows 11 не отображает ПК в локальной сети. Настройка SMB, DNS, служб и политик </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

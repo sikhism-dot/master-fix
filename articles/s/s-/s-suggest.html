@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Команда suggest в Redis: полное руководство по автодополнению — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по работе команды suggest в Redis. Синтаксис, примеры использования, оптимизация индексов RediSearch и типичные ошибки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/s-/s-suggest.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Команда suggest в Redis: полное руководство по автодополнению">
+    <meta property="og:description" content="Техническое руководство по работе команды suggest в Redis. Синтаксис, примеры использования, оптимизация индексов RediSearch и типичные ошибки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Команда suggest в Redis: полное руководство по автодополнению</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-и-принципы-работы-механизма-подсказок">Архитектура и принципы работы механизма подсказок</a></li><li><a href="#настройка-индекса-и-добавление-данных">Настройка индекса и добавление данных</a></li><li><a href="#выполнение-поиска-и-параметры-команды-suggest">Выполнение поиска и параметры команды suggest</a></li><li><a href="#оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otkryt-fajl-dvr-na-kompyutere.html">Как открыть DVR файл: полные инструкции и программы</a></li><li><a href="/articles/e/ex/ex29398-b-instruktsiya.html">EX29398-B: Подробная инструкция по установке и настройке</a></li><li><a href="/articles/k/ka/kak-spryatat-krasivo-kabel-ot-kompyutera-na-stole.html">Как спрятать кабель от компьютера: полное руководство по организации</a></li><li><a href="/articles/k/ka/kak-smotret-hd-na-lmfdelux.html">Как смотреть HD на LMFDelux: настройка качества и кодеков</a></li><li><a href="/articles/d/dv/dvd-pleer-sam-vyklyuchaetsya.html">DVD плеер сам выключается: причины и ремонт</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Команда suggest в Redis: реализация умного поиска и автодополнения</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-и-принципы-работы-механизма-подсказок">Архитектура и принципы работы механизма подсказок</a></li><li><a href="#настройка-индекса-и-добавление-данных">Настройка индекса и добавление данных</a></li><li><a href="#выполнение-поиска-и-параметры-команды-suggest">Выполнение поиска и параметры команды suggest</a></li><li><a href="#оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Разработка высокопроизводительного интерфейса поиска часто сталкивается с проблемой задержек при вводе запроса пользователем. Когда клиентская часть отправляет запрос на каждый вводимый символ, бэкенд получает огромную нагрузку, а пользователь видит «мигание» интерфейса или лаги.</p>
+<p>Особенно остро это встает в проектах с огромными каталогами товаров, где стандартный SQL-запрос LIKE «%запрос%» становится неэффективным и блокирует базу данных. В таких случаях требуется механизм, который мгновенно предложит релевантные варианты, используя заранее подготовленные индексы.</p>
+<p>Решением становится использование специализированных модулей для Redis, таких как RediSearch, которые поддерживают функционал, аналогичный команде suggest. Это позволяет перенести логику подбора подсказок на сторону базы данных, обеспечивая отклик в миллисекунды даже при миллионах записей.</p>
+
+<h2 id="архитектура-и-принципы-работы-механизма-подсказок">Архитектура и принципы работы механизма подсказок</h2>
+<p>На практике реализация автодополнения базируется не на простом переборе строк, а на использовании префиксных деревьев или специализированных индексов. В экосистеме Redis за это отвечает модуль RediSearch, который расширяет функционал хранилища ключ-значение возможностями полнотекстового поиска.</p>
+<p>Основная идея заключается в том, что данные индексируются специальным образом, позволяя выполнять поиск по префиксу с учетом весовых коэффициентов и расстояния Левенштейна. Это отличает подход от простого хранения списков в структурах данных Redis, таких как списки или множества, которые не масштабируются эффективно.</p>
+<p>Если у вас установлена стандартная версия Redis без модулей, команда suggest работать не будет, так как она является частью расширенного синтаксиса FT.SUGGEST. Важно понимать разницу между базовым хранилищем и поисковым движком, встроенным в Redis.</p>
+<p>В основе алгоритма лежит структура данных Trie (префиксное дерево), оптимизированная для хранения строк и быстрого поиска по префиксу. Каждому элементу присваивается вес (score), который влияет на порядок выдачи результатов при сортировке.</p>
+<p><strong>Ключевым преимуществом</strong> является возможность обновлять веса динамически, что позволяет поднимать в топ популярности часто используемые запросы или акционные товары без перестройки всего индекса.</p>
+
+<h3>Отличие FT.SUGGEST от стандартных команд Redis</h3>
+<p>Стандартные команды Redis, такие как <code>KEYS</code> или <code>SCAN</code>, не предназначены для поиска по содержимому значений и работают медленно на больших объемах данных. Команда <code>FT.SUGGEST</code> обращается к специальному индексу подсказок, созданному отдельно от основных данных.</p>
+<p>В отличие от команд работы со строками, где поиск по подстроке требует полного сканирования, индекс подсказок хранит информацию в сжатом виде, занимая меньше памяти и обеспечивая константное время отклика для коротких префиксов.</p>
+<p>Для работы с этим функционалом необходимо использовать клиентские библиотеки, поддерживающие модуль RediSearch, или отправлять raw-команды напрямую через интерфейс CLI или терминал.</p>
+
+<ol>
+<li>Установите модуль RediSearch на сервер Redis.</li>
+<li>Создайте индекс подсказок с помощью команды FT.SUGGEST.ADD.</li>
+<li>Выполните поиск префикса через FT.SUGGEST.GET (синоним suggest).</li>
+<li>Анализируйте возвращаемый массив строк и их весов.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команда FT.SUGGEST.GET является алиасом для FT.SUGGEST и используется interchangeably в большинстве клиентов.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Тип данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>key</td>
+<td>Имя словаря подсказок</td>
+<td>String</td>
+</tr>
+<tr>
+<td>prefix</td>
+<td>Искомая подстрока</td>
+<td>String</td>
+</tr>
+<tr>
+<td>MAX</td>
+<td>Максимальное число результатов</td>
+<td>Integer</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="настройка-индекса-и-добавление-данных">Настройка индекса и добавление данных</h2>
+<p>Перед тем как выполнять поиск, необходимо Populate (заполнить) словарь подсказок. Это делается командой <code>FT.SUGGEST.ADD</code>, которая добавляет строку в указанный ключ-словарь. Если ключ не существует, он будет создан автоматически.</p>
+<p>При добавлении важно определить вес (score) элемента. По умолчанию вес равен 1.0, но для эффективной работы <strong>ранжирования результатов</strong> рекомендуется задавать веса на основе статистики использования или релевантности.</p>
+<p>Допустим, вы загружаете список городов. Города-миллионники должны иметь более высокий вес, чтобы появляться первыми при вводе неполного названия. Это улучшает пользовательский опыт (UX) и сокращает время поиска.</p>
+<p>Существует также опция INCR, которая позволяет увеличивать вес существующего элемента вместо его перезаписи. Это полезно для счетчиков популярности поисковых запросов в реальном времени.</p>
+<p>Если у вас возникнет необходимость удалить конкретную подсказку, используется команда <code>FT.SUGGEST.DEL</code>, которая принимает ключ и строку для удаления. Операция выполняется мгновенно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Добавление тестовых данных</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключитесь к Redis CLI</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните FT.SUGGEST ADD my_index"apple" 1.0</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Добавьте"application" с весом 5.0</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте наличие через GET</span></div></div>
+
+<h3>Синтаксис добавления и управление весами</h3>
+<p>Формат команды добавления выглядит следующим образом: <code>FT.SUGGEST.ADD key string score [INCR [PAYLOAD payload]]</code>. Параметр PAYLOAD позволяет_attachить к строке дополнительные данные, которые будут возвращены вместе с результатом поиска.</p>
+<p>На практике payload часто используют для хранения JSON-объектов с ID товара или ссылкой на изображение, чтобы избежать дополнительного запроса к базе данных (pattern Cache-Aside) при отображении результата.</p>
+
+
+<pre><code>FT.SUGGEST.ADD products"iphone 15 pro" 100 PAYLOAD"{\"id\": 123, \"url\": \"/p/123\"}"</code></pre>
+
+<p>Использование payload требует аккуратности: данные не индексируются для поиска, они лишь возвращаются клиенту. Для поиска по содержимому payload необходимо использовать полноценные текстовые индексы RediSearch, а не словарь подсказок.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Память Redis ограничена оперативной памятью сервера. Не загружайте в словарь suggest миллионы уникальных длинных строк без предварительного анализа объема.</p></aside>
+
+<h2 id="выполнение-поиска-и-параметры-команды-suggest">Выполнение поиска и параметры команды suggest</h2>
+<p>Основная операция, ради которой все настраивается, — это получение списка вариантов. Команда <code>FT.SUGGEST.GET</code> (или просто <code>FT.SUGGEST</code> в некоторых клиентах) принимает префикс и возвращает отсортированный список строк.</p>
+<p>По умолчанию поиск регистронезависимый и поддерживает Unicode, что критически важно для международных проектов. Однако, для корректной работы с языками, имеющими сложную морфологию, может потребоваться дополнительная настройка токенизатора.</p>
+<p>Если у вас есть конкретные требования к количеству результатов, используйте флаг <code>MAX</code>. Без него Redis вернет все совпадения, что может привести к передаче избыточного объема данных по сети и замедлению рендеринга на клиенте.</p>
+<p>Для реализации fuzzy-поиска (поиска с учетом опечаток) применяется флаг <code>FUZZY</code>. Он позволяет находить совпадения даже если пользователь допустил одну или две ошибки в начале слова, используя алгоритм расстояния Левенштейна.</p>
+<p><strong>Производительность поиска</strong> напрямую зависит от длины префикса: чем короче префикс, тем больше кандидатов должен проверить алгоритм, хотя в RediSearch это оптимизировано до суб-миллисекундных значений.</p>
+
+<h3>Сценарии использования флагов FUZZY и WITHSCORES</h3>
+<p>Флаг <code>WITHSCORES</code> возвращает не только строку, но и её числовой вес. Это необходимо клиентскому приложению для принятия решения о отображении или для внутренней логировки популярности запроса.</p>
+<p>При включении <code>FUZZY</code> важно понимать, что поиск становится чуть более ресурсоемким. Рекомендуется использовать его только если длина введенного пользователем префикса превышает 2-3 символа, иначе количество ложных срабатываний будет велико.</p>
+<p>В некоторых сценариях полезно комбинировать поиск с payload. Возвращая готовый JSON в payload, вы избавляете бэкенд от необходимости делать JOIN-операции или вторичные запросы к основному хранилищу данных.</p>
+
+<ul>
+<li>WITHSCORES — возвращает вес каждого найденного элемента.</li>
+<li>WITHPAYLOADS — возвращаетленные данные (payload).</li>
+<li>FUZZY — включает режим нечеткого поиска.</li>
+<li>MAX num — ограничивает количество возвращаемых результатов.</li>
+</ul>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для мобильных приложений всегда используйте ограничение MAX (например, 5 или 10), чтобы экономить трафик пользователя и ускорять отрисовку списка.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Флаг</th>
+<th>Влияние на результат</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MAX</td>
+<td>Обрезает список</td>
+<td>Всегда использовать в UI</td>
+</tr>
+<tr>
+<td>FUZZY</td>
+<td>Расширяет поиск</td>
+<td>Только для префиксов > 2 символов</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</h2>
+<p>Несмотря на высокую скорость Redis, неправильное использование команды suggest может привести к проблемам. Основная нагрузка ложится на память, так как каждый уникальный префикс и вариация хранятся в структуре Trie.</p>
+<p>Частой ошибкой является попытка загрузить в словарь suggest весь текст документов. Этот инструмент предназначен только для коротких ключевых фраз, названий и тегов, а не для полнотекстового поиска по содержимому статей.</p>
+<p>На практике наблюдается деградация производительности при добавлении миллионов записей без предварительной очистки дубликатов или нормализации данных. Регулярный мониторинг команды <code>MEMORY USAGE</code> обязателен.</p>
+<p>Также стоит учитывать сетевую задержку. Если приложение и Redis находятся в разных дата-центрах, даже быстрый запрос в 1 мс превратится в 50-100 мс из-за RTT. В таких случаях помогает локальное кэширование часто используемых подсказок.</p>
+
+<h3>Типичные ошибки</h3>
+<ol>
+<li><strong>Использование для полнотекстового поиска</strong> — попытка искать по предложениям приводит к раздуванию памяти; для текста используйте FT.SEARCH.</li>
+<li><strong>Отсутствие ограничения MAX</strong> — возврат тысяч вариантов при коротком префиксе «а» или «с» вызывает лаги интерфейса.</li>
+<li><strong>Игнорирование кодировки</strong> — проблемы с UTF-8 при загрузке данных могут привести к некорректному отображению кириллицы или эмодзи.</li>
+<li><strong>Хранение больших Payload</strong> — размещение мегабайтных JSON в поле payload замедляет чтение и занимает дорогую оперативную память.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Эффективность автодополнения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Мгновенный отклик (мс)</li><li>✅ Снижение нагрузки на БД</li><li>✅ Улучшение UX</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует модуля RediSearch</li><li>❌ Расходует оперативную память</li><li>❌ Нужна предварительная индексация</li></ul></div>
+</div></div>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Команда suggest в Redis — это мощный инструмент для создания быстрых поисковых подсказок, требующий правильной настройки весов и ограничения выдачи результатов.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Реализация умного поиска через команду suggest в Redis позволяет значительно улучшить взаимодействие пользователя с приложением, предоставляя мгновенные и релевантные варианты запросов. Правильная настройка весов и использование payload оптимизирует работу системы.</p>
+<p>Важно помнить о ресурсоемкости хранения префиксных деревьев и использовать этот механизм по назначению — для коротких ключевых фраз, а не для глубокого анализа текста. Соблюдение баланса между функциональностью и потреблением памяти гарантирует стабильность работы.</p>
+<p>Внедрение данной технологии требует установки модуля RediSearch, но результат в виде отзывчивого интерфейса и сниженной нагрузки на основную базу данных полностью оправдывает затраченные усилия на настройку инфраструктуры.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otkryt-fajl-dvr-na-kompyutere.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть DVR файл: полные инструкции и программы</span>
+                <span class="pb-related-desc">Подробная инструкция по открытию файлов DVR. Программы для воспроизведения, конвертеры, устранение о</span>
+            </a><a href="/articles/e/ex/ex29398-b-instruktsiya.html" class="pb-related-card">
+                <span class="pb-related-title">EX29398-B: Подробная инструкция по установке и настройке</span>
+                <span class="pb-related-desc">Полное руководство по коду ошибки EX29398-B. Методы диагностики, сброса и устранения неисправностей </span>
+            </a><a href="/articles/k/ka/kak-spryatat-krasivo-kabel-ot-kompyutera-na-stole.html" class="pb-related-card">
+                <span class="pb-related-title">Как спрятать кабель от компьютера: полное руководство по организации</span>
+                <span class="pb-related-desc">Подробная инструкция: как спрятать провода под столом, выбрать кабель-каналы и организовать простран</span>
+            </a><a href="/articles/k/ka/kak-smotret-hd-na-lmfdelux.html" class="pb-related-card">
+                <span class="pb-related-title">Как смотреть HD на LMFDelux: настройка качества и кодеков</span>
+                <span class="pb-related-desc">Полная инструкция по активации HD-качества на LMFDelux. Настройка кодеков, устранение буферизации и </span>
+            </a><a href="/articles/d/dv/dvd-pleer-sam-vyklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">DVD плеер сам выключается: причины и ремонт</span>
+                <span class="pb-related-desc">Почему DVD плеер выключается сам по себе? Полный гид по диагностике, замене лазера, проверке питания</span>
+            </a><a href="/articles/p/pr/proverte-nastrojki-seti-kod-oshibki-1.html" class="pb-related-card">
+                <span class="pb-related-title">Проверьте настройки сети код ошибки 1: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки проверки настроек сети код 1 на Android и iOS. Методы сбро</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

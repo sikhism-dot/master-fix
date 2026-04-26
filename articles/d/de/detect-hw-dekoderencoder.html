@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Проверка аппаратного декодера и кодировщика: Инструкция — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по выявлению аппаратного ускорения видео. Анализ H/W декодеров, диагностика драйверов и проверка поддержки кодеков.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/de/detect-hw-dekoderencoder.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Проверка аппаратного декодера и кодировщика: Инструкция">
+    <meta property="og:description" content="Техническое руководство по выявлению аппаратного ускорения видео. Анализ H/W декодеров, диагностика драйверов и проверка поддержки кодеков.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/bezopasnost-dostup/">Безопасность и Доступ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Проверка аппаратного декодера и кодировщика: Инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-на-платформе-windows">Диагностика на платформе Windows</a></li><li><a href="#проверка-аппаратного-ускорения-в-linux">Проверка аппаратного ускорения в Linux</a></li><li><a href="#детекция-на-мобильных-платформах-android">Детекция на мобильных платформах Android</a></li><li><a href="#сравнительный-анализ-и-типичные-проблемы">Сравнительный анализ и типичные проблемы</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/v/ve/vendorco-productcode-200-chto.html">Vendorco ProductCode 2.00: Расшифровка, ошибки и решение</a></li><li><a href="/articles/c/cl/cl-plus-key-fail-kak-ubrat-filips.html">Cl Plus Key Fail Philips: как убрать ошибку и сбросить ключ</a></li><li><a href="/articles/t/tc/tcl-55c645-knopka-reset.html">Сброс TCL 55C645: кнопка Reset и заводские настройки</a></li><li><a href="/articles/e/es/es-8316-audcodek-kak-ustanovit.html">ES8316 Audio Codec: установка драйверов и настройка звука</a></li><li><a href="/articles/z/za/zapusk-mk32p5-multi-block-le32a552p3r-bez-materinki.html">Запуск T-CON LE32A552P3R без материнской платы: Инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Детекция аппаратных декодеров и кодировщиков</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-на-платформе-windows">Диагностика на платформе Windows</a></li><li><a href="#проверка-аппаратного-ускорения-в-linux">Проверка аппаратного ускорения в Linux</a></li><li><a href="#детекция-на-мобильных-платформах-android">Детекция на мобильных платформах Android</a></li><li><a href="#сравнительный-анализ-и-типичные-проблемы">Сравнительный анализ и типичные проблемы</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Пользователь часто сталкивается с ситуацией, когда видеопоток в высоком разрешении воспроизводится с задержками, рывками или полным отсутствием изображения, несмотря на наличие мощного центрального процессора. В таких случаях система пытается обработать видеоданные программными средствами, нагружая CPU до 100%, что приводит к перегреву и нестабильной работе всего устройства.</p>
+<p>Если у вас возникла необходимость разобраться в причинах низкой производительности мультимедиа, первым шагом становится проверка наличия и активности аппаратных модулей обработки видео. Именно эти компоненты, встроенные в чипсет, берут на себя по декодированию и кодированию потоков, разгружая основные вычислительные ядра.</p>
+<p>На практике отсутствие корректной детекции H/W декодера может быть вызвано как физическим отсутствием поддержки конкретного кодека в железе, так и программными ошибками в драйверах или настройках операционной системы. Далее будет рассмотрен подробный алгоритм действий для диагностики и выявления возможностей аппаратного ускорения на различных платформах.</p>
+
+<h2 id="диагностика-на-платформе-windows">Диагностика на платформе Windows</h2>
+<p>Определение возможностей аппаратного ускорения в среде Windows начинается с анализа установленных драйверов графического адаптера, так как именно в них содержатся библиотеки для работы с видео. Без корректно установленного ПО от производителя (NVIDIA, AMD или Intel) система будет использовать базовый драйвер Microsoft, который не поддерживает аппаратное декодирование современных форматов.</p>
+<p>Для первичной проверки можно воспользоваться встроенными средствами операционной системы, которые предоставляют базовую информацию о состоянии драйверов. Перейдите в меню <code>Пуск → Настройки → Система → О системе</code> и выберите пункт <code>Диспетчер устройств</code> для просмотра списка оборудования.</p>
+<p>В открывшемся окне необходимо раскрыть ветку <code>Видеоадаптеры</code> и убедиться, что отображается полное название вашей видеокарты, а не «Базовый видеоадаптер Microsoft». Двойной клик по устройству откроет окно свойств, где во вкладке <code>Драйвер</code> можно увидеть версию и дату установки программного обеспечения.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Если в диспетчере устройств рядом с видеокартой стоит желтый восклицательный знак, это указывает на критическую ошибку драйвера, блокирующую работу аппаратных ускорителей.</p></aside>
+<p>Более детальную информацию о поддерживаемых форматах и текущей нагрузке на GPU можно получить через утилиту DirectX. Нажмите комбинацию клавиш <code>Win + R</code>, введите команду <code>dxdiag</code> и дождитесь сбора сведений о системе.</p>
+<p>После запуска инструмента перейдите на вкладку <code>Экран</code>, где в нижней части окна расположен блок <code>Функции DirectDraw</code>, <code>Direct3D</code> и <code>AGP Texture</code>. Если везде стоит статус «Вкл», значит, базовое аппаратное ускорение активно, однако это не гарантирует поддержку конкретных видеокодеков.</p>
+
+<h3>Использование утилиты GPU-Z для детального анализа</h3>
+<p>Для глубокой проверки технических характеристик видеокарты и подтверждения поддержки аппаратных кодеков лучше всего использовать специализированную утилиту <em>TechPowerUp GPU-Z</em>. Эта программа считывает данные непосредственно из BIOS видеокарты и предоставляет исчерпывающую информацию о возможностях чипа.</p>
+<p>После запуска утилиты обратите внимание на вкладку <code>Advanced</code>, где в выпадающем списке необходимо выбрать пункт <code>NVIDIA Codec</code> или <code>Intel Codec</code> в зависимости от производителя оборудования. В появившейся таблице будет отображен список всех поддерживаемых кодеков (H.264, HEVC, VP9, AV1) с указанием статусов Encode (кодирование) и Decode (декодирование).</p>
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка поддержки AV1</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите GPU-Z</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите во вкладку Advanced</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите ваш кодек из списка</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте столбец Decode на наличие значения Yes</span></div></div>
+<p>Важно понимать, что даже если в таблице стоит отметка о поддержке, реальная работа зависит от версии драйвера и приложения-плеера. Например, старые драйверы могут не содержать реализации для новых стандартов сжатия, таких как AV1, даже если физически чип способен их обрабатывать.</p>
+
+<h2 id="проверка-аппаратного-ускорения-в-linux">Проверка аппаратного ускорения в Linux</h2>
+<p>В операционных системах семейства Linux ситуация с драйверами часто требует ручной настройки, так как открытые драйверы <em>mesa</em> могут не включать проприетарные блоки кодирования по умолчанию. Первым шагом всегда является проверка kernel-модулей и загруженных библиотек VA-API или VAAPI.</p>
+<p>Для начала стоит убедиться, в режиме ли работы находится видеодрайвер. Использование командной строки позволяет быстро получить статус активации 3D-ускорения и OpenGL. В терминале выполняется команда <code>glxinfo | grep"OpenGL renderer"</code>, которая должна вывести название вашей видеокарты, а не программный эмулятор.</p>
+<p>Основным инструментом для проверки именно видео-кодеков в Linux является пакет <em>libva-utils</em>. Если он еще не установлен, его необходимо добавить через менеджер пакетов вашего дистрибутива, так как стандартный набор утилит часто не содержит средств диагностики видео.</p>
+<pre><code>sudo apt install libva-utils
+<p>vainfo</code></pre></p>
+<p>Запуск утилиты <code>vainfo</code> выведет список всех профилей и уровней кодирования, которые доступны через интерфейс VA-API. В output-е будут перечислены строки вида <code>VAProfileH264Main: VAEntrypointVLD</code>, где VLD означает Video Level Decode, то есть аппаратное декодирование.</p>
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отсутствие записей о H.264 или HEVC в выводе vainfo означает, что аппаратное уacceleration не работает, и видеопоток будет обрабатываться процессором, что может привести к пропуску кадров в 4K.</p></aside>
+<p>Стоит отметить, что для разных производителей видеокарт в Linux используются разные бэкенды: для Intel это i965 или iHD, для AMD — radeonsi или amdvlk, для NVIDIA — nvidia-driver с поддержкой NVDEC. Убедитесь, что установленные пакеты соответствуют вашему оборудованию.</p>
+
+<h3>Анализ логов ядра и использование ffmpeg</h3>
+<p>Если утилиты не показывают ожидаемого результата, стоит обратиться к логам ядра, где драйверы часто сообщают об инициализации видео-движков. Команда <code>dmesg | grep -i drm</code> или <code>dmesg | grep -i firmware</code> может выявить ошибки загрузки микрокода, необходимого для работы аппаратных блоков.</p>
+<p>Допустим, драйвер загружен корректно, но приложения не видят ускорения. В этом случае помогает прямой тест через утилиту <em>ffmpeg</em>, которая умеет работать с аппаратными интерфейсами. Запуск команды с флагом <code>-hwaccels</code> покажет список доступных методов ускорения.</p>
+<pre><code>ffmpeg -hwaccels</code></pre>
+<p>В списке должны присутствовать <code>vaapi</code>, <code>vdpau</code> или <code>cuda</code> в зависимости от вашей системы. Если список пуст или содержит только программные методы, значит, связь между ffmpeg и драйвером видеокарты нарушена.</p>
+<table>
+<thead>
+<tr>
+<th>Интерфейс</th>
+<th>Производитель</th>
+<th>Статус в Linux</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VA-API</td>
+<td>Intel, AMD, NVIDIA</td>
+<td>Основной стандарт</td>
+</tr>
+<tr>
+<td>VDPAU</td>
+<td>NVIDIA, AMD</td>
+<td>Устаревает, но работает</td>
+</tr>
+<tr>
+<td>NVDEC</td>
+<td>NVIDIA</td>
+<td>Через GStreamer/FFmpeg</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="детекция-на-мобильных-платформах-android">Детекция на мобильных платформах Android</h2>
+<p>В мире мобильных устройств Android проверка аппаратных возможностей осложняется фрагментацией железа и отсутствием единого стандартизированного интерфейса для пользователя. Однако, зная модель процессора (SoC), можно заранее предположить наличие поддержки определенных кодеков.</p>
+<p>Для получения точной информации об аппаратных возможностях декодера и энкодера на Android лучше всего использовать специализированные приложения-диагносты, такие как <em>AIDA64</em> или <em>Device Info HW</em>. Эти утилиты имеют доступ к системным API, описывающим медиа-профили.</p>
+<p>После установки <em>AIDA64</em> необходимо перейти в раздел <code>Codecs</code> или <code>Media</code>. Там будет представлен полный список кодеков, отсортированный по типам (video decoder, video encoder). Для каждого кодека указывается максимальное разрешение и частота кадров, которые способен обработать чип.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Обращайте внимание на префикс OMX., который указывает на использование фреймворка OpenMAX IL. Наличие префикса c2. (Codec2) говорит о более современной реализации в Android 10 и новее.</p></aside>
+<p>Если приложение показывает, что кодек доступен, но в реальном плеере (например, VLC или MX Player) видео тормозит, стоит проверить настройки самого плеера. В параметрах воспроизведения часто есть опция «Аппаратное ускорение» или «HW Decoder», которую нужно активировать вручную.</p>
+<p>На практике встречаются ситуации, когда дешевые китайские планшеты заявляют поддержку 4K в спецификациях, но физически имеют декодер, ограниченный 1080p. Проверка через <em>Device Info HW</em> в разделе <code>Video Codecs</code> позволяет увидеть реальное максимальное разрешение (Max Width/Height), поддерживаемое железом.</p>
+
+<h3>Использование ADB для удаленной диагностики</h3>
+<p>Для продвинутых пользователей, имеющих доступ к отладке по USB, доступен метод проверки через <em>Android Debug Bridge (ADB)</em>. Этот способ позволяет получить сырые данные о медиа-профилях без установки лишних приложений на устройство.</p>
+<p>Подключив устройство к компьютеру и включив отладку по USB, выполните команду для вывода списка кодеков. Система вернет огромный список строк, описывающих каждый доступный модуль кодирования и декодирования.</p>
+<pre><code>adb shell dumpsys media.codec_list</code></pre>
+<p>В выводе команды ищите строки, содержащие названия кодеков, например, <code>OMX.qcom.video.decoder.avc</code> для Qualcomm или <code>c2.android.avc.decoder</code> для программных решений. Наличие префикса производителя (qcom, exynos, mtk) обычно указывает на аппаратную реализацию.</p>
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование ADB дает наиболее точную и полную картину доступных кодеков, включая скрытые системные модули, невидимые обычным приложениям.</p></aside>
+
+<h2 id="сравнительный-анализ-и-типичные-проблемы">Сравнительный анализ и типичные проблемы</h2>
+<p>Понимание различий между программным и аппаратным декодированием критически важно для выбора правильной стратегии оптимизации. Программный метод универсален и работает везде, где есть процессор, но он крайне ресурсоемок и неэффективен для высоких разрешений.</p>
+<p>Аппаратный метод, в свою очередь, энергоэффективен и разгружает CPU, но зависит от конкретной модели чипа и версии драйверов. Если H/W декодер не обнаружен, система автоматически переключается на программный, что часто остается незамеченным пользователем до момента появления лагов.</p>
+<ul>
+<li>Аппаратное декодирование потребляет в 5-10 раз меньше энергии при воспроизведении 4K видео.</li>
+<li>Программное декодирование позволяет воспроизводить редкие форматы, не поддерживаемые железом.</li>
+<li>Качество картинки при аппаратном декодировании может незначительно уступать программному из-за особенностей алгоритмов чипа.</li>
+</ul>
+<p>Рассмотрим сравнение производительности при декодировании потока H.264 4K 60fps на типичном современном оборудовании.</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Загрузка CPU</th>
+<th>Энергопотребление</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Software (SW)</td>
+<td>80-100%</td>
+<td>Высокое</td>
+</tr>
+<tr>
+<td>Hardware (HW)</td>
+<td>5-15%</td>
+<td>Низкое</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Типичные ошибки при настройке</h3>
+<p>Даже при наличии исправного оборудования пользователи часто сталкиваются с проблемами из-за неправильной конфигурации ПО. Ниже приведены наиболее распространенные сценарии, когда аппаратное ускорение не работает.</p>
+<ol>
+<li><strong>Игнорирование обновлений драйверов</strong> — старые версии драйверов могут не содержать профилей для новых кодеков, таких как HEVC Main10 или AV1, поэтому всегда проверяйте сайт производителя.</li>
+<li><strong>Неправильный выбор рендера в плеере</strong> — в настройках видеоплеера (например, MPC-HC или VLC) часто по умолчанию стоит «Auto», который может ошибочно выбрать программный вывод; следует принудительно выставить <code>DXVA 2.0</code> или <code>VA-API</code>.</li>
+<li><strong>Конфликт версий кодеков</strong> — установка сторонних пакетов кодеков (K-Lite Codec Pack и аналоги) может перебить системные библиотеки Windows, нарушив работу аппаратных фильтров.</li>
+<li><strong>Ограничения лицензии</strong> — некоторые OEM-производители ноутбуков отключают аппаратное декодирование определенных форматов (например, MPEG-2) на уровне BIOS или драйвера из-за лицензионных ограничений.</li>
+</ol>
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Плюсы аппаратного метода</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Экономия заряда батареи</li><li>✅ Низкая температура CPU</li><li>✅ Возможность просмотра 4K/8K</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы аппаратного метода:Зависимость от драйверов</li><li>❌ Возможные артефакты цвета</li><li>❌ Отсутствие поддержки редких форматов</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+<p>Процесс детекции и активации аппаратных декодеров и кодировщиков является фундаментальным этапом настройки любой мультимедийной системы. Правильная диагностика позволяет выявить узкие места в производительности и обеспечить плавное воспроизведение контента высокого разрешения без излишней нагрузки на вычислительные ресурсы.</p>
+<p>Используйте специализированные утилиты, такие как GPU-Z для Windows, vainfo для Linux и AIDA64 для Android, чтобы получить достоверную информацию о возможностях вашего оборудования. Регулярное обновление драйверов и проверка настроек плееров гарантируют, что аппаратные мощности будут использованы в полном объеме.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки работы аппаратного ускорения во время просмотра видео следите за загрузкой CPU в диспетчере задач: при активном HW декодере она не должна превышать 15-20% даже для 4K контента.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/v/ve/vendorco-productcode-200-chto.html" class="pb-related-card">
+                <span class="pb-related-title">Vendorco ProductCode 2.00: Расшифровка, ошибки и решение</span>
+                <span class="pb-related-desc">Полный технический анализ кода Vendorco 2.00. Причины появления, диагностика оборудования, методы ус</span>
+            </a><a href="/articles/c/cl/cl-plus-key-fail-kak-ubrat-filips.html" class="pb-related-card">
+                <span class="pb-related-title">Cl Plus Key Fail Philips: как убрать ошибку и сбросить ключ</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки Cl Plus Key Fail на телевизорах Philips. Сброс ключа через</span>
+            </a><a href="/articles/t/tc/tcl-55c645-knopka-reset.html" class="pb-related-card">
+                <span class="pb-related-title">Сброс TCL 55C645: кнопка Reset и заводские настройки</span>
+                <span class="pb-related-desc">Полная инструкция по сбросу телевизора TCL 55C645. Расположение кнопки Reset, методы перезагрузки Go</span>
+            </a><a href="/articles/e/es/es-8316-audcodek-kak-ustanovit.html" class="pb-related-card">
+                <span class="pb-related-title">ES8316 Audio Codec: установка драйверов и настройка звука</span>
+                <span class="pb-related-desc">Подробная инструкция по установке кодека ES8316. Настройка драйверов, проверка подключения I2S и уст</span>
+            </a><a href="/articles/z/za/zapusk-mk32p5-multi-block-le32a552p3r-bez-materinki.html" class="pb-related-card">
+                <span class="pb-related-title">Запуск T-CON LE32A552P3R без материнской платы: Инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по запуску T-CON LE32A552P3R на базе MK32P5 вне телевизора. Схемы, распиновк</span>
+            </a><a href="/articles/v/vz/vzlom-google-password-nask.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление доступа к Google: сброс и защита аккаунта</span>
+                <span class="pb-related-desc">Инструкция по восстановлению пароля Google, настройке 2FA и устранению ошибок входа. Технические мет</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

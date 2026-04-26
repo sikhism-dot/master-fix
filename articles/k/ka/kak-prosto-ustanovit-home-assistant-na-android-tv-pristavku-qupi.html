@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Установка Home Assistant на Android TV приставку: подробная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по развертыванию Home Assistant на Android TV. Настройка Docker, Termux, доступ к USB и оптимизация работы умного дома.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-prosto-ustanovit-home-assistant-na-android-tv-pristavku-qupi.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Установка Home Assistant на Android TV приставку: подробная инструкция">
+    <meta property="og:description" content="Техническое руководство по развертыванию Home Assistant на Android TV. Настройка Docker, Termux, доступ к USB и оптимизация работы умного дома.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Установка Home Assistant на Android TV приставку: подробная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-аппаратной-части-и-операционной-системы">Подготовка аппаратной части и операционной системы</a></li><li><a href="#установка-среды-выполнения-termux-и-базовых-зависимостей">Установка среды выполнения Termux и базовых зависимостей</a></li><li><a href="#методы-развертывания-docker-против-python-venv">Методы развертывания: Docker против Python venv</a></li><li><a href="#настройка-доступа-к-usb-и-внешним-накопителям">Настройка доступа к USB и внешним накопителям</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#оптимизация-работы-и-финальные-настройки">Оптимизация работы и финальные настройки</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vyjti-iz-gid-po-ustanovke-na-televizore.html">Как выйти из гида установки на телевизоре: решение зависаний</a></li><li><a href="/articles/v/vn/vneshnij-zhestkij-disk-cherez-hdmi.html">Подключение жесткого диска через HDMI: мифы, адаптеры и реальные схемы</a></li><li><a href="/articles/k/ka/kak-povesit-televizor-sony-kdl-42w705b-na-povorotnyj-stenovoj-kronshtejn.html">Как повесить Sony KDL-42W705B на поворотный кронштейн</a></li><li><a href="/articles/k/ka/karta-dostupa-ne-sovmestima-s-dannoj-tv-pristavkoj-na-ntv-plyus.html">Карта доступа не совместима с тв приставкой НТВ Плюс: решение</a></li><li><a href="/articles/g/ge/getstv-ru.html">Getstv.ru: Инструкция по устранению ошибок и настройке сервисов</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Home Assistant на Android TV приставку: подробная инструкция</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-аппаратной-части-и-операционной-системы">Подготовка аппаратной части и операционной системы</a></li><li><a href="#установка-среды-выполнения-termux-и-базовых-зависимостей">Установка среды выполнения Termux и базовых зависимостей</a></li><li><a href="#методы-развертывания-docker-против-python-venv">Методы развертывания: Docker против Python venv</a></li><li><a href="#настройка-доступа-к-usb-и-внешним-накопителям">Настройка доступа к USB и внешним накопителям</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#оптимизация-работы-и-финальные-настройки">Оптимизация работы и финальные настройки</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапная поломка основного сервера умного дома или банальное отсутствие свободного места для отдельного Raspberry Pi часто ставят владельца перед выбором: либо отказаться от автоматизации, либо искать альтернативное решение среди имеющегося оборудования. В арсенале многих пользователей лежат забытые Android TV приставки, которые обладают достаточной вычислительной мощностью для работы полноценного сервера автоматизации, но простаивают без дела.</p>
+<p>Использование телевизионной приставки на базе Android для развертывания <em>Home Assistant</em> превращает потенциальный электронный мусор в мощный инструмент управления жилищем, не требуя дополнительных финансовых вложений. Однако процесс установки существенно отличается от классического развертывания на Linux-серверах или одноплатных компьютерах, так как требует работы с ограниченной операционной системой и специфическими ограничениями прав доступа.</p>
+<p>На практике внедрение системы автоматизации на мобильную платформу требует предварительной подготовки среды выполнения, настройки сетевого взаимодействия и правильного выбора метода установки, чтобы обеспечить стабильность работы всех подключенных устройств. Ниже представлен детальный алгоритм действий, позволяющий обойти системные ограничения и запустить сервер умного дома непосредственно на архитектуре ARM, используемой в большинстве ТВ-боксов.</p>
+
+<h2 id="подготовка-аппаратной-части-и-операционной-системы">Подготовка аппаратной части и операционной системы</h2>
+
+<p>Первым шагом в процессе модернизации приставки является оценка её технических характеристик и текущей версии операционной системы, так как от этого зависит выбор метода установки и возможная необходимость перепрошивки. Большинство современных устройств на базе <em>Amlogic</em> или <em>Rockchip</em> обладают достаточным запасом оперативной памяти для работы контейнеризированных приложений, однако стандартная оболочка Android TV часто блокирует установку стороннего программного обеспечения из неизвестных источников.</p>
+<p>Если у вас имеется устройство с диагональю 2 ГБ оперативной памяти и 8 ГБ встроенного хранилища, то базовая установка пройдет без проблем, но для хранения истории событий и логов настоятельно потребуется подключение внешнего накопителя. Внутренняя память приставок часто имеет низкий ресурс перезаписи, что критично для баз данных, которые постоянно ведет <strong>Home Assistant</strong>, поэтому использование USB-флешки или SSD-диска является обязательным требованием для долговечности системы.</p>
+<p>Для начала работы необходимо активировать режим разработчика в настройках Android, что позволит выполнять отладку по USB и устанавливать приложения через ADB (Android Debug Bridge). Перейдите в <code>Настройки → О системе → Сборка</code> и нажмите на пункт «Сборка» семь раз подряд, после чего в меню появится новый раздел «Для разработчиков», где нужно включить «Отладку по USB».</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование внутренней памяти для записи логов Home Assistant может привести к быстрому износу flash-накопителя приставки. Всегда используйте внешние USB-накопители.</p></aside>
+
+<p>Далее следует убедиться, что операционная система приставки не имеет критических ограничений, блокирующих работу сетевых портов или фоновых служб, которые необходимы для стабильной работы сервера автоматизации. Некоторые производители прошивок aggressively закрывают фоновые процессы для экономии энергии, поэтому в настройках энергосбережения следует выставить максимальную производительность и отключить засыпание Wi-Fi модуля.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Минимальное требование</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Оперативная память</td>
+<td>1 ГБ</td>
+<td>2 ГБ и выше</td>
+</tr>
+<tr>
+<td>Свободное место</td>
+<td>4 ГБ (внутреннее)</td>
+<td>16 ГБ (USB SSD)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Подготовка включает активацию режима разработчика, проверку свободной памяти и подключение внешнего накопителя для данных.</p></aside>
+
+<h2 id="установка-среды-выполнения-termux-и-базовых-зависимостей">Установка среды выполнения Termux и базовых зависимостей</h2>
+
+<p>После подготовки «железа» необходимо развернуть на устройстве терминальный эмулятор, который предоставит доступ к командной строке Linux и позволит управлять системными процессами. Наиболее оптимальным решением является использование приложения <em>Termux</em>, которое представляет собой эмулятор терминала и среду Linux для Android, позволяющую устанавливать пакеты через менеджер <code>pkg</code> или <code>apt</code>.</p>
+<p>Загрузка актуальной версии <em>Termux</em> должна производиться исключительно из репозитория F-Droid или GitHub, так как версия в Google Play Store является устаревшей и не получает обновлений безопасности, что делает её непригодной для серверных задач. После установки приложения запустите его и выполните первичную настройку хранилища, предоставив доступ к файловой системе командой <code>termux-setup-storage</code>, что позволит серверу видеть подключенные USB-накопители.</p>
+<p>Обновление пакетной базы и установка необходимых утилит — следующий критически важный этап, без которого дальнейшая установка Docker или Python-окружения будет невозможна. Введите команду обновления репозиториев и установите базовый набор инструментов, включая wget, curl, git и python, которые потребуются для загрузки скриптов установки и работы зависимостей.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка Termux</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите pkg update && pkg upgrade</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните termux-setup-storage и подтвердите доступ</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите пакеты: pkg install python wget curl git</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте версию Python командой python --version</span></div></div>
+
+<p>Важно отметить, что стандартная файловая система Android может не поддерживать некоторые функции, необходимые для работы контейнеров, поэтому может потребоваться дополнительная настрой прав доступа или использование специальных скриптов-оберток. Если при попытке установки пакетов возникают ошибки прав доступа, попробуйте выполнить команду <code>chmod</code> для директорий Termux или перепроверьте разрешения в настройках самого приложения Android.</p>
+<p>Для обеспечения стабильности работы сервера рекомендуется настроить запуск Termux в фоновом режиме, чтобы операционная система не завершала процесс при переключении задач или переходе в спящий режим. Это можно сделать через настройки батареи Android, исключив приложение из оптимизации, или используя встроенные механизмы сохранения активности в самой операционной системе приставки.</p>
+
+<h2 id="методы-развертывания-docker-против-python-venv">Методы развертывания: Docker против Python venv</h2>
+
+<p>Выбор метода установки является определяющим фактором для производительности и удобства дальнейшего обслуживания системы умного дома. Существует два основных пути: установка через Docker-контейнер, который изолирует приложение от основной системы, или установка в виртуальное окружение Python (venv), что является нативным, но более сложным в поддержке способом.</p>
+<p>Использование Docker на Android возможно благодаря проекту <em>Termux-Docker</em> или аналогичным решениям, однако это требует наличия ядра с поддержкой определенных модулей, что есть не на всех приставках. Если ваше устройство поддерживает запуск Docker, этот метод предпочтителен, так как он упрощает обновление, резервное копирование и установку дополнений, предоставляя полноценный опыт использования <strong>Home Assistant OS</strong>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На многих Android TV приставках запуск полноценного Docker Daemon невозможен без пересборки ядра. В таких случаях единственным вариантом остается установка через Python venv.</p></aside>
+
+<p>В случае, если Docker не поддерживается, единственным рабочим вариантом остается установка в виртуальное окружение Python, что требует ручной установки всех зависимостей и настройки автозапуска через сервисы Termux или Android. Этот метод более требователен к квалификации пользователя, так как любые обновления операционной системы или библиотек Python могут теоретически нарушить работу сервера, требуя ручной починки окружения.</p>
+<p>При выборе метода venv необходимо создать изолированную директорию, установить туда конкретную версию Python (обычно 3.9 или 3.10) и затем инсталлировать Home Assistant как пакет, управляемый через pip. Такой подход позволяет обойти ограничения Android, но требует тщательного мониторинга ресурсов и ручной настройки systemd-подобных сервисов для автозагрузки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Критерий</th>
+<th>Docker Container</th>
+<th>Python venv</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сложность установки</td>
+<td>Средняя (требует поддержки ядра)</td>
+<td>Высокая (ручная настройка)</td>
+</tr>
+<tr>
+<td>Производительность</td>
+<td>Выше (изоляция процессов)</td>
+<td>Зависит от оптимизации Android</td>
+</tr>
+</tbody>
+</table>
+
+<p>Независимо от выбранного метода, необходимо заранее подготовить конфигурационный файл, где будут указаны пути к базе данных, секретные ключи и настройки интеграций, чтобы первичный за прошел успешно. Ошибка на этом этапе может привести к циклическому перезапуску сервиса или невозможности доступа к веб-интерфейсу через браузер.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор метода установки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка дополнений (Docker)</li><li>✅ Легкость обновления</li><li>✅ Изоляция</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требовательность к ресурсам</li><li>❌ Недоступно на старых ядрах</li><li>❌ Сложность отладки сетей</li></ul></div>
+</div></div>
+
+<h2 id="настройка-доступа-к-usb-и-внешним-накопителям">Настройка доступа к USB и внешним накопителям</h2>
+
+<p>Организация доступа к внешнему хранилищу данных является одной из самых сложных задач при работе с Android TV, так как система безопасности строго контролирует доступ приложений к файловой системе. Для того чтобы <em>Home Assistant</em> мог записывать историю событий на подключенную флешку, необходимо правильно смонтировать накопитель и пробросить права доступа в среду Termux.</p>
+<p>После подключения USB-накопителя система Android обычно предлагает отформатировать его как внутреннее хранилище или как портативное устройство; для наших целей необходимо выбрать форматирование как портативное устройство, чтобы сохранить возможность доступа извне. После форматирования накопитель будет смонтирован по пути, который можно узнать через команду <code>ls /storage</code> или <code>df -h</code> внутри терминала.</p>
+<p>Далее необходимо создать символическую ссылку или настроить проброс папки в Termux, чтобы приложение-сервис имело права на чтение и запись в эту директорию. Команда <code>ln -s</code> позволит связать системный путь монтирования с рабочей директорией Home Assistant, однако могут потребоваться дополнительные манипуляции с разрешениями через ADB Shell, если стандартные права доступа блокируют запись.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Форматирование накопителя как «Внутреннее хранилище» сделает его нечитаемым на других устройствах без разблокировки ключом шифрования Android.</p></aside>
+
+<p>В конфигурационном файле <code>configuration.yaml</code> необходимо указать абсолютные пути к новому расположению базы данных, иначе сервер продолжит попытки записи во внутреннюю память, что быстро приведет к её переполнению. Проверка свободного места и скорости записи на подключенный диск может быть выполнена стандартными утилитами Linux, доступными в Termux, такими как <code>dd</code> или <code>hdparm</code>.</p>
+<p>Если используется файловая система NTFS, могут возникнуть проблемы с правами доступа, поэтому рекомендуется форматировать внешний диск в формат <em>ext4</em> (если приставка поддерживает чтение) или использовать FAT32/exFAT с соответствующими настройками монтирования. В некоторых случаях требуется установка дополнительных драйверов или использование скриптов автоматического монтирования при загрузке системы.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе установки и эксплуатации сервера на нестандартном оборудовании пользователи часто сталкиваются с рядом типичных проблем, решение которых требует понимания логики работы Android и Linux. Ниже приведен список наиболее распространенных ошибок и методы их корректного устранения.</p>
+
+<ol>
+<li><strong>Сервер не запускается или сразу завершает работу</strong> — чаще всего это связано с нехваткой оперативной памяти или агрессивной политикой энергосбережения Android, которая убивает фоновые процессы; необходимо добавить приложение в исключения батареи и уменьшить количество активных интеграций.</li>
+<li><strong>Ошибка записи базы данных (Database Error)</strong> — возникает при попытке записи на внутреннюю память или при неправильных правах доступа к USB; следует проверить пути в конфигурации и права доступа через команду <code>ls -l</code>, а также убедиться, что файловая система не переполнена.</li>
+<li><strong>Недоступность веб-интерфейса с других устройств</strong> — проблема может заключаться в настройках брандмауэра Android или роутера; убедитесь, что порт 8123 открыт для локальной сети и в настройках роутера не стоит изоляция клиентов Wi-Fi.</li>
+<li><strong>Отсутствие поддержки Bluetooth или Zigbee</strong> — встроенные модули приставки часто не имеют драйверов в ядре Termux для работы с протоколами умного дома; в таком случае потребуется использование внешних USB-адаптеров с пробросом устройств через USB-over-IP или прямое подключение.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте статический IP-адрес для вашей приставки в настройках роутера, чтобы адрес сервера Home Assistant не менялся после перезагрузки сети.</p></aside>
+
+<h2 id="оптимизация-работы-и-финальные-настройки">Оптимизация работы и финальные настройки</h2>
+
+<p>После успешного запуска системы необходимо провести ряд мероприятий по оптимизации, чтобы обеспечить её стабильную работу в условиях ограниченных ресурсов телевизионной приставки. Отключение неиспользуемых компонентов, таких как (история) для часто меняющихся сенсоров, и настройка интервалов опроса устройств позволят значительно снизить нагрузку на процессор.</p>
+<p>Важно также настроить систему логирования, ограничив уровень детализации для стабильно работающих компонентов, чтобы файлы логов не занимали всё доступное пространство на диске. В конфигурации <code>logger</code> следует установить уровень <code>info</code> по умолчанию и <code>warning</code> или <code>error</code> для шумных интеграций, что поможет в будущем быстрее диагностировать реальные проблемы.</p>
+<p>Для обеспечения автоматического запуска сервера при включении приставки рекомендуется использовать механизмы автозапуска Termux или создать простой скрипт, который будет проверять наличие сети и запускать процесс Home Assistant. Это избавит от необходимости каждый раз вручную открывать терминал и вводить команды, превращая приставку в полноценный автономный сервер.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Финальная оптимизация</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Настройте уровень логирования в configuration.yaml</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Отключите ненужные интеграции</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Настройте автозапуск через boot-скрипт Termux</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Создайте резервную копию конфигурации</span></div></div>
+
+<p>В заключение стоит отметить, что установка Home Assistant на Android TV приставку — это экономически эффективный способ войти в мир умного дома, требующий лишь времени и внимательности к деталям настройки. Правильно сконфигурированная система будет работать стабильно, предоставляя весь спектр возможностей автоматизации, доступный владельцам специализированного оборудования.</p>
+<p>Регулярное обновление компонентов, мониторинг состояния дискового пространства и создание резервных копий конфигурации позволят поддерживать систему в актуальном состоянии долгие годы. Несмотря на некоторые ограничения платформы Android, современные приставки демонстрируют отличные результаты в качестве бюджетных серверов автоматизации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vyjti-iz-gid-po-ustanovke-na-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как выйти из гида установки на телевизоре: решение зависаний</span>
+                <span class="pb-related-desc">Инструкция по выходу из режима настройки Smart TV. Методы для Samsung, LG, Android TV при зависании </span>
+            </a><a href="/articles/v/vn/vneshnij-zhestkij-disk-cherez-hdmi.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение жесткого диска через HDMI: мифы, адаптеры и реальные схемы</span>
+                <span class="pb-related-desc">Технический разбор возможности подключения HDD через HDMI. Реальные схемы с USB-C, переходниками и с</span>
+            </a><a href="/articles/k/ka/kak-povesit-televizor-sony-kdl-42w705b-na-povorotnyj-stenovoj-kronshtejn.html" class="pb-related-card">
+                <span class="pb-related-title">Как повесить Sony KDL-42W705B на поворотный кронштейн</span>
+                <span class="pb-related-desc">Подробная инструкция по монтажу Sony KDL-42W705B на поворотный кронштейн. Выбор крепежа VESA, устано</span>
+            </a><a href="/articles/k/ka/karta-dostupa-ne-sovmestima-s-dannoj-tv-pristavkoj-na-ntv-plyus.html" class="pb-related-card">
+                <span class="pb-related-title">Карта доступа не совместима с тв приставкой НТВ Плюс: решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки несовместимости карты доступа на приставках НТВ Плюс. Диаг</span>
+            </a><a href="/articles/g/ge/getstv-ru.html" class="pb-related-card">
+                <span class="pb-related-title">Getstv.ru: Инструкция по устранению ошибок и настройке сервисов</span>
+                <span class="pb-related-desc">Полное руководство по работе с сервисами Getstv.ru. Устранение ошибок входа, настройка API-ключей, р</span>
+            </a><a href="/articles/k/ka/kak-vklyuchit-bpt-lcd-televizora-bez-mineboard.html" class="pb-related-card">
+                <span class="pb-related-title">Включение БПТ LCD телевизора без Mineboard: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску блока питания LCD телевизора без использования Mineboard. Проверка н</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Буфер журнала Android TV: очистка, анализ логов и отладка — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по работе с буфером журнала на Android TV. Методы очистки, анализ ошибок через ADB, управление логами для ускорения Smart TV.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bu/bufer-zhurnala-android-tv.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Буфер журнала Android TV: очистка, анализ логов и отладка">
+    <meta property="og:description" content="Подробная инструкция по работе с буфером журнала на Android TV. Методы очистки, анализ ошибок через ADB, управление логами для ускорения Smart TV.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Буфер журнала Android TV: очистка, анализ логов и отладка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#структура-и-назначение-системных-логов">Структура и назначение системных логов</a></li><li><a href="#методы-очистки-буфера-через-adb">Методы очистки буфера через ADB</a></li><li><a href="#использование-приложений-анализаторов-на-телевизоре">Использование приложений-анализаторов на телевизоре</a></li><li><a href="#диагностика-ошибок-и-анализ-записей">Диагностика ошибок и анализ записей</a></li><li><a href="#типичные-ошибки-и-ограничения-системы">Типичные ошибки и ограничения системы</a></li><li><a href="#сравнение-методов-управления-журналами">Сравнение методов управления журналами</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/ik/ik-priemnik-dlya-televizora-proverit.html">Как проверить ИК-приемник телевизора: пошаговая диагностика</a></li><li><a href="/articles/k/ka/kak-ustanovit-iptv-na-tcl.html">Как установить IPTV на TCL: пошаговая инструкция</a></li><li><a href="/articles/o/os/oshibka-6003-na-televizore-lg-kak-ispravit-oshibku.html">Ошибка 6003 на телевизоре LG: причины и способы устранения</a></li><li><a href="/articles/k/ka/kak-dobavit-ustrojstvo-robot-pylesos-iboto-telefon.html">Как подключить iBoto к Wi-Fi и телефону: полная инструкция</a></li><li><a href="/articles/a/as/asus-x550v-usbvid-8087pid-07da-chto-za-ustrojstvo.html">asus x550v USB\VID_8087&amp;PID_07DA: что это за устройство?</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Управление буфером журнала Android TV: очистка и диагностика</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#структура-и-назначение-системных-логов">Структура и назначение системных логов</a></li><li><a href="#методы-очистки-буфера-через-adb">Методы очистки буфера через ADB</a></li><li><a href="#использование-приложений-анализаторов-на-телевизоре">Использование приложений-анализаторов на телевизоре</a></li><li><a href="#диагностика-ошибок-и-анализ-записей">Диагностика ошибок и анализ записей</a></li><li><a href="#типичные-ошибки-и-ограничения-системы">Типичные ошибки и ограничения системы</a></li><li><a href="#сравнение-методов-управления-журналами">Сравнение методов управления журналами</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Медленная работа интерфейса, внезапные вылеты приложений или бесконечная загрузка при запуске плеера — с этими проблемами сталкивается практически каждый владелец телевизора на базе Android. Часто причиной нестабильности становится переполненный системный лог, который накапливает тысячи записей о действиях операционной системы и установленных программ.</p>
+<p>В отличие от персональных компьютеров, где файлы журналов хранятся на жестком диске и редко влияют на быстродействие, в среде <em>Android TV</em> буфер журнала (logcat) занимает оперативную память устройства. Когда этот буфер переполняется, система начинает тратить ресурсы на обработку старых записей, что приводит к видимым задержкам и «фризам».</p>
+<p>Для решения проблемы необходимо понимать структуру логирования и владеть инструментами для принудительной очистки или детального анализа. Ниже представлено детальное руководство по управлению системными журналами, диагностике ошибок и оптимизации работы телевизора или приставки.</p>
+
+<h2 id="структура-и-назначение-системных-логов">Структура и назначение системных логов</h2>
+<p>Система логирования в Android представляет собой кольцевой буфер, в который непрерывно записываются события ядра, приложения и системных сервисов. Каждая запись содержит временную метку, идентификатор процесса, уровень важности и текстовое сообщение. Основное назначение этого механизма — отладка разработчиками, однако для конечного пользователя он становится источником проблем при переполнении.</p>
+<p>В операционной системе Android журналы разделены на несколько независимых буферов, каждый из которых отвечает за свой сегмент работы устройства. Понимание различий между ними позволяет точечно очищать ненужные данные, не затрагивая критически важные системные процессы. Основными буферами являются <code>main</code>, <code>system</code>, <code>radio</code> и <code>events</code>.</p>
+<p>Буфер <code>main</code> содержит логи пользовательских приложений и большинства системных служб. Именно здесь чаще всего накапливается «мусор» в виде ошибок кэширования или сбоев фоновых процессов. Буфер <code>system</code> отвечает за работу низкоуровневых компонентов ОС, таких как загрузка модулей или работа драйверов. На телевизорах Sony, Philips или Xiaomi эти данные могут занимать значительный объем при наличии аппаратных конфликтов.</p>
+<p>Допустим, пользователь активно пользуется стриминговыми сервисами. В этом случае буфер <code>radio</code> может заполняться записями о состоянии сетевого соединения, особенно если Wi-Fi сигнал нестабилен. Постоянная запись попыток переподключения создает избыточную нагрузку на процессор, что визуально проявляется как подергивание курсора или задержка реакции пульта.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На некоторых моделях телевизоров с оболочкой <em>Google TV</em> доступ к логам событий может быть ограничен производителем для повышения безопасности системы.</p></aside>
+
+<p>Важно отметить, что объем буфера не безграничен. По умолчанию в Android выделено фиксированное пространство в оперативной памяти. Когда лимит достигнут, старые записи перезаписываются новыми, но процесс записи может вызвать микро-фризы. <strong>Регулярная очистка буфера</strong> помогает поддерживать систему в тонусе, освобождая ресурсы для выполнения актуальных задач.</p>
+
+<h2 id="методы-очистки-буфера-через-adb">Методы очистки буфера через ADB</h2>
+<p>Наиболее эффективным и универсальным способом управления журналами является использование отладочного моста Android (ADB). Этот метод требует подключения телевизора к компьютеру по сети или USB, но предоставляет полный контроль над системой. Перед началом работ необходимо активировать режим разработчика на устройстве.</p>
+<p>Для включения отладки следует перейти в меню <code>Настройки → Устройство → О системе</code> (или аналогичный путь в зависимости от модели). Затем нужно найти пункт «Номер сборки» и нажать на него 7 раз подряд до появления сообщения об активации режима разработчика. После этого в появившемся меню «Для разработчиков» активируется опция <code>Отладка по USB</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Подключение к Android TV через ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Узнайте IP-адрес телевизора в настройках сети</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите ADB на компьютер</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду adb connect IP_АДРЕС:5555</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Подтвердите соединение на экране телевизора</span></div></div>
+
+<p>После успешного подключения, которое подтверждается сообщением <code>connected to ...</code>, можно приступать к управлению логами. Команда для очистки всех буферов выполняется в терминале компьютера. Синтаксис команды требует указания флага <code>-c</code> (clear) для инструмента <code>logcat</code>.</p>
+<pre><code>adb logcat -c</code></pre>
+<p>Выполнение этой команды мгновенно очищает все активные буферы (<code>main</code>, <code>system</code>, <code>radio</code>, <code>events</code>). Если требуется очистить только конкретный буфер, например, основной, используется команда <code>adb logcat -b main -c</code>. Это полезно, если нужно сохранить системные логи для диагностики аппаратных проблем, но убрать ошибки приложений.</p>
+<p>На практике часто возникает ситуация, когда очистка требуется регулярно, но каждый раз подключать кабель или вводить команды вручную неудобно. В этом случае можно использовать скрипты или специализированные приложения-клиенты ADB, устанавливаемые прямо на телевизор, если позволяет файловая система и права доступа.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование сторонних приложений для очистки логов с root-правами может привести к нестабильной работе системы, если приложение вмешивается в системные процессы некорректно.</p></aside>
+
+<h2 id="использование-приложений-анализаторов-на-телевизоре">Использование приложений-анализаторов на телевизоре</h2>
+<p>Если подключение к компьютеру невозможно, существуют альтернативные решения, работающие непосредственно на платформе <em>Android TV</em>. Специализированные приложения позволяют просматривать и очищать логи без использования внешнего оборудования. Однако их функциональность может быть ограничена правами доступа, которые есть у обычного приложения.</p>
+<p>Одним из популярных инструментов является <em>MatLog</em> или его аналоги, доступные в магазинах приложений или через установку APK-файлов. Эти программы запрашивают разрешение на чтение логов. После запуска пользователь видит поток данных в реальном времени, отфильтрованный по уровням важности: <code>Verbose</code>, <code>Debug</code>, <code>Info</code>, <code>Warning</code>, <code>Error</code>.</p>
+<p>Для очистки журнала в таких приложениях обычно предусмотрена кнопка «Clear» или значок метлы. Нажатие на нее инициирует системный вызов очистки буфера. Важно понимать, что без root-прав приложение может очистить только свой собственный лог или часть общедоступного буфера, но не сможет полностью сбросить системные счетчики ядра.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для поиска конкретной ошибки в приложении используйте функцию фильтрации по имени пакета, например, com.google.android.youtube, чтобы отсечь лишние записи.</p></aside>
+
+<p>Некоторые продвинутые утилиты предлагают функцию «Watchdog», которая автоматически очищает буфер при достижении определенного порога заполнения. Это может быть полезной превентивной мерой для старых моделей телевизоров с малым объемом оперативной памяти. Однако постоянная фоновая активность таких программ также потребляет ресурсы, поэтому их использование должно быть обоснованным.</p>
+<p>При выборе приложения стоит обращать внимание на дату последнего обновления и совместимость с версией <em>Android</em>, установленной на телевизоре. Устаревшие версии могут некорректно работать с новыми API логирования, введенными в <em>Android 9 Pie</em> и выше.</p>
+
+<h2 id="диагностика-ошибок-и-анализ-записей">Диагностика ошибок и анализ записей</h2>
+<p>Очистка буфера — это временное решение, если не устранена первопричина его заполнения. Анализ записей позволяет выявить сбойное приложение или конфликтующий драйвер. При просмотре логов внимание в первую очередь следует уделять тегам с уровнем <code>ERROR</code> и <code>FATAL</code>, а также частым повторениям тегов <code>WARNING</code>.</p>
+<p>Типичным признаком проблемы является циклическая перезагрузка сервиса. В логе это выглядит как множество записей с одинаковым временным интервалом, сообщающих о запуске и остановке процесса. Например, постоянные записи <code>ActivityManager: Start proc</code> для одного и того же приложения указывают на его нестабильную работу.</p>
+<p>Для удобства анализа вывод лога можно перенаправить в файл. Это делается с помощью команды:</p>
+<pre><code>adb logcat -d > log.txt</code></pre>
+<p>Полученный файл <code>log.txt</code> удобно открыть на компьютере в текстовом редакторе с поддержкой подсветки синтаксиса или в специализированных анализаторах. Поиск ключевых слов, таких как «Exception», «Crash», «Timeout» или «NullPointer», помогает быстро локализовать источник проблемы.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип записи</th>
+<th>Описание</th>
+<th>Действие</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>java.lang.OutOfMemoryError</code></td>
+<td>Нехватка оперативной памяти</td>
+<td>Закрыть фоновые приложения, очистить кэш</td>
+</tr>
+<tr>
+<td><code>NetworkTimeoutException</code></td>
+<td>Проблемы с сетевым соединением</td>
+<td>Проверить роутер, настройки DNS</td>
+</tr>
+<tr>
+<td><code>ServiceNotFoundException</code></td>
+<td>Отсутствует системный сервис</td>
+<td>Требуется обновление прошивки или сброс</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если в логах наблюдаются ошибки, связанные с графическим ускорителем (теги <code>SurfaceFlinger</code>, <code>HWComposer</code>), это может свидетельствовать о перегреве устройства или несовместимости установленного видеоплеера с драйверами телевизора. В таких случаях рекомендуется снизить качество воспроизведения или обновить приложение.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Анализ логов позволяет перейти от симптоматического лечения к устранению корня проблемы, повышая стабильность работы Android TV.</p></aside>
+
+<h2 id="типичные-ошибки-и-ограничения-системы">Типичные ошибки и ограничения системы</h2>
+<p>При работе с буфером журнала пользователи часто допускают ошибки, которые не только не решают проблему, но и усугубляют ситуацию. Понимание этих нюансов помогает избежать потери данных и unnecessary сбросов настроек.</p>
+<ol>
+<li><strong>Попытка очистки без активированной отладки</strong> — многие пользователи пытаются запустить команды ADB, забыв включить «Отладку по USB» в настройках телевизора, что приводит к ошибке подключения «device offline».</li>
+<li><strong>Игнорирование сетевых ограничений</strong> — при подключении по Wi-Fi команда ADB может не работать, если роутер блокирует локальные соединения между устройствами (AP Isolation), в этом случае требуется кабельное подключение или настройка роутера.</li>
+<li><strong>Удаление системных логов при диагностике</strong> — очистка буфера <code>system</code> или <code>kernel</code> перед отправкой отчета разработчикам делает невозможным анализ глубинных причин сбоя, так как теряется история событий, предшествующая ошибке.</li>
+<li><strong>Использование несовместимых версий ADB</strong> — старые версии платформенных инструментов на компьютере могут некорректно работать с новыми версиями Android TV, вызывая сбои при передаче больших объемов данных лога.</li>
+</ol>
+<p>Также стоит учитывать, что на некоторых устройствах производителей <em>Sony</em> или <em>Philips</em> доступ к определенным разделам лога может быть заблокирован на уровне прошивки даже с правами разработчика. В таких случаях стандартные методы могут не дать полного результата.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Управление логами Android TV</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над системой</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность глубокой диагностики</li></ul></div>
+</div></div>
+
+<h2 id="сравнение-методов-управления-журналами">Сравнение методов управления журналами</h2>
+<p>Выбор метода управления логами зависит от целей пользователя и доступного оборудования. Для разовой очистки достаточно приложения на телевизоре, тогда как для глубокой диагностики незаменим ADB. Ниже приведено сравнение основных подходов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Эффективность</th>
+<th>Требования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB (Командная строка)</td>
+<td>Высокая</td>
+<td>100%</td>
+<td>ПК, кабель/сеть</td>
+</tr>
+<tr>
+<td>Приложения (MatLog)</td>
+<td>Низкая</td>
+<td>60-80%</td>
+<td>Установка APK</td>
+</tr>
+<tr>
+<td>Сброс настроек</td>
+<td>Средняя</td>
+<td>100%</td>
+<td>Потеря данных</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование ADB дает максимальный результат, позволяя не только чистить, но и фильтровать, сохранять и анализировать данные в реальном времени. Приложения на самом TV удобны для быстрой профилактики, но часто не имеют доступа к критическим системным буферам. Полный сброс (Factory Reset) является крайней мерой, которая гарантированно очищает все логи, но требует повторной настройки всех сервисов.</p>
+<p>Для владельцев устройств на базе процессоров <em>Realtek</em> или <em>Amlogic</em> могут существовать специфические инженерные меню, вызываемые комбинациями кнопок пульта, где также доступна очистка логов, но использование таких меню требует особой осторожности.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>После обновления прошивки телевизора объем доступной памяти для логов может измениться, поэтому привычные скрипты очистки могут потребовать корректировки параметров.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+<p>Буфер журнала Android TV является важным инструментом диагностики, но его переполнение может негативно сказаться на производительности устройства. Регулярная очистка через ADB или специализированные приложения помогает поддерживать быстродействие интерфейса и стабильность работы приложений.</p>
+<p>Наиболее эффективным подходом является комбинированный метод: периодическая профилактическая очистка через приложения на TV и глубокий анализ с помощью ADB при возникновении критических ошибок. Понимание структуры логов позволяет пользователю самостоятельно выявлять и устранять программные конфликты.</p>
+<p>Соблюдение мер предосторожности при работе с системными файлами и командной строкой гарантирует безопасность данных. Грамотное управление системными ресурсами продлевает срок службы умного телевизора и обеспечивает комфортное использование мультимедийных возможностей платформы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/ik/ik-priemnik-dlya-televizora-proverit.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить ИК-приемник телевизора: пошаговая диагностика</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке ИК-приемника ТВ. Диагностика пультов, смартфонов и мультиметром. Та</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-iptv-na-tcl.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить IPTV на TCL: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке IPTV на телевизорах TCL. Установка приложений, работа с Android T</span>
+            </a><a href="/articles/o/os/oshibka-6003-na-televizore-lg-kak-ispravit-oshibku.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибка 6003 на телевизоре LG: причины и способы устранения</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки 6003 на LG TV. Методы сброса, настройки DNS, прошивки и ди</span>
+            </a><a href="/articles/k/ka/kak-dobavit-ustrojstvo-robot-pylesos-iboto-telefon.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить iBoto к Wi-Fi и телефону: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке робота-пылесоса iBoto через приложение. Решение проблем с подключ</span>
+            </a><a href="/articles/a/as/asus-x550v-usbvid-8087pid-07da-chto-za-ustrojstvo.html" class="pb-related-card">
+                <span class="pb-related-title">asus x550v USB\VID_8087&amp;PID_07DA: что это за устройство?</span>
+                <span class="pb-related-desc">Подробный разбор неизвестного устройства USB\VID_8087&amp;PID_07DA на ноутбуке Asus X550V. Решение пробл</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-ttl-android-tv.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить TTL на Android TV: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по изменению TTL на Android TV и приставках. Настройка раздачи интернета, обход огран</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Ошибка «local port отказано в доступе»: диагностика и решение — Мастер Фикс</title>
+    <meta name="description" content="Подробный анализ ошибки «local port отказано в доступе». Методы диагностики, сброс стека TCP/IP, настройка брандмауэра и поиск конфликтующих процессов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/lo/local-port-otkazano-v-dostupe.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Ошибка «local port отказано в доступе»: диагностика и решение">
+    <meta property="og:description" content="Подробный анализ ошибки «local port отказано в доступе». Методы диагностики, сброс стека TCP/IP, настройка брандмауэра и поиск конфликтующих процессов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Ошибка «local port отказано в доступе»: диагностика и решение</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-занятости-портов-и-идентификация-процессов">Диагностика занятости портов и идентификация процессов</a></li><li><a href="#настройка-правил-брандмауэра-и-антивирусного-по">Настройка правил брандмауэра и антивирусного ПО</a></li><li><a href="#сброс-сетевого-стека-и-конфигурации-tcpip">Сброс сетевого стека и конфигурации TCP/IP</a></li><li><a href="#конфликты-приложений-и-особенности-виртуализации">Конфликты приложений и особенности виртуализации</a></li><li><a href="#типичные-ошибки-при-устранении-неполадок">Типичные ошибки при устранении неполадок</a></li><li><a href="#резюме-и-профилактика-проблем">Резюме и профилактика проблем</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/s/si/siemens-nx-12-kak-ustanovit.html">Установка Siemens NX 12: подробная инструкция и решение ошибок</a></li><li><a href="/articles/s/se/selecline-lm-t006-instruktsiya.html">Selecline LM-T006: Инструкция, настройка и устранение неисправностей</a></li><li><a href="/articles/n/no/noname-chat-otmenit-podpisku-kak-otklyuchit.html">Как отменить подписку noname chat: Полная инструкция</a></li><li><a href="/articles/v/v-/v-ashdirezke-ne-otkryvayutsya-serii.html">Не открываются серии в Ашдирезке: решение проблем</a></li><li><a href="/articles/k/ka/kak-sokhranit-nastrojki-v-menyu-dlya-razrabotchikov.html">Сохранение настроек в меню для разработчиков Android</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Ошибка «local port отказано в доступе»: диагностика и решение</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-занятости-портов-и-идентификация-процессов">Диагностика занятости портов и идентификация процессов</a></li><li><a href="#настройка-правил-брандмауэра-и-антивирусного-по">Настройка правил брандмауэра и антивирусного ПО</a></li><li><a href="#сброс-сетевого-стека-и-конфигурации-tcpip">Сброс сетевого стека и конфигурации TCP/IP</a></li><li><a href="#конфликты-приложений-и-особенности-виртуализации">Конфликты приложений и особенности виртуализации</a></li><li><a href="#типичные-ошибки-при-устранении-неполадок">Типичные ошибки при устранении неполадок</a></li><li><a href="#резюме-и-профилактика-проблем">Резюме и профилактика проблем</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При попытке запустить локальный веб-сервер, базу данных или специализированное приложение пользователь часто сталкивается с резким отказом системы выполнить команду. Вместо ожидаемого старта службы консоль выдает сухое сообщение об ошибке, указывающее на то, что доступ к локальному порту запрещен или невозможен. Ситуация усугубляется тем, что приложение может работать стабильно в течение длительного времени, а сбой происходит внезапно после обновления операционной системы или установки нового программного обеспечения.</p>
+
+<p>Подобное поведение операционной среды свидетельствует о фундаментальном конфликте на уровне сетевых сокетов. Операционная система строго контролирует каждый порт, и если заявка на его использование поступает от имени процесса, не имеющего соответствующих прав, или если порт уже занят другим активным приложением, возникает блокировка. В логах это часто отражается как <code>EADDRINUSE</code>, <code>Permission denied</code> или <code>Connection refused</code> в зависимости от контекста выполнения кода.</p>
+
+<p>Решение данной проблемы требует системного подхода, так как причиной может быть как банальная занятость порта, так и глубинные изменения в политиках безопасности брандмауэра. Игнорирование таких ошибок или попытка простого перезапуска компьютера редко приводит к долгосрочному результату, если не устранена первопричина конфликта. Ниже представлены детальные методики диагностики и устранения неполадок, связанных с блокировкой локальных портов.</p>
+
+<h2 id="диагностика-занятости-портов-и-идентификация-процессов">Диагностика занятости портов и идентификация процессов</h2>
+
+<p>Первым и наиболее логичным шагом является проверка текущего состояния сетевых соединений. Часто оказывается, что порт, который пытается занять ваше приложение, уже используется другим системным процессом или службой, запущенной в фоновом режиме. Например, порт 80 часто занят службой <code>http.sys</code> или Skype, а порт 443 может быть зарезервирован антивирусом.</p>
+
+<p>Для получения точной информации о том, какой именно процесс удерживает нужный порт, необходимо использовать встроенные инструменты мониторинга сетевой активности. В операционных системах семейства Windows оптимальным инструментом является утилита <code>netstat</code> в связке с <code>findstr</code>, тогда как в Linux и macOS аналогичную функцию выполняет команда <code>lsof</code> или расширенная версия <code>ss</code>.</p>
+
+<p>Если вы работаете в среде Windows, откройте командную строку с правами администратора. Введите команду для поиска конкретного порта, например, 3000 или 8080. Система выдаст список всех активных подключений, и вам нужно обратить внимание на столбец <code>PID</code> (Process ID), который соответствует состоянию <code>LISTENING</code>.</p>
+
+<pre><code>netstat -ano | findstr:8080</code></pre>
+
+<p>После получения идентификатора процесса (PID) необходимо выяснить, какому именно исполняемому файлу он принадлежит. Это можно сделать через диспетчер задач или дополнительной командой в терминале. Знание имени процесса позволит понять, является ли его работа легитимной или это результат ошибки.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск процесса по порту</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал с правами администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите netstat -ano</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">findstr:НОМЕР_ПОРТА</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запишите PID из правой колонки</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Найдите процесс по PID в диспетчере задач</span></div></div>
+
+<p>В Unix-подобных системах диагностика проходит еще более информативно. Команда <code>lsof</code> сразу показывает имя процесса, его владельца и путь к исполняемому файлу. Это позволяет мгновенно определить, не запущен ли у вас экземпляр приложения повторно или не занял ли порт системный демон.</p>
+
+<pre><code>sudo lsof -i:8080</code></pre>
+
+<p>Важно учитывать, что некоторые порты зарезервированы операционной системой для критически важных функций. Попытка использовать порты в диапазоне от 0 до 1023 (так называемые привилегированные порты) без прав суперпользователя почти гарантированно приведет к ошибке доступа. В таких случаях решение кроется либо в повышении прав запуска, либо в смене порта приложения на пользовательский диапазон (выше 1024).</p>
+
+<h2 id="настройка-правил-брандмауэра-и-антивирусного-по">Настройка правил брандмауэра и антивирусного ПО</h2>
+
+<p>Если диагностика показала, что порт свободен или занят самим приложением, но запуск все равно блокируется, причиной часто становятся настройки безопасности. Брандмауэр Windows или сторонние антивирусные комплексы могут интерпретировать попытку прослушивания порта как потенциальную угрозу, особенно если исполняемый файл не имеет цифровой подписи или был изменен.</p>
+
+<p>В операционной системе Windows встроенный брандмауэр (Windows Defender Firewall) имеет строгие правила для входящих и исходящих соединений. При первом запуске нового серверного приложения система должна запросить разрешение, но иногда это окно теряется или блокируется групповыми политиками. В таком случае необходимо вручную создать разрешающее правило.</p>
+
+<p>Для этого перейдите в панель управления брандмауэром через меню <code>Панель управления → Система и безопасность → Брандмауэр Защитника Windows</code>. Выберите пункт «Дополнительные параметры», затем «Правила для входящих подключений» и создайте новое правило для порта. Укажите протокол (обычно TCP) и номер порта, после чего выберите действие «Разрешить подключение».</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На корпоративных компьютерах создание новых правил брандмауэра может быть заблокировано администратором сети. В этом случае требуется обращение в IT-отдел.</p></aside>
+
+<p>Сторонние антивирусы, такие как Kaspersky, ESET или Norton, часто имеют собственные модули сетевого экрана, которые работают поверх системного брандмауэра. Их настройки могут быть более агрессивными. Если системный брандмауэр настроен корректно, стоит проверить журнал событий антивируса на предмет блокировок сетевой активности вашего приложения.</p>
+
+<p>В Linux основным инструментом управления сетевой безопасностью является <code>ufw</code> (Uncomplicated Firewall) или <code>firewalld</code>. Даже если сервис запущен, правила iptables могут отбрасывать пакеты, идущие на конкретный порт. Проверка статуса брандмауэра и добавление исключения — стандартная процедура при развертывании новых сервисов.</p>
+
+<pre><code>sudo ufw allow 8080/tcp</code></pre>
+
+<p>Также стоит обратить внимание на настройки антивирусного ПО, которые могут включать функцию «Защита сети» или «Контроль программ». Иногда антивирус блокирует не сам порт, а попытку незнакомого исполняемого файла (<code>.exe</code> или бинарника) инициировать сетевое соединение. Добавление папки с проектом в исключения антивируса часто решает проблему мгновенно.</p>
+
+<h2 id="сброс-сетевого-стека-и-конфигурации-tcpip">Сброс сетевого стека и конфигурации TCP/IP</h2>
+
+<p>В ситуациях, когда программные конфликты и настройки безопасности исключены, проблема может крыться в некорректном состоянии самого сетевого стека операционной системы. Сбои в работе драйверов сетевой карты, ошибки в кэше DNS или повреждение таблиц маршрутизации могут приводить к тому, что ОС не может корректно выделить ресурс для нового соединения.</p>
+
+<p>Наиболее эффективным методом решения таких глубинных проблем является полный сброс настроек сети. В Windows это можно сделать через графический интерфейс или командную строку. Сброс возвращает все сетевые компоненты к заводским настройкам, удаляет временные файлы конфигурации и перезапускает сетевые службы.</p>
+
+<p>Для выполнения сброса через командную строку потребуются права администратора. Последовательное выполнение команд для сброса Winsock и TCP/IP позволяет устранить большинство ошибок, связанных с «зависанием» портов или некорректным распределением адресов.</p>
+
+<pre><code>netsh winsock reset
+<p>netsh int ip reset</p>
+<p>ipconfig /release</p>
+<p>ipconfig /renew</p>
+<p>ipconfig /flushdns</code></pre></p>
+
+<p>После выполнения этих команд обязательна полная перезагрузка компьютера. Только после рестарта изменения вступят в силу, и сетевой стек будет работать с чистого листа. Это действие безопасно для личных данных, но может потребовать повторной настройки статических IP-адресов или VPN-подключений, если они использовались ранее.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Сброс сетевого стека может привести к потере сохраненных паролей Wi-Fi и настроек виртуальных адаптеров. Убедитесь, что у вас есть доступ к учетным данным сети перед началом процедуры.</p></aside>
+
+<p>В операционных системах на базе Linux аналогичные действия выполняются перезапуском службы networking или NetworkManager. Также полезно проверить, не включена ли функция IPv6, если ваше приложение работает только с IPv4, или наоборот. Конфликты протоколов могут вызывать странные ошибки доступа, когда система пытается использовать неподдерживаемый стек.</p>
+
+<p>Отдельного внимания заслуживает файл <code>hosts</code>. Вредоносное ПО или ошибочные действия пользователя могут прописать в него правила, перенаправляющие локальные запросы на несуществующие адреса или блокирующие доступ к <code>localhost</code>. Проверка содержимого файла <code>C:\Windows\System32\drivers\etc\hosts</code> (или <code>/etc/hosts</code> в Linux) является обязательным этапом глубокой диагностики.</p>
+
+<h2 id="конфликты-приложений-и-особенности-виртуализации">Конфликты приложений и особенности виртуализации</h2>
+
+<p>Современная среда разработки часто подразумевает использование множества инструментов одновременно: Docker, виртуальные машины, локальные серверы баз данных и веб-серверы. Все они стремятся занять стандартные порты (80, 443, 3306, 5432), что неизбежно ведет к конфликтам. Понимание того, какие порты занимают популярные сервисы, помогает быстро выявить виновника.</p>
+
+<p>Особую категорию проблем создают контейнеры Docker. Если контейнер запущен в фоновом режиме и не был корректно остановлен, он продолжает удерживать порт, даже если интерфейс Docker Desktop показывает ошибку. В таких случаях требуется принудительная очистка контейнеров или изменение маппинга портов в файле <code>docker-compose.yml</code>.</p>
+
+<p>Таблица ниже демонстрирует распространенные порты и сервисы, которые чаще всего вызывают конфликты при разработке:</p>
+
+<table>
+<thead>
+<tr>
+<th>Порт</th>
+<th>Типичный сервис</th>
+<th>Вероятность конфликта</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>80 / 443</td>
+<td>IIS, Apache, Skype, антивирусы</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>React, Node.js, Grafana</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>3306</td>
+<td>MySQL / MariaDB</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>5432</td>
+<td>PostgreSQL</td>
+<td>Средняя</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если вы используете виртуальные машины (VirtualBox, VMware), они могут создавать собственные виртуальные сетевые адаптеры (Host-Only или NAT), которые перехватывают трафик. Иногда сброс настроек виртуальной сети или переключение режима сети с «Мост» на «NAT» решает проблему недоступности портов внутри гостевой ОС.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Изменение порта приложения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантированное устранение конфликта</li><li>✅ Не требует прав администратора</li><li>✅ Безопасно для системы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Необходимость менять конфигурацию клиента</li><li>❌ Риск забыть новый порт</li><li>❌ Возможные проблемы с CORS</li></ul></div>
+</div></div>
+
+<p>В средах с несколькими версиями одного и того же ПО (например, несколько версий PHP или Python) может происходить конфликт библиотек, которые пытаются занять один и тот же порт для отладки. Убедитесь, что в переменных окружения не прописаны жесткие значения портов, которые конфликтуют с текущим проектом.</p>
+
+<h2 id="типичные-ошибки-при-устранении-неполадок">Типичные ошибки при устранении неполадок</h2>
+
+<p>В процессе диагностики пользователи часто совершают однотипные ошибки, которые не только не решают проблему, но и запутывают ситуацию. Избегание этих ловушек позволит сэкономить время и избежать лишних перезагрузок системы.</p>
+
+<ol>
+<li><strong>Игнорирование прав администратора</strong> — запуск терминала или IDE без повышенных привилегий при работе с портами ниже 1024 всегда приведет к отказу; всегда проверяйте, запущен ли инструмент разработки от имени администратора.</li>
+<li><strong>Попытка удалить системные процессы</strong> — завершение процессов с именами вроде <code>svchost.exe</code> или <code>system</code> в надежде освободить порт может привести к нестабильной работе ОС; сначала убедитесь, что процесс действительно относится к сетевой службе.</li>
+<li><strong>Изменение только входящих правил</strong> — при настройке брандмауэра пользователи часто забывают про исходящие правила или правила для разных типов сетей (общественная, частная), из-за чего блокировка сохраняется.</li>
+<li><strong>Отсутствие проверки после каждого шага</strong> — выполнение всех команд сброса сразу без промежуточной проверки результата не позволяет понять, какое именно действие помогло, и усложняет диагностику в будущем.</li>
+</ol>
+
+<p>Важно также помнить о специфике языков программирования. Например, в Node.js ошибка <code>EADDRINUSE</code> требует обработки в коде через событие <code>server.on('error')</code>, а в Python <code>socket.error</code>. Игнорирование обработки этих исключений в коде приводит к падению приложения вместо graceful degradation.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте переменные окружения для задания порта (например, process.env.PORT). Это позволит запускать несколько экземпляров приложения на одной машине без изменения кода.</p></aside>
+
+<h2 id="резюме-и-профилактика-проблем">Резюме и профилактика проблем</h2>
+
+<p>Ошибка «local port отказано в доступе» является защитным механизмом операционной системы, предотвращающим хаотичное использование сетевых ресурсов. Успешное решение проблемы базируется на четком понимании того, какой процесс владеет портом, и наличии достаточных прав для управления сетевыми соединениями. Систематический подход от проверки запущенных процессов до анализа правил брандмауэра позволяет устранить 99% подобных инцидентов.</p>
+
+<p>Для предотвращения повторения ситуации рекомендуется вести документацию используемых портов в проекте, использовать нестандартные порты для локальной разработки и регулярно обновлять сетевые драйверы. Понимание архитектуры сетевых взаимодействий вашей операционной системы превращает пугающие ошибки доступа в рутинную задачу конфигурирования.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключ к решению — идентификация процесса-владельца порта и проверка правил сетевого экрана. Сброс стека TCP/IP является универсальным, но радикальным методом.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/s/si/siemens-nx-12-kak-ustanovit.html" class="pb-related-card">
+                <span class="pb-related-title">Установка Siemens NX 12: подробная инструкция и решение ошибок</span>
+                <span class="pb-related-desc">Руководство по установке Siemens NX 12: системные требования, настройка лицензий, пошаговый монтаж и</span>
+            </a><a href="/articles/s/se/selecline-lm-t006-instruktsiya.html" class="pb-related-card">
+                <span class="pb-related-title">Selecline LM-T006: Инструкция, настройка и устранение неисправностей</span>
+                <span class="pb-related-desc">Полная техническая инструкция по эксплуатации, программированию и ремонту контроллера Selecline LM-T</span>
+            </a><a href="/articles/n/no/noname-chat-otmenit-podpisku-kak-otklyuchit.html" class="pb-related-card">
+                <span class="pb-related-title">Как отменить подписку noname chat: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по отключению подписки в приложении Noname Chat. Способы для Android, iOS, веб-версии </span>
+            </a><a href="/articles/v/v-/v-ashdirezke-ne-otkryvayutsya-serii.html" class="pb-related-card">
+                <span class="pb-related-title">Не открываются серии в Ашдирезке: решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок воспроизведения серий в Ашдирезке. Настройка кодеков, DNS </span>
+            </a><a href="/articles/k/ka/kak-sokhranit-nastrojki-v-menyu-dlya-razrabotchikov.html" class="pb-related-card">
+                <span class="pb-related-title">Сохранение настроек в меню для разработчиков Android</span>
+                <span class="pb-related-desc">Техническое руководство по фиксации параметров отладки, сбросу и восстановлению конфигурации системы</span>
+            </a><a href="/articles/d/de/delat-ikonki-kak-iz-genshina.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать иконки в стиле Геншин Импакт</span>
+                <span class="pb-related-desc">Подробная инструкция по созданию иконок Genshin Impact: размеры, форматы, цветовая палитра и техниче</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

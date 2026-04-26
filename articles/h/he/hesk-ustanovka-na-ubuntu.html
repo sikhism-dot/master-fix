@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Hesk на Ubuntu: полная инструкция по установке и настройке — Мастер Фикс</title>
+    <meta name="description" content="Как установить Hesk на Ubuntu сервер. Пошаговая инструкция, настройка LAMP, базы данных MySQL и Apache для работы тикет-системы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/he/hesk-ustanovka-na-ubuntu.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Hesk на Ubuntu: полная инструкция по установке и настройке">
+    <meta property="og:description" content="Как установить Hesk на Ubuntu сервер. Пошаговая инструкция, настройка LAMP, базы данных MySQL и Apache для работы тикет-системы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/prilozheniya-servisy/">Приложения и Сервисы</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Hesk на Ubuntu: полная инструкция по установке и настройке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#требования-к-серверу-и-подготовка-окружения">Требования к серверу и подготовка окружения</a></li><li><a href="#установка-и-настройка-стека-lamp">Установка и настройка стека LAMP</a></li><li><a href="#создание-базы-данных-и-пользователя">Создание базы данных и пользователя</a></li><li><a href="#загрузка-и-развертывание-файлов-hesk">Загрузка и развертывание файлов Hesk</a></li><li><a href="#запуск-мастера-установки-и-конфигурация">Запуск мастера установки и конфигурация</a></li><li><a href="#настройка-apache-и-оптимизация-безопасности">Настройка Apache и оптимизация безопасности</a></li><li><a href="#решение-проблем-и-обслуживание">Решение проблем и обслуживание</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-na-lzh-sdelat-vklbchenie-s-teletranslyatsii.html">Как включить телетрансляцию на LG: Полное руководство</a></li><li><a href="/articles/k/ka/kak-v-okko-ubrat-istoriyu-prosmotrov-v-prilozhenii.html">Как удалить историю в Okko: полная инструкция для всех устройств</a></li><li><a href="/articles/k/ka/kak-na-ajfon-skachat-igru-cherez-telegram.html">Как скачать игру на iPhone через Telegram: полная инструкция</a></li><li><a href="/articles/a/ac/acv-ad-7210-raspinovka.html">Распиновка ACV AD-7210: схемы подключения и коды</a></li><li><a href="/articles/k/ka/kak-najti-skrytyj-chat-vkontakte.html">Как найти скрытый чат ВКонтакте: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Установка Hesk на Ubuntu: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#требования-к-серверу-и-подготовка-окружения">Требования к серверу и подготовка окружения</a></li><li><a href="#установка-и-настройка-стека-lamp">Установка и настройка стека LAMP</a></li><li><a href="#создание-базы-данных-и-пользователя">Создание базы данных и пользователя</a></li><li><a href="#загрузка-и-развертывание-файлов-hesk">Загрузка и развертывание файлов Hesk</a></li><li><a href="#запуск-мастера-установки-и-конфигурация">Запуск мастера установки и конфигурация</a></li><li><a href="#настройка-apache-и-оптимизация-безопасности">Настройка Apache и оптимизация безопасности</a></li><li><a href="#решение-проблем-и-обслуживание">Решение проблем и обслуживание</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Современный бизнес требует надежных инструментов для обработки запросов клиентов, и именно поэтому установка Hesk на Ubuntu становится приоритетной задачей для многих системных администраторов. Эта легковесная система управления тикетами идеально подходит дляних компаний, которым нужна стабильность, но нет желания переплачивать за громоздкие корпоративные решения. Развертывание происходит на классическом стеке LAMP, что гарантирует высокую совместимость и простоту обслуживания в среде Linux.</p>
+
+<p>Процесс инсталляции требует внимательного отношения к деталям, особенно при конфигурации веб-сервера и базы данных. Ошибки на этапе настройки прав доступа или параметров PHP могут привести к неработоспособности интерфейса или уязвимостям безопасности. В этом руководстве мы детально разберем каждый шаг, от подготовки сервера до финальной оптимизации, чтобы вы получили полностью функциональную систему поддержки.</p>
+
+<h2 id="требования-к-серверу-и-подготовка-окружения">Требования к серверу и подготовка окружения</h2>
+<p>Перед началом любых работ необходимо убедиться, что ваш сервер соответствует минимальным системным требованиям. <strong>Hesk</strong> не требует мощного железа, но стабильность работы напрямую зависит от корректности установленных компонентов. Для Ubuntu сервером стандартом является наличие минимум 512 МБ оперативной памяти, хотя для комфортной работы рекомендуется выделить 1 ГБ и более.</p>
+
+<p>Ключевым моментом является актуальность пакетной базы. Перед установкой нового софта всегда обновляйте репозитории, чтобы избежать конфликтов версий библиотек. Используйте команду <code>sudo apt update && sudo apt upgrade -y</code> для приведения системы в актуальное состояние. Это также закроет известные уязвимости безопасности ОС.</p>
+
+<p>Для работы приложения вам потребуется установленный веб-сервер (Apache или Nginx), интерпретатор PHP и сервер баз данных MySQL или MariaDB. <em>Версия PHP</em> должна быть совместима с вашей версией Hesk; обычно это PHP 7.4 или выше. Проверка совместимости версий — критически важный этап, игнорирование которого приведет к ошибкам при запуске скриптов.</p>
+
+<blockquote>⚠️ Внимание: Убедитесь, что на сервере открыты порты 80 (HTTP) и 443 (HTTPS) в фаерволе, иначе доступ к панели управления будет невозможен из внешней сети.</blockquote>
+
+<p>Также стоит заранее позаботиться о доменном имени, которое будет указывать на ваш сервер. Хотя тестирование возможно по IP-адресу, для production-среды наличие DNS-записи обязательно. Это упростит настройку SSL-сертификатов и сделает адрес системы поддержки удобным для запоминания пользователями.</p>
+
+<h2 id="установка-и-настройка-стека-lamp">Установка и настройка стека LAMP</h2>
+<p>Фундаментом для работы тикет-системы служит стек LAMP (Linux, Apache, MySQL, PHP). Установка каждого компонента имеет свои нюансы, которые влияют на итоговую производительность. Начнем с веб-сервера Apache, который по умолчанию отлично взаимодействует с модулями PHP.</p>
+
+<p>Установка Apache2 происходит через стандартный менеджер пакетов. После инсталляции сервис автоматически запускается, но требует дополнительной конфигурации для работы с mod_rewrite, который необходим для красивых URL-адресов в Hesk. Активация модулей производится командой <code>a2enmod rewrite</code>, после чего сервер требует перезагрузки.</p>
+
+<p>Далее следует установка СУБД. В современных версиях Ubuntu по умолчанию часто предлагается MariaDB, которая полностью совместима с MySQL. При установке вам будет предложено задать пароль для root-пользователя базы данных. <strong>Запомните этот пароль</strong>, он потребуется на следующем этапе для создания базы данных приложения.</p>
+
+<ul>
+ <li>📦 Установите Apache2 командой <code>sudo apt install apache2</code></li>
+ <li>🗄️ Установите сервер баз данных: <code>sudo apt install mysql-server</code></li>
+ <li>🐘 Установите PHP и необходимые расширения: <code>sudo apt install php libapache2-mod-php php-mysql php-gd php-curl</code></li>
+ <li>🔥 Перезапустите веб-сервер для применения изменений</li>
+</ul>
+
+<p>После установки основных компонентов необходимо настроить PHP. Конфигурационный файл обычно расположен по пути <code>/etc/php/[версия]/apache2/php.ini</code>. В нем нужно увеличить лимиты памяти и времени выполнения скриптов, так как стандартные значения могут быть слишком низкими для импорта больших объемов данных или загрузки вложений.</p>
+
+<div class="pb-poll" id="poll-2bec8648"><div class="pb-poll-question">📊 Какой веб-сервер вы предпочитаете для Ubuntu?</div><div class="pb-poll-option" data-poll="2bec8648" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Apache</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2bec8648" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Nginx</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2bec8648" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">LiteSpeed</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2bec8648" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Caddy</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="создание-базы-данных-и-пользователя">Создание базы данных и пользователя</h2>
+<p>Хранение всех тикетов, пользователей и настроек осуществляется в реляционной базе данных. Создание отдельной базы и пользователя с ограниченными правами — это базовое правило безопасности, которое нельзя игнорировать. Мы не будем использовать root-аккаунт для подключения приложения.</p>
+
+<p>Зайдите в консоль MySQL командой <code>sudo mysql</code>. Первым делом создайте базу данных с кодировкой utf8mb4, что обеспечит корректное отображение эмодзи и специальных символов в текста обращений. Затем создайте пользователя и выдайте ему полные права только что созданной базы.</p>
+
+<pre><code>CREATE DATABASE hesk_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+<p>CREATE USER'hesk_user'@'localhost' IDENTIFIED BY'StrongPassword123!';</p>
+<p>GRANT ALL PRIVILEGES ON hesk_db.* TO'hesk'@'localhost';</p>
+<p>FLUSH PRIVILEGES;</p>
+<p>EXIT;</code></pre></p>
+
+<p>Важно использовать сложные пароли и уникальные имена пользователей. В примере выше замените <code>StrongPassword123!</code> на вашу случайную комбинацию символов. После выполнения SQL-команд права немедленно применяются, и база готова к использованию установщиком.</p>
+
+<table>
+ <thead>
+ <tr>
+ <th>Параметр</th>
+ <th>Значение для примера</th>
+ <th>Описание</th>
+ </tr>
+ </thead>
+ <tbody>
+ <tr>
+ <td>Имя БД</td>
+ <td>hesk_db</td>
+ <td>Логическое имя базы данных</td>
+ </tr>
+ <tr>
+ <td>Пользователь</td>
+ <td>hesk_user</td>
+ <td>Аккаунт для подключения приложения</td>
+ </tr>
+ <tr>
+ <td>Хост</td>
+ <td>localhost</td>
+ <td>Расположение сервера БД</td>
+ </tr>
+ <tr>
+ <td>Кодировка</td>
+ <td>utf8mb4</td>
+ <td>Поддержка всех символов Unicode</td>
+ </tr>
+ </tbody>
+</table>
+
+<blockquote>⚠️ Внимание: Никогда не используйте простые пароли вроде"admin" или"123456" для доступа к базе данных, это делает систему уязвимой для автоматических атак.</blockquote>
+
+<h2 id="загрузка-и-развертывание-файлов-hesk">Загрузка и развертывание файлов Hesk</h2>
+<p>Файлы системы можно загрузить напрямую на сервер или предварительно скачать на локальный компьютер и передать через SFTP. Рекомендуется использовать второй метод с проверкой контрольной суммы, чтобы убедиться в целостности архива и отсутствии внедренного вредоносного кода.</p>
+
+<p>Скачайте последнюю стабильную версию с официального сайта разработчика. Архив необходимо распаковать в корневую директорию веб-сервера, которая в Ubuntu по умолчанию находится по адресу <code>/var/www/html</code>. Для удобства можно переименовать папку в <code>hesk</code> или оставить как есть, если это единственный сайт на сервере.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка перед установкой</h4><label class="check-item"><input type="checkbox"><span>Файлы распакованы в /var/www/html</span></label><label class="check-item"><input type="checkbox"><span>Создана база данных</span></label><label class="check-item"><input type="checkbox"><span>Создан пользователь БД</span></label><label class="check-item"><input type="checkbox"><span>Порт 80 открыт</span></label><label class="check-item"><input type="checkbox"><span>PHP версии 7.4+</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<p>Критически важным этапом является настройка прав доступа к файлам. Веб-сервер Apache работает от имени пользователя <code>www-data</code>, и он должен иметь права на запись в определенные директории для загрузки вложений и кеширования. Однако, давать полные права (777) на всю папку проекта категорически нельзя.</p>
+
+<pre><code>sudo chown -R www-data:www-data /var/www/html/hesk
+<p>sudo chmod -R 755 /var/www/html/hesk</p>
+<p>sudo chmod -R 777 /var/www/html/hesk/cache</p>
+<p>sudo chmod -R 777 /var/www/html/hesk/attachments</code></pre></p>
+
+<p>Обратите внимание, что права 777 даются только на папки <code>cache</code> и <code>attachments</code>. Это позволяет системе записывать туда временные файлы и файлы пользователей, сохраняя исполняемый код скриптов защищенным от модификации.</p>
+
+<h2 id="запуск-мастера-установки-и-конфигурация">Запуск мастера установки и конфигурация</h2>
+<p>Теперь можно перейти в веб-браузер и открыть адрес вашего сервера. Автоматически запустится мастер установки, который проверит окружение на соответствие требованиям. Если все предыдущие шаги выполнены верно, вы увидите зеленые галочки напротив всех пунктов проверки.</p>
+
+<p>На этапе конфигурации базы данных вам нужно будет ввести данные, созданные ранее: имя базы, пользователя и пароль. <strong>Внимательно проверьте</strong> введенные данные, так как ошибка даже в одном символе приведет к сообщению об отказе в подключении. Также мастер предложит создать административного пользователя.</p>
+
+<p>В процессе настройки можно сразу выбрать язык интерфейса и часовой пояс. Правильная настройка времени важна для корректного отображения времени создания тикетов и ответов операторов. После завершения установки мастер предложит удалить файл <code>install.php</code> или переименовать папку установщика.</p>
+
+<details class="pb-accordion"><summary>Что делать если установка прервалась?</summary><div class="pb-accordion-body"><p>Если процесс установки прервался из-за таймаута, не паникуйте. Проверьте логи Apache в /var/log/apache2/error.log. Чаще всего проблема решается увеличением параметра max_execution_time в php.ini. После исправления просто обновите страницу браузера — мастер продолжит с места остановки, если данные уже были сохранены в БД.>
+
+<blockquote>⚠️ Внимание: После успешной установки обязательно удалите или переименуйте директорию <code>install</code>, иначе любой злоумышленник сможет переустановить вашу систему и получить доступ ко всем данным.</blockquote>
+
+<h2 id="настройка-apache-и-оптимизация-безопасности">Настройка Apache и оптимизация безопасности</h2>
+<p>Для корректной работы ЧПУ (красивых ссылок) необходимо активировать поддержку файлов <code>.htaccess</code> в конфигурации Apache. Откройте файл конфигу виртуального хоста или основной конфиг <code>apache2.conf</code> и найдите блок Directory для вашей папки проекта.</p>
+
+<p>Внутри блока нужно изменить параметр <code>AllowOverride</code> с <code>None</code> на <code>All</code>. Это разрешит приложению управлять правилами перезаписи URL. Без этого шага навигация внутри Hesk будет работать некорректно, выдавая ошибки 404 при переходе по внутренним ссылкам.</p>
+
+<pre><code><Directory /var/www/html/hesk>
+<p>Options Indexes FollowSymLinks</p>
+<p>AllowOverride All</p>
+<p>Require all granted</p>
+</Directory></code></pre>
+
+<p>После внесения изменений в конфиги обязательно перезапустите веб-сервер командой <code>sudo systemctl restart apache2</code>. Также рекомендуется настроить HTTPS с помощью Let's Encrypt, так как передача паролей и данных клиентов по открытому протоколу HTTP недопустима в современных условиях.</p>
+
+
+
+<p>Дополнительно стоит ограничить доступ к служебным файлам. В корневой папке Hesk находятся файлы конфигурации, которые не должны быть доступны напрямую из браузера. Настройка веб-сервера должна запрещать прямой доступ к файлам с расширением <code>.inc</code>, <code>.php</code> (кроме разрешенных) и другим служебным расширениям.</p>
+
+<h2 id="решение-проблем-и-обслуживание">Решение проблем и обслуживание</h2>
+<p>В процессе эксплуатации вы можете столкнуться с типичными проблемами, такими как ошибки памяти или проблемы с отправкой почты. Часто причина кроется в ограничениях хостинга или неверных настройках SMTP. Для отладки используйте встроенный логгер ошибок Hesk и логи веб-сервера.</p>
+
+<p>Регулярное резервное копирование — залог сохранности данных. Вам нужно периодически делать дампы базы данных и копировать папку с вложениями. Автоматизация этого процесса через cron-скрипты избавит от риска потери важной информации при сбоях оборудования.</p>
+
+<ul>
+ <li>🔄 Регулярно обновляйте Hesk до последней версии для получения исправлений безопасности</li>
+ <li>💾 Делайте бэкапы базы данных перед любым обновлением</li>
+ <li>🧹 Очищайте папку логов и старых вложений для экономии места на диске</li>
+ <li>🔒 Меняйте пароли администраторов раз в полгода</li>
+</ul>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Стабильность работы Hesk на 90% зависит от правильной настройки прав доступа к файлам и регулярного обновления компонентов сервера.</p></aside>
+
+<p>Мониторинг дискового пространства также важен, так как база данных и вложения имеют свойство расти. Если диск переполнится, система перестанет принимать новые тикеты. Настройте алерты на заполнение диска более чем на 80%, чтобы успеть принять меры.</p>
+
+<details>
+ <summary>Как сбросить пароль администратора, если я его забыл?</summary>
+ <p>Для сброса пароля вам понадобится доступ к базе данных. Выполните SQL-запрос UPDATE hesk_users SET password=MD5('новый_пароль') WHERE id=1. После этого войдите под новым паролем и сразу же смените его через интерфейс системы на более сложный.</p>
+</details>
+
+<details>
+ <summary>Можно ли установить Hesk на Nginx вместо Apache?</summary>
+ <p>Да, Hesk совместим с Nginx, но это требует более сложной ручной конфигурации правил (rewrite rules), так как Nginx не обрабатывает.htaccess файлы нативно. Вам придется вручную прописывать правила в конфиге сайта.</p>
+</details>
+
+<details>
+ <summary>Где хранятся вложенные файлы тикетов?</summary>
+ <p>По умолчанию все загруженные файлы хранятся в директории <code>attachments</code> в корне установки Hesk. Структура папок внутри организована по ID тикетов. При миграции на другой сервер эту папку нужно переносить целиком.</p>
+</details>
+
+<details>
+ <summary>Почему не приходят уведомления на email?</summary>
+ <p>Чаще всего проблема в настройках SMTP или блокировке портов провайдером. Проверьте настройки в админ-панели Hesk в разделе"Email Settings". Убедитесь, что сервер разрешает исходящие соединения на порт 25, 465 или 587.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-na-lzh-sdelat-vklbchenie-s-teletranslyatsii.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить телетрансляцию на LG: Полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке эфирного, кабельного и IPTV телевидения на телевизорах LG Smart TV</span>
+            </a><a href="/articles/k/ka/kak-v-okko-ubrat-istoriyu-prosmotrov-v-prilozhenii.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить историю в Okko: полная инструкция для всех устройств</span>
+                <span class="pb-related-desc">Подробное руководство по очистке истории просмотров в приложении Okko на Smart TV, Android, iOS и ПК</span>
+            </a><a href="/articles/k/ka/kak-na-ajfon-skachat-igru-cherez-telegram.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать игру на iPhone через Telegram: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по загрузке игр на iOS через Telegram. Установка приложений вне App Store, исп</span>
+            </a><a href="/articles/a/ac/acv-ad-7210-raspinovka.html" class="pb-related-card">
+                <span class="pb-related-title">Распиновка ACV AD-7210: схемы подключения и коды</span>
+                <span class="pb-related-desc">Полная техническая инструкция по распиновке ACV AD-7210. Цветовые схемы проводов, коды ISO, установк</span>
+            </a><a href="/articles/k/ka/kak-najti-skrytyj-chat-vkontakte.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти скрытый чат ВКонтакте: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по обнаружению скрытых диалогов в ВК через настройки, архив и кэш на Android</span>
+            </a><a href="/articles/k/ka/kak-postavit-vk-video-na-avtozapusk-televishchor-lzh.html" class="pb-related-card">
+                <span class="pb-related-title">Автозапуск YouTube на LG Smart TV: Полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по настройке автозапуска видео на телевизорах LG. Настройки сети, Smart Shar</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

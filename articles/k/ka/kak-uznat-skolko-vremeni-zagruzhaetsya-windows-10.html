@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как узнать время загрузки Windows 10: способы проверки — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция: как измерить время запуска Windows 10 через журнал событий, PowerShell и сторонние утилиты. Анализ причин медленной загрузки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-uznat-skolko-vremeni-zagruzhaetsya-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как узнать время загрузки Windows 10: способы проверки">
+    <meta property="og:description" content="Подробная инструкция: как измерить время запуска Windows 10 через журнал событий, PowerShell и сторонние утилиты. Анализ причин медленной загрузки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как узнать время загрузки Windows 10: способы проверки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-встроенного-журнала-событий-windows">Использование встроенного журнала событий Windows</a></li><li><a href="#применение-командной-строки-и-powershell">Применение командной строки и PowerShell</a></li><li><a href="#сторонние-утилиты-для-мониторинга-производительности">Сторонние утилиты для мониторинга производительности</a></li><li><a href="#факторы-влияющие-на-скорость-загрузки-системы">Факторы, влияющие на скорость загрузки системы</a></li><li><a href="#оптимизация-и-сокращение-времени-запуска">Оптимизация и сокращение времени запуска</a></li><li><a href="#типичные-ошибки-при-измерении-и-диагностике">Типичные ошибки при измерении и диагностике</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/in/indikator-zagruzki-protsessora-i-pamyati-dlya-windows-10.html">Индикатор загрузки процессора и памяти для Windows 10: настройка</a></li><li><a href="/articles/j/jb/jbl-go-3-drajvera-dlya-windows-10.html">JBL GO 3 и Windows 10: установка драйверов и настройка</a></li><li><a href="/articles/k/ka/kak-zagruzitsya-s-fleshki-na-noutbuke-fujitsu-ah502.html">Как загрузиться с флешки на ноутбуке Fujitsu AH502: полная инструкция</a></li><li><a href="/articles/g/gs/gs-gamekit-gk-gpd1501-drajvera-dlya-windows.html">Gs GameKit GK-GPD1501: драйверы и установка на Windows</a></li><li><a href="/articles/d/da/dark-souls-ne-zapuskaetsya-na-windows-10.html">Dark Souls не запускается на Windows 10: решение проблем</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Детальный анализ времени загрузки операционной системы Windows 10</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-встроенного-журнала-событий-windows">Использование встроенного журнала событий Windows</a></li><li><a href="#применение-командной-строки-и-powershell">Применение командной строки и PowerShell</a></li><li><a href="#сторонние-утилиты-для-мониторинга-производительности">Сторонние утилиты для мониторинга производительности</a></li><li><a href="#факторы-влияющие-на-скорость-загрузки-системы">Факторы, влияющие на скорость загрузки системы</a></li><li><a href="#оптимизация-и-сокращение-времени-запуска">Оптимизация и сокращение времени запуска</a></li><li><a href="#типичные-ошибки-при-измерении-и-диагностике">Типичные ошибки при измерении и диагностике</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда компьютер включается дольше привычного, знакома многим пользователям, сталкивающимся с необходимостью ожидания появления рабочего стола вместо мгновенного доступа к приложениям.</p>
+<p>Определить точную длительность этого процесса без специализированных инструментов невозможно, так как стандартный интерфейс не отображает таймер запуска в явном виде.</p>
+<p>Системные администраторы и продвинутые пользователи нуждаются в конкретных цифрах для диагностики проблем с железом или программными конфликтами, мешающими нормальной работе.</p>
+<p>Существует несколько надежных методов получения этих данных, начиная от встроенного журнала событий и заканчивая специализированными утилитами мониторинга.</p>
+
+<h2 id="использование-встроенного-журнала-событий-windows">Использование встроенного журнала событий Windows</h2>
+<p>Самый достоверный способ получения информации о времени запуска кроется во внутренней системе логирования операционной системы, которая фиксирует каждое важное событие.</p>
+<p>Для доступа к этим данным необходимо открыть оснастку «Просмотр событий», где хранятся подробные отчеты о работе всех компонентов <strong>Windows 10</strong>.</p>
+<p>Найти нужный журнал можно, перейдя по пути <code>Журналы Windows → Система</code> в левой панели навигации интерфейса управления.</p>
+
+<h3>Поиск идентификатора события запуска</h3>
+<p>В огромном массиве записей необходимо отфильтровать события по конкретному идентификатору, который соответствует успешному завершению процедуры загрузки.</p>
+<p>Справа в панели действий следует выбрать пункт «Фильтр текущего журнала» и в поле для кодов событий ввести число <code>6005</code>, обозначающее старт службы журнала событий.</p>
+<p>После применения фильтра в списке останутся только записи о включениях компьютера, где в колонке «Дата и время» указано точное время начала работы системы.</p>
+<p>Чтобы вычислить длительность загрузки, нужно найти событие с кодом <code>6013</code>, которое свидетельствует о корректном завершении работы, и сравнить его время с предыдущим запуском.</p>
+<p>Разница между временем события <code>6005</code> и моментом фактической доступности рабочего стола (часто фиксируется смежными событиями драйверов) даст искомый интервал.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск времени загрузки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте «Просмотр событий»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Журналы Windows → Система</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">В фильтре укажите код 6005</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Смотрите время последнего события</span></div></div>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Код события 6005 появляется в журнале в момент, когда служба журнала событий готова к работе, что происходит на ранних этапах загрузки.</p></aside>
+
+<p>Анализ временных меток позволяет не только узнать длительность, но и выявить аномалии, если система запускалась в необычное время без ведома пользователя.</p>
+<p>Данный метод не требует установки дополнительного программного обеспечения и доступен на любых сборках операционной системы, включая корпоративные версии.</p>
+<p>Единственным нюансом является необходимость manually вычислять разницу во времени, если не использовать дополнительные скрипты для автоматизации расчетов.</p>
+
+<h2 id="применение-командной-строки-и-powershell">Применение командной строки и PowerShell</h2>
+<p>Для пользователей, предпочитающих текстовый интерфейс или нуждающихся в автоматизации сбора статистики, идеальным решением станет использование командной строки.</p>
+<p>Утилита <code>systeminfo</code> способна предоставить сводные данные о системе, включая точное время последней загрузки, которое можно использовать для расчетов.</p>
+<p>Запуск команды требует прав администратора, поэтому консоль необходимо открть через контекстное меню кнопки «Пуск», выбрав соответствующий пункт.</p>
+
+<h3>Анализ вывода команды systeminfo</h3>
+<p>После ввода команды <code>systeminfo</code> и ожидания формирования отчета, следует прокрутить список до блока «Системная информация».</p>
+<p>Строка «Время загрузки системы» содержит дату и время последнего старта, от которого можно отсчитывать длительность текущей сессии.</p>
+<p>Для более точных измерений в реальном времени можно использовать встроенный калькулятор или специализированные скрипты PowerShell, анализирующие временные метки.</p>
+<p>PowerShell позволяет создавать более сложные запросы, например, вычисляющие время работы системы в днях, часах и минутах с помощью свойства <code>Uptime</code>.</p>
+<p>Команда <code>(Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime</code> мгновенно покажет, сколько времени прошло с момента включения.</p>
+
+<pre><code>Get-CimInstance Win32_OperatingSystem | Select-Object LastBootUpTime</code></pre>
+
+<p>Использование PowerShell особенно эффективно при удаленном мониторинге нескольких компьютеров в локальной сети, когда требуется собрать статистику со всех узлов.</p>
+<p>Полученные данные можно экспортировать в текстовый файл или таблицу для дальнейшего анализа тенденций изменения скорости загрузки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду Get-Process cmiadm_plugin_host, чтобы проверить, не потребляет ли служба телеметрии ресурсы во время старта.</p></aside>
+
+<h2 id="сторонние-утилиты-для-мониторинга-производительности">Сторонние утилиты для мониторинга производительности</h2>
+<p>Специализированное программное обеспечение часто предоставляет более наглядную и детальную информацию о процессе загрузки, чем стандартные средства Windows.</p>
+<p>Программы вроде <em>BootRacer</em> или <em>PassMark BootSpeed</em> созданы специально для тестирования скорости загрузки и оценки производительности системы.</p>
+<p>Они автоматически засекают время от момента включения питания до полной готовности рабочего стола к использованию, разделяя процесс на этапы.</p>
+
+<h3>Сравнение популярных инструментов диагностики</h3>
+<p>Большинство утилит предлагают графическое представление данных, показывая, какие драйверы или службы больше всего тормозят запуск.</p>
+<p>Некоторые программы позволяют проводить сравнительный анализ «до и после» оптимизации, что удобно для оценки эффективности произведенных изменений.</p>
+<p>Важно выбирать проверенные инструменты от известных разработчиков, чтобы избежать установки вредоносного ПО под видом оптимизаторов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Утилита</th>
+<th>Тип лицензии</th>
+<th>Основная функция</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BootRacer</td>
+<td>Free / Paid</td>
+<td>График загрузки по этапам</td>
+</tr>
+<tr>
+<td>PassMark BootSpeed</td>
+<td>Trial</td>
+<td>Сравнение с эталоном</td>
+</tr>
+<tr>
+<td>Windows Performance Recorder</td>
+<td>Free</td>
+<td>Глубокий технический анализ</td>
+</tr>
+</tbody>
+</table>
+
+<p>Использование таких программ требует осторожности, так как они могут иметь глубокий доступ к системным процессам и настройкам автозагрузки.</p>
+<p>Перед установкой любого софта рекомендуется создать точку восстановления системы на случай непредвиденных конфликтов или ошибок в работе.</p>
+<p>Для разовых измерений вполне достаточно бесплатных версий, которые предоставляют весь необходимый функционал для домашнего использования.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Скачивайте утилиты только с официальных сайтов разработчиков, чтобы избежать внедрения вирусов или майнеров.</p></aside>
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор инструмента мониторинга</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Детальная статистика по процессам</li><li>✅ Графическое представление данных</li><li>✅ Автоматический расчет времени</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует установки ПО</li><li>❌ Возможен конфликт с антивирусом</li><li>❌ Некоторые функции платные</li></ul></div>
+</div></div>
+
+<h2 id="факторы-влияющие-на-скорость-загрузки-системы">Факторы, влияющие на скорость загрузки системы</h2>
+<p>Время, необходимое для запуска операционной системы, напрямую зависит от совокупности аппаратных и программных факторов, действующих в конкретный момент.</p>
+<p>Основным узким местом традиционно является тип накопителя, на котором установлена система, и его техническое состояние.</p>
+<p>Наличие большого количества программ в автозагрузке также существенно увеличивает время ожидания, так как системе нужно инициализировать множество служб.</p>
+
+<h3>Аппаратные ограничения и конфигурация</h3>
+<p>Использование твердотельных накопителей <em>SSD</em> вместо механических жестких дисков <em>HDD</em> дает кратный прирост скорости загрузки.</p>
+<p>Объем оперативной памяти влияет на скорость развертывания системных процессов, особенно если объем свободной памяти критически мал.</p>
+<p>Устаревшая BIOS или UEFI прошивка материнской платы может замедлять процесс самотестирования оборудования перед передачей управления загрузчику.</p>
+<p>Подключение множества периферийных устройств по USB в момент включения может задерживать старт из-за опроса и инициализации драйверов.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Скорость загрузки зависит от типа диска (SSD/HDD), количества программ в автозагрузке и состояния драйверов.</p></aside>
+
+<p>Температурный режим компонентов также играет роль: при перегреве процессор может снижать частоты, что замедляет все вычислительные процессы, включая загрузку.</p>
+<p>Фрагментация файловой системы на механических дисках приводит к увеличению времени считывания разбросанных по диску системных файлов.</p>
+<p>Проверка целостности системных файлов с помощью команды <code>sfc /scannow</code> помогает исключить ошибки, вызывающие задержки при старте служб.</p>
+
+<h2 id="оптимизация-и-сокращение-времени-запуска">Оптимизация и сокращение времени запуска</h2>
+<p>После получения точных данных о времени загрузки целесообразно провести ряд мероприятий по оптимизации системы для ускорения работы.</p>
+<p>Первым шагом должно стать ревизия списка автозагрузки, где часто оказываются программы, не требующие постоянного запуска вместе с системой.</p>
+<p>Управление этими параметрами осуществляется через диспетчер задач или раздел настроек в меню <code>Параметры → Приложения → Автозагрузка</code>.</p>
+
+<h3>Настройка параметров быстродействия</h3>
+<p>Включение функции «Быстрый запуск» в схеме электропитания позволяет сохранять образ ядра системы на диск для более быстрого старта.</p>
+<p>Отключение визуальных эффектов, таких как анимация окон и тени, может незначительно, но ускорить отклик интерфейса сразу после входа.</p>
+<p>Регулярное обновление драйверов, особенно chipset и storage контроллеров, обеспечивает корректную и быструю работу оборудования.</p>
+
+<ol>
+<li>Откройте диспетчер задач сочетанием клавиш Ctrl+Shift+Esc.</li>
+<li>Перейдите на вкладку «Автозагрузка».</li>
+<li>Отсортируйте список по влиянию на запуск.</li>
+<li>Отключите ненужные приложения правой кнопкой мыши.</li>
+</ol>
+
+<p>Дефрагментация диска (для HDD) или оптимизация (для SSD) помогает упорядочить данные и ускорить доступ к ним при старте системы.</p>
+<p>Проверка системы на наличие вредоносных программ обязательна, так как вирусы часто прописываются в автозагрузку и тормозят компьютер.</p>
+<p>Если программные методы не помогают, стоит рассмотреть возможность переустановки системы или замены аппаратных компонентов на более производительные.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Очистка автозагрузки</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Диспетчер задач</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Вкладка Автозагрузка</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите программу</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Отключить</span></div></div>
+
+<h2 id="типичные-ошибки-при-измерении-и-диагностике">Типичные ошибки при измерении и диагностике</h2>
+<p>В процессе анализа времени загрузки пользователи часто допускают ошибки, которые приводят к неверным выводам о состоянии системы.</p>
+<p>Некорректная интерпретация данных журнала событий или игнорирование фоновых процессов может исказить реальную картину производительности.</p>
+<p>Важно понимать разницу между временем появления логотипа производителя и фактической готовностью операционной системы к работе.</p>
+
+<ol>
+<li><strong>Игнорирование фоновых обновлений</strong> — если в момент замера система устанавливает обновления, время загрузки будет аномально высоким, что не отражает реальную производительность.</li>
+<li><strong>Неверный выбор точки отсчета</strong> — измерение времени от нажатия кнопки питания до появления рабочего стола не учитывает время POST (тест оборудования), что важно для полной диагностики.</li>
+<li><strong>Отсутствие повторных замеров</strong> — однократное измерение может быть случайностью, поэтому для получения объективных данных необходимо провести серию из 3-5 тестов.</li>
+<li><strong>Загрузка системы ресурсоемкими задачами</strong> — попытка измерить скорость загрузки одновременно с запуском тяжелых приложений даст неверный результат.</li>
+</ol>
+
+<p>Следует помнить, что первый запуск после установки обновлений или драйверов всегда проходит медленнее из-за перекомпиляции кэша и настройки компонентов.</p>
+<p>Использование нелицензионных сборок Windows может приводить к нестабильной работе и некорректному отображению системного времени и таймеров.</p>
+<p>При наличии в системе нескольких операционных систем время загрузки может варьироваться в зависимости от выбранного загрузчика и его настроек.</p>
+
+<p>Подводя итог, можно сказать, что точное знание времени загрузки Windows 10 является важным инструментом для поддержания здоровья компьютера.</p>
+<p>Регулярный мониторинг этого параметра позволяет вовремя заметить деградацию производительности и устранить причины до того, как они станут критическими.</p>
+<p>Комплексный подход, включающий использование встроенных средств, командной строки и стороннего софта, дает наиболее полную картину происходящего.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/in/indikator-zagruzki-protsessora-i-pamyati-dlya-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Индикатор загрузки процессора и памяти для Windows 10: настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по выводу показателей CPU и RAM на рабочий стол Windows 10. Настройка виджетов,</span>
+            </a><a href="/articles/j/jb/jbl-go-3-drajvera-dlya-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">JBL GO 3 и Windows 10: установка драйверов и настройка</span>
+                <span class="pb-related-desc">Полная инструкция по подключению JBL GO 3 к ПК. Нужны ли драйверы для Windows 10, решение проблем со</span>
+            </a><a href="/articles/k/ka/kak-zagruzitsya-s-fleshki-na-noutbuke-fujitsu-ah502.html" class="pb-related-card">
+                <span class="pb-related-title">Как загрузиться с флешки на ноутбуке Fujitsu AH502: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке BIOS и загрузке с USB на Fujitsu LifeBook AH502. Решения проблем </span>
+            </a><a href="/articles/g/gs/gs-gamekit-gk-gpd1501-drajvera-dlya-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Gs GameKit GK-GPD1501: драйверы и установка на Windows</span>
+                <span class="pb-related-desc">Полный гайд по поиску драйверов для Gs GameKit GK-GPD1501. Решаем проблемы с подключением GamePad к </span>
+            </a><a href="/articles/d/da/dark-souls-ne-zapuskaetsya-na-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Dark Souls не запускается на Windows 10: решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок запуска Dark Souls на Windows 10. Настройка совместимости,</span>
+            </a><a href="/articles/k/ka/kak-sdelat-na-noutbuke-chtoby-razgovarivat-bez-mikrofona.html" class="pb-related-card">
+                <span class="pb-related-title">Как говорить на ноутбуке без микрофона: обходные пути</span>
+                <span class="pb-related-desc">Техническое руководство по передаче звука на ноутбуке при отсутствии встроенного или внешнего микроф</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>DialogSim в webapp: Настройка, HTTP-протокол и отладка — Мастер Фикс</title>
+    <meta name="description" content="Полное руководство по интеграции DialogSim в веб-приложения. Настройка HTTP-запросов, устранение ошибок CORS, работа с API и симуляция диалогов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/ht/http-webapp-dialogsim.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="DialogSim в webapp: Настройка, HTTP-протокол и отладка">
+    <meta property="og:description" content="Полное руководство по интеграции DialogSim в веб-приложения. Настройка HTTP-запросов, устранение ошибок CORS, работа с API и симуляция диалогов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">DialogSim в webapp: Настройка, HTTP-протокол и отладка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-взаимодействия-webapp-и-dialogsim">Архитектура взаимодействия WebApp и DialogSim</a></li><li><a href="#конфигурация-http-запросов-и-параметров-среды">Конфигурация HTTP-запросов и параметров среды</a></li><li><a href="#сценарии-развертывания-и-совместимость">Сценарии развертывания и совместимость</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otklyuchit-golosovoj-pomoshchnik-na-itel.html">Как отключить голосовой помощник на телефоне: полная инструкция</a></li><li><a href="/articles/b/be/belye-pyatnyshki-na-tele.html">Белые пятнышки на теле: причины, диагностика и лечение</a></li><li><a href="/articles/k/ka/kak-nazyvaetsya-kabel-so-spitsami.html">Кабель со спицами: как называется, устройство и применение</a></li><li><a href="/articles/a/a1/a1-lichnyj-kabinet-registratsiya.html">Регистрация А1 личный кабинет: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-vyvesti-zvuk-na-saundbar-i-dopolnitelnye-kolonki.html">Как вывести звук на саундбар и колонки: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Интеграция DialogSim в WebApp: Протоколы, HTTP-запросы и Отладка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-взаимодействия-webapp-и-dialogsim">Архитектура взаимодействия WebApp и DialogSim</a></li><li><a href="#конфигурация-http-запросов-и-параметров-среды">Конфигурация HTTP-запросов и параметров среды</a></li><li><a href="#сценарии-развертывания-и-совместимость">Сценарии развертывания и совместимость</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Попытка запустить симуляцию диалога через веб-интерфейс часто приводит к неожиданному препятствию: браузер блокирует соединение, ссылаясь на политику безопасности CORS или неверный формат заголовков.</p>
+<p>Разработчики сталкиваются с ситуацией, когда локальный сервер <em>DialogSim</em> работает безупречно, но при размещении кода на удаленном хосте или попытке вызова через <code>fetch</code> в <em>webapp</code> возникает ошибка сети.</p>
+<p>Корень проблемы обычно кроется в неправильной конфигурации транспортного уровня, где <strong>HTTP-протокол</em> не согласован с требованиями среды исполнения, а параметры симуляции не передаются в нужном формате.</p>
+
+<h2 id="архитектура-взаимодействия-webapp-и-dialogsim">Архитектура взаимодействия WebApp и DialogSim</h2>
+<p>Понимание того, как веб-приложение обменивается данными с симулятором, является фундаментом для стабильной работы системы.</p>
+<p>В стандартной схеме <em>DialogSim</strong> выступает в роли сервера или микросервиса, который принимает структурированные запросы и возвращает ответы, имитирующие поведение бота или оператора.</p>
+<p>Если у вас используется архитектура на базе <em>Docker</em>, то контейнер симулятора может быть изолирован от основного приложения, что требует правильной настройки сетевых мостов.</p>
+<p>На практике это означает, что прямой вызов функций невозможен, и все взаимодействие строится исключительно через <strong>HTTP-запросы</em> или WebSocket-соединения.</p>
+<p>Важно учитывать, что браузеры применяют строгие правила безопасности к контенту, загружаемому с разных доменов или портов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>По умолчанию DialogSim может запускаться на порту 8080, в то время как основное приложение работает на 3000 или 443 (HTTPS), что часто вызывает конфликтыного контента.</p></aside>
+
+<p>Существует несколько способов организации связи между клиентской частью и симулятором.</p>
+<p>Первый вариант предполагает прямое обращение фронтенда к API симулятора, что требует настройки CORS на стороне сервера.</p>
+<p>Второй вариант подразумевает использование прокси-сервера, который скрывает внутреннюю структуру сети и транслирует запросы.</p>
+<p>Третий вариант involves использование Server-Sent Events (SSE) для потоковой передачи данных в реальном времени.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод связи</th>
+<th>Задержка (Latency)</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST API (HTTP)</td>
+<td>Низкая</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>WebSocket</td>
+<td>Минимальная</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Long Polling</td>
+<td>Высокая</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Выбор метода связи зависит от требований к реальному времени: для чатов подходит REST, для стриминга ответов — WebSocket.</p></aside>
+
+<h3>Настройка CORS и заголовков безопасности</h3>
+<p>Самой распространенной ошибкой при интеграции является игнирование заголовков <code>Access-Control-Allow-Origin</code>.</p>
+<p>Браузер автоматически блокирует запрос, если домен, с которого пришел скрипт, не совпадает с доменом, куда отправляется запрос, и сервер не дал явного разрешения.</p>
+<p>Для решения этой проблемы на стороне <em>DialogSim</code> необходимо добавить middleware, который будет пропускать запросы с домена вашего <em>webapp</code>.</p>
+<p>Допустим, вы используете <em>Node.js</em> и <em>Express</em>; в этом случае конфигурация будет выглядеть следующим образом:</p>
+<pre><code>app.use((req, res, next) => {
+<p>res.header('Access-Control-Allow-Origin','*');</p>
+<p>res.header('Access-Control-Allow-Headers','Origin, X-Requested-With, Content-Type, Accept');</p>
+<p>next;</p>
+<p>});</code></pre></p>
+<p>В продакшн-среде вместо wildcard <code>*</code> следует указывать конкретный домен вашего приложения для повышения безопасности.</p>
+<p>Также стоит проверить, что заголовок <code>Content-Type</code> установлен в значение <code>application/json</code>, так как симулятор может отвергать запросы с другим типом контента.</p>
+
+<h2 id="конфигурация-http-запросов-и-параметров-среды">Конфигурация HTTP-запросов и параметров среды</h2>
+<p>Правильная настройка параметров окружения позволяет гибко управлять подключением к симулятору без изменения кода приложения.</p>
+<p>Использование жестко заданных URL-адресов в коде является плохой практикой, так как адреса могут меняться при переходе от разработки к тестированию.</p>
+<p>Рекомендуется выносить адрес сервера <em>DialogSim</code> в переменные окружения или конфигурационные файлы.</p>
+<p>Например, в файле <code>.env</code> можно прописать <code>REACT_APP_DIALOG_SIM_URL=http://localhost:8080</code>.</p>
+<p>При сборке проекта эти переменные подставятся в код, обеспечивая корректную работу в разных средах.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка переменных окружения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создайте файл.env в корне проекта</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Добавьте переменную DIALOG_SIM_HOST</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Укажите порт и протокол</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезапустите сервер разработки</span></div></div>
+
+<p>Формирование тела запроса также требует внимания к деталям.</p>
+<p>Симулятор часто ожидает строго определенной структуры JSON-объекта, включающей идентификатор сессии, текст сообщения и метаданные пользователя.</p>
+<p>Если структура будет нарушена, сервер вернет ошибку 400 Bad Request, и диалог не продолжится.</p>
+<p>Рассмотрим пример корректного формирования payload для отправки сообщения:</p>
+<pre><code>const payload = {
+<p>sessionId:"unique-id-123",</p>
+<p>message:"Привет, бот",</p>
+<p>timestamp: Date.now,</p>
+<p>context: {</p>
+<p>language:"ru"</p>
+<p>}</p>
+<p>};</p>
+
+<p>fetch('/api/dialog', {</p>
+<p>method:'POST',</p>
+<p>headers: {'Content-Type':'application/json' },</p>
+<p>body: JSON.stringify(payload)</p>
+<p>});</code></pre></p>
+<p>Обратите внимание, что ключи объекта должны точно соответствовать документации API симулятора, включая регистр букв.</p>
+
+<h3>Работа с асинхронными запросами</h3>
+<p>Современные веб-приложения полагаются на асинхронную обработку данных, чтобы интерфейс оставался отзывчивым.</p>
+<p>Использование синхронных запросов заблокирует поток выполнения и может привести к зависанию вкладки браузера.</p>
+<p>Для обработки ответов от <em>DialogSim</code> рекомендуется использовать синтаксис <code>async/await</code>, который делает код более читаемым.</p>
+<p>В случае задержки ответа от сервера необходимо предусмотреть таймауты, чтобы пользователь не ждал бесконечно.</p>
+<p>Типичный сценарий обработки включает отправку запроса, ожидание ответа и обработку возможных ошибок сети.</p>
+
+<ul>
+<li>Инициализация состояния загрузки в интерфейсе перед отправкой запроса.</li>
+<li>Отправка данных на сервер симулятора.</li>
+<li>Ожидание ответа с установленным таймаутом (например, 5 секунд).</li>
+<li>Получение ответа и обновление интерфейса сообщением бота.</li>
+<li>Обработка ошибок (сеть недоступна, сервер занят) и вывод уведомления пользователю.</li>
+</ul>
+
+
+<p>Если первый запрос не удался, имеет смысл повторить его один или два раза с экспоненциальной задержкой.</p>
+<p>Это особенно актуально для мобильных сетей, где соединение может быть нестабильным.</p>
+
+<h2 id="сценарии-развертывания-и-совместимость">Сценарии развертывания и совместимость</h2>
+<p>Развертывание <em>DialogSim</code> в продуктивную среду требует учета множества факторов, влияющих на стабильность работы.</p>
+<p>В зависимости от инфраструктуры компании, симулятор может быть размещен на виртуальной машине, в контейнере <em>Kubernetes</em> или как serverless-функция.</p>
+<p>Каждый из этих сценариев имеет свои особенности настройки сетевого доступа и управления ресурсами.</p>
+<p>Например, в среде <em>Kubernetes</em> необходимо правильно настроить Service и Ingress для внешнего доступа.</p>
+<p>В то же время, для локальной разработки достаточно запустить Docker-контейнер на машине разработчика.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При развертывании в облаке убедитесь, что порты симулятора закрыты от публичного доступа и доступны только через API Gateway или балансировщик нагрузки.</p></aside>
+
+<p>Совместимость версий Node.js или Python (в зависимости от реализации симулятора) также играет критическую роль.</p>
+<p>Обновление рантайма на сервере может привести к несовместимости библиотек, используемых <em>DialogSim</code>.</p>
+<p>Рекомендуется фиксировать версии зависимостей в файлах <code>package.json</code> или <code>requirements.txt</code>.</p>
+<p>Проверка совместимости должна проводиться на этапе CI/CD перед выкаткой изменений на продакшн.</p>
+
+<table>
+<thead>
+<tr>
+<th>Среда</th>
+<th>Рекомендуемый ресурс CPU</th>
+<th>Память (RAM)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Локальная (Dev)</td>
+<td>0.5 ядра</td>
+<td>512 MB</td>
+</tr>
+<tr>
+<td>Тестовая (Stage)</td>
+<td>1 ядро</td>
+<td>1 GB</td>
+</tr>
+<tr>
+<td>Продакшн (Prod)</td>
+<td>2+ ядра</td>
+<td>2+ GB</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Интеграция с CI/CD пайплайнами</h3>
+<p>Автоматизация процесса доставки кода позволяет минимизировать человеческий фактор при обновлении симулятора.</p>
+<p>Пайплайн должен включать этапы линтинга, запуска юнит-тестов и интеграционных тестов с <em>DialogSim</code>.</p>
+<p>Для тестирования можно поднимать ephemeral-окружения, которые живут только во время прогона тестов.</p>
+<p>Это позволяет проверять, что новые сценарии диалогов не ломают существующую функциональность веб-приложения.</p>
+<p>Использование Docker Compose в CI-скриптах упрощает управление зависимостями и сетевой конфигурацией.</p>
+
+<p>Рассмотрим пример шага в <em>GitLab CI</em> или <em>GitHub Actions</strong> для запуска тестов:</p>
+<pre><code>stages:
+<p>- test</p>
+<p>- deploy</p>
+
+<p>integration_test:</p>
+<p>stage: test</p>
+<p>script:</p>
+<p>- docker-compose up -d dialogsim</p>
+<p>- npm run test:integration</p>
+<p>- docker-compose down</code></pre></p>
+<p>Такой подход гарантирует, что код попадает в продакшн только после успешного прохождения всех проверок.</p>
+<p>Кроме того, важно логировать результаты тестов для последующего анализа в случае возникновения проблем.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте health-check эндпоинты симулятора в конфигурации оркестратора, чтобы автоматически перезапускать упавшие контейнеры.</p></aside>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+<p>Несмотря на тщательную подготовку, в процессе эксплуатации могут возникать различные сбои.</p>
+<p>Умение быстро диагностировать и устранять неисправности является ключевым навыком разработчика.</p>
+<p>Большинство проблем связано с сетевыми настройками, форматами данных или нехваткой ресурсов.</p>
+<p>Первым шагом всегда должен быть анализ логов как на стороне клиента (консоль браузера), так и на стороне сервера.</p>
+<p>Инструменты разработчика в браузере позволяют отслеживать сетевые запросы и видеть точные коды ошибок.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Диагностика через логи</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полная история событий</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность отследить цепочку вызовов</li></ul></div>
+</div></div>
+
+<p>Часто встречается ситуация, когда симулятор возвращает данные, но приложение их не отображает.</p>
+<p>Это может быть вызвано ошибкой в парсинге JSON или несоответствием типов данных в JavaScript.</p>
+<p>Использование строгой типизации (например, TypeScript) помогает выявлять такие ошибки еще на этапе написания кода.</p>
+<p>Также стоит проверить, не блокирует ли антивирусное ПО или корпоративный фаервол соединения с портом симулятора.</p>
+
+<h3>Типичные ошибки</h3>
+<ol>
+<li><strong>Ошибка 404 Not Found при обращении к API</strong> — неверно указан путь в URL запроса или симулятор развернут по другому адресу; проверьте переменные окружения и роутинг.</li>
+<li><strong>Ошибка CORS Policy</strong> — сервер не отправляет необходимые заголовки разрешения; добавьте middleware для CORS на бэкенде симулятора.</li>
+<li><strong>Таймаут соединения</strong> — симулятор не отвечает в отведенное время; увеличьте таймаут на клиенте или оптимизируйте производительность сервера.</li>
+<li><strong>Ошибка парсинга JSON</em> — сервер вернул HTML вместо JSON (часто при ошибке 500); всегда проверяйте <code>Content-Type</code> ответа перед парсингом.</li>
+</ol>
+
+<p>Для глубокой отладки можно использовать снифферы трафика, такие как <em>Wireshark</em> или <em>Fiddler</em>.</p>
+<p>Они позволяют увидеть"сырые" данные, которые ходят по сети, и понять, где именно происходит обрыв или искажение.</p>
+<p>В сложных случаях стоит включить подробное логирование (debug mode) в конфигурации <em>DialogSim</code>.</p>
+<p>Это поможет увидеть, какие именно данные приходят на вход симулятора и что он отправляет в ответ.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Не забывайте отключать debug-логирование в продакшн-среде, так как оно может значительно снизить производительность и раскрыть чувствительную информацию.</p></aside>
+
+<h2 id="резюме-и-дальнейшие-шаги">Резюме и дальнейшие шаги</h2>
+<p>Интеграция <em>DialogSim</code> в веб-приложение через HTTP-протокол требует внимательного отношения к деталям конфигурации и безопасности.</p>
+<p>Правильная настройка CORS, использование переменных окружения и грамотная обработка асинхронных запросов обеспечивают стабильную работу системы.</p>
+<p>Соблюдение описанных практик позволяет создать надежный канал связи между пользователем и симулятором диалогов.</p>
+<p>Дальнейшее развитие системы может включать переход на WebSocket для real-time взаимодействия или внедрение кэширования ответов.</p>
+<p>Регулярный мониторинг и логирование помогут поддерживать высокое качество сервиса на протяжении всего жизненного цикла проекта.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otklyuchit-golosovoj-pomoshchnik-na-itel.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить голосовой помощник на телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по деактивации Google Assistant, Siri и Bixby. Настройки Android и iOS, скрыты</span>
+            </a><a href="/articles/b/be/belye-pyatnyshki-na-tele.html" class="pb-related-card">
+                <span class="pb-related-title">Белые пятнышки на теле: причины, диагностика и лечение</span>
+                <span class="pb-related-desc">Почему появляются белые пятна на коже? Полный гид по видам депигментации, методам диагностики, схема</span>
+            </a><a href="/articles/k/ka/kak-nazyvaetsya-kabel-so-spitsami.html" class="pb-related-card">
+                <span class="pb-related-title">Кабель со спицами: как называется, устройство и применение</span>
+                <span class="pb-related-desc">Узнайте правильное название кабеля со спицами (UTP). Подробное описание витой пары, категорий, станд</span>
+            </a><a href="/articles/a/a1/a1-lichnyj-kabinet-registratsiya.html" class="pb-related-card">
+                <span class="pb-related-title">Регистрация А1 личный кабинет: пошаговая инструкция</span>
+                <span class="pb-related-desc">Полное руководство по созданию и настройке личного кабинета А1. Решение проблем с входом, восстановл</span>
+            </a><a href="/articles/k/ka/kak-vyvesti-zvuk-na-saundbar-i-dopolnitelnye-kolonki.html" class="pb-related-card">
+                <span class="pb-related-title">Как вывести звук на саундбар и колонки: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по подключению саундбара и внешних акустических систем через HDMI ARC, оптич</span>
+            </a><a href="/articles/v/vo/vojti-v-veb-versiyu-sberbank-puls.html" class="pb-related-card">
+                <span class="pb-related-title">Как войти в Сбербанк Пульс через веб-версию: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по входу в веб-версию Сбербанк Пульс. Настройка рабочего места, авторизация че</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

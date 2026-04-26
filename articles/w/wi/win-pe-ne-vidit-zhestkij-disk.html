@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Win PE не видит жесткий диск: решение проблемы драйверов — Мастер Фикс</title>
+    <meta name="description" content="Установщик Windows не видит диск? Подробная инструкция по интеграции драйверов NVMe, RAID и SATA в Win PE. Решения для ноутбуков и ПК.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/win-pe-ne-vidit-zhestkij-disk.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Win PE не видит жесткий диск: решение проблемы драйверов">
+    <meta property="og:description" content="Установщик Windows не видит диск? Подробная инструкция по интеграции драйверов NVMe, RAID и SATA в Win PE. Решения для ноутбуков и ПК.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Win PE не видит жесткий диск: решение проблемы драйверов</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-отсутствия-диска-в-среде-win-pe">Диагностика отсутствия диска в среде Win PE</a></li><li><a href="#настройка-режима-работы-контроллера-в-biosuefi">Настройка режима работы контроллера в BIOS/UEFI</a></li><li><a href="#интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</a></li><li><a href="#работа-с-nvme-накопителями-и-raid-массивами">Работа с NVMe накопителями и RAID массивами</a></li><li><a href="#типичные-ошибки-при-поиске-накопителя">Типичные ошибки при поиске накопителя</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/ge/gejmpad-x3-drajver-skachat.html">Геймпад X3: как скачать драйвер и настроить на ПК</a></li><li><a href="/articles/z/za/zakazal-kartu-ne-otobrazhaetsya-v-lichnom-kabinete-vtb.html">Карта не отображается в ВТБ Онлайн: причины и решение</a></li><li><a href="/articles/b/bl/blyutuz-na-vindovs-7.html">Как включить Bluetooth на Windows 7: полная инструкция</a></li><li><a href="/articles/a/al/alisa-vyklyuchi-umnuyu-kameru.html">Как отключить умную камеру Алисы: Инструкция</a></li><li><a href="/articles/d/de/dexp-r2-nastrojka.html">DEXP R2: Настройка и устранение проблем с роутером</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Win PE не видит жесткий диск: полное руководство по устранению</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-отсутствия-диска-в-среде-win-pe">Диагностика отсутствия диска в среде Win PE</a></li><li><a href="#настройка-режима-работы-контроллера-в-biosuefi">Настройка режима работы контроллера в BIOS/UEFI</a></li><li><a href="#интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</a></li><li><a href="#работа-с-nvme-накопителями-и-raid-массивами">Работа с NVMe накопителями и RAID массивами</a></li><li><a href="#типичные-ошибки-при-поиске-накопителя">Типичные ошибки при поиске накопителя</a></li><li><a href="#резюме-и-заключение">Резюме и заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При загрузке с флешки для установки операционной системы или проведения диагностики пользователь может столкнуться с пугающей пустотой в окне выбора диска. Вместо ожидаемого списка разделов и накопителей отображается сообщение о том, что драйверы контроллера хранилища отсутствуют, либо список остается полностью пустым. Эта ситуация блокирует любую возможность продолжения работы, будь то чистая инсталляция Windows, восстановление данных или клонирование системы.</p>
+<p>Проблема актуальна как для старых компьютеров, так и для новейших ноутбуков с интерфейсами NVMe и режимами работы контроллеров Intel RST. Чаще всего корень зла кроется в отсутствии необходимых драйверов в составе загрузочного образа Win PE, который по умолчанию содержит лишь базовый набор программных модулей. Без специфических драйверов контроллера дисковой подсистемы операционная среда просто «не знает» о существовании подключенного оборудования.</p>
+<p>Решение требует системного подхода, начиная от проверки физических соединений и заканчивая сложной процедурой внедрения драйверов непосредственно в образ или загрузку их «на лету». Понимание архитектуры дисковой подсистемы и принципов работы загрузчика позволяет эффективно диагностировать причину и устранить ошибку, вернув доступ к жесткому диску.</p>
+
+<h2 id="диагностика-отсутствия-диска-в-среде-win-pe">Диагностика отсутствия диска в среде Win PE</h2>
+
+<p>Первым шагом всегда должна стать проверка видимости оборудования на уровне BIOS/UEFI. Если базовая система ввода-вывода не отображает накопитель в списке подключенных устройств, то никакие манипуляции с драйверами в Win PE не помогут. Необходимо войти в настройки BIOS, обычно это делается нажатием клавиш <code>F2</code>, <code>Del</code> или <code>F10</code> при старте компьютера, и найти раздел, отвечающий за Storage Configuration или SATA Configuration.</p>
+<p>Если в BIOS диск определяется корректно, отображается его модель и объем, но в установщике Windows или Win PE его нет, значит проблема программная. В современных системах часто используется режим работы контроллера <strong>Intel RST</strong> (Rapid Storage Technology) или <strong>RAID</strong>, даже если физически установлен только один диск. Стандартный образ Win PE может не содержать драйверов для этого режима, требуя переключения на AHCI или ручной установки драйверов.</p>
+<p>Важно также учитывать тип интерфейса накопителя. Для старых дисков с интерфейсом SATA проблем возникает меньше, так как поддержка AHCI встроена в большинство сборок. Однако современные накопители формата <em>NVMe M.2</em> требуют наличия драйверов стандарта NVMe, которые могут отсутствовать в старых версиях Win PE, собранных на базе Windows 7 или ранних сборок Windows 10.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Перед изменением настроек контроллера хранилища в BIOS убедитесь, что на диске нет важных данных, которые нельзя потерять, или что у вас есть актуальная резервная копия. Смена режима работы может сделать существующую ОС незагрузочной.</p></aside>
+
+<p>Дополнительным фактором может служить физическое состояние порта или кабеля. Если используется desktop-компьютер, стоит проверить плотность подключения SATA-кабеля и питания. В ноутбуках проблема может крыться в окислении контактов слота M.2, что решается аккуратной переустановкой модуля. Программные методы бессильны против физического обрыва цепи или выхода контроллера из строя.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Если диск не виден в BIOS, программные методы в Win PE не помогут — проверяйте физическое подключение и исправность накопителя.</p></aside>
+
+<h2 id="настройка-режима-работы-контроллера-в-biosuefi">Настройка режима работы контроллера в BIOS/UEFI</h2>
+
+<p>Наиболее частой причиной, по которой Win PE не видит жесткий диск на современных ноутбуках, является активированный режим <code>Intel RST</code> или <code>RAID</code>. В этом режиме контроллер требует специфического драйвера, который часто отсутствует в стандартных дистрибутивах. Переключение контроллера в режим <code>AHCI</code> (Advanced Host Controller Interface) позволяет использовать стандартные драйверы Windows, встроенные в Win PE.</p>
+<p>Для изменения параметра необходимо перейти в раздел <code>Advanced</code> или <code>System Configuration</code> меню BIOS. Там следует найти пункт <code>SATA Mode</code>, <code>SATA Operation</code> или <code>VMD Controller</code>. Если выбран вариант <code>RAID</code> или <code>Intel RST Premium</code>, его нужно изменить на <code>AHCI</code>. На некоторых материнских платах от <em>ASUS</em> или <em>Gigabyte</em> этот параметр может называться <code>SATA Configuration</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На процессорах Intel 11-го поколения и новее часто требуется отключить технологию VMD (Volume Management Device). Пока VMD включен, опция переключения в AHCI может быть скрыта или недоступна.</p></aside>
+
+<p>После изменения настройки обязательно сохраните параметры, выбрав пункт <code>Save & Exit</code> (обычно клавиша <code>F10</code>). Компьютер перезагрузится, и при повторном входе в Win PE диск должен определиться автоматически. Однако, если на диске уже была установлена Windows в режиме RAID, смена на AHCI приведет к ошибке <code>INACCESSIBLE_BOOT_DEVICE</code> при попытке загрузки старой системы. В таком случае придется либо возвращать режим обратно, либо переустанавливать ОС.</p>
+
+<p>В ситуациях, когда переключение в AHCI невозможно или нежелательно, единственным выходом остается интеграция драйверов RST в образ Win PE. Это актуально для корпоративных сборок, где требуется поддержка различных конфигураций оборудования без изменения настроек BIOS клиента. Также это единственный вариант для серверных RAID-контроллеров, не имеющих режима совместимости.</p>
+
+<h3>Особенности настройки для разных производителей</h3>
+<p>Интерфейсы BIOS отличаются у разных вендоров. На ноутбуках <em>HP</em> и <em>Dell</em> пункт часто находится во вкладке <code>System Options</code> или <code>Drives</code>. У <em>Lenovo</em> настройки могут быть скрыты в разделе <code>Configuration</code>. Владельцам ноутбуков <em>Acer</em> иногда требуется сначала разблокировать скрытое меню, нажав комбинацию <code>Ctrl+S</code> в разделе Main, чтобы появилась опция выбора режима SATA.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Переключение в режим AHCI</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Войдите в BIOS/UEFI</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите раздел SATA Configuration или Storage</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Измените режим с RAID/RST на AHCI</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните настройки (F10) и перезагрузитесь</span></div></div>
+
+<h2 id="интеграция-драйверов-контроллера-хранилища">Интеграция драйверов контроллера хранилища</h2>
+
+<p>Если изменение настроек BIOS невозможно или нецелесообразно, необходимо добавить недостающие драйверы непосредственно в среду Win PE. Драйверы представляют собой файлы с расширением <code>.inf</code>, <code>.sys</code> и <code>.cat</code>. Их можно найти на сайте производителя ноутбука или материнской платы в разделе поддержки (Support) под названием <em>SATA Driver</em>, <em>IRST Driver</em> или <em>Storage Driver</em>.</p>
+<p>Существует два основных способа внедрения драйверов: добавление их в уже смонтированный образ <code>boot.wim</code> или загрузка «на лету» через меню загрузчика. Первый метод требует наличия рабочей Windows и утилиты <code>Dism</code> или графических оболочек вроде <em>Dism++</em>. Второй метод проще и выполняется в момент загрузки с флешки, если сборщик Win PE предусмотрел такую возможность.</p>
+<p>Для ручной интеграции через командную строку потребуется смонтировать образ <code>boot.wim</code> в папку. Команда выглядит следующим образом:</p>
+<pre><code>dism /Mount-Wim /WimFile:"путь_к_boot.wim" /index:1 /MountDir:"путь_к_папке"</code></pre>
+<p>После монтирования используется команда добавления драйера:</p>
+<pre><code>dism /Image:"путь_к_pfдке" /Add-Driver /Driver:"путь_к_драйверу.inf" /Recurse</code></pre>
+<p>Завершается процесс размонтированием с сохранением изменений:</p>
+<pre><code>dism /Unmount-Wim /MountDir:"путь_к_папке" /Commit</code></pre>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Используйте только драйверы, предназначенные именно для вашей версии Win PE (x64 или x86) и версии ядра Windows. Драйверы от Windows 7 могут не подойти для Win PE 10/11.</p></aside>
+
+<h3>Использование готовых драйвер-паков</h3>
+<p>Вместо ручного поиска драйверов для каждой модели можно воспользоваться универсальными наборами драйверов, такими как <em>WinPE DriverPack</em> или <em>Snappy Driver Installer</em> в режиме PE. Эти пакеты содержат тысячи драйверов для массовых контроллеров SATA, NVMe и RAID. Их можно интегрировать в свой образ заранее или запускать с отдельной флешки в среде Win PE перед установкой системы.</p>
+<p>При использовании драйвер-паков важно следить за размером итогового образа. Чрезмерное раздувание <code>boot.wim</code> может привести к ошибкам загрузки на компьютерах с UEFI, имеющим ограничения на размер EFI-раздела или время загрузки. Оптимальным решением является выборочная интеграция только актуальных драйверов Intel RST и NVMe.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Ручная установка драйверов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Точность под конкретное устройство</li><li>✅ Минимальный размер образа</li><li>✅ Стабильность работы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Трудоемкость</li><li>❌ Риск ошибки версии</li><li>❌ Необходимость ПК с Windows</li></ul></div>
+</div></div>
+
+<h2 id="работа-с-nvme-накопителями-и-raid-массивами">Работа с NVMe накопителями и RAID массивами</h2>
+
+<p>Накопители формата NVMe используют шину PCI Express, что принципиально отличает их от классических SATA дисков. Для их работы в Win PE обязателен драйвер <code>stornvme.sys</code> (стандартный) или проприетарный драйвер от производителя (например, <em>Samsung NVMe Driver</em>). Отсутствие поддержки NVMe характерно для очень старых сборок Win PE на базе Windows 7 без обновлений.</p>
+<p>В случае использования RAID-массивов ситуация усложняется. Аппаратные RAID-контроллеры (например, <em>LSI</em>, <em>Perc</em>, <em>SmartArray</em>) требуют наличия специфического драйвера, без которого массив будет выглядеть как набор несвязанных физических дисков или не определится вовсе. Драйвер обычно называется <em>F6 driver</em> или <em>Pre-install driver</em>.</p>
+<p>Программные RAID-массивы, создаваемые через Intel RST, также требуют наличия драйвера <code>iaStorA.sys</code> или <code>iaStorV.sys</code>. Важно понимать, что даже если в системе один диск, но в BIOS включен режим RAID, без этого драйвера Win PE не увидит разделы. В отличие от AHCI, где драйвер универсален, для RAID нужен драйвер, точно соответствующий версии контроллера.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для NVMe дисков всегда используйте свежие сборки Win PE 10 или 11. Старые образы на базе Win7 требуют обязательного обновления драйверов NVMe Express для корректной работы.</p></aside>
+
+<h3>Сравнение методов подключения дисков</h3>
+<table>
+<thead>
+<tr>
+<th>Тип подключения</th>
+<th>Необходимый драйвер</th>
+<th>Сложность настройки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SATA AHCI</td>
+<td>Стандартный (встроен)</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>NVMe M.2</td>
+<td>NVMe / StorNVMe</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Intel RST / RAID</td>
+<td>Intel RST / VMD</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<p>При работе с серверными конфигурациями часто встречается необходимость загрузки драйера с дискеты или флешки в процессе установки (кнопка «Загрузить драйвер»). В среде Win PE этот процесс эмулируется путем указания пути к папке с драйверами через утилиты командной строки или специализированные меню загрузчика. Путь должен вести строго к файлу <code>.inf</code>.</p>
+
+<h2 id="типичные-ошибки-при-поиске-накопителя">Типичные ошибки при поиске накопителя</h2>
+
+<p>В процессе устранения проблемы пользователи часто допускают ряд системных ошибок, которые лишь усугубляют ситуацию или приводят к потере времени. Анализ наиболее частых заблуждений помогает избежать тупиковых сценариев и быстрее достичь результата.</p>
+
+<ol>
+<li><strong>Попытка установки драйверов от видеокарты или звука</strong> — пользователи часто скачивают полный пакет драйверов с сайта производителя ноутбука, полагая, что там есть всё. Однако для появления диска нужны именно драйверы чипсета и Storage Controller, а не аудио или графического адаптера.</li>
+<li><strong>Игнорирование разрядности системы</strong> — попытка внедрить 32-битные драйверы в 64-битный образ Win PE (или наоборот) приведет к ошибке загрузки или игнорированию драйвера. Архитектура драйвера и среды исполнения должна совпадать.</li>
+<li><strong>Неправильный выбор файла .inf</strong> — в папке с драйвером может содержаться несколько <code>.inf</code> файлов для разных версий Windows. Установка драйвера, предназначенного для Windows 11, в среду Win PE на базе Windows 7 не даст результата. Необходимо проверять совместимость версий.</li>
+<li><strong>Отсутствие проверки Secure Boot</strong> — иногда диск не виден или загрузчик не стартует из-за включенной функции <code>Secure Boot</code> в UEFI, которая блокирует неподписанные драйверы или загрузчики. Временное отключение Secure Boot может решить проблему доступа.</li>
+</ol>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка драйверов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте драйвер с официального сайта</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Распакуйте архив в отдельную папку</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Убедитесь в наличии файла .inf</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте совместимость с версией Win PE</span></div></div>
+
+<h2 id="резюме-и-заключение">Резюме и заключение</h2>
+
+<p>Проблема отсутствия видимости жесткого диска в Win PE является классическим примером конфликта между современным оборудованием и устаревшим программным обеспечением загрузчика. В большинстве случаев решение лежит в плоскости переключения режима работы SATA-контроллера с RAID на AHCI в настройках BIOS, что позволяет задействовать стандартные средства системы. Для более сложных случаев, таких как NVMe накопители или обязательное использование RAID, требуется ручная интеграция соответствующих драйверов в образ.</p>
+<p>Грамотная подготовка загрузочного носителя с актуальным набором драйверов хранения данных позволяет избежать подобных ситуаций в будущем. Понимание различий между интерфейсами SATA, NVMe и режимами работы контроллеров дает возможность быстро диагностировать причину и выбрать оптимальный метод восстановления доступа к данным или установки операционной системы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/ge/gejmpad-x3-drajver-skachat.html" class="pb-related-card">
+                <span class="pb-related-title">Геймпад X3: как скачать драйвер и настроить на ПК</span>
+                <span class="pb-related-desc">Полная инструкция по поиску драйверов для геймпада X3. Настройка на Windows, устранение ошибок подкл</span>
+            </a><a href="/articles/z/za/zakazal-kartu-ne-otobrazhaetsya-v-lichnom-kabinete-vtb.html" class="pb-related-card">
+                <span class="pb-related-title">Карта не отображается в ВТБ Онлайн: причины и решение</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если карта не отображается в личном кабинете ВТБ. Проверка обновле</span>
+            </a><a href="/articles/b/bl/blyutuz-na-vindovs-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить Bluetooth на Windows 7: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке Bluetooth на Windows 7. Установка драйверов, включение службы, по</span>
+            </a><a href="/articles/a/al/alisa-vyklyuchi-umnuyu-kameru.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить умную камеру Алисы: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению камер через голос, приложение Яндекс и физическую кнопку. Решени</span>
+            </a><a href="/articles/d/de/dexp-r2-nastrojka.html" class="pb-related-card">
+                <span class="pb-related-title">DEXP R2: Настройка и устранение проблем с роутером</span>
+                <span class="pb-related-desc">Полная инструкция по настройке DEXP R2. Смена пароля, режимы работы, обновление прошивки и решение т</span>
+            </a><a href="/articles/k/ka/kak-sdelat-sopryazhenie-obd-2-s-kitajskoj-magnitoloj-px5.html" class="pb-related-card">
+                <span class="pb-related-title">Сопряжение OBD2 с PX5: полная инструкция по настройке</span>
+                <span class="pb-related-desc">Пошаговое руководство по подключению диагностического адаптера OBD2 к магнитоле PX5. Настройка Torqu</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

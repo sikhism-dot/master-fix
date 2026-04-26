@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Последовательность запуска материнской платы ноутбука: анализ — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по этапам POST, инициализации UEFI и загрузке ОС. Диагностика неисправностей и таблицы кодов ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/p/po/posledovatelnost-zapuska-materinskoj-platy-noutbuka.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Последовательность запуска материнской платы ноутбука: анализ">
+    <meta property="og:description" content="Подробная инструкция по этапам POST, инициализации UEFI и загрузке ОС. Диагностика неисправностей и таблицы кодов ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Последовательность запуска материнской платы ноутбука: анализ</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#инициализация-питания-и-работа-контроллера-ec">Инициализация питания и работа контроллера EC</a></li><li><a href="#этапы-post-и-инициализация-оборудования">Этапы POST и инициализация оборудования</a></li><li><a href="#загрузка-uefibios-и-передача-управления-ос">Загрузка UEFI/BIOS и передача управления ОС</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/le/lenovo-z570-bios-batarej-gde-najti.html">Lenovo Z570: где находится батарейка BIOS и как ее заменить</a></li><li><a href="/articles/s/se/servicing-stack-kak-udalit-obnovlenie-windows-100190415071.html">Удаление Servicing Stack Update 19041.5071 в Windows 10</a></li><li><a href="/articles/k/ka/kak-posmotret-kakaya-klaviatura-na-noutbuke-vpayanaya-ili-net.html">Как узнать тип клавиатуры ноутбука: впаяна или съемная</a></li><li><a href="/articles/i/in/indikator-v-vide-zamka-s-tsifroj-na-noutbuke.html">Индикатор замка на ноутбуке: значение и устранение проблем</a></li><li><a href="/articles/s/sk/skhema-noutbuka-sony-vaio.html">Схема ноутбука Sony VAIO: поиск, чтение и анализ</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Техническая последовательность запуска материнской платы ноутбука</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#инициализация-питания-и-работа-контроллера-ec">Инициализация питания и работа контроллера EC</a></li><li><a href="#этапы-post-и-инициализация-оборудования">Этапы POST и инициализация оборудования</a></li><li><a href="#загрузка-uefibios-и-передача-управления-ос">Загрузка UEFI/BIOS и передача управления ОС</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Если ноутбук включается, загорается подсветка клавиатуры и вентиляторы, но экран остается черным, а операционная система не загружается, это указывает на сбой в одном из ранних этапов инициализации оборудования. Пользователь сталкивается с ситуацией, когда привычный процесс загрузки прерывается, и стандартные методы восстановления ОС оказываются бессильными, так как проблема лежит глубже уровня файлов Windows или Linux.</p>
+<p>Понимание точной последовательности запуска материнской платы позволяет локализовать неисправность: сгоревший контроллер питания, дефект модуля памяти, ошибка микрокода BIOS или повреждение загрузочного сектора. Вместо хаотичных попыток переустановки системы или замены компонентов наугад, грамотный технический анализ требует последовательной проверки каждого этапа прохождения сигналов от момента подачи напряжения до передачи управления ядру операционной системы.</p>
+<p>В данной инструкции детально рассматриваются физические и логические этапы POST, роль контроллера EC, процесс инициализации UEFI и передача управления загрузчику. Изучение этих механизмов необходимо для проведения качественной диагностики и понимания того, почему устройство ведет себя определенным образом при включении.</p>
+
+<h2 id="инициализация-питания-и-работа-контроллера-ec">Инициализация питания и работа контроллера EC</h2>
+
+<p>Процесс запуска начинается задолго до того, как пользователь нажмет кнопку включения, а именно в момент подключения адаптера питания или установки аккумулятора. Ключевую роль на этом этапе играет <strong>Embedded Controller (EC)</strong> — специализированный микроконтроллер, который управляет периферией, системой питания и клавиатурой, оставаясь активным даже в выключенном состоянии ноутбука. Именно EC отслеживает уровень заряда батареи, температуру системы и сигналы от кнопки включения, формируя первичные условия для старта основных цепей.</p>
+<p>При подключении внешнего питания EC проверяет корректность напрялений на входных линиях и, если параметры в норме, разрешает подачу дежурного напряжения +3.3V_ALW на чипсет и другие компоненты. Если пользователь нажимает кнопку включения, EC генерирует сигнал <code>PWR_BTN#</code>, который поступает на чипсет (PCH), инициируя запуск генераторов тактовых частот и последующее включение основных шин питания процессора и памяти.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На современных ноутбуках с архитектурой Intel 10-го поколения и новее контроллер EC часто интегрирован в PCH, но логика его работы остается аналогичной дискретным решениям.</p></aside>
+
+<p>Важнейшим параметром на данном этапе является стабильность сигналов <code>POWER_GOOD</code>. Чипсет не начнет выполнять код BIOS, пока не получит подтверждение от всех регуляторов напряжения (VRM) о том, что уровни токов и вольтажа соответствуют спецификации. Если хотя бы один из каналов питания (например, VCC_CORE или VCCIO) не выйдет на рабочий режим, система зависнет на этапе первичной инициализации, что часто проявляется в отсутствии реакции на кнопку включения или циклической перезагрузке.</p>
+
+<h3>Диагностика сигналов и коды POST</h3>
+<p>Для точного определения места остановки процесса используются диагностические инструменты, такие как POST-карты, подключаемые к разъему LPC или PCIe, либо встроенные светодиодные индикаторы на плате. Современные ноутбуки часто выводят коды ошибок через мигание индикатора CapsLock или звуковые сигналы, расшифровка которых содержится в сервисной документации производителя.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сигнал / Код</th>
+<th>Значение</th>
+<th>Вероятная причина</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>S5</code></td>
+<td>Мягкое выключение</td>
+<td>Система выключена программно, дежурное питание есть</td>
+</tr>
+<tr>
+<td><code>S0</code></td>
+<td>Рабочий режим</td>
+<td>Система загружена, все напряжения в норме</td>
+</tr>
+<tr>
+<td><code>0x2A</code></td>
+<td>Инициализация памяти</td>
+<td>Проблема с модулем RAM или контроллером памяти</td>
+</tr>
+</tbody>
+</table>
+
+<p>Анализ осциллограмм сигналов <code>CLK</code> (clock) и <code>RST#</code> (reset) позволяет определить, дошел ли тактовый сигнал до процессора. Отсутствие тактирования может быть вызвано неисправностью кварцевого генератора или самого чипсета. Если сигнал <code>RST#</code> не снимается, процессор остается в состоянии сброса и не может начать выполнение инструкций.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка цепей питания</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите мультиметр в режиме прозвонки к тестовым точкам:Проверьте наличие дежурного напряжения 3.3V:Измерьте основные напряжения процессора при нажатии кнопки:Сравните показания с номиналами в схеме</span></div></div>
+
+<h2 id="этапы-post-и-инициализация-оборудования">Этапы POST и инициализация оборудования</h2>
+
+<p>После снятия сигнала сброса процессор обращается по фиксированному адресу к микросхеме BIOS/UEFI, где хранится код первичной загрузки. Начинается выполнение программы <strong>POST (Power-On Self-Test)</strong>, которая последовательно проверяет критически важные компоненты системы. Первым делом инициализируется контроллер памяти, так как дальнейшее выполнение кода требует оперативного пространства для загрузки переменных и стека.</p>
+<p>Если тренировка памяти проходит успешно, система переходит к инициализации видеоадаптера. На этом этапе может появиться первое изображение на экране, логотип производителя или диагностическая информация. В ноутбуках с дискретной графикой этот этап сложнее, так как требуется переключение видеопотока между интегрированным и дискретным адаптерами через механизм <code>Optimus</code> или его аналоги.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Сброс настроек BIOS (Clear CMOS) может привести к потере калибровочных данных вентиляторов или пороговых значений температур, что вызовет шумную работу или внезапные выключения.</p></aside>
+
+<p>Далее происходит опрос периферийных устройств через шины <code>SMBus</code> и <code>I2C</code>. Система проверяет наличие жесткого диска, клавиатуры, тачпада и других интегрированных модулей. Если критическое устройство не найдено или отвечает ошибкой, процесс загрузки может быть остановлен с выводом соответствующего сообщения или кода ошибки. На этом этапе также проверяется целостность загрузочного кода UEFI.</p>
+
+<h3>Тренировка памяти и видеовыход</h3>
+<p>Самым длительным этапом часто является тренировка оперативной памяти, особенно на системах с DDR4 и DDR5. Контроллер памяти подбирает оптимальные тайминги и напряжения для стабильной работы. В это время экран может оставаться черным, что пользователи ошибочно принимают за неисправность видеочасти. Длительность этого этапа зависит от объема установленной памяти и версии микрокода.</p>
+<p>В случае использования дискретной видеокарты NVIDIA или AMD, инициализация ее VBIOS происходит после основного POST. Если видеодрайвер или микрокод видеокарты поврежден, изображение может не появиться, несмотря на работающую систему. В таких случаях помогает сброс статического заряда или перепрошивка BIOS видеокарты (если она распаяна отдельно).</p>
+
+<ul>
+<li>Проверка целостности заголовка BIOS и контрольных сумм.</li>
+<li>Инициализация локальной шины и контроллера прерываний.</li>
+<li>Опрос устройств ввода (клавиатура, тачпад).</li>
+<li>Настройка таймеров и системного времени (RTC).</li>
+<li>Подготовка таблиц ACPI для операционной системы.</li>
+</ul>
+
+<p>Важно отметить, что современные UEFI-биосы поддерживают функцию <em>Fast Boot</em>, которая пропускает некоторые этапы проверки оборудования для ускорения загрузки. Однако при диагностике неисправностей рекомендуется отключать эту функцию, чтобы система проходила полный цикл самотестирования и выводила все возможные ошибки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Тип проверки</th>
+<th>Критичность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Оперативная память</td>
+<td>Тест записи/чтения, тренировка таймингов</td>
+<td>Высокая (без RAM загрузка невозможна)</td>
+</tr>
+<tr>
+<td>Видеочип</td>
+<td>Инициализация регистров, тест экрана</td>
+<td>Высокая (нет изображения)</td>
+</tr>
+<tr>
+<td>Накопитель</td>
+<td>Проверка наличия, чтение заголовка</td>
+<td>Средняя (система загрузится в BIOS)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное завершение POST означает, что аппаратная часть исправна и управление передается загрузчику операционной системы.</p></aside>
+
+<h2 id="загрузка-uefibios-и-передача-управления-ос">Загрузка UEFI/BIOS и передача управления ОС</h2>
+
+<p>После успешного прохождения POST firmware переходит к этапу загрузки операционной системы. В современных ноутбуках используется интерфейс <strong>UEFI (Unified Extensible Firmware Interface)</strong>, который заменяет устаревший BIOS. UEFI обращается к разделу EFI System Partition (ESP) на накопителе, где находятся файлы загрузчиков (.efi). Порядок загрузки определяется переменными NVRAM, хранящимися в энергонезависимой памяти.</p>
+<p>Процесс поиска загрузчика может происходить автоматически или согласно настройкам, заданным пользователем в меню <code>Boot Priority</code>. Если Secure Boot активирован, UEFI проверяет цифровую подпись загрузчика. Если подпись отсутствует или не совпадает с ключами в базе данных, загрузка будет заблокирована, что часто случается при попытке установить альтернативные ОС или при сбоях обновлений.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Файл загрузчика Windows обычно расположен по пути \EFI\Microsoft\Boot\bootmgfw.efi, а Linux-дистрибутивов — \EFI\ubuntu\grubx64.efi или аналогичном.</p></aside>
+
+<p>На этом этапе пользователь может увидеть логотип производителя, после чего экран гаснет или появляется логотип операционной системы. Если после логотипа BIOS происходит черный экран, проблема, скорее всего, кроется в повреждении загрузочного сектора, отсутствии системных файлов или несовместимости режима работы накопителя (Legacy/CSM против UEFI).</p>
+
+<h3>Режимы совместимости и Secure Boot</h3>
+<p>Для обеспечения совместимости со старым оборудованием или ОС многие ноутбуки поддерживают режим <code>CSM (Compatibility Support Module)</code>, эмулирующий работу классического BIOS. В этом режиме загрузка происходит через Master Boot Record (MBR). Однако современные системы безопасности и функции вроде <em>Fast Startup</em> требуют чисто UEFI-режима с таблицей разделов GPT.</p>
+<p>Конфликты между режимами Legacy и UEFI — частая причина проблем после замены жесткого диска или обновления BIOS. Если в настройках установлен режим <code>UEFI Only</code>, а на диске стоит система с MBR-разметкой, ноутбук не загрузится, выдавая сообщение об отсутствии загрузочного устройства.</p>
+
+<ol>
+<li>Войдите в настройки BIOS/UEFI (обычно клавиша F2 или Del при старте).</li>
+<li>Перейдите в раздел <code>Boot</code> или <code>Security</code>.</li>
+<li>Проверьте статус <code>Secure Boot</code> и режим загрузки (<code>UEFI</code> или <code>Legacy</code>).</li>
+<li>Убедитесь, что ваш накопитель отображается в списке приоритетов.</li>
+<li>Сохраните изменения и перезагрузите устройство.</li>
+</ol>
+
+<p>Также стоит учитывать, что некоторые производители ноутбуков (например, HP или Lenovo) используют проприетарные расширения UEFI для быстрой диагностики или восстановления системы. Эти разделы скрыты от пользователя, но их повреждение может блокировать нормальный запуск, требуя использования специализированного софта от производителя для восстановления заводского образа.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Полный UEFI</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка дисков >2ТБ</li><li>✅ Быстрая загрузка</li><li>✅ Безопасность Secure Boot</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Старый BIOS (CSM):Совместимость с древним ПО</li><li>❌ Простота структуры MBR</li><li>❌ Отсутствие проверок подписей</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Даже при исправном, процесс загрузки может прерываться из-за программных конфликтов, неправильных настроек или износа компонентов. Понимание типичных сценариев отказа позволяет быстро вернуть ноутбук в рабочее состояние без обращения в сервисный центр.</p>
+
+<ol>
+<li><strong>Черный экран при включении</strong> — часто указывает на сбой инициализации видеочипа или памяти; следует попробовать сбросить статическое электричество, отключив батарею и зажав кнопку питания на 30 секунд.</li>
+<li><strong>Циклическая перезагрузка</strong> — может быть вызвана коротким замыканием в периферии, перегревом процессора или повреждением файлов BIOS; требуется проверка температур и целостности прошивки.</li>
+<li><strong>Ошибка «No Bootable Device»</strong> — возникает при повреждении загрузочной записи, отключенном жестком диске в BIOS или неправильном порядке загрузки; необходимо проверить подключение диска и настройки приоритета.</li>
+<li><strong>Зависание на логотипе</strong> — часто связано с конфликтом подключенных USB-устройств или сбоем в таблице ACPI; рекомендуется отключить всю периферию и сбросить настройки BIOS.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если ноутбук перестал загружаться после обновления BIOS, попробуйте найти на сайте производителя файл для восстановления через USB (BIOS Flashback), даже если система не стартует.</p></aside>
+
+<p>Для глубокой диагностики полезно вести журнал событий. Многие ноутбуки позволяют экспортировать логи POST или имеют скрытые диагностические меню, вызываемые комбинациями клавиш. Анализ этих данных дает точное понимание того, на каком именно такте или проверке происходит сбой.</p>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Последовательность запуска материнской платы ноутбука представляет собой строго регламентированный процесс, начинающийся с подачи дежурного питания и работы контроллера EC, проходящий через этапы POST, инициализации памяти и видео, и завершающийся передачей управления загрузчику UEFI. Нарушение на любом из этих этапов приводит к специфическим симптомам, которые можно диагностировать, зная логику прохождения сигналов.</p>
+<p>Грамотный подход к troubleshooting требует последовательной проверки: от физических напряжений и сигналов тактирования до логической целостности загрузочных секторов. Понимание различий между режимами Legacy и UEFI, а также умение читать коды ошибок, значительно упрощает поиск неисправности.</p>
+<p>Владение информацией о внутренней структуре запуска позволяет не только эффективно устранять неполадки, но и избегать действий, которые могут усугубить ситуацию, таких как некорректное обновление прошивок или изменение критических настроек питания.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/le/lenovo-z570-bios-batarej-gde-najti.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo Z570: где находится батарейка BIOS и как ее заменить</span>
+                <span class="pb-related-desc">Техническая инструкция по поиску, демонтажу и замене батарейки CMOS в ноутбуке Lenovo Z570. Разбор к</span>
+            </a><a href="/articles/s/se/servicing-stack-kak-udalit-obnovlenie-windows-100190415071.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление Servicing Stack Update 19041.5071 в Windows 10</span>
+                <span class="pb-related-desc">Техническая инструкция по отмене обновления Servicing Stack 19041.5071. Методы удаления через DISM, </span>
+            </a><a href="/articles/k/ka/kak-posmotret-kakaya-klaviatura-na-noutbuke-vpayanaya-ili-net.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать тип клавиатуры ноутбука: впаяна или съемная</span>
+                <span class="pb-related-desc">Техническое руководство по определению типа подключения клавиатуры ноутбука. Методы проверки через д</span>
+            </a><a href="/articles/i/in/indikator-v-vide-zamka-s-tsifroj-na-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Индикатор замка на ноутбуке: значение и устранение проблем</span>
+                <span class="pb-related-desc">Что означает индикатор замка с цифрой на ноутбуке. Настройка Fn Lock, разблокировка BIOS и решение п</span>
+            </a><a href="/articles/s/sk/skhema-noutbuka-sony-vaio.html" class="pb-related-card">
+                <span class="pb-related-title">Схема ноутбука Sony VAIO: поиск, чтение и анализ</span>
+                <span class="pb-related-desc">Подробное руководство по поиску схем ноутбуков Sony VAIO. Анализ сервисных мануалов, чтение Boardvie</span>
+            </a><a href="/articles/v/vo/vosstanovlenie-zagruzchika-windows-10-bootice.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление загрузчика Windows 10 Bootice: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по восстановлению загрузчика Windows 10 с помощью утилиты Bootice. Исправление</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

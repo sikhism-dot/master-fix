@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Структура vendor Android 9.0: разбор разделов и Treble — Мастер Фикс</title>
+    <meta name="description" content="Подробный анализ структуры vendor раздела Android 9.0 Pie. Treble-модули, HAL, аппаратная абстракция и файловая система.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/ve/vendor-android-90-struktura.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Структура vendor Android 9.0: разбор разделов и Treble">
+    <meta property="og:description" content="Подробный анализ структуры vendor раздела Android 9.0 Pie. Treble-модули, HAL, аппаратная абстракция и файловая система.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Структура vendor Android 9.0: разбор разделов и Treble</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#концепция-project-treble-и-разделение-разделов">Концепция Project Treble и разделение разделов</a></li><li><a href="#файловая-система-и-ключевые-каталоги">Файловая система и ключевые каталоги</a></li><li><a href="#аппаратная-абстракция-hal-и-интерфейсы">Аппаратная абстракция (HAL) и интерфейсы</a></li><li><a href="#системные-сервисы-и-демоны-vendor">Системные сервисы и демоны vendor</a></li><li><a href="#конфигурация-и-политики-безопасности-selinux">Конфигурация и политики безопасности SELinux</a></li><li><a href="#версионирование-и-совместимость-vndk">Версионирование и совместимость VNDK</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-ubrat-reklamu-v-yandeks-dzen-na-androide-kotoraya-vyskakivaet-navsegda-otklyuchit-reklamu.html">Как убрать рекламу в Яндекс Дзен на Андроиде навсегда</a></li><li><a href="/articles/k/ka/kak-na-huawei-sdelat-umnyj-dom.html">Как сделать умный дом Huawei: настройка, датчики, сценарии</a></li><li><a href="/articles/k/ka/kak-podklyuchit-programmu-skan-skaner-k-android-magnitole.html">Подключение Scan Tool Pro к Android-магнитоле: полная инструкция</a></li><li><a href="/articles/a/aa/aasa-servis-prilozhenie-v-ajfone-zachem.html">Приложение ААССА на iPhone: функции, назначение и настройки</a></li><li><a href="/articles/k/ka/kak-ubrat-v-gugol-bokovuyu-panel-v-telefone-redmi13pro.html">Как отключить Google Discover на Redmi 13 Pro: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Структура vendor Android 9.0: глубокий анализ</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#концепция-project-treble-и-разделение-разделов">Концепция Project Treble и разделение разделов</a></li><li><a href="#файловая-система-и-ключевые-каталоги">Файловая система и ключевые каталоги</a></li><li><a href="#аппаратная-абстракция-hal-и-интерфейсы">Аппаратная абстракция (HAL) и интерфейсы</a></li><li><a href="#системные-сервисы-и-демоны-vendor">Системные сервисы и демоны vendor</a></li><li><a href="#конфигурация-и-политики-безопасности-selinux">Конфигурация и политики безопасности SELinux</a></li><li><a href="#версионирование-и-совместимость-vndk">Версионирование и совместимость VNDK</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Разделение операционной системы на логические блоки стало критически важным шагом в эволюции <strong>Android</strong>, особенно после внедрения архитектуры <em>Project Treble</em>. В версии 9.0 Pie эта структура окончательно сформировалась, обеспечив разделение системного кода и низкоуровневых драйверов, что позволило производителям быстрее обновлять ОС. <mark>Раздел vendor содержит бинарные проприетарные библиотеки и HAL, необходимые для работы конкретного аппаратного обеспечения.</mark> Понимание этой структуры необходимо для разработчиков прошивок и энтузиастов, занимающихся модификацией устройств.</p>
+
+<p>Ранее все компоненты, включая драйверы и системные приложения, находились в едином пространстве, что приводило к фрагментации и медленному выходу обновлений. С выходом Android 9.0 приоритетом стала модульность, где <strong>vendor image</strong> выступает в роли независимого слоя. Это позволяет Google обновлять системный раздел, не затрагивая специфичные для железа настройки вендора. Вам не нужно быть экспертом в ядре Linux, чтобы понять базовые принципы, но знание путей и файлов поможет в отладке.</p>
+
+<p>В данной статье мы детально рассмотрим внутреннее устройство этого раздела, разберем ключевые каталоги и их назначение. Мы затронем темы безопасности, версионирования интерфейсов HAL и методы взаимодействия с разделом через <em>ADB</em>. Информация будет полезна тем, кто сталкивается с ошибками при кастомной сборке или пытается разобраться в логах загрузчика.</p>
+
+<h2 id="концепция-project-treble-и-разделение-разделов">Концепция Project Treble и разделение разделов</h2>
+
+<p>Внедрение <strong>Project Treble</strong> в Android 8.0 и его развитие в версии 9.0 кардинально изменило ландшафт мобильной разработки. Основная идея заключалась в создании стабильного интерфейса между фреймворком Android и реализацией оборудования. <em>Vendor interface</em> стал той границей, которая отделяет ОС от специфичных для устройства компонентов. Это означает, что системный образ может быть универсальным для широкого круга устройств, если они используют совместимый <strong>vendor image</strong>.</p>
+
+<p>Раздел <code>/vendor</code> монтируется как отдельная файловая система, часто в формате <em>ext4</em> или <em>f2fs</em>. В отличие от системного раздела, который может быть обновлен по воздуху (OTA) без участия производителя чипсетов, vendor-раздел требует пересборки под конкретную модель. Это разграничение ответственности ускорило процесс выпуска патчей безопасности для основной системы. Однако это также наложило новые требования к структуре файлов внутри раздела.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Прямое редактирование файлов в разделе /vendor на работающем устройстве без разблокированного загрузчика и прав суперпользователя невозможно и может привести к циклической перезагрузке (bootloop).</p>
+</blockquote>
+
+<p>Архитектура подразумевает, что все бинарные файлы, специфичные для SoC (System on Chip), должны находиться именно здесь. Это включает в себя не только драйверы, но и конфигурационные файлы, которые ранее могли разбрасываться по системе. Теперь <strong>Android 9.0</strong> строго следит за тем, чтобы системные процессы не полагались на пути за пределами определенных интерфейсов.</p>
+
+<div class="pb-poll" id="poll-7b12ebcd"><div class="pb-poll-question">📊 С какой целью вы изучаете структуру Android?</div><div class="pb-poll-option" data-poll="7b12ebcd" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Разработка кастомных прошивок</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7b12ebcd" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Отладка ошибок (логирование)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7b12ebcd" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Общее образование</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="7b12ebcd" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Модификация системных файлов</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="файловая-система-и-ключевые-каталоги">Файловая система и ключевые каталоги</h2>
+
+<p>Внутри образа vendor файловая система организована иерархически, следуя стандартам Linux, но с адаптацией под нужды Android. Корневая директория содержит несколько критически важных папок, каждая из которых отвечает за свой сегмент функциональности. Наиболее объемным обычно является каталог <code>lib</code>, где хранятся разделяемые библиотеки.</p>
+
+<p>Структура каталогов может варьироваться в зависимости от архитектуры процессора (ARM64, x86), но базовый набор остается неизменным. Ниже приведено описание основных директорий:</p>
+
+<ul>
+<li>📂 <code>/vendor/lib</code> и <code>/vendor/lib64</code> — содержат нативные библиотеки (.so файлы), необходимые для работы HAL и других низкоуровневых сервисов.</li>
+<li>📂 <code>/vendor/bin</code> — исполняемые бинарные файлы, включая демоны и утилиты, запускаемые на ранних этапах загрузки.</li>
+<li>📂 <code>/vendor/etc</code> — конфигурационные файлы, карты устройств, настройки аудио (mixer_paths.xml) и политики безопасности (sepolicy).</li>
+<li>📂 <code>/vendor/firmware</code> — микрокоды для различных компонентов: Wi-Fi, Bluetooth, модемов и камер.</li>
+</ul>
+
+<p>Важно отметить, что в Android 9.0 многие файлы конфигурации стали более строгими в синтаксисе. Например, файлы <code>.rc</code> (init scripts) в этом разделе определяют, какие сервисы будут запущены ядром. Ошибка в синтаксисе такого файла может предотвратить старт критического сервиса, что приведет к неработоспособности модуля, например, камеры или звука.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду `ls -lR /vendor` через ADB shell для рекурсивного просмотра структуры, но будьте осторожны: вывод может быть очень длинным, лучше фильтровать его через grep.</p></aside>
+
+<h2 id="аппаратная-абстракция-hal-и-интерфейсы">Аппаратная абстракция (HAL) и интерфейсы</h2>
+
+<p>Сердцем раздела vendor является слой <strong>HAL (Hardware Abstraction Layer)</strong>. В Android 9.0 произошла массовая миграция HAL-интерфейсов на использование <em>HIDL (Hardware Interface Definition Language)</em>. Это позволило сделать интерфейсы независимыми от версии ОС. Если раньше HAL писались на C/C++ и напрямую связывались с фреймворком, то теперь они общаются через механизм Binder, что повышает стабильность.</p>
+
+<p>Файлы HIDL описываются в манифесте устройства, который также находится в vendor-разделе. Система при загрузке считывает этот манифест и понимает, какие сервисы доступны. Это создает уровень индирекции: приложение запрашивает данные у фреймворка, фреймворк через Binder обращается к HAL-сервису в vendor, а тот уже управляет железом. Такая цепочка может добавлять минимальную задержку, но дает огромные преимущества в поддержке.</p>
+
+<p>Для разработчиков важно понимать разницу между legacy HAL и HIDL. В Android 9.0 все еще поддерживаются legacy-интерфейсы для обратной совместимости, но они помечены как устаревшие. Новые устройства обязаны использовать HIDL для основных модулей, таких как камера, аудио и сенсоры. Это требует знанияIDL-синтаксиса и понимания работы IPC (Inter-Process Communication).</p>
+
+<details class="pb-accordion"><summary>Что такое HIDL?</summary><div class="pb-accordion-body"><p>HIDL (Hardware Interface Definition Language) — язык описания интерфейсов, который отделяет код Android OS от vendor-кода. Он позволяет обновлять Android независимо от реализации драйверов, обеспечивая стабильный ABI (Application Binary Interface).</p></div></details>
+
+<h2 id="системные-сервисы-и-демоны-vendor">Системные сервисы и демоны vendor</h2>
+
+<p>Помимо библиотек, раздел vendor содержит исполняемые файлы, которые работают как фоновые процессы (демоны). Они запускаются инициализатором <code>init</code> согласно скриптам в <code>/vendor/etc/init</code>. Эти демоны отвечают за специфичные функции: управление питанием, работу NFC, обработку отпечатков пальцев или управление RGB-подсветкой.</p>
+
+<p>В Android 9.0 усилились требования к безопасности этих процессов. Многие из них теперь запускаются в изолированных контекстах с минимальными правами. Это часть стратегии <strong>SELinux</strong> (Security-Enhanced Linux), которая строго регламентирует, кто и к каким файлам может обращаться. Нарушение этих правил (denial) фиксируется в логах <code>dmesg</code> или <code>logcat</code>.</p>
+
+<p>Типичные демоны, которые можно встретить:</p>
+<ul>
+<li>🔧 <code>android.hardware.camera.provider-service</code> — сервис-поставщик для камеры, обрабатывающий запросы на съемку.</li>
+<li>🔧 <code>vendor.qti.hardware.display.composer-service</code> — компонент для управления дисплеем (часто от Qualcomm).</li>
+<li>🔧 <code>vendor.mediatek.hardware.mtkpower-service</code> — сервис управления энергопотреблением для чипов MediaTek.</li>
+</ul>
+
+<p>Если вы занимаетесь отладкой, то именно логи этих сервисов часто содержат информацию о причинах сбоев оборудования. Например, если не работает сканер отпечатков, в первую очередь проверяют статус соответствующего демона и его конфигурацию в <code>/vendor/etc</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Диагностика проблем vendor-раздела</h4><label class="check-item"><input type="checkbox"><span>Проверить наличие файлов в /vendor/bin</span></label><label class="check-item"><input type="checkbox"><span>Анализ логов dmesg на предмет ошибок загрузки</span></label><label class="check-item"><input type="checkbox"><span>Проверка прав SELinux</span></label><label class="check-item"><input type="checkbox"><span>Сравнение хеш-сумм системных файлов</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="конфигурация-и-политики-безопасности-selinux">Конфигурация и политики безопасности SELinux</h2>
+
+<p>Безопасность в Android 9.0 достигла нового уровня, и раздел vendor играет здесь ключевую роль. Файлы политик SELinux, находящиеся в <code>/vendor/etc/selinux</code>, определяют правила доступа. В отличие от предыдущих версий, где политики могли быть более (enforcing/permissive), здесь используется строгий режим по умолчанию.</p>
+
+<p>Каждый процесс, запущенный из vendor-раздела, должен иметь свой контекст безопасности. Это предотвращает ситуацию, когда уязвимость в драйвере Wi-Fi позволит злоумышленнику получить доступ к личным данным пользователя. Конфигурация <code>file_contexts</code> сопоставляет пути к файлам с их метками безопасности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Файл конфигурации</th>
+<th>Назначение</th>
+<th>Расположение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>plat_sepolicy</code></td>
+<td>Базовые политики платформы Android</td>
+<td>/vendor/etc/selinux</td>
+</tr>
+<tr>
+<td><code>nonplat_sepolicy</code></td>
+<td>Политики, специфичные для устройства</td>
+<td>/vendor/etc/selinux</td>
+</tr>
+<tr>
+<td><code>file_contexts</code></td>
+<td>Метки безопасности для файлов</td>
+<td>/vendor/etc/selinux</td>
+</tr>
+<tr>
+<td><code>service_contexts</code></td>
+<td>Метки для сервисных имен Binder</td>
+<td>/vendor/etc/selinux</td>
+</tr>
+</tbody>
+</table>
+
+<p>При разработке кастомных прошивок часто возникает ошибка"Never allow", когда добавленный файл или сервис не имеет соответствующей записи в политиках SELinux. В таких случаях система блокирует доступ, и функционал не работает. Решение требует компиляции новых политик и их внедрения в образ.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Отключение SELinux (режим permissive) на Android 9.0 может нарушить работу некоторых приложений (например, банковских или Google Pay), так как они проверяют целостность среды выполнения.</p>
+</blockquote>
+
+<h2 id="версионирование-и-совместимость-vndk">Версионирование и совместимость VNDK</h2>
+
+<p>Одной из сложностей разделения системы и vendor-раздела является зависимость от нативных библиотек. Чтобы избежать копирования сотен мегабайт библиотек в каждый vendor-образ, была внедрена <strong>VNDK (Vendor Native Development Kit)</strong>. Это набор библиотек, которые могут использоваться как системой, так и vendor-разделом.</p>
+
+<p>В Android 9.0 механизм VNDK стал обязательным. Библиотеки VNDK имеют специальную версию, соответствующую версии Android API. Это гарантирует, что vendor-код, скомпилированный для Android 9, будет корректно работать с системным разделом той же версии. Если версии не совпадают, система может не загрузиться или работать нестабильно.</p>
+
+<p>Проверка совместимости происходит на этапе загрузки. Система сверяет хеш-суммы и версии VNDK, представленные в vendor-разделе, со своими собственными. Это создает жесткую связку: нельзя просто взять vendor от Android 8 и подключить к системе Android 9 без пересборки и адаптации интерфейсов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>VNDK обеспечивает бинарную совместимость между системным разделом и vendor-разделом, позволяя им взаимодействовать через стандартизированный набор нативных библиотек.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли удалить раздел vendor для освобождения места?</summary>
+<p>Нет, удаление раздела vendor сделает устройство неработоспособным (кирпич). В этом разделе содержатся критические драйверы и библиотеки, без которых операционная система не сможет взаимодействовать с экраном, памятью, модемом и другими компонентами.</p>
+</details>
+
+<details>
+<summary>Почему после обновления Android 9.0 перестал работать root?</summary>
+<p>Обновление системы часто перезаписывает загрузочный раздел и меняет структуру vendor. Если вы использовали кастомное ядро или модифицированный boot image, обновление вернет оригинальные файлы. Необходимо заново патчить boot image или vendor image в зависимости от метода получения root-прав.</p>
+</details>
+
+<details>
+<summary>Где найти логи ошибок, связанных с vendor сервисами?</summary>
+<p>Основной источник информации — лог <code>logcat</code> с фильтром по тегам сервисов. Также полезен <code>dmesg</code> для ошибок ядра при загрузке драйверов. Ищите строки, содержащие"vendor","hal" или конкретные имена сервисов.</p>
+</details>
+
+<details>
+<summary>Влияет ли структура vendor на скорость работы смартфона?</summary>
+<p>Косвенно да. Оптимизированные драйверы и правильная настройка демонов в vendor-разделе влияют на управление питанием и частотой процессора. Неоптимизированный vendor (например, в дешевых китайских сборках) может троттлинг и лаги интерфейса.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-ubrat-reklamu-v-yandeks-dzen-na-androide-kotoraya-vyskakivaet-navsegda-otklyuchit-reklamu.html" class="pb-related-card">
+                <span class="pb-related-title">Как убрать рекламу в Яндекс Дзен на Андроиде навсегда</span>
+                <span class="pb-related-desc">Полная инструкция по отключению рекламы в Яндекс Дзен на Android. Методы блокировки через настройки,</span>
+            </a><a href="/articles/k/ka/kak-na-huawei-sdelat-umnyj-dom.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать умный дом Huawei: настройка, датчики, сценарии</span>
+                <span class="pb-related-desc">Полная инструкция: как настроить умный дом Huawei через приложение AI Life. Обзор датчиков, создание</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-programmu-skan-skaner-k-android-magnitole.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Scan Tool Pro к Android-магнитоле: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по настройке Bluetooth-адаптера OBD2 и приложения Scan Tool Pro на Android-авто. Решен</span>
+            </a><a href="/articles/a/aa/aasa-servis-prilozhenie-v-ajfone-zachem.html" class="pb-related-card">
+                <span class="pb-related-title">Приложение ААССА на iPhone: функции, назначение и настройки</span>
+                <span class="pb-related-desc">Подробный технический разбор приложения ААССА для iOS. Назначение сервиса, инструкция по настройке, </span>
+            </a><a href="/articles/k/ka/kak-ubrat-v-gugol-bokovuyu-panel-v-telefone-redmi13pro.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Google Discover на Redmi 13 Pro: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по удалению ленты Google слева от рабочего стола на Xiaomi Redmi 13 Pro. Настр</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-obd-skaner-k-avtomagnitole-na-androide.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить OBD сканер к Android-магнитоле: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке OBD2 адаптера на Android-авто. Выбор оборудования, установка прил</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

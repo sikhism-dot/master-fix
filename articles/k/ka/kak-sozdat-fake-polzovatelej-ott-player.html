@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Тестирование OTT Player: создание тестовых пользователей — Мастер Фикс</title>
+    <meta name="description" content="Как создать fake-пользователей в OTT player для тестирования нагрузки. Методы генерации профилей, эмуляция трафика и проверка стабильности.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-sozdat-fake-polzovatelej-ott-player.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Тестирование OTT Player: создание тестовых пользователей">
+    <meta property="og:description" content="Как создать fake-пользователей в OTT player для тестирования нагрузки. Методы генерации профилей, эмуляция трафика и проверка стабильности.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Тестирование OTT Player: создание тестовых пользователей</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#цели-и-задачи-симуляции-пользователей-в-стриминге">Цели и задачи симуляции пользователей в стриминге</a></li><li><a href="#технические-методы-генерации-fake-профилей">Технические методы генерации fake-профилей</a></li><li><a href="#инструментарий-для-нагрузочного-тестирования-ott">Инструментарий для нагрузочного тестирования OTT</a></li><li><a href="#сценарии-поведения-и-паттерны-нагрузки">Сценарии поведения и паттерны нагрузки</a></li><li><a href="#анализ-результатов-и-оптимизация-инфраструктуры">Анализ результатов и оптимизация инфраструктуры</a></li><li><a href="#этические-нормы-и-юридические-аспекты">Этические нормы и юридические аспекты</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/h/hp/hp-probook-650-g2-postavit-ssd-m2-video.html">HP ProBook 650 G2: установка SSD M.2 и клонирование</a></li><li><a href="/articles/e/es/esli-zavisaet-ottplayer-chto-delat.html">Зависает OTT-плеер: полное руководство по устранению</a></li><li><a href="/articles/l/li/live-sound-card-v8-ne-vidit.html">V8 Sound Card не видит микрофон или ПК: причины и решение</a></li><li><a href="/articles/m/mp/mp3-led-magic-ball-light-instruktsiya-na-russkom-bluetooth.html">MP3 LED Magic Ball Light: Инструкция Bluetooth и настройка</a></li><li><a href="/articles/p/po/potplayer-otobrazhat-epg.html">Daum PotPlayer: Настройка EPG и ТВ-программы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Создание fake-пользователей в OTT player: руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#цели-и-задачи-симуляции-пользователей-в-стриминге">Цели и задачи симуляции пользователей в стриминге</a></li><li><a href="#технические-методы-генерации-fake-профилей">Технические методы генерации fake-профилей</a></li><li><a href="#инструментарий-для-нагрузочного-тестирования-ott">Инструментарий для нагрузочного тестирования OTT</a></li><li><a href="#сценарии-поведения-и-паттерны-нагрузки">Сценарии поведения и паттерны нагрузки</a></li><li><a href="#анализ-результатов-и-оптимизация-инфраструктуры">Анализ результатов и оптимизация инфраструктуры</a></li><li><a href="#этические-нормы-и-юридические-аспекты">Этические нормы и юридические аспекты</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Разработка и поддержка стабильного OTT-сервиса требует тщательной проверки инфраструктуры под нагрузкой. Владельцы платформ часто сталкиваются с необходимостью эмулировать поведение тысяч реальных абонентов, чтобы выявить узкие места в архитектуре сервера. Для этого инженеры используют так называемых <strong>fake-пользователей</strong>, которые имитируют вход в систему, просмотр контента и взаимодействие с интерфейсом плеера.</p>
+<p>Создание искусственной нагрузки позволяет протестировать работу DRM-систем, скорость CDN и корректность биллинга без риска для реальных клиентов. <em>OTT player</em> в данном контексте выступает не просто как воспроизводитель видео, а как сложный клиент, отправляющий множество запросов к серверу. Понимание механизмов генерации таких профилей критически важно для DevOps-инженеров и тестировщиков.</p>
+<p>В этой статье мы разберем технические аспекты симуляции пользователей, рассмотрим инструменты для стресс-тестирования и обсудим различия между легитимным тестированием и вредоносными атаками. Вы узнаете, как правильно настроить окружение для проверки масштабируемости вашего стримингового решения.</p>
+<blockquote>⚠️ Внимание: Все описанные ниже методы предназначены исключительно для тестирования собственных серверов и приложений. Использование этих техник для атак на чужие ресурсы является незаконным и преследуется по закону.</blockquote>
+
+<h2 id="цели-и-задачи-симуляции-пользователей-в-стриминге">Цели и задачи симуляции пользователей в стриминге</h2>
+<p>Основная цель создания fake-профилей заключается в верификации устойчивости системы к пиковым нагрузкам. Когда тысячи устройств одновременно пытаются получить доступ к видеопотоку, серверная часть должна корректно обрабатывать запросы авторизации и выдавать токены доступа. <strong>Нагрузочное тестирование</strong> помогает определить порог, при котором latency начинает расти, а качество картинки падает.</p>
+<p>Кроме того, эмуляция позволяет проверить логику работы персонализированных рекомендаций и профилей. Система должна правильно сохранять историю просмотров, даже если она генерируется ботами. Это особенно актуально для сервисов с моделью <em>SVOD</em> (Subscription Video on Demand), где важна точность учета времени просмотра для аналитики.</p>
+<p>Инженеры также используют этот подход для проверки защиты от DDoS-атак. Создавая контролируемый шторм запросов, специалисты по безопасности могут оценить эффективность настроенных правил файрвола и систем обнаружения вторжений.</p>
+<ul>
+<li>🎯 Проверка масштабируемости серверной инфраструктуры под нагрузкой.</li>
+<li>🎯 Тестирование корректности работы DRM и систем защиты контента.</li>
+<li>🎯 Валидация биллинговых циклов и учета статистики просмотров.</li>
+<li>🎯 Оценка устойчивости CDN-сети к резким скачкам трафика.</li>
+</ul>
+<p>Важно понимать, что симуляция должна максимально приближаться к поведению реального человека. Бот, который просто открывает соединение и держит его открытым, не даст полной картины нагрузки на процессор сервера, который занят транскодированием или упаковкой потоков.</p>
+<div class="pb-poll" id="poll-2787d787"><div class="pb-poll-question">📊 Что важнее всего в OTT-сервисе?</div><div class="pb-poll-option" data-poll="2787d787" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Стабильность потока</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2787d787" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Качество картинки</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2787d787" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Цена подписки</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="2787d787" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Каталог контента</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="технические-методы-генерации-fake-профилей">Технические методы генерации fake-профилей</h2>
+<p>Для создания искусственных пользователей разработчики применяют различные подходы, зависящие от уровня тестирования. На уровне сети часто используется генерация HTTP-запросов, имитирующих handshake и запрос плейлиста. Для этого пишутся скрипты на Python или используются специализированные утилиты вроде <em>JMeter</em> или <em>Gatling</em>.</p>
+<p>Более продвинутый метод предполагает запуск реальных экземпляров приложения в изолированных контейнерах. Каждый контейнер эмулирует отдельное устройство (Smart TV, смартфон, приставку) со своим уникальным <strong>User-Agent</strong> и MAC-адресом. Это позволяет проверить, как сервер реагирует на разнообразие клиентского окружения.</p>
+<p>При генерации профилей необходимо учитывать ротацию IP-адресов. Если все запросы будут идти с одного адреса, серверные системы защиты мгновенно заблокируют источник. Поэтому в тестовых сценариях часто используют пулы прокси или настраивают локальную сеть с множеством виртуальных интерфейсов.</p>
+<pre><code># Пример простого запроса плейлиста для эмуляции
+<p>curl -H "User-Agent: OTT-Player/2.1 (Linux; U)" \</p>
+<p>https://streaming-server.com/live/channel1.m3u8</code></pre></p>
+<p>Существует также метод клонирования легитимных сессий. Тестировщик захватывает валидные токены авторизации и использует их для распараллеливания соединений. Однако современные системы безопасности внедряют механизмы привязки токена к конкретному устройству, что усложняет данный процесс.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте Docker для запуска множества изолированных экземпляров плеера. Это позволяет эмулировать разнородный парк устройств без необходимости закупать сотни физических телевизоров или приставок.</p></aside>
+
+<h2 id="инструментарий-для-нагрузочного-тестирования-ott">Инструментарий для нагрузочного тестирования OTT</h2>
+<p>Выбор правильного инструмента зависит от протокола вещания (HLS, DASH, RTMP) и требуемой глубины анализа. Стандартные веб-сканеры здесь малоэффективны, так как они не умеют корректно работать с потоковым видео и сегментами. Для OTT требуются специализированные решения.</p>
+<p>Одним из популярных инструментов является <em>FFmpeg</em> в связке с скриптами автоматизации. С его помощью можно открывать потоки, декодировать их (создавая нагрузку на CPU) и закрывать соединение. Для массовой эмуляции используют оркестраторы контейнеров, такие как <strong>Kubernetes</strong>, запуская тысячи подов с FFmpeg.</p>
+<p>Другой класс инструментов — это фреймворки для нагрузочного тестирования, поддерживающие WebSocket и long-polling. Они позволяют симулировать не только просмотр, но и интерактивные действия: паузу, перемотку, смену языка аудиодорожки. Это создает наиболее реалистичный профиль нагрузки.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Подготовка к тесту нагрузки</h4><label class="check-item"><input type="checkbox"><span>Определить целевые метрики (RPS, Latency)</span></label><label class="check-item"><input type="checkbox"><span>Подготовить скрипты генерации трафика</span></label><label class="check-item"><input type="checkbox"><span>Настроить мониторинг сервера</span></label><label class="check-item"><input type="checkbox"><span>Выделить тестовое окружение</span></label><label class="check-item"><input type="checkbox"><span>Согласовать время проведения теста</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+<p>В таблице ниже приведено сравнение популярных инструментов для эмуляции клиентов OTT:</p>
+<table>
+<thead>
+<tr>
+<th>Инструмент</th>
+<th>Тип эмуляции</th>
+<th>Сложность настройки</th>
+<th>Поддержка протоколов</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache JMeter</td>
+<td>HTTP-запросы</td>
+<td>Средняя</td>
+<td>HLS, DASH (базовая)</td>
+</tr>
+<tr>
+<td>FFmpeg + Bash</td>
+<td>Реальное декодирование</td>
+<td>Высокая</td>
+<td>Все (RTMP, HLS, RTSP)</td>
+</tr>
+<tr>
+<td>Gatling</td>
+<td>Асинхронные запросы</td>
+<td>Высокая</td>
+<td>HTTP-based streaming</td>
+</tr>
+<tr>
+<td>Locust</td>
+<td>Python-скрипты</td>
+<td>Низкая</td>
+<td>Гибкая (через библиотеки)</td>
+</tr>
+</tbody>
+</table>
+<p>При выборе инструмента важно учитывать ресурсы тестового стенда. Эмуляция на уровне декодирования видео требует значительных вычислительных мощностей, тогда как эмуляция только сетевых запросов может быть выполнена на более слабом оборудовании.</p>
+
+<h2 id="сценарии-поведения-и-паттерны-нагрузки">Сценарии поведения и паттерны нагрузки</h2>
+<p>Просто создать тысячи подключений недостаточно. Чтобы тест был релевантным, fake-пользователи должны вести себя непредсказуемо, как реальные люди. Это включает в себя случайные задержки между действиями, разное время сессии и вариативность в выборе контента. Такой подход называется <strong>моделированием поведения</strong>.</p>
+<p>Например, сценарий "Вечер пятницы" предполагает резкий вход большого числа пользователей, длительные сессии просмотра и активное использование функции паузы. В то же время сценарий "Обеденный перерыв" характеризуется короткими сессями на мобильных устройствах и быстрым переключением каналов.</p>
+<blockquote>⚠️ Внимание: При настройке сценариев избегайте синхронных действий. Если все 10 000 ботов отправят запрос одновременно, вы получите искусственный "шторм", который не отражает реальную картину распределения нагрузки во времени.</blockquote>
+<p>Для реализации сложных сценариев используются вероятностные модели. Скрипт может "подбрасывать монетку" перед каждым действием: с вероятностью 20% пользователь поставит на паузу, с вероятностью 5% — сменит канал. Это позволяет генерировать естественный шум в трафике.</p>
+<details class="pb-accordion"><summary>Почему важна случайность?</summary><div class="pb-accordion-body"><p>Если все боты будут действовать по жесткому алгоритму, серверная оптимизация (кэширование) может сработать слишком эффективно, скрыв реальные проблемы производительности. Хаотичное поведение выявляет узкие места в базе данных и дисковой подсистеме.</p></div></details>
+
+<h2 id="анализ-результатов-и-оптимизация-инфраструктуры">Анализ результатов и оптимизация инфраструктуры</h2>
+<p>После запуска тестов с fake-пользователями начинается этап анализа. Инженеры смотрят не только на то, упал ли сервер, но и на метрики качества обслуживания. Ключевыми показателями здесь являются время до первого кадра (TTFF), количество буферизаций и процент успешных запросов.</p>
+<p>Если при увеличении числа пользователей время отклика растет экспоненциально, это сигнал о проблемах с блокировками в базе данных или нехватке потоков воркера веб-сервера. <mark>Критическим порогом часто считается задержка более 2 секунд при старте потока</mark>, после которой пользователь, скорее всего, закроет приложение.</p>
+<p>На основе полученных данных производится тюнинг конфигурации: увеличение размеров буферов, настройка кэширования на уровне Nginx или Varnish, масштабирование кластера Kubernetes. Повторные тесты позволяют убедиться, что внесенные изменения дали положительный эффект.</p>
+<ul>
+<li>📈 Мониторинг потребления CPU и RAM в пиковые моменты нагрузки.</li>
+<li>📈 Анализ логов ошибок (5xx, 4xx) для выявления сбоев в микросервисах.</li>
+<li>📈 Проверка целостности видеопотока (отсутствие артефактов и рассинхронизации).</li>
+<li>📈 Оценка нагрузки на сетевую инфраструктуру (bandwidth utilization).</li>
+</ul>
+<p>Важно документировать все изменения и результаты тестов. Это создает базу знаний, которая поможет быстрее реагировать на инциденты в будущем при масштабировании сервиса на новые регионы или запуске крупных премьер.</p>
+
+<h2 id="этические-нормы-и-юридические-аспекты">Этические нормы и юридические аспекты</h2>
+<p>Использование fake-пользователей находится в серой зоне, если не соблюдать определенные правила. Тестирование собственной инфраструктуры — это стандартная инженерная практика. Однако попытка нагрузить чужой сервер, даже в учебных целях, расценивается как кибератака (DDoS) и подпадает под статьи уголовного кодекса.</p>
+<p>Кроме того, многие провайдеры контента и правообладатели имеют строгие требования к защите от нелегитимного доступа. Создание инструментов для обхода лицензионных ограничений или массовой регистрации аккаунтов для бесплатного доступа нарушает условия использования сервисов (ToS).</p>
+<p>Профессионалы в области информационной безопасности используют эти знания исключительно для <strong>White Hat</strong> тестирования. Перед началом любых работ необходимо иметь письменное разрешение владельца системы и четко очерченные границы тестирования.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Легитимность тестирования определяется наличием письменного согласия владельца инфраструктуры и ограничением воздействия только на согласованные ресурсы.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+<details>
+<summary>Можно ли создать fake-пользователей без программирования?</summary>
+<p>Существуют готовые GUI-инструменты для нагрузочного тестирования, такие как LoadRunner или облачные сервисы вроде BlazeMeter, которые позволяют создавать сценарии без написания кода. Однако для специфических OTT-протоколов базовые знания скриптинга (Python, Bash) все же потребуются для настройки эмуляции.</p>
+</details>
+<details>
+<summary>Нужно ли реальное видео для тестирования?</summary>
+<p>Не обязательно. Для проверки нагрузки на сеть и сервер авторизации достаточно запрашивать сегменты потока. Однако для тестирования транскодирования и нагрузки на CPU сервера необходимо, чтобы клиенты реально декодировали видеопоток, что требует наличия медиафайлов или источника вещания.</p>
+</details>
+<details>
+<summary>Как защититься от fake-пользователей, созданных злоумышленниками?</summary>
+<p>Для защиты применяются системы анализа поведения (Behavioral Analysis), капча при подозрительной активности, ограничение количества запросов с одного IP (Rate Limiting) и использование токенов с коротким временем жизни. Также эффективно использование специализированных WAF и CDN с защитой от DDoS.</p>
+</details>
+<details>
+<summary>Влияет ли использование эмуляторов на лицензирование ПО?</summary>
+<p>Да, некоторые лицензии на программное обеспечение или контент могут ограничивать количество одновременных подключений или типов устройств. При масштабном тестировании важно проверять условия лицензионных соглашений используемых компонентов и контента.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/h/hp/hp-probook-650-g2-postavit-ssd-m2-video.html" class="pb-related-card">
+                <span class="pb-related-title">HP ProBook 650 G2: установка SSD M.2 и клонирование</span>
+                <span class="pb-related-desc">Подробная инструкция по замене HDD на SSD M.2 в ноутбуке HP ProBook 650 G2. Разбор совместимости NVM</span>
+            </a><a href="/articles/e/es/esli-zavisaet-ottplayer-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Зависает OTT-плеер: полное руководство по устранению</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению зависаний OTT-плеера. Сброс, проверка сети, обновление прошивки и</span>
+            </a><a href="/articles/l/li/live-sound-card-v8-ne-vidit.html" class="pb-related-card">
+                <span class="pb-related-title">V8 Sound Card не видит микрофон или ПК: причины и решение</span>
+                <span class="pb-related-desc">Sound card V8 не видит микрофон или компьютер? Полный гид по настройке драйверов, кабелей и устранен</span>
+            </a><a href="/articles/m/mp/mp3-led-magic-ball-light-instruktsiya-na-russkom-bluetooth.html" class="pb-related-card">
+                <span class="pb-related-title">MP3 LED Magic Ball Light: Инструкция Bluetooth и настройка</span>
+                <span class="pb-related-desc">Полная инструкция для MP3 LED Magic Ball Light. Настройка Bluetooth, управление с пульта, режимы раб</span>
+            </a><a href="/articles/p/po/potplayer-otobrazhat-epg.html" class="pb-related-card">
+                <span class="pb-related-title">Daum PotPlayer: Настройка EPG и ТВ-программы</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению гидов EPG в PotPlayer. Настройка XMLTV, M3U-плейлистов и исправл</span>
+            </a><a href="/articles/v/vi/vidy-video-pamyati.html" class="pb-related-card">
+                <span class="pb-related-title">Виды видеопамяти: GDDR6, HBM, DDR и их особенности</span>
+                <span class="pb-related-desc">Подробный разбор видов видеопамяти. Сравнение GDDR6, HBM и DDR. Как тип памяти влияет на FPS, пропус</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

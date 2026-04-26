@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Диагностика LPT порта в Mach3: пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по настройке и проверке LPT порта в Mach3 CNC. Решение проблем с управлением станком, настройка адресов и тестирование сигналов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-v-mach3-provesti-diagnostiku-lpt-porta.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Диагностика LPT порта в Mach3: пошаговая инструкция">
+    <meta property="og:description" content="Подробное руководство по настройке и проверке LPT порта в Mach3 CNC. Решение проблем с управлением станком, настройка адресов и тестирование сигналов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Диагностика LPT порта в Mach3: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#первичная-проверка-аппаратного-адреса-и-режима-работы-порта">Первичная проверка аппаратного адреса и режима работы порта</a></li><li><a href="#конфигурация-mach3-и-выбор-плагина-управления">Конфигурация Mach3 и выбор плагина управления</a></li><li><a href="#диагностика-сигналов-и-тестирование-выходов">Диагностика сигналов и тестирование выходов</a></li><li><a href="#анализ-совместимости-и-решение-проблем-с-задержками">Анализ совместимости и решение проблем с задержками</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/ap/apkpure-ne-ustanavlivaet-prilozheniya.html">APKPure не устанавливает приложения: причины и решения</a></li><li><a href="/articles/z/za/zamenit-kameru-na-izobrazhenii-iz-galerei.html">Как заменить камеру на фото: полная инструкция</a></li><li><a href="/articles/k/ka/kak-skachat-intim-stiker-na-ajfon.html">Как добавить стикеры в Telegram на iPhone: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-klonirovat-sberbank-pixel.html">Сбербанк Pixel: клонирование и перенос данных на Android</a></li><li><a href="/articles/a/ai/airpin-u-kak-polzovatsya.html">AirPin Pro как пользоваться: настройка и трансляция экрана</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Диагностика и настройка LPT порта в Mach3 CNC</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#первичная-проверка-аппаратного-адреса-и-режима-работы-порта">Первичная проверка аппаратного адреса и режима работы порта</a></li><li><a href="#конфигурация-mach3-и-выбор-плагина-управления">Конфигурация Mach3 и выбор плагина управления</a></li><li><a href="#диагностика-сигналов-и-тестирование-выходов">Диагностика сигналов и тестирование выходов</a></li><li><a href="#анализ-совместимости-и-решение-проблем-с-задержками">Анализ совместимости и решение проблем с задержками</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда станок с ЧПУ, собранный на базе компьютера и платы драйверов, отказывается реагировать на команды управления, является одной из самых распространенных проблем в любительском и полупрофессиональном сегменте ЧПУ. Оператор запускает программу, видит движение осей на экране интерфейса <em>Mach3</em>, но шпиндель молчит, а двигатели остаются неподвижными, что указывает на разрыв связи между программным обеспечением и физическим портом.</p>
+<p>Чаще всего причиной такого поведения становится не неисправность электроники, а неверная конфигурация параллельного порта в операционной системе или самой управляющей программе. Windows может назначить порту неверный адрес, блокировать доступ к нему из-за прав администратора, или же драйверы материнской платы могут некорректно эмулировать режим работы EPP/ECP, необходимый для высокоскоростной передачи управляющих импульсов.</p>
+<p>Для успешного запуска оборудования необходимо последовательно проверить физическую целостность соединений, корректность адреса в BIOS и системе, а затем выполнить детальную программную диагностику внутри <em>Mach3</em>. Игнорирование любого из этих этапов приведет к тому, что станок останется «мертвым грузом», несмотря на исправность всех компонентов.</p>
+
+<h2 id="первичная-проверка-аппаратного-адреса-и-режима-работы-порта">Первичная проверка аппаратного адреса и режима работы порта</h2>
+
+<p>Начинать диагностику следует с определения реального адреса, по которому операционная система видит параллельный порт, так как именно этот адрес необходимо будет прописать в настройках программы. Стандартным адресом для первого порта LPT1 является значение <code>0x378</code>, однако в современных системах с множеством контроллеров этот адрес может быть изменен системой автоматически или конфликтовать с другими устройствами.</p>
+<p>Для получения точной информации следует перейти в панель управления операционной системы и открыть «Диспетчер устройств». В списке оборудования необходимо найти раздел «Порты (COM и LPT)», где будет отображаться «Порт принтера (LPT1)» или аналогичное название контроллера. Двойной клик по устройству откроет окно свойств, где на вкладке «Ресурсы» в поле «Диапазон» будет указан шестнадцатеричный адрес, например, <code>0378-037F</code>.</p>
+<p>Важно понимать, что для работы ЧПУ порт должен работать в режиме SPP (Standard Parallel Port) или EPP (Enhanced Parallel Port), но не в режиме ECP, который предназначен для принтеров и использует буферизацию, недопустимую для генерации точных импульсов шагов. Если в BIOS материнской платы выбран режим ECP, генерация ШИМ-сигналов может быть нарушена, что приведет к дерганью двигателей или полной остановке.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На современных материнских платах встроенные LPT порты часто отсутствуют. В этом случае необходимо использовать PCI или PCIe плату расширения с чипом NetMos или MosChip, так как USB-LPT переходники для Mach3 не подходят.</p></aside>
+
+<p>После выяснения адреса и убеждения в правильности режима работы в BIOS, необходимо записать эти данные, так как они станут ключевыми при конфигурировании плагина управления в <em>Mach3</em>. Несоответствие адреса в программе и в системе является самой частой причиной отсутствия отклика станка.</p>
+
+<h3>Настройка параметров в BIOS</h3>
+<p>Если компьютер стационарный и имеет встроенный порт, доступ к настройкам его работы осуществляется через BIOS при загрузке системы. Необходимо найти раздел <code>Integrated Peripherals</code> или <code>Parallel Port Configuration</code>. Режим работы порта (<code>Parallel Port Mode</code>) должен быть установлен в значение <code>EPP</code> или <code>SPP</code>. Адрес порта (<code>Parallel Port Address</code>) должен соответствовать желаемому, обычно это <code>378h</code>. После внесения изменений настройки сохраняются клавишей <code>F10</code>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр BIOS</th>
+<th>Рекомендуемое значение</th>
+<th>Описание влияния на ЧПУ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parallel Port Mode</td>
+<td>EPP / SPP</td>
+<td>Обеспечивает прямой доступ к порту без буферизации, критично для генерации шагов.</td>
+</tr>
+<tr>
+<td>Parallel Port IRQ</td>
+<td>IRQ 7</td>
+<td>Стандартное прерывание, изменение требуется редко, только при конфликтах.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="конфигурация-mach3-и-выбор-плагина-управления">Конфигурация Mach3 и выбор плагина управления</h2>
+
+<p>После подтверждения аппаратных настроек следующим этапом становится настройка самой программы <em>Mach3</em>. Программное обеспечение должно знать, какой именно порт использовать для вывода сигналов. Для этого в интерфейсе программы существует специальный плагин, отвечающий за низкоуровневое взаимодействие с железом.</p>
+<p>Необходимо запустить <em>Mach3</em> и перейти в меню <code>Config</code>, затем выбрать пункт <code>Ports and Pins</code>. В открывшемся окне, на первой вкладке <code>Port Setup and Axis Selection</code>, верхней части находится таблица конфигурации портов. В строке с номером 1 (или другом, если используется несколько плат) в поле <code>Port #</code> следует ввести номер порта, соответствующий LPT-адресу. Например, если адрес <code>0x378</code>, то номер порта обычно равен <code>1</code>. Если используется PCI плата с адресом <code>0xEC00</code>, номер порта может быть <code>3</code> или <code>4</code>, что зависит от порядка обнаружения системой.</p>
+<p>Критически важным параметром является выбор типа плагина в поле <code>Plugin Control</code>. Для стандартных LPT портов должен быть выбран <em>Parallel Printer Port</em>. Если здесь выбран другой плагин, например, для USB-контроллеров или Ethernet-плат, программа не сможет отправить ни одного сигнала на параллельный порт, даже если адрес указан верно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка плагина Mach3</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте меню Config -> Ports and Pins</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">В поле Plugin Control выберите Parallel Printer Port</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите номер порта (обычно 1 для 0x378)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите Apply и OK, затем перезапустите Mach3</span></div></div>
+
+<p>После внесения изменений обязательно требуется выполнить полный перезапуск программы <em>Mach3</em>, так как драйверы порта инициализируются только при старте приложения. Если после перезапуска в правом нижнем углу экрана (в строке состояния) не загорелся индикатор «PlugIn», это означает, что порт занят другим процессом или доступ к нему заблокирован.</p>
+
+<h3>Проверка доступности порта</h3>
+<p>Если порт не активируется, стоит проверить, не занят ли он системой печати Windows. В некоторых случаях фоновая служба печати пытается монополизировать LPT порт, не давая <em>Mach3</em> перехватить управление. В таком случае необходимо временно отключить службу печати или удалить виртуальные принтеры, использующие этот порт, через панель управления Windows.</p>
+
+<h2 id="диагностика-сигналов-и-тестирование-выходов">Диагностика сигналов и тестирование выходов</h2>
+
+<p>Когда порт настроен и плагин активен, переходят к практической проверке выдачи сигналов. В <em>Mach3</em> существует встроенный инструмент диагностики, позволяющий в реальном времени видеть состояние входов и принудительно менять состояние выходов для проверки цепей управления.</p>
+<p>Для доступа к этому инструменту нужно нажать кнопку <code>Diags</code> на главном экране программы. Откроется окно с множеством светодиодных индикаторов. Верхняя часть окна отображает входы (Input Status), а нижняя — выходы (Output Status). При нажатии кнопок управления осями на экране можно наблюдать, загораются ли соответствующие индикаторы входов, если на станке подключены концевые выключатели.</p>
+<p>Для проверки выходов, управляющих драйверами шаговых двигателей, используется режим ручного тестирования. В окне диагностики можно активировать сигналы Step и Dir, наблюдая за реакцией драйверов. Однако более надежным методом является использование тестовой программы или простейшего G-кода, который заставляет ось двигаться, при этом мультиметром или осциллографом проверяется наличие напряжения на выходе LPT порта.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>При проверке выходов мультиметром будьте осторожны. Не допускайте короткого замыкания щупов на контакты порта, так как это может вывести из строя материнскую плату или плату расширения.</p></aside>
+
+<p>В окне диагностики также отображается состояние сигналов Enable, Coolant и Spindle. Переключая их вручную, можно убедиться, что реле или оптопары на плате управления срабатывают соответствующим образом. Если индикатор в программе загорается, а физического отклика нет, проблема кроется в кабеле или плате драйверов.</p>
+
+<h3>Использование тестового G-кода</h3>
+<p>Для безопасной проверки без подачи высокого напряжения на двигатели можно запустить программу перемещения осей с отключенным питанием двигателей (если драйверы позволяют) или просто наблюдая за сигнальными проводами. Создайте файл с кодом:<br>
+<pre><code>G0 X10 Y10 Z5
+<p>G0 X0 Y0 Z0</p>
+<p>M30</code></pre></p>
+<p>Запуск этой программы должен вызвать изменение состояния на пинах STEP и DIR соответствующих осей.</p></p>
+
+<h2 id="анализ-совместимости-и-решение-проблем-с-задержками">Анализ совместимости и решение проблем с задержками</h2>
+
+<p>Одной из скрытых, но критичных проблем при работе с LPT портом в среде Windows является нестабильность таймингов. Операционная система Windows не является системой реального времени, и фоновые процессы могут вызывать микрозадержки в выдаче импульсов, что приводит к потере шагов или рывкам при высоких скоростях.</p>
+<p>В настройках <em>Mach3</em>, в разделе <code>Config</code> -> <code>Ports and Pins</code>, существует параметр <code>Kernel Speed</code> (частота ядра). Для LPT портов стандартным и наиболее стабильным значением является <code>25000</code> или <code>35000</code> Гц. Установка слишком высокого значения на слабом процессоре или при наличии фоновых задач приведет к рассинхронизации.</p>
+<p>Также стоит обратить внимание на настройки электропитания компьютера. В панели управления Windows, в разделе «Электропитание», должен быть выбран план «Высокая производительность». Необходимо запретить отключение USB-портов и переход компьютера в спящий режим, так как это может сбросить конфигурацию порта во время работы.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор частоты ядра</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Стабильность работы на низких частотах</li><li>✅ Совместимость со старым оборудованием</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Ограниченная максимальная скорость подачи</li><li>❌ Высокая нагрузка на процессор при больших значениях</li></ul></div>
+</div></div>
+
+<p>Если наблюдаются пропуски шагов только на одной оси или при определенных скоростях, возможно, имеет место электрическая наводка или недостаточная длина импульса. В <em>Mach3</em> можно настроить длительность импульса (Step Pulse Length) в наносекундах, увеличив её для компенсации инерции оптопар драйверов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Типичное значение</th>
+<th>Влияние на работу</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kernel Speed</td>
+<td>25000 - 45000 Hz</td>
+<td>Определяет максимальную скорость генерации шагов и плавность.</td>
+</tr>
+<tr>
+<td>Step Pulse</td>
+<td>5 - 10 мкс</td>
+<td>Длительность импульса. Слишком короткий импульс может не восприниматься драйвером.</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<ol>
+<li><strong>Неверный номер порта в настройках</strong> — пользователь указывает LPT1 (адрес 378), хотя физически плата установлена в слот, которому система присвоила адрес, например, EC00, что соответствует порту 3 в списке Windows. <em>Решение:</em> перепроверить адрес в Диспетчере устройств и изменить номер порта в конфиге Mach3.</li>
+<li><strong>Конфликт режима работы порта (ECP вместо EPP)</strong> — в BIOS установлен режим ECP, который буферизует данные, из-за чего импульсы шагов идут неравномерно. <em>Решение:</em> изменить режим в BIOS на EPP или SPP.</li>
+<li><strong>Использование USB-LPT переходника</strong> — попытка подключить станок через дешевый переходник USB-Parallel, который эмулирует порт для принтера, но не поддерживает побитовый доступ, необходимый для ЧПУ. <em>Решение:</em> использовать только нативный LPT или специализированную PCI/PCIe плату.</li>
+<li><strong>Блокировка антивирусом или брандмауэром</strong> — программное обеспечение безопасности блокирует прямой доступ к портам ввода-вывода. <em>Решение:</em> добавить Mach3 в исключения или отключить</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/ap/apkpure-ne-ustanavlivaet-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">APKPure не устанавливает приложения: причины и решения</span>
+                <span class="pb-related-desc">Почему APKPure не ставит приложения? Полный гид по ошибкам, настройке прав и решению проблем с устан</span>
+            </a><a href="/articles/z/za/zamenit-kameru-na-izobrazhenii-iz-galerei.html" class="pb-related-card">
+                <span class="pb-related-title">Как заменить камеру на фото: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по замене камеры на изображении. Анализ инструментов, методов ретуши и работ</span>
+            </a><a href="/articles/k/ka/kak-skachat-intim-stiker-na-ajfon.html" class="pb-related-card">
+                <span class="pb-related-title">Как добавить стикеры в Telegram на iPhone: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке сторонних стикеров на iOS. Создание наборов, импорт из файлов и р</span>
+            </a><a href="/articles/k/ka/kak-klonirovat-sberbank-pixel.html" class="pb-related-card">
+                <span class="pb-related-title">Сбербанк Pixel: клонирование и перенос данных на Android</span>
+                <span class="pb-related-desc">Подробная инструкция по переносу Сбербанк Онлайн на новый Google Pixel. Настройка биометрии, виджето</span>
+            </a><a href="/articles/a/ai/airpin-u-kak-polzovatsya.html" class="pb-related-card">
+                <span class="pb-related-title">AirPin Pro как пользоваться: настройка и трансляция экрана</span>
+                <span class="pb-related-desc">Полная инструкция по настройке AirPin. Как подключить телефон к проектору, устранить задержки и наст</span>
+            </a><a href="/articles/c/ca/canon-1100d-peredat-kartinku-v-realnom-vremeni-na-kompyuter.html" class="pb-related-card">
+                <span class="pb-related-title">Canon 1100D: вывод видео на ПК в реальном времени</span>
+                <span class="pb-related-desc">Как подключить Canon 1100D к компьютеру для прямой трансляции. Настройка USB, HDMI и софта для стрим</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

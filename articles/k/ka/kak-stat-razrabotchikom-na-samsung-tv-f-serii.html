@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Разработка приложений для Samsung Smart TV F серии: гид — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию приложений для Samsung F серии (2013). Настройка SDK, работа с API, эмуляция и типичные ошибки разработчика.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-stat-razrabotchikom-na-samsung-tv-f-serii.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Разработка приложений для Samsung Smart TV F серии: гид">
+    <meta property="og:description" content="Техническое руководство по созданию приложений для Samsung F серии (2013). Настройка SDK, работа с API, эмуляция и типичные ошибки разработчика.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Разработка приложений для Samsung Smart TV F серии: гид</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектурные-особенности-платформы-orsay">Архитектурные особенности платформы Orsay</a></li><li><a href="#настройка-окружения-и-инструментария-разработчика">Настройка окружения и инструментария разработчика</a></li><li><a href="#структура-проекта-и-жизненный-цикл-приложения">Структура проекта и жизненный цикл приложения</a></li><li><a href="#интеграция-api-и-работа-с-мультимедиа">Интеграция API и работа с мультимедиа</a></li><li><a href="#типичные-ошибки-и-процесс-отладки">Типичные ошибки и процесс отладки</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/t/tm/tms-player-dlya-smart-tv-skynet-ne-podklyuchaetsya.html">TMS Player для Smart TV SkyNet: решение проблем с подключением</a></li><li><a href="/articles/k/ka/kak-otklyuchit-subtitry-na-televizore-haier-android.html">Как отключить субтитры на Haier Android TV: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-kolonki-provodnye-k-televizoru-ksiomi-bez-blyutuza.html">Как подключить проводные колонки к Xiaomi TV без Bluetooth</a></li><li><a href="/articles/k/ka/kak-ustanovit-wink-na-televizor-samsung-2012-goda-vypuska.html">Как установить Wink на Samsung Smart TV 2012: Инструкция</a></li><li><a href="/articles/k/ka/kak-dobavit-animatsiyu-podklyucheniya-naushnikov-samsung.html">Анимация подключения наушников Samsung: настройка и сброс</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка приложений для Samsung Smart TV F серии</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектурные-особенности-платформы-orsay">Архитектурные особенности платформы Orsay</a></li><li><a href="#настройка-окружения-и-инструментария-разработчика">Настройка окружения и инструментария разработчика</a></li><li><a href="#структура-проекта-и-жизненный-цикл-приложения">Структура проекта и жизненный цикл приложения</a></li><li><a href="#интеграция-api-и-работа-с-мультимедиа">Интеграция API и работа с мультимедиа</a></li><li><a href="#типичные-ошибки-и-процесс-отладки">Типичные ошибки и процесс отладки</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Столкнувшись с необходимостью адаптации legacy-приложения или запуска специфического сервиса на телевизоре 2013 года выпуска, разработчик часто обнаруживает отсутствие актуальной документации и инструментов.</p>
+<p>Модели F-серии используют платформу Orsay, которая кардинально отличается от современных систем Tizen, требуя совершенно иного подхода к написанию кода и структуре файлов.</p>
+<p>Игнорирование архитектурных особенностей этой платформы приводит к неработающим виджетам, ошибкам инициализации и невозможности прохождения сертификации в магазине Samsung Apps.</p>
+
+<h2 id="архитектурные-особенности-платформы-orsay">Архитектурные особенности платформы Orsay</h2>
+
+<p>Платформа <em>Orsay</em>, лежащая в основе F-серии, базируется на устаревшем стеке технологий, где основным языком разработки является JavaScript (ES5), а рендеринг интерфейса происходит через WebKit.</p>
+<p>В отличие от современных сред, здесь отсутствует полноценная поддержка DOM-манипуляций в привычном виде, а навигация осуществляется не через тач-интерфейс или мышь, а исключительно посредством пульта дистанционного управления.</p>
+<p><strong>Ключевой особенностью</strong> является жесткая привязка к API платформы, которое предоставляет методы для управления фокусом, воспроизведения медиа и взаимодействия с системными настройками телевизора.</p>
+
+<h3>Модель управления фокусом</h3>
+<p>Навигация в приложениях строится на логике перемещения фокуса между элементами, имеющими атрибуты <code>sfFocus</code> или аналогичные классы управления.</p>
+<p>Если разработчик не задаст явно логику перемещения курсора при нажатии кнопок «Вверх», «Вниз», «Влево», «Вправо», приложение станет неуправляемым сразу после запуска.</p>
+<p>Обработка событий клавиатуры требует регистрации слушателей на уровне документа, так как события от пульта транслируются в коды клавиш, которые необходимо перехватывать и интерпретировать.</p>
+
+<h3>Ограничения JavaScript движка</h3>
+<p>Используемый движок JavaScript имеет ограниченный набор встроенных функций и не поддерживает синтаксис ES6 и новее, что исключает использование стрелочных функций, <code>let</code>, <code>const</code> и модулей.</p>
+<p>Все скрипты должны быть подключены последовательно, а выполнение кода часто блокируется до полной загрузки ресурсов, что требует использования специальных callback-функций платформы.</p>
+<p>Оперативная память устройств F-серии ограничена, поэтому утечки памяти или создание тяжелых объектов могут привести к принудительному закрытию приложения системой.</p>
+
+<p>Понимание этих ограничений является фундаментом для создания стабильного программного обеспечения, работающего в условиях строгого лимита ресурсов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Платформа Orsay официально считается устаревшей, и новые приложения редко принимаются в магазин, однако поддержка legacy-проектов остается актуальной задачей.</p></aside>
+
+<h2 id="настройка-окружения-и-инструментария-разработчика">Настройка окружения и инструментария разработчика</h2>
+
+<p>Для начала работы необходимо установить специализированный пакет SDK, который доступен только через партнерский портал Samsung и требует регистрации в качестве разработчика.</p>
+<p>После загрузки архива следует распаковать его в директорию без кириллических символов в пути, так как скрипты сборки могут некорректно обработать такие адреса.</p>
+<p>Внутри папки находится эмулятор, позволяющий тестировать код без физического устройства, однако для финальной отладки все же требуется реальный телевизор или сетевой отладчик.</p>
+
+<h3>Установка и конфигурация SDK</h3>
+<p>Процесс установки запускается через исполняемый файл <code>install.sh</code> (для Linux/Mac) или <code>install.bat</code> (для Windows), который прописывает переменные окружения.</p>
+<p>После установки необходимо настроить путь к JDK, если он не был определен автоматически, так как некоторые инструменты сборки зависят от Java.</p>
+<p>Конфигурационный файл проекта требует указания точного ID приложения и сертификата, без которых запуск на реальном устройстве будет заблокирован системой безопасности.</p>
+
+<h3>Работа с эмулятором</h3>
+<p>Эмулятор предоставляет виртуальный пульт и экран, имитирующий разрешение 1920x1080, характерное для большинства моделей F-серии.</p>
+<p>Он позволяет эмулировать различные сценарии: потерю сети, нажатия кнопок пульта и изменение состояния медиа-плеера.</p>
+<p>Однако эмулятор не всегда точно воспроизводит производительность реального процессора, поэтому тестирование тяжелых анимаций лучше проводить на железе.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка SDK</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите установщик SDK</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите путь к Java JDK</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Зарегистрируйте сертификат разработчика</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Настройте подключение к эмулятору</span></div></div>
+
+<p>Корректная настройка инструментов избавляет от множества ошибок компиляции на ранних этапах и ускоряет процесс итеративной разработки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Компонент</th>
+<th>Назначение</th>
+<th>Статус поддержки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orsay SDK</td>
+<td>Базовый набор библиотек и компилятор</td>
+<td>Legacy (архив)</td>
+</tr>
+<tr>
+<td>Emulator</td>
+<td>Виртуальное устройство для тестов</td>
+<td>Работает нестабильно на Win 10/11</td>
+</tr>
+<tr>
+<td>Common API</td>
+<td>Библиотека функций платформы</td>
+<td>Полная совместимость</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="структура-проекта-и-жизненный-цикл-приложения">Структура проекта и жизненный цикл приложения</h2>
+
+<p>Проект для F-серии представляет собой набор файлов, упакованных в специфическую структуру, где точка входа всегда определяется файлом <code>index.html</code> или <code>index.js</code> в зависимости от конфигурации.</p>
+<p>В корне проекта обязательно должен присутствовать файл <code>config.xml</code>, содержащий метаданные: ID приложения, версию, имя, права доступа и требуемые разрешения API.</p>
+<p>Все ресурсы, такие как изображения и шрифты, должны лежать в папке <code>js</code> или <code>css</code>, либо иметь явно прописанные пути относительно корня.</p>
+
+<h3>Файловая система и манифест</h3>
+<p>Файл <code>config.xml</code> является критически важным элементом, ошибка в синтаксисе которого приводит к тому, что телевизор просто не увидит приложение.</p>
+<p>В нем прописываются URL-адреса сервисов, если приложение работает с сетью, и определяются начальные параметры окна.</p>
+<p>Размер пакета приложения ограничен, обычно лимит составляет 50 МБ, поэтому оптимизация графики и кода является обязательным требованием.</p>
+
+<h3>Жизненный цикл (Lifecycle)</h3>
+<p>Приложение проходит несколько стадий: загрузка, запуск, пауза, возобновление и завершение, каждая из которых контролируется системными событиями.</p>
+<p>Необходимо обрабатывать событие <code>onShow</code> для инициализации интерфейса и <code>onHide</code> для сохранения состояния перед выходом.</p>
+<p>Если приложение зависает или не отвечает более определенного времени, система принудительно завершает его процесс, поэтому блокирующие операции следует избегать.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение структуры папок или переименование системных файлов может привести к невозможности установки приложения на телевизор.</p></aside>
+
+<p>Соблюдение стандартов именования и структуры позволяет системе корректно индексировать и запускать программный продукт.</p>
+
+<pre><code>
+<p>// Пример регистрации обработчика ключевого события</p>
+<p>document.addEventListener('keydown', function(e) {</p>
+<p>var keyCode = e.keyCode;</p>
+<p>if (keyCode === 10009) { // Кнопка RETURN</p>
+<p>alert('Exit');</p>
+<p>}</p>
+<p>});</p>
+</code></pre>
+
+<h2 id="интеграция-api-и-работа-с-мультимедиа">Интеграция API и работа с мультимедиа</h2>
+
+<p>Основная функция Smart TV — воспроизведение контента, поэтому API платформы предоставляет расширенные методы для управления медиа-плеером и буферизацией потоков.</p>
+<p>Для работы с видео используется объект <code>Plugin</code>, который необходимо инициализировать с правильным ID плагина перед вызовом методов воспроизведения.</p>
+<p>Сетевые запросы выполняются через AJAX, но с обязательным учетом политики безопасности CORS и ограничений на домены, указанные в манифесте.</p>
+
+<h3>Управление видеоплеером</h3>
+<p>Плеер работает в отдельном контексте, накладываясь поверх HTML-слоя, поэтому синхронизация интерфейса и видео требует аккуратной работы с z-index и прозрачностью.</p>
+<p>Методы <code>Play</code>, <code>Pause</code>, <code>Stop</code> и <code>Seek</code> должны вызываться только после получения подтверждения готовности плеера.</p>
+<p>Поддерживаются форматы H.264, MPEG-4 и некоторые контейнеры MKV, однако кодеки могут отличаться в зависимости от региональной прошивки.</p>
+
+<h3>Сетевое взаимодействие</h3>
+<p>Запросы к серверу выполняются асинхронно, и ответ обрабатывается в callback-функциях, где происходит парсинг JSON или XML данных.</p>
+<p>Важно предусматривать таймауты и обработку ошибок сети, так как соединение на телевизорах может быть нестабильным.</p>
+<p><strong>Безопасность данных</strong> также важна: хранение токенов и паролей в открытом виде в файлах конфигурации недопустимо.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование нативного API</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Высокая производительность</li><li>✅ Полный доступ к железу</li><li>✅ Стабильность</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Ограниченный функционал</li><li>❌ Сложность отладки</li><li>❌ Зависимость от модели</li></ul></div>
+</div></div>
+
+<p>Грамотное использование API позволяет создать отзывчивое приложение, эффективно использующее возможности телевизора.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод API</th>
+<th>Описание</th>
+<th>Параметры</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plugin.Execute</td>
+<td>Запуск плагина</td>
+<td>ID плагина, параметры</td>
+</tr>
+<tr>
+<td>Network.GetActiveType</td>
+<td>Тип сети</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>AVPlayer.Play</td>
+<td>Старт видео</td>
+<td>URL, позиция</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="типичные-ошибки-и-процесс-отладки">Типичные ошибки и процесс отладки</h2>
+
+<p>Процесс разработки сопряжен с рядом специфических проблем, которые часто возникают из-за невнимательности к деталям или misunderstanding документации.</p>
+<p>Отладка на реальном устройстве производится через лог-файлы, которые можно выгрузить через USB или посмотреть в консоли эмулятора.</p>
+<p>Анализ логов позволяет выявить точное место сбоя, будь то синтаксическая ошибка JS или отказ плагина.</p>
+
+<h3>Распространенные проблемы</h3>
+<ol>
+<li><strong>Ошибка инициализации плагинов</strong> — возникает, если ID плагина указан неверно или плагин не поддерживается данной моделью, решение: проверить таблицу совместимости в docs.</li>
+<li><strong>Зависание интерфейса</strong> — происходит при выполнении тяжелых вычислений в главном потоке, решение: разбить задачи на мелкие части или использовать таймеры.</li>
+<li><strong>Некорректное отображение шрифтов</strong> — вызвано использованием unsupported форматов шрифтов, решение: использовать только TTF/OTF и прописывать их в CSS правильно.</li>
+<li><strong>Проблемы с кодировкой</strong> — текст превращается в кракозябры, если файлы сохранены не в UTF-8 без BOM, решение: пересохранить файлы в правильной кодировке.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда проверяйте версию прошивки телевизора, так как API может незначительно отличаться в разных ревизиях ПО F-серии.</p></aside>
+
+<p>Систематический подход к поиску ошибок сокращает время разработки и повышает качество конечного продукта.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная разработка для F-серии требует строгого следования стандартам Orsay, внимательной работы с API и тщательного тестирования на реальном устройстве.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Разработка для Samsung F-серии — это работа с наследием, требующая глубокого понимания архитектуры Orsay и ограничений старых JavaScript движков.</p>
+<p>Соблюдение структуры проекта, правильное использование API и внимательная отладка позволяют создавать стабильные приложения даже на устаревшем оборудовании.</p>
+<p>Несмотря на возраст платформы, знание ее принципов полезно для понимания эволюции Smart TV систем и поддержки существующей пользовательской базы.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/t/tm/tms-player-dlya-smart-tv-skynet-ne-podklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">TMS Player для Smart TV SkyNet: решение проблем с подключением</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок подключения TMS Player на Smart TV SkyNet. Проверка сети, </span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-subtitry-na-televizore-haier-android.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить субтитры на Haier Android TV: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению субтитров на телевизорах Haier с Android TV. Решения для разных </span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-kolonki-provodnye-k-televizoru-ksiomi-bez-blyutuza.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить проводные колонки к Xiaomi TV без Bluetooth</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению внешних аудиосистем к телевизору Xiaomi через AUX, оптический вы</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-wink-na-televizor-samsung-2012-goda-vypuska.html" class="pb-related-card">
+                <span class="pb-related-title">Как установить Wink на Samsung Smart TV 2012: Инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по установке Wink на телевизоры Samsung 2012 года. Решения для старых версий Ti</span>
+            </a><a href="/articles/k/ka/kak-dobavit-animatsiyu-podklyucheniya-naushnikov-samsung.html" class="pb-related-card">
+                <span class="pb-related-title">Анимация подключения наушников Samsung: настройка и сброс</span>
+                <span class="pb-related-desc">Подробная инструкция по включению анимации наушников на Samsung. Решение проблем с One UI 6.0, Good </span>
+            </a><a href="/articles/k/ka/kak-na-televizor-telefunken-skachivat-prilozheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Установка приложений на TV Telefunken: полная инструкция</span>
+                <span class="pb-related-desc">Как скачать приложения на телевизор Telefunken. Инструкции для Smart TV, Android и систем без Smart.</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

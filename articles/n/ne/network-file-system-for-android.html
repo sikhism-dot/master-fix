@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>NFS для Android: Настройка, клиенты и решение проблем доступа — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по настройке Network File System на Android. Выбор клиентов, пошаговая конфигурация, сравнение методов и устранение типичных ошибок подключения.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/n/ne/network-file-system-for-android.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="NFS для Android: Настройка, клиенты и решение проблем доступа">
+    <meta property="og:description" content="Полная инструкция по настройке Network File System на Android. Выбор клиентов, пошаговая конфигурация, сравнение методов и устранение типичных ошибок подключения.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">NFS для Android: Настройка, клиенты и решение проблем доступа</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-доступа-и-выбор-клиентского-по">Архитектура доступа и выбор клиентского ПО</a></li><li><a href="#настройка-соединения-и-параметры-монтирования">Настройка соединения и параметры монтирования</a></li><li><a href="#проблемы-совместимости-и-сетевые-ограничения">Проблемы совместимости и сетевые ограничения</a></li><li><a href="#диагностика-неисправностей-и-устранение-ошибок">Диагностика неисправностей и устранение ошибок</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/al/alternativnyj-rezhim-displayport-v-kakikh-telefonakh.html">Режим DisplayPort в телефонах: список моделей и настройка</a></li><li><a href="/articles/t/tr/translator-chto-eto-za-prilozhenie-v-huawei.html">Translator на Huawei: полное руководство по встроенному переводчику</a></li><li><a href="/articles/3/3d/3d-open-world-hent-game-for-android.html">Разработка 3D open world hent game для Android: технический гайд</a></li><li><a href="/articles/a/an/android-papka-proc.html">Папка /proc в Android: диагностика, мониторинг и управление</a></li><li><a href="/articles/k/ka/kak-igrat-vmeste-v-stardew-valley-na-telefone.html">Как играть в Stardew Valley на телефоне вместе: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Network File System для Android: Полное руководство по настройке</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-доступа-и-выбор-клиентского-по">Архитектура доступа и выбор клиентского ПО</a></li><li><a href="#настройка-соединения-и-параметры-монтирования">Настройка соединения и параметры монтирования</a></li><li><a href="#проблемы-совместимости-и-сетевые-ограничения">Проблемы совместимости и сетевые ограничения</a></li><li><a href="#диагностика-неисправностей-и-устранение-ошибок">Диагностика неисправностей и устранение ошибок</a></li><li><a href="#резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда необходимо получить доступ к файлам на удаленном сервере или домашнем компьютере прямо с мобильного устройства, возникает регулярно у системных администраторов и продвинутых пользователей. Часто встроенные средства файлового менеджера не поддерживают требуемый протокол или работают нестабильно при передаче больших объемов данных. Пользователь сталкивается с невозможностью запустить скрипт, отредактировать конфигурационный файл или просмотреть лог, хранящийся на Linux-сервере, без предварительного скачивания.</p>
+<p>Проблема усугубляется тем, что стандартные методы передачи вроде Bluetooth или USB-кабеля требуют физического присутствия или ручного вмешательства для каждого файла. В корпоративной среде или при работе с медиа-библиотеками критически важна прозрачность доступа, когда удаленная папка отображается как часть локальной файловой системы. Именно здесь на первый план выходит необходимость грамотной реализации поддержки сетевых файловых систем.</p>
+<p>На практике выбор конкретного решения зависит от версии операционной системы, наличия прав суперпользователя и требований к безопасности соединения. Некоторые методы требуют глубокой интеграции в ядро, другие работают исключительно на уровне пользовательских приложений-клиентов. Понимание архитектурных различий позволяет избежать потери данных и обеспечить стабильную скорость передачи.</p>
+
+<h2 id="архитектура-доступа-и-выбор-клиентского-по">Архитектура доступа и выбор клиентского ПО</h2>
+<p>Реализация поддержки Network File System на мобильных устройствах базируется на двух основных подходах: использование нативных драйверов ядра или применение пользовательских библиотек FUSE. В современных версиях <em>Android 11</em> и новее доступ к системному ядру ограничен, что делает второй метод наиболее распространенным. Приложения-клиенты эмулируют файловую систему, перенаправляя запросы через сетевые сокеты.</p>
+<p>Для работы требуется специализированное программное обеспечение, способное интерпретировать протокол NFS версии 3 или 4. Рынок предлагает несколько проверенных решений, различающихся функционалом и поддержкой кодировок имен файлов. Важно выбирать софт, регулярно обновляемый разработчиками, так как изменения в политиках безопасности <em>Google Play</em> часто ломают старые версии.</p>
+<p>Особое внимание стоит уделить поддержке аутентификации. Если сервер требует проверки подлинности по ключам или паролям, базовые файловые менеджеры могут не справиться с задачей. В таких случаях требуется специализированный клиент с расширенными настройками сети.</p>
+
+<h3>Сравнение популярных клиентов</h3>
+<p>Анализ доступных инструментов показывает, что универсальные файловые менеджеры часто уступают специализированным утилитам в стабильности соединения. Некоторые приложения отлично работают в локальной сети, но обрываются при переключении на мобильный интернет из-за смены IP-адреса. Другие некорректно обрабатывают длинные пути или специальные символы в именах файлов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Приложение</th>
+<th>Поддержка NFS v4</th>
+<th>Интеграция в систему</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>MiXplorer</em></td>
+<td>Да (через плагин)</td>
+<td>Виртуальный накопитель</td>
+</tr>
+<tr>
+<td><em>Solid Explorer</em></td>
+<td>Ограничена</td>
+<td>Плагин файловой системы</td>
+</tr>
+<tr>
+<td><em>NFS Client Pro</em></td>
+<td>Полная</td>
+<td>Системный драйвер (Root)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Выбор конкретного инструмента диктуется наличием прав <code>Root</code>. Если устройство не рутировано, функционал сводится к эмуляции внутри приложения. При наличии полного доступа можно монтировать удаленные ресурсы непосредственно в дерево каталогов операционной системы, делая их доступными для любых других программ.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах без root-прав монтирование возможно только в пределах песочницы выбранного приложения.</p></aside>
+
+<h2 id="настройка-соединения-и-параметры-монтирования">Настройка соединения и параметры монтирования</h2>
+<p>Процесс конфигурации начинается с получения точных данных о сервере. Необходимо знать IP-адрес хоста, путь к экспортируемому каталогу и требуемую версию протокола. Ошибка в одном символе пути приведет к отказу в доступе, поэтому копирование параметров напрямую из конфигурации сервера является предпочтительным действием.</p>
+<p>В интерфейсе клиента следует создать новое подключение, выбрав тип протокола <code>NFS</code>. В поле адреса вводится IP-сервера, а в поле пути — директория. Для домашних сетей это часто выглядит как <code>192.168.1.100:/mnt/data</code>. Важно проверить, открыт ли порт 2049 в брандмауэре роутера или самого сервера.</p>
+<p>Допустим, сервер настроен на работу только с NFSv4. В этом случае в расширенных настройках клиента нужно принудительно указать версию протокола, иначе попытка автоопределения может завершиться таймаутом. Также стоит проверить настройки кодировки, если в именах файлов используются национальные алфавиты.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная настройка подключения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Введите IP-адрес сервера</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите путь к экспорту</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите версию протокола</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте доступность пингом</span></div></div>
+
+<p>Для обеспечения стабильности соединения рекомендуется настроить параметры таймаута и повторных попыток. В нестабильных сетях Wi-Fi агрессивные повторные запросы могут привести к зависанию интерфейса приложения. Оптимальным считается значение таймаута в районе 60 секунд.</p>
+
+<h3>Конфигурирование через терминал (Root)</h3>
+<p>Если устройство имеет права суперпользователя, монтирование можно выполнить системными средствами через эмулятор терминала. Этот метод обеспечивает наилучшую совместимость, так как удаленный ресурс становится частью реальной файловой системы. Для выполнения операций потребуется утилита <code>mount</code> и доступ к каталогу <code>/mnt</code> или <code>/storage</code>.</p>
+<p>Команда монтирования имеет строгий синтаксис. Перед выполнением необходимо создать точку монтирования — пустую директорию. Игнорирование этого шага приведет к ошибке выполнения команды. После создания папки можно приступать к присоединению сетевого ресурса.</p>
+
+<pre><code>mount -t nfs -o vers=4,port=2049 192.168.1.50:/export/media /mnt/nfs_media</code></pre>
+
+<p>Для автоматического подключения при загрузке устройства команду необходимо прописать в скрипте инициализации. В зависимости от прошивки это может быть файл <code>init.rc</code> или скрипт в папке <code>service.d</code>. Важно обеспечить задержку старта сервиса до момента полной инициализации сетевого интерфейса.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Некорректное монтирование системных разделов может привести к загрузочному циклу (bootloop). Всегда имейте доступ к Recovery.</p></aside>
+
+<h2 id="проблемы-совместимости-и-сетевые-ограничения">Проблемы совместимости и сетевые ограничения</h2>
+<p>Основной сложностью при работе с NFS на Android является агрессивная политика энергосбережения. Операционная система стремится разорвать фоновые сетевые соединения для экономии заряда батареи. Это приводит к тому, что при гашении экрана связь с сервером обрывается, а файловый менеджер перестает отвечать на запросы.</p>
+<p>Чтобы mitigate этот эффект, необходимо добавить приложение в список исключений системы энергосбережения. В меню <code>Настройки → Приложения → Специальный доступ → Оптимизация батареи</code> следует выбрать режим «Не оптимизировать» для используемого клиента. Это позволит фоновому процессу поддерживать сокет открытым.</p>
+<p>Еще одним препятствием становятся ограничения на доступ к сети в фоновом режиме, введенные в <em>Android 9</em> и выше. Если приложение не имеет активного окна, система может блокировать исходящий трафик. Решением является использование сервисов с приоритетом или постоянный запуск в режиме Picture-in-Picture, если это поддерживает клиент.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Стабильность соединения</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Постоянный доступ к файлам</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы:Повышенный расход батареи</li><li>❌ Риск разрыва при смене сети</li></ul></div>
+</div></div>
+
+<p>Следует также учитывать ограничения пропускной способности беспроводного интерфейса. Протокол NFS чувствителен к задержкам (latency), поэтому в перегруженных Wi-Fi сетях производительность может падать ниже приемлемого уровня. Использование диапазона 5 ГГц значительно улучшает ситуацию по сравнению с 2.4 ГГц.</p>
+
+<h3>Работа с различными версиями Android</h3>
+<p>В старых версиях системы, предшествующих <em>Android 6.0</em>, существовала возможность монтирования через FUSE на уровне ядра без особых ограничений. Современные версии требуют обходных путей. В частности, начиная с <em>Android 10</em>, доступ к корневой файловой системе для приложений строго регламентирован Scoped Storage.</p>
+<p>Это означает, что даже при успешном монтировании другие приложения могут не видеть файлы по новому пути. Для решения проблемы приходится использовать механизмы SAF (Storage Access Framework) или передавать файлы через стандартные интерфейсы шеринга. Прямой доступ к байтам на диске закрыт.</p>
+<p>На устройствах от разных производителей реализация сетевых стеков может отличаться. Прошивки от <em>Xiaomi</em>, <em>Huawei</em> и <em>Samsung</em> имеют собственные надстройки, которые могут блокировать низкоуровневые сетевые вызовы. В таких случаях помогает отключение «умных» функций сети в настройках разработчика.</p>
+
+<table>
+<thead>
+<tr>
+<th>Версия Android</th>
+<th>Тип доступа</th>
+<th>Ограничения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5.0 - 7.0</td>
+<td>Прямое монтирование</td>
+<td>Минимальные</td>
+</tr>
+<tr>
+<td>8.0 - 9.0</td>
+<td>FUSE / VPN</td>
+<td>Фоновые ограничения</td>
+</tr>
+<tr>
+<td>10.0+</td>
+<td>SAF / Виртуальный FS</td>
+<td>Scoped Storage</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-неисправностей-и-устранение-ошибок">Диагностика неисправностей и устранение ошибок</h2>
+<p>Процесс отладки соединений начинается с анализа логов. В Android для этого используется утилита <code>logcat</code>. Фильтрация сообщений по тегу <code>NFS</code> или имени приложения позволяет выявить причину отказа. Часто в логах встречаются сообщения о таймаутах RPC или несоответствии версий протокола.</p>
+<p>Если подключение не устанавливается, первым делом следует проверить базовую связность. Команда <code>ping</code> подтвердит доступность хоста, но не гарантирует работу конкретного сервиса. Для проверки порта 2049 можно использовать утилиты сканирования портов, доступные в Play Store.</p>
+<p>В случае, когда соединение есть, но файлы не читаются, проблема может крыться в правах доступа на стороне сервера. NFS relies heavily on UID/GID matching. Если на сервере файл принадлежит пользователю 1000, а на Android приложение работает от имени другого пользователя, доступ будет запрещен. Решение — настройка маппинга пользователей на сервере или использование опции <code>all_squash</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте статический IP-адрес для сервера, чтобы избежать разрыва подключений после смены аренды DHCP.</p></aside>
+
+<p>Частой ошибкой является попытка использования NFS через публичные сети без шифрования. Протокол не шифрует трафик по умолчанию, передавая данные в открытом виде. Для работы через интернет обязательно использование VPN-туннеля (например, WireGuard или OpenVPN) перед установкой соединения с файловой системой.</p>
+
+<h3>Типичные ошибки</h3>
+<ol>
+<li><strong>Ошибка монтирования «Permission denied»</strong> — чаще всего вызвана несоответствием прав доступа на сервере; необходимо проверить файл <code>/etc/exports</code> и права файловой системы на удаленном хосте.</li>
+<li><strong>Таймаут при подключении</strong> — свидетельствует о блокировке порта 2049 фаерволом или неверном IP-адресе; требуется проверить настройки сети и доступность порта.</li>
+<li><strong>Обрыв соединения при блокировке экрана</strong> — результат работы системы энергосбережения; нужно добавить приложение в исключения и запретить оптимизацию батареи.</li>
+<li><strong>Некорректное отображение кириллицы</strong> — проблема кодировки; следует явно указать параметр <code>iocharset=utf8</code> в настройках клиента или сервера.</li>
+</ol>
+
+<p>В сложных случаях, когда стандартные методы диагностики не помогают, рекомендуется временно отключить IPv6 на роутере или устройстве. Двойной стек протоколов иногда вызывает конфликты адресации, когда клиент пытается подключиться по IPv6, а сервер настроен только на IPv4. Принудительное использование IPv4 часто решает проблему нестабильности.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Стабильная работа NFS на Android требует комплексной настройки прав доступа, исключений энергосбережения и корректных сетевых параметров.</p></aside>
+
+<h2 id="резюме-и-рекомендации-по-эксплуатации">Резюме и рекомендации по эксплуатации</h2>
+<p>Организация доступа к Network File System на платформе Android представляет собой задачу со множеством переменных, зависящих от версии ОС и конфигурации сети. Несмотря на ограничения, накладываемые современной архитектурой безопасности, существуют эффективные способы реализации доступа. Ключевым фактором успеха является правильный выбор клиентского ПО, соответствующий уровню доступа к системе.</p>
+<p>Для рядовых пользователей оптимальным решением станет использование специализированных файловых менеджеров с поддержкой плагинов. Они обеспечивают баланс между удобством и функциональностью, не требуя глубоких технических знаний. Для профессионалов, нуждающихся в полной интеграции, единственным вариантом остается получение root-прав и ручная конфигурация системных скриптов.</p>
+<p>Внедрение описанных методов позволяет превратить мобильное устройство в полноценный терминал для работы с удаленными данными. Соблюдение правил безопасности, в частности использование VPN в публичных сетях и настройка статических адресов, гарантирует надежность и сохранность информации в долгосрочной перспективе.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/al/alternativnyj-rezhim-displayport-v-kakikh-telefonakh.html" class="pb-related-card">
+                <span class="pb-related-title">Режим DisplayPort в телефонах: список моделей и настройка</span>
+                <span class="pb-related-desc">Подробный гид по альтернативному режиму DisplayPort в смартфонах. Список поддерживаемых устройств, п</span>
+            </a><a href="/articles/t/tr/translator-chto-eto-za-prilozhenie-v-huawei.html" class="pb-related-card">
+                <span class="pb-related-title">Translator на Huawei: полное руководство по встроенному переводчику</span>
+                <span class="pb-related-desc">Подробный обзор приложения Translator на смартфонах Huawei. Настройка, скрытые функции, работа с офл</span>
+            </a><a href="/articles/3/3d/3d-open-world-hent-game-for-android.html" class="pb-related-card">
+                <span class="pb-related-title">Разработка 3D open world hent game для Android: технический гайд</span>
+                <span class="pb-related-desc">Инструкция по созданию 3D open world hent game на Android. Оптимизация рендеринга, управление память</span>
+            </a><a href="/articles/a/an/android-papka-proc.html" class="pb-related-card">
+                <span class="pb-related-title">Папка /proc в Android: диагностика, мониторинг и управление</span>
+                <span class="pb-related-desc">Технический обзор файловой системы /proc в Android. Анализ процессов, памяти, CPU и ядра. Работа с A</span>
+            </a><a href="/articles/k/ka/kak-igrat-vmeste-v-stardew-valley-na-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Как играть в Stardew Valley на телефоне вместе: инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по запуску кооператива в Stardew Valley на Android и iOS. Настройка сервера, решение </span>
+            </a><a href="/articles/m/mi/mi-coin-chto-eto-za-programma-i-nuzhna-li-ona-na-android-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Mi Coin что это за программа: анализ безопасности на Android</span>
+                <span class="pb-related-desc">Подробный разбор приложения Mi Coin на Android. Стоит ли удалять системный процесс Xiaomi или это ви</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

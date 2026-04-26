@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>display vs dot drop: Точное управление пикселями и графикой — Мастер Фикс</title>
+    <meta name="description" content="Полный гид по CSS свойству display и концепции drop в графике. Разбор методов рендеринга, устранение артефактов и оптимизация верстки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/f/fo/for-display-vs-dot-drop.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="display vs dot drop: Точное управление пикселями и графикой">
+    <meta property="og:description" content="Полный гид по CSS свойству display и концепции drop в графике. Разбор методов рендеринга, устранение артефактов и оптимизация верстки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">display vs dot drop: Точное управление пикселями и графикой</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-рендеринга-и-свойство-display">Архитектура рендеринга и свойство display</a></li><li><a href="#концепция-drop-в-графических-системах">Концепция Drop в графических системах</a></li><li><a href="#работа-с-canvas-и-пиксельной-графикой">Работа с Canvas и пиксельной графикой</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#сравнительный-анализ-и-итоговые-рекомендации">Сравнительный анализ и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-uznat-est-li-v-dome-kollektivnaya-antenna.html">Как узнать есть ли коллективная антенна в доме: полная инструкция</a></li><li><a href="/articles/s/sk/skajproks-murom-oplata.html">Скайпрокс Муром: оплата, тарифы и способы пополнения</a></li><li><a href="/articles/k/ka/kak-preobrazovat-s-zip-v-apk.html">Как преобразовать ZIP в APK: полная инструкция для Android</a></li><li><a href="/articles/s/sh/shift-na-makbuke-2019-gde-nakhoditsya.html">Где находится Shift на MacBook 2019: расположение и функции</a></li><li><a href="/articles/t/th/throttlestop-andervolting-protsessora-intel-core-i-5-9300.html">ThrottleStop андервольтинг Intel Core i5-9300H: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Технический анализ: display и методы drop в рендеринге</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-рендеринга-и-свойство-display">Архитектура рендеринга и свойство display</a></li><li><a href="#концепция-drop-в-графических-системах">Концепция Drop в графических системах</a></li><li><a href="#работа-с-canvas-и-пиксельной-графикой">Работа с Canvas и пиксельной графикой</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#сравнительный-анализ-и-итоговые-рекомендации">Сравнительный анализ и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При разработке сложных графических интерфейсов или верстке адаптивных макетов разработчик часто сталкивается с ситуацией, когда элементы ведут себя непредсказуемо: появляются лишние отступы, перекрываются соседние блоки или полностью исчезают из визуального потока. Особенно остро эта проблема встает при попытке реализовать специфические визуальные эффекты, такие как «капающие» символы в терминале или точное позиционирование слоев в canvas.</p>
+<p>Если у вас возникла задача убрать элемент из потока документа, сохранив его доступным для скриптов, или, наоборот, нужно жестко зафиксировать геометрию пикселей без влияния на соседние объекты, стандартные подходы могут дать сбой. Ошибочное применение свойств позиционирования или непонимание того, как браузер обрабатывает «падение» (drop) объектов в DOM-дереве, приводит к рассинхронизации верстки.</p>
+<p>На практике часто путают механизмы скрытия через <code>display: none</code> и манипуляции с прозрачностью, что в контексте высокопроизводительной анимации или работы с canvas приводит к падению FPS. Ниже представлен детальный разбор технических аспектов управления отображением и методов обработки графических артефактов, часто называемых «drop».</p>
+
+<h2 id="архитектура-рендеринга-и-свойство-display">Архитектура рендеринга и свойство display</h2>
+<p>Фундаментом построения любого веб-интерфейса является механизм рендеринга, который определяет, как браузер преобразует HTML-код и CSS-правила в пиксели на экране. Ключевым инструментом здесь выступает свойство <code>display</code>, которое диктует тип генерируемого boxes и их поведение в потоке документа. Неправильное использование значений этого свойства является основной причиной «схлопывания» контейнеров или некорректного наложения слоев.</p>
+<p>Когда элементу присваивается значение <code>none</code>, он полностью удаляется из потока рендеринга. Браузер не выделяет под него место, не рассчитывает его размеры и не отрисовывает содержимое. Это критически важный момент для оптимизации производительности, так как исключение элемента из потока позволяет движку пересчитывать геометрию страницы быстрее, чем при использовании <code>visibility: hidden</code>.</p>
+<p>Допустим, необходимо динамически переключать видимость сложного модального окна. Использование <code>display: block</code> и <code>display: none</code> потребует перерисовки макета (reflow), что является более тяжелой операцией, чем изменение прозрачности. Однако именно этот метод гарантирует, что скрытый элемент не займет ни одного пикселя пространства, что часто требуется при реализации аккордеонов или вкладок.</p>
+
+<h3>Сравнение методов скрытия и позиционирования</h3>
+<p>Для глубокого понимания различий стоит рассмотреть таблицу, сравнивающую основные стратегии управления видимостью элементов. Это поможет выбрать оптимальный подход для конкретной задачи, будь то скрытие навигации или создание сложных анимаций появления.</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Влияние на поток</th>
+<th>Доступность для JS</th>
+<th>Влияние на производительность</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>display: none</code></td>
+<td>Элемент удален из потока</td>
+<td>Доступен в DOM</td>
+<td>Высокое (вызывает reflow)</td>
+</tr>
+<tr>
+<td><code>visibility: hidden</code></td>
+<td>Сохраняет место в потоке</td>
+<td>Доступен в DOM</td>
+<td>Низкое (только repaint)</td>
+</tr>
+<tr>
+<td><code>opacity: 0</code></td>
+<td>Сохраняет место в потоке</td>
+<td>Доступен в DOM</td>
+<td>Минимальное (compositing)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Важно отметить, что выбор между <code>display</code> и другими методами зависит от того, нужно ли сохранять семантическую структуру страницы для скринридеров или поисковых роботов в момент скрытия. Если элемент скрыт через <code>display: none</code>, он не будет прочитан ассистивными технологиями, так как формально не существует для рендерера в данный момент времени.</p>
+<p>Если у вас стоит задача создать эффект «проваливания» элемента сквозь другие слои без изменения его физического положения в DOM, использование <code>display</code> может быть избыточным. В таких случаях эффективнее комбинировать <code>position: absolute</code> с управлением <code>z-index</code>, что позволяет манипулировать stacking context без перестройки всего макета.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Алгоритм переключения видимости</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Получить ссылку на элемент через querySelector</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Проверить текущее значение стиля display</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установить 'none' для скрытия или 'block' для показа</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверить результат в DevTools</span></div></div>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В современных фреймворках вроде React или Vue управление display часто абстрагировано через условный рендеринг (v-if, conditional rendering), что автоматически решает вопросы оптимизации.</p></aside>
+
+<h2 id="концепция-drop-в-графических-системах">Концепция Drop в графических системах</h2>
+<p>Термин «drop» в контексте компьютерной графики и верстки может иметь несколько значений, от сброса кадров (frame drop) до специфических операций с текстом и буфером обмена. Понимание этих нюансов необходимо для создания плавных интерфейсов и корректной работы с мультимедиа.</p>
+<p>В первую очередь, под «drop» часто понимают потерю кадров при рендеринге анимации. Когда браузер не успевает отрисовать кадр за 16.6 мс (для 60 FPS), происходит «drop frame», что визуально воспринимается как задержка или рывок. Это часто случается при тяжелых операциях в main thread, блокирующих отрисовку.</p>
+<p>Другой аспект — это работа с буфером обмена и Drag-and-Drop API. Здесь «drop» означает событие завершение перетаскивания, когда пользователь отпускает объект над целевой зоной. Обработка этого события требует точного контроля координат и состояния DOM, чтобы избежать рассинхронизации данных.</p>
+
+<h3>Оптимизация Frame Drop при анимациях</h3>
+<p>Для минимизации потери кадров необходимо выносить тяжелые вычисления из основного потока или использовать аппаратное ускорение. Свойства, влияющие на геометрию (<code>width</code>, <code>height</code>, <code>top</code>, <code>left</code>), вызывают пересчет макета, тогда как <code>transform</code> и <code>opacity</code> обрабатываются композитером GPU.</p>
+<p>На практике это означает, что анимацию перемещения элемента следует выполнять через <code>transform: translate()</code>, а не меняя отступы. Это позволяет избежать триггера reflow на каждом кадре анимации, сохраняя высокий FPS даже на мобильных устройствах с ограниченными ресурсами.</p>
+<p>Если у вас наблюдается постоянный drop fps при скролле или анимации, стоит проверить, не вызывает ли ваш код принудительный синхронный layout. Чтение геометрических свойств (например, <code>offsetTop</code>) сразу после их изменения заставляет браузер завершить все pending изменения перед возвратом значения, что убивает производительность.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование setInterval для анимаций часто приводит к неравномерному кадру и drop'ам. Всегда используйте requestAnimationFrame для синхронизации с частотой обновления экрана.</p></aside>
+
+<h2 id="работа-с-canvas-и-пиксельной-графикой">Работа с Canvas и пиксельной графикой</h2>
+<p>При работе с элементом <code>canvas</code> понятие «display» трансформируется в управление буферами пикселей. Здесь разработчик получает прямой доступ к памяти изображения, что позволяет реализовывать сложные эффекты, но требует ручного управления каждым битом информации.</p>
+<p>Частая задача — очистка холста или «сброс» (drop) предыдущего кадра перед отрисовкой нового. Если этого не делать, новые изображения будут накладываться на старые, создавая «шлейф». Метод <code>clearRect</code> является стандартным способом очистки области, но он также вызывает перерисовку.</p>
+<p>Для оптимизации можно использовать технику dirty rectangles, когда перерисовывается только измененная часть холста, а не весь кадр целиком. Это особенно актуально для приложений с высокой детализацией, где полная перерисовка 4K буфера может быть слишком затратной.</p>
+
+<h3>Манипуляции с ImageData и буфером</h3>
+<p>Доступ к пиксельным данным осуществляется через объект <code>ImageData</code>, который представляет собой одномерный массив значений RGBA. Прямая манипуляция этим массивом позволяет реализовывать фильтры, но требует осторожности из-за риска выхода за границы массива.</p>
+<p>Рассмотрим пример функции, которая инвертирует цвета изображения. Операция проходит по каждому пикселю, изменяя значения красного, зеленого и синего каналов. Это классический пример работы с «drop» старых значений цвета и заменой их новыми.</p>
+<pre><code>function invertColors(ctx, width, height) {
+<p>const imageData = ctx.getImageData(0, 0, width, height);</p>
+<p>const data = imageData.data;</p>
+<p>for (let i = 0; i < data.length; i += 4) {</p>
+<p>data[i] = 255 - data[i]; // Red</p>
+<p>data[i+1] = 255 - data[i+1]; // Green</p>
+<p>data[i+2] = 255 - data[i+2]; // Blue;</p>
+<p>// Alpha channel remains unchanged</p>
+<p>}</p>
+<p>ctx.putImageData(imageData, 0, 0);</p>
+<p>}</code></pre></p>
+<p>Стоит помнить, что операции с <code>getImageData</code> и <code>putImageData</code> могут быть медленными на больших изображениях. В таких случаях целесообразно использовать WebGL для выполнения вычислений на GPU, оставляя CPU свободным для логики приложения.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для работы с текстом на canvas используйте методы fillText и strokeText. Помните, что текст на canvas становится набором пикселей и теряет редактируемость, в отличие от HTML-текста.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе разработки даже опытные инженеры допускают ошибки, связанные с неверным пониманием механизма рендеринга. Ниже приведен список наиболее распространенных проблем, их причин и способов решения.</p>
+<ol>
+<li><strong>Игнорирование Collapsing Margins</strong> — вертикальные отступы смежных блоков схлопываются, выбирается наибольший. Решение: использовать padding вместо margin или создать контекст форматирования (BFC) через overflow: hidden.</li>
+<li><strong>Использование !important для скрытия элементов</strong> — перебивает стили JS и делает код не поддерживаемым. Решение: переписать каскадность специфичностью селекторов или использовать классы-модификаторы.</li>
+<li><strong>Блокировка main thread тяжелыми вычислениями</strong> — приводит к freeze интерфейса и drop кадров. Решение: выносить вычисления в Web Workers или разбивать задачи на микро-таймфреймы.</li>
+<li><strong>Некорректный сброс canvas</strong> — изменение размера холста через атрибуты сбрасывает весь контекст и состояние. Решение: использовать clearRect() вместо изменения width/height для очистки.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Плюсы ручного управления</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над пикселями</li><li>✅ Возможность создания уникальных эффектов</li><li>✅ Независимость от DOM</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы ручного управления:Сложность отладки</li><li>❌ Высокие требования к оптимизации</li><li>❌ Отсутствие доступности по умолчанию</li></ul></div>
+</div></div>
+
+<h2 id="сравнительный-анализ-и-итоговые-рекомендации">Сравнительный анализ и итоговые рекомендации</h2>
+<p>Подводя итог, можно сказать, что выбор между различными методами управления отображением («display») и обработки графических сбросов («drop») зависит от конкретной задачи. Для стандартной верстки доминирующим остается CSS <code>display</code>, обеспечивающий предсказуемый flow-раскладку.</p>
+<p>Для графических приложений и игр незаменимым становится <code>canvas</code> и WebGL, где контроль над каждым пикселем позволяет достигать максимальной производительности, но требует глубоких знаний математики и архитектуры GPU. Ошибки в выборе инструмента на ранних этапах могут привести к необходимости полного переписывания проекта.</p>
+<p>Всегда стоит начинать с семантически правильного HTML и минимально необходимых стилей, подключая тяжелую графику только там, где это действительно нужно. Такой подход обеспечивает баланс между производительностью, доступностью и удобством поддержки кода.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильное использование display и понимание процессов рендеринга — ключ к созданию быстрых и отзывчивых интерфейсов. Избегайте блокировки основного потока и используйте аппаратное ускорение там, где это возможно.</p></aside>
+
+<h3>Таблица совместимости подходов</h3>
+<table>
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>Рекомендуемый метод</th>
+<th>Альтернатива</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Скрытие контента</td>
+<td><code>display: none</code></td>
+<td><code>visibility: hidden</code></td>
+</tr>
+<tr>
+<td>Анимация движения</td>
+<td><code>transform: translate</code></td>
+<td><code>top/left</code> (не рекомендуется)</td>
+</tr>
+<tr>
+<td>Сложная графика</td>
+<td><code>WebGL / Canvas</code></td>
+<td>SVG (для векторов)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Завершая обзор, отметим, что современные браузеры предоставляют мощные инструменты DevTools для анализа производительности. Использование вкладки Performance позволяет увидеть точные моменты drop кадров и понять, какая именно операция вызвала задержку.</p>
+<p>Регулярный аудит кода и тестирование на слабых устройствах помогут выявить проблемы с рендерингом до того, как они станут критическими для пользователей. Помните, что оптимизация — это непрерывный процесс, а не разовое действие.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-uznat-est-li-v-dome-kollektivnaya-antenna.html" class="pb-related-card">
+                <span class="pb-related-title">Как узнать есть ли коллективная антенна в доме: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по проверке наличия коллективной антенны в многоквартирном доме. Методы визуального ос</span>
+            </a><a href="/articles/s/sk/skajproks-murom-oplata.html" class="pb-related-card">
+                <span class="pb-related-title">Скайпрокс Муром: оплата, тарифы и способы пополнения</span>
+                <span class="pb-related-desc">Полная инструкция по оплате Скайпрокс Муром. Способы пополнения счета, выбор тарифов, решение пробле</span>
+            </a><a href="/articles/k/ka/kak-preobrazovat-s-zip-v-apk.html" class="pb-related-card">
+                <span class="pb-related-title">Как преобразовать ZIP в APK: полная инструкция для Android</span>
+                <span class="pb-related-desc">Подробное руководство по конвертации архивов ZIP в установочные файлы APK. Методы переименования, ра</span>
+            </a><a href="/articles/s/sh/shift-na-makbuke-2019-gde-nakhoditsya.html" class="pb-related-card">
+                <span class="pb-related-title">Где находится Shift на MacBook 2019: расположение и функции</span>
+                <span class="pb-related-desc">Узнайте, где находится клавиша Shift на MacBook 2019 года. Подробный разбор клавиатуры Magic Keyboar</span>
+            </a><a href="/articles/t/th/throttlestop-andervolting-protsessora-intel-core-i-5-9300.html" class="pb-related-card">
+                <span class="pb-related-title">ThrottleStop андервольтинг Intel Core i5-9300H: инструкция</span>
+                <span class="pb-related-desc">Полное руководство по снижению температуры и повышению производительности i5-9300H через ThrottleSto</span>
+            </a><a href="/articles/v/vo/vosstanovlenie-dannykh-na-phison-ps2251-70.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление данных Phison PS2251-70: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по восстановлению флешек на контроллере Phison PS2251-70. Прошивка, MPTool, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

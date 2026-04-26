@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>RAS Dial In без интернета: запуск PPPoE локально — Мастер Фикс</title>
+    <meta name="description" content="Инструкция по настройке RAS Dial In и PPPoE в локальной сети без доступа к глобальному интернету. Решение ошибок подключения, настройка LCP и скриптов.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/r/ra/ras-dial-in-bez-dostupa-k-internetu.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="RAS Dial In без интернета: запуск PPPoE локально">
+    <meta property="og:description" content="Инструкция по настройке RAS Dial In и PPPoE в локальной сети без доступа к глобальному интернету. Решение ошибок подключения, настройка LCP и скриптов.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/internet-routery/">Интернет и Роутеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">RAS Dial In без интернета: запуск PPPoE локально</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#фундаментальные-принципы-работы-ras-в-изолированной-среде">Фундаментальные принципы работы RAS в изолированной среде</a></li><li><a href="#конфигурирование-серверной-части-ras-без-внешнего-шлюза">Конфигурирование серверной части RAS без внешнего шлюза</a></li><li><a href="#клиентская-конфигурация-и-эмуляция-подключения">Клиентская конфигурация и эмуляция подключения</a></li><li><a href="#диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</a></li><li><a href="#оптимизация-и-итоговые-рекомендации">Оптимизация и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ke/keenetic-runner-4g-n300-gorit-sinim-vajfaj-s-vyshkoj-chto-zeachit-ne-gruzit.html">Keenetic Runner 4G: синий индикатор Wi-Fi, есть сеть, но нет интернета</a></li><li><a href="/articles/k/ka/kak-perekhvatit-iphone-podklyuchennyj-k-domashnej-seti-wifi.html">Защита iPhone в сети Wi-Fi: анализ уязвимостей</a></li><li><a href="/articles/g/gs/gs-b527-kak-podklyuchit-k-internetu.html">GS B527: как подключить к интернету и настроить Wi-Fi</a></li><li><a href="/articles/y/ya/yasindvb-t8000-kak-nastroit-wifi.html">Yasindvb t8000 настройка Wi-Fi: подробная инструкция</a></li><li><a href="/articles/k/ka/kak-otmenit-zayavku-na-vyzov-inzhenera-v-rostelekom.html">Как отменить заявку в Ростелеком: инструкция по отмене вызова</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка RAS Dial In в локальной сети без доступа к интернету</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#фундаментальные-принципы-работы-ras-в-изолированной-среде">Фундаментальные принципы работы RAS в изолированной среде</a></li><li><a href="#конфигурирование-серверной-части-ras-без-внешнего-шлюза">Конфигурирование серверной части RAS без внешнего шлюза</a></li><li><a href="#клиентская-конфигурация-и-эмуляция-подключения">Клиентская конфигурация и эмуляция подключения</a></li><li><a href="#диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</a></li><li><a href="#оптимизация-и-итоговые-рекомендации">Оптимизация и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Организация удаленного доступа к корпоративной инфраструктуре часто требует создания выделенного сегмента сети, изолированного от глобальной сети, что продиктовано строгими политиками безопасности или спецификой тестовых сред.</p>
+<p>Ситуация, когда сервер <em>Remote Access Service</em> (RAS) не имеет активного подключения к интернету, но должен принимать входящие PPPoE-соединения от клиентов, является штатной для многих закрытых контуров и лабораторий.</p>
+<p>Администраторы сталкиваются с тем, что стандартные механизмы Windows и маршрутизаторов пытаются автоматически найти шлюз по умолчанию или DNS-серверы в глобальной сети, что приводит к таймаутам и невозможности завершить рукопожатие протокола.</p>
+<p>В данном руководстве рассматриваются технические нюансы конфигурирования RAS Dial In, позволяющие игнорировать отсутствие внешнего канала и успешно устанавливать туннельное соединение внутри локального домена.</p>
+
+<h2 id="фундаментальные-принципы-работы-ras-в-изолированной-среде">Фундаментальные принципы работы RAS в изолированной среде</h2>
+<p>Протокол PPP (Point-to-Point Protocol), лежащий в основе RAS, изначально разрабатывался для работы поверх последовательных линий связи, где наличие маршрутизации за пределами канала связи не являлось обязательным условием.</p>
+<p>При работе в режиме <strong>Dial In</strong> сервер ожидает входящий запрос от клиента, который содержит не только учетные данные, но и параметры negotiated LCP (Link Control Protocol), определяющие, как именно будет вестись обмен пакетами.</p>
+<p>Отсутствие доступа к интернету на стороне сервера RAS означает, что система не может проверить легитимность учетных данных через внешние RADIUS-сервисы или обновить списки блокировок, если они не кэшированы локально.</p>
+<p>Критически важным аспектом становится правильная настройка IP-адресации: сервер должен выдавать клиенту адрес из локального пула, не пытаясь пробросить трафик на несуществующий внешний интерфейс.</p>
+
+<h3>Различия между PPPoE и PPTP в контексте локализации</h3>
+<p>Технология PPPoE (Point-to-Point Protocol over Ethernet) инкапсулирует PPP-кадры внутри Ethernet-фреймов, что позволяет использовать преимущества Ethernet-сети для организации-соединений без необходимости в физическом выделенном кабеле.</p>
+<p>В отличие от PPTP, который использует GRE-туннелирование и может быть более чувствителен к состоянию таблиц маршрутизации хоста, PPPoE работает на более низком уровне стека TCP/IP, что упрощает его работу в изолированных VLAN.</p>
+<p>Если сервер RAS настроен как концентратор доступа, то отсутствие шлюза по умолчанию в его сетевых настройках не должно блокировать процесс аутентификации, однако некоторые службы Windows могут ошибочно интерпретировать это как сетевую ошибку.</p>
+<p>Важно понимать, что протокол LCP negotiates параметры соединения, такие как максимальный размер пакета (MRU) и протоколы аутентификации (PAP, CHAP, MS-CHAP v2), независимо от наличия маршрута к внешнему миру.</p>
+
+<ol>
+<li>Убедитесь, что физический интерфейс, на котором слушает RAS, имеет статический IP-адрес и не пытается получить его через DHCP, если DHCP-сервер находится в другой сети.</li>
+<li>Проверьте, что служба <code>Remote Access Connection Manager</code> запущена и имеет тип запуска «Автоматически».</li>
+<li>Верифицируйте, что брандмауэр Windows не блокирует порты 1723 (для PPTP) или широковещательные запросы discovery для PPPoE, если используется программный эмулятор.</li>
+<li>Убедитесь, что на сетевом адаптере не стоит галочка «Использовать этот компьютер как шлюз по умолчанию», если он не является таковым для всей сети.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В Windows Server роль «Доступ к удаленным рабочим столам» и роль «Маршрутизация и удаленный доступ» (RRAS) должны быть установлены отдельно, даже если сервер не выходит в интернет.</p></aside>
+
+<p>На практике, отсутствие интернета требует ручной прописки статических маршрутов для внутренней сети, чтобы ответы от RAS-клиента могли корректно вернуться к инициировавшему соединение устройству.</p>
+
+<h2 id="конфигурирование-серверной-части-ras-без-внешнего-шлюза">Конфигурирование серверной части RAS без внешнего шлюза</h2>
+<p>Настройка серверной части требует внимательного отношения к распределению IP-адресов, так как автоматическое получение адресов от провайдера в данном сценарии невозможно по определению.</p>
+<p>Необходимо создать статический пул адресов, который будет использоваться исключительно для выдачи клиентам, подключающимся через RAS, и этот пул должен принадлежать подсети, отличной от подсети самого сервера.</p>
+<p>Если сервер RAS имеет IP-адрес <code>192.168.1.10</code>, то клиентам целесообразно выдавать адреса из диапазона <code>192.168.2.100-200</code>, чтобы избежать конфликтов и обеспечить корректную маршрутизацию внутри ОС.</p>
+<p>В свойствах сервера RRAS следует отключить все функции NAT и DHCP Relay, если они не требуются специально, так как они могут пытаться отправить запросы во внешний интерфейс, получая в ответ таймауты.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Отключение NAT на интерфейсе, смотрящем в локальную сеть, может привести к потере доступа к ресурсам сети для подключенных клиентов, если не настроена статическая маршрутизация.</p></aside>
+
+<h3>Настройка пула адресов и протоколов аутентификации</h3>
+<p>Процесс назначения адресов является критическим этапом: если сервер попытается использовать APIPA (адреса 169.254.x.x) из-за отсутствия DHCP, соединение может быть установлено, но работать не будет.</p>
+<p>Рекомендуется явно указать диапазон адресов в свойствах IPv4 протокола в диспетчере RRAS, выбрав опцию «Заданный диапазон адресов» и прописав начальный и конечный IP.</p>
+<p>Для аутентификации в закрытом контуре часто достаточно использования встроенной базы пользователей Windows, однако для повышения безопасности следует принудительно включить MS-CHAP v2 и отключить устаревшие протоколы PAP и CHAP.</p>
+<p>Вкладка «Безопасность» в свойствах сервера позволяет настроить политики блокировки учетной записи после нескольких неудачных попыток входа, что актуально даже для локальных сетей для предотвращения брутфорса.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Тип адреса</td>
+<td>Статический пул</td>
+<td>Избегать DHCP, если сервер недоступен</td>
+</tr>
+<tr>
+<td>Протокол</td>
+<td>MS-CHAP v2</td>
+<td>Наиболее безопасный стандарт для Windows</td>
+</tr>
+<tr>
+<td>Шифрование</td>
+<td>MPPE 128-bit</td>
+<td>Обязательно для защиты трафика</td>
+</tr>
+</tbody>
+</table>
+
+<p>Дополнительно стоит проверить реестр Windows на наличие ключей, ограничивающих количество одновременных подключений, так как по умолчанию в клиентских версиях ОС это число ограничено одним.</p>
+<p>Для серверных версий ограничение снимается установкой соответствующих лицензий CAL, но технически сервис готов обрабатывать сотни подключений при наличии ресурсов CPU.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка пула адресов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Диспетчер RRAS</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Раскройте сервер → Протоколы → IPv4</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите «Заданный диапазон адресов»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Добавьте новый диапазон (начало и конец)</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Нажмите ОК и перезапустите службу RRAS</span></div></div>
+
+<h2 id="клиентская-конфигурация-и-эмуляция-подключения">Клиентская конфигурация и эмуляция подключения</h2>
+<p>На стороне клиента настройка подключения к локальному RAS-серверу требует создания нового подключения с ручным указанием IP-адреса сервера, так как DNS-имя может не разрешаться без внешнего DNS.</p>
+<p>В операционных системах семейства Windows создание подключения осуществляется через панель управления сетями, где необходимо выбрать тип подключения «Подключение к рабочему месту» или использовать утилиту <code>rasphone</code>.</p>
+<p>Ключевым моментом является отключение опции «Использовать шлюз по умолчанию в удаленной сети», если клиенту не требуется пробрасывать весь свой трафик через RAS-сервер, а нужен доступ только к локальным ресурсам.</p>
+<p>Если клиентская машина также не имеет доступа в интернет, убедитесь, что в настройках TCP/IP не прописаны DNS-серверы провайдера, которые будут отвечать таймаутом, лучше использовать IP-адрес локального DNS или адрес самого RAS-сервера, если он выполняет эту функцию.</p>
+
+<h3>Использование командной строки и скриптов для автоматизации</h3>
+<p>Для массового развертывания или тестирования удобно использовать командную строку, где можно явно задать параметры соединения, минуя графический интерфейс.</p>
+<p>Команда <code>rasdial</code> является основным инструментом для управления подключениями RAS из командной строки, позволяя инициировать соединение, разрывать его и отображать статус.</p>
+
+<pre><code>rasdial"MyLocalConnection" username password</code></pre>
+
+<p>Эта команда попытается установить соединение с профилем «MyLocalConnection», используя указанные учетные данные, и вернет код ошибки в случае неудачи, что удобно для скриптов мониторинга.</p>
+<p>В Linux-средах для эмуляции клиента PPPoE часто используется пакет <em>pppoeconf</em> или <em>rp-pppoe</em>, где в конфигурационном файле <code>/etc/ppp/peers/dsl-provider</code> необходимо закомментировать строку <code>usepeerdns</code>, если DNS не предоставляется сервером.</p>
+<p>Также в Linux важно добавить параметр <code>noipdefault</code> в конфигурацию пира, чтобы система не пыталась использовать свой собственный IP-адрес интерфейса как адрес для PPP-интерфейса.</p>
+
+<ul>
+<li>Проверьте, что имя подключения в системе точно совпадает с именем, используемым в скриптах автоматизации.</li>
+<li>Убедитесь, что учетная запись пользователя имеет разрешение «Разрешить удаленный доступ» в свойствах учетной записи в «Управление компьютером».</li>
+<li>При использовании Linux-клиента проверьте права доступа к файлам конфигурации в <code>/etc/ppp/</code>.</li>
+<li>Тестируйте подключение с разных сегментов сети, чтобы убедиться в корректности работы коммутации L2.</li>
+</ul>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для отладки клиентского подключения в Windows включите логирование PPP в свойствах модема или сетевого адаптера, чтобы видеть детали handshake.</p></aside>
+
+<h2 id="диагностика-и-устранение-типовых-ошибок">Диагностика и устранение типовых ошибок</h2>
+<p>Работа в изолированной среде усложняет диагностику, так как многие стандартные инструменты (ping до google.com, nslookup) бесполезны и могут вводить в заблуждение, показывая недоступность сети там, где она есть локально.</p>
+<p>Первым шагом всегда должна быть проверка физического уровня и уровня канального доступа: горят ли линки, виден ли MAC-адрес сервера клиентом через ARP-таблицу.</p>
+<p>Частой проблемой является рассинхронизация времени между клиентом и сервером, что приводит к ошибке аутентификации MS-CHAP v2, так как протокол чувствителен к временным меткам.</p>
+<p>Логирование событий Windows (<code>eventvwr.msc</code>) в разделе «Журналы Windows» → «Приложения и службы» → «RemoteAccess» содержит наиболее подробную информацию о причинах отказа в подключении.</p>
+
+<h3>Анализ кодов ошибок и методов их устранения</h3>
+<p>Код ошибки 691 («Отказано в доступе») часто возникает не из-за неверного пароля, а из-за того, что у пользователя в Active Directory или локальной базе не стоит галочка разрешения на Dial-In.</p>
+<p>Ошибка 720 («Не удалось согласовать параметры управления соединением») указывает на несовпадение настроек протоколов сжатия или шифрования между клиентом и сервером, либо на повреждение стека TCP/IP.</p>
+<p>Если соединение устанавливается, но не передаются данные, проблема может быть в MTU: PPPoE добавляет заголовок в 8 байт, уменьшая полезную нагрузку, и если MTU не скорректирован (обычно до 1492 или 1480), пакеты будут фрагментироваться или теряться.</p>
+
+<ol>
+<li><strong>Ошибка согласования LCP</strong> — возникает, когда сервер и клиент не могут договориться о базовых параметрах канала, часто решается сбросом настроек протокола или обновлением драйверов сетевой карты.</li>
+<li><strong>Отсутствие IP-адреса у клиента</strong> — сервер не может выдать адрес из пула, проверьте, не закончился ли диапазон адресов или не занят ли выдаваемый адрес другим устройством в сети.</li>
+<li><strong>Блокировка брандмауэром</strong> — даже локальный брандмауэр может блокировать GRE-протокол (протокол 47), необходимый для PPTP, убедитесь, что он разрешен в правилах входящих подключений.</li>
+<li><strong>Конфликт IP-адресов</strong> — если клиенту выдается адрес, который уже занят шлюзом или другим сервером в сети, соединение будет разорвано сразу после этапа IPCP.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Плюсы локального RAS</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полная изоляция трафика</li><li>✅ Независимость от провайдера</li><li>✅ Высокая скорость внутри ЛВС</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Минусы локального RAS:Сложность настройки маршрутизации</li><li>❌ Отсутствие внешних обновлений</li><li>❌ Ограниченность ресурсов сервера</li></ul></div>
+</div></div>
+
+<table>
+<thead>
+<tr>
+<th>Код ошибки</th>
+<th>Вероятная причина</th>
+<th>Решение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>691</td>
+<td>Нет прав Dial-In / Неверный пароль</td>
+<td>Проверить свойства пользователя</td>
+</tr>
+<tr>
+<td>720</td>
+<td>Сбой протокола TCP/IP</td>
+<td>Сброс стека: netsh int ip reset</td>
+</tr>
+<tr>
+<td>800</td>
+<td>Сервер не найден</td>
+<td>Проверить IP и доступность порта</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная настройка RAS без интернета зависит от корректной статической IP-конфигурации и отключенияжностей от внешних DNS и шлюзов.</p></aside>
+
+<h2 id="оптимизация-и-итоговые-рекомендации">Оптимизация и итоговые рекомендации</h2>
+<p>После успешного установления соединения в изолированной среде важно обеспечить стабильность работы, так как механизмы автоматического восстановления, зависящие от внешних таймеров, могут работать некорректно.</p>
+<p>Рекомендуется настроить мониторинг состояния службы RRAS и критических портов, используя локальные средства системы или специализированный софт, не требующий облачной синхронизации.</p>
+<p>Регулярная проверка логов безопасности позволит выявлять попытки несанкционированного доступа, которые в закрытой сети могут исходить от скомпрометированных внутренних узлов.</p>
+<p>Документирование всех изменений в конфигурации сети и пулах адресов является обязательным, так как в отсутствие автоматических обновлений и облачных конфигов человеческий фактор становится главным риском.</p>
+
+<p>В заключение, организация RAS Dial In без доступа к интернету — это полностью решаемая задача, требующая тщательной ручной настройки сетевых параметров и понимания работы протоколов канального уровня.</p>
+<p>Грамотное планирование адресного пространства и отключение зависимостей от глобальной сети позволяют создать надежный и безопасный канал доступа к локальным ресурсам, который часто оказывается даже стабильнее соединений через публичный интернет.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ke/keenetic-runner-4g-n300-gorit-sinim-vajfaj-s-vyshkoj-chto-zeachit-ne-gruzit.html" class="pb-related-card">
+                <span class="pb-related-title">Keenetic Runner 4G: синий индикатор Wi-Fi, есть сеть, но нет интернета</span>
+                <span class="pb-related-desc">Индикатор Wi-Fi горит синим, сеть есть, но интернет не работает на Keenetic Runner 4G. Полный гид по</span>
+            </a><a href="/articles/k/ka/kak-perekhvatit-iphone-podklyuchennyj-k-domashnej-seti-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">Защита iPhone в сети Wi-Fi: анализ уязвимостей</span>
+                <span class="pb-related-desc">Технический разбор методов перехвата трафика iPhone в локальной сети. Способы защиты данных, анализ </span>
+            </a><a href="/articles/g/gs/gs-b527-kak-podklyuchit-k-internetu.html" class="pb-related-card">
+                <span class="pb-related-title">GS B527: как подключить к интернету и настроить Wi-Fi</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению приставки GS B527 к интернету через Wi-Fi и LAN. Настройка стати</span>
+            </a><a href="/articles/y/ya/yasindvb-t8000-kak-nastroit-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">Yasindvb t8000 настройка Wi-Fi: подробная инструкция</span>
+                <span class="pb-related-desc">Полное руководство по подключению приставки Yasindvb t8000 к беспроводной сети. Решение проблем с др</span>
+            </a><a href="/articles/k/ka/kak-otmenit-zayavku-na-vyzov-inzhenera-v-rostelekom.html" class="pb-related-card">
+                <span class="pb-related-title">Как отменить заявку в Ростелеком: инструкция по отмене вызова</span>
+                <span class="pb-related-desc">Подробное руководство по отмене заявки на вызов инженера Ростелеком. Способы через сайт, приложение </span>
+            </a><a href="/articles/k/ka/kak-podklyuchitsya-k-internetu-na-magnitole-sitrak.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить интернет на магнитоле Ситрак: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке Wi-Fi и 3G/4G модема на мультимедиа грузовика SITRAK. Решение про</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

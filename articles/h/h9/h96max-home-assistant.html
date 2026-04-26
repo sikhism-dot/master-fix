@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>H96MAX и Home Assistant: Полная инструкция по настройке — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по установке Home Assistant на ТВ-приставку H96MAX. Разбор прошивок, Armbian, Docker и типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/h9/h96max-home-assistant.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="H96MAX и Home Assistant: Полная инструкция по настройке">
+    <meta property="og:description" content="Подробное руководство по установке Home Assistant на ТВ-приставку H96MAX. Разбор прошивок, Armbian, Docker и типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">H96MAX и Home Assistant: Полная инструкция по настройке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-оборудования-и-выбор-версии-прошивки">Подготовка оборудования и выбор версии прошивки</a></li><li><a href="#процесс-установки-операционной-системы-linux">Процесс установки операционной системы Linux</a></li><li><a href="#развертывание-home-assistant-на-linux">Развертывание Home Assistant на Linux</a></li><li><a href="#оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-proverit-rabochij-li-mikrofon-dlya-karaoke.html">Как проверить микрофон для караоке: диагностика и настройка</a></li><li><a href="/articles/k/ka/kak-skachat-toku-boku-bez-tg.html">Как скачать Току Боку без Telegram: полные методы</a></li><li><a href="/articles/b/ba/base-1-apk-base-apk.html">Base APK: Установка, обновление и работа с базовыми модулями Android</a></li><li><a href="/articles/i/ig/igry-cherno-belye-bez-ineta.html">Черно-белые игры без интернета: Лучшие офлайн-тайтлы</a></li><li><a href="/articles/v/vi/vindovs-ne-vyvodit-na-pechat-sochetanie-ctrlp.html">Не работает Ctrl+P в Windows: причины и способы устранения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Превращение H96MAX в сервер Home Assistant</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-оборудования-и-выбор-версии-прошивки">Подготовка оборудования и выбор версии прошивки</a></li><li><a href="#процесс-установки-операционной-системы-linux">Процесс установки операционной системы Linux</a></li><li><a href="#развертывание-home-assistant-на-linux">Развертывание Home Assistant на Linux</a></li><li><a href="#оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Владение умным домом часто упирается в необходимость наличия выделенного сервера, который работает круглосуточно, потребляет минимум энергии и способен обрабатывать сложные сценарии без задержек. Покупка специализированного оборудования, такого как Raspberry Pi или Intel NUC, может значительно увеличить бюджет проекта, особенно если требуется устройство с запасом мощности для видеонаблюдения или тяжелых баз данных.</p>
+<p>На практике многие пользователи обнаруживают в своих ящиках забытые Android TV-приставки, которые идеально подходят для этих целей благодаря архитектуре процессоров Amlogic. Конкретно модель <em>H96MAX</em> на базе чипа <em>Amlogic S905X3</em> или <em>S905X2</em> представляет собой отличный кандидат для развертывания полноценного сервера автоматизации, обладая гигабитным портом LAN и достаточным объемом оперативной памяти.</p>
+<p>Основная сложность заключается в том, что штатная операционная система Android не предназначена для работы серверных приложений в фоновом режиме с гарантией стабильности. Для решения этой задачи требуется полная замена операционной системы на легкий дистрибутив Linux, что превратит медиа-плеер в мощный вычислительный узел. Ниже представлен детальный алгоритм действий для миграции с Android на <em>Home Assistant OS</em> или <em>Home Assistant Container</em>.</p>
+
+<h2 id="подготовка-оборудования-и-выбор-версии-прошивки">Подготовка оборудования и выбор версии прошивки</h2>
+<p>Первым шагом является точная идентификация аппаратной платформы, так как модель <em>H96MAX</em> выпускалась в различных модификациях с разными чипсетами. Неправильный выбор образа системы приведет к тому, что устройство просто не запустится или будет работать нестабильно, поэтому важно загляеть в настройки Android или вскрыть корпус для визуального осмотра процессора. Чаще всего встречаются версии на базе <em>S905X3</em> (4GB RAM) и более старые <em>S905X2</em>, каждая из которых требует своего подхода к сборке образа.</p>
+<p>Для работы сервера автоматизации критически важно наличие надежного хранилища данных, поскольку встроенная eMMC-память в TV-боксах не рассчитана на постоянную запись логов и баз данных. Использование microSD-карты или USB-накопителя является обязательным условием, при этом рекомендуется применять карты класса A1/A2 с высокой скоростью случайного чтения и записи. Внутренняя память может быть использована только для загрузки ядра, тогда как все данные системы должны располагаться на внешнем носителе.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Процесс прошивки полностью удалит Android и все данные с устройства. Восстановить заводскую прошивку без специального оборудования (USB-TTL) может быть сложно.</p></aside>
+
+<p>Существует два основных подхода к организации работы сервера на данной платформе: установка полноценной <em>Home Assistant OS</em> через образ Armbian или запуск через Docker в среде Linux. Первый вариант предоставляет готовую среду с графическим интерфейсом управления, второй дает больше гибкости, но требует ручной настройки окружения. Выбор зависит от опыта пользователя и конкретных требований к изоляции сервисов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Home Assistant OS</th>
+<th>Docker (Container)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Сложность установки</td>
+<td>Низкая (готовый образ)</td>
+<td>Средняя (требуется настройка Linux)</td>
+</tr>
+<tr>
+<td>Обновления</td>
+<td>Автоматические через интерфейс</td>
+<td>Вручную или через скрипты</td>
+</tr>
+<tr>
+<td>Дополнительные сервисы</td>
+<td>Через дополнения (Add-ons)</td>
+<td>Отдельные контейнеры</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для чипов S905X3 рекомендуется использовать образы Armbian с ядром не ниже 5.10 для корректной работы гигабитного сетевого интерфейса.</p></aside>
+
+<h3>Совместимость чипсетов Amlogic</h3>
+<p>Процессоры семейства <em>Amlogic</em> имеют хорошую поддержку в сообществе разработчиков Linux, однако драйверы беспроводных модулей могут работать некорректно. В большинстве случаев Wi-Fi модули в <em>H96MAX</em> базируются на чипах <em>Realtek</em> или <em>AP6xxx</em>, которые требуют отдельной загрузки firmware-файлов в директорию <code>/lib/firmware</code>. Если использование Wi-Fi критично, необходимо заранее проверить наличие драйверов в выбранном дистрибутиве, хотя для сервера автоматизации всегда предпочтительнее проводное соединение Ethernet.</p>
+<p>При выборе образа операционной системы стоит ориентироваться на сборки от сообщества <em>Armbian</em> или специализированные образы <em>CCN</em>, которые часто содержат уже предустановленные патчи для TV-боксов. Важно обращать внимание на версию ядра: для <em>S905X3</em> актуальны ядра серии 5.x, тогда как для <em>S905X2</em> могут потребоваться более старые стабильные версии 4.x. Несоответствие версии ядра и устройства может привести к отсутствию звука, видео или сети.</p>
+
+<h2 id="процесс-установки-операционной-системы-linux">Процесс установки операционной системы Linux</h2>
+<p>Установка Linux на <em>H96MAX</em> осуществляется методом записи готового образа на внешний носитель, что позволяет сохранить возможность возврата к Android при необходимости. Для записи образа рекомендуется использовать утилиту <em>Etcher</em> или <em>Rufus</em>, которые гарантируют корректное создание разделов и проверку целостности данных. Перед началом процедуры необходимо скачать соответствующий образ <em>Armbian</em> или <em>Debian</em> для архитектуры <em>ARM64</em> и чипсета <em>Meson</em>.</p>
+<p>В некоторых случаях стандартная процедура загрузки с USB не активируется автоматически, и устройство продолжает загружать Android с внутренней памяти. Для принудительного запуска с внешнего носителя используется метод"закорачивания" контактов на плате или использование специальной утилиты для эмуляции пульта, отправляющей команду на перезагрузку в режим boot update. Наиболее безопасный метод — использование приложения <em>Remote ADB</em> или командной строки, если на устройстве уже установлен Linux.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка системы</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте образ Armbian для S905X3</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запишите образ на USB-флешку через BalenaEtcher</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Вставьте флешку в порт USB 2.0 (черный)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Включите приставку и дождитесь загорания индикатора</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Перейдите по IP-адресу в браузере</span></div></div>
+
+<p>После первой загрузки система предложит создать учетную запись пользователя и настроить сетевые параметры. На этом этапе важно задать статический IP-адрес, чтобы сервер автоматизации всегда был доступен по одному адресу в локальной сети. Конфигурация сети осуществляется через файл <code>/etc/network/interfaces</code> или с помощью утилиты <code>nmtui</code>, если используется NetworkManager.</p>
+<p>Доступ к файловой системе осуществляется по протоколу SSH, для чего необходимо включить соответствующий сервис в настройках. Для повышения безопасности рекомендуется изменить стандартный порт SSH, отключить вход по паролю в пользу SSH-ключей и настроить фаервол <code>ufw</code> для блокировки ненужных портов. Только после обеспечения базовой безопасности можно приступать к установке программного обеспечения для умного дома.</p>
+
+<table>
+<thead>
+<tr>
+<th>Интерфейс</th>
+<th>Назначение</th>
+<th>Статус</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USB 2.0</td>
+<td>Загрузка системы, периферия</td>
+<td>Рекомендуется</td>
+</tr>
+<tr>
+<td>USB 3.0</td>
+<td>Внешние HDD (может греться)</td>
+<td>Осторожно</td>
+</tr>
+<tr>
+<td>MicroSD</td>
+<td>Альтернатива USB</td>
+<td>Медленнее</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка загрузчика U-Boot</h3>
+<p>В редких случаях требуется ручная в процесс загрузки через консоль UART, подключившись к плате через USB-TTL адаптер. Это позволяет увидеть логи загрузки и изменить параметры, такие как <code>bootargs</code>, если система не видит загрузочный раздел на флешке. Для <em>H96MAX</em> часто требуется добавить параметр <code>extcon</code> или изменить приоритет устройств в переменной <code>bootcmd</code>.</p>
+<p>Если устройство уходит в цикл перезагрузок после установки Linux, это может указывать на проблемы с питанием или перегрев. Блок питания, идущий в комплекте с TV-приставкой, часто имеет номинальный ток, недостаточный для работы с подключенными USB-накопителями под нагрузкой. В таких случаях замена блока питания на более мощный (2.5А - 3А) решает проблему нестабильной работы.</p>
+
+<h2 id="развертывание-home-assistant-на-linux">Развертывание Home Assistant на Linux</h2>
+<p>После успешной установки и настройки базовой операционной системы наступает этап инсталляции самого программного обеспечения автоматизации. Наиболее предпочтительным методом для TV-боксов является использование Docker, так как он позволяет изолировать процесс Home Assistant от системы и упрощает управление зависимостями. Установка Docker Engine осуществляется через официальные репозитории или с помощью скрипта-установщика, что занимает несколько минут.</p>
+<p>Для запуска контейнера необходимо создать файл конфигурации <code>docker-compose.yml</code>, в котором будут прописаны все необходимые параметры, включая проброс портов, монтирование томов для сохранения данных и переменные окружения. Особое внимание следует уделить настройке таймзоны и пробросу устройств USB, если планируется использование Zigbee-стиком или других радио-адаптеров.</p>
+
+<pre><code>version:'3'
+<p>services:</p>
+<p>homeassistant:</p>
+<p>container_name: homeassistant</p>
+<p>image:"ghcr.io/home-assistant/home-assistant:stable"</p>
+<p>volumes:</p>
+<p>- /opt/homeassistant/config:/config</p>
+<p>- /etc/localtime:/etc/localtime:ro</p>
+<p>restart: unless-stopped</p>
+<p>privileged: true</p>
+<p>network_mode: host</code></pre></p>
+
+<p>Запуск контейнера производится командой <code>docker-compose up -d</code>, после чего в логах можно наблюдать процесс инициализации базы данных и загрузки компонентов. Первоначальный запуск может занять до 10-15 минут, особенно при использовании microSD-карты вместо быстрого SSD. В это время не рекомендуется прерывать питание устройства, чтобы избежать повреждения файловой системы базы данных.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду `docker logs -f homeassistant` для мониторинга процесса загрузки в реальном времени.</p></aside>
+
+<h3>Конфигурация интеграций и устройств</h3>
+<p>После того как интерфейс Home Assistant станет доступен по порту 8123, начинается этап настройки интеграций для управления устройствами умного дома. Платформа автоматически обнаруживает многие устройства в локальной сети, но для специфических протоколов, таких как Zigbee или Z-Wave, требуется наличие USB-адаптера, подключенного к порту <em>H96MAX</em>. Важно убедиться, что пользователь, от имени которого запущен Docker, имеет права на доступ к последовательным портам.</p>
+<p>Для добавления Zigbee-координатора используется интеграция <em>Zigbee Home Automation (ZHA)</em> или сторонний брокер <em>Zigbee2MQTT</em>. Второй вариант часто показывает лучшую производительность на слабых устройствах, так как позволяет вынести обработку протокола в отдельный контейнер и использовать более свежую базу данных устройств. Выбор между ними зависит от типа используемого адаптера и предпочтений пользователя.</p>
+<p>Настройка сценариев и автоматизаций производится через визуальный редактор, который позволяет создавать сложные логические цепочки без написания кода. Однако для продвинутых пользователей доступна возможность написания скриптов на YAML или использования AppDaemon для реализации сложной логики на Python. Ресурсов процессора <em>S905X3</em> вполне хватает для выполнения сотен автоматизаций одновременно.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">ZHA Интеграция</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Простота настройки</li><li>✅ Встроена в HA</li><li>✅ Минимум настроек</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Меньше поддерживаемых устройств</li><li>❌ Зависимость от ядра HA</li></ul></div>
+</div></div>
+
+<h2 id="оптимизация-производительности-и-типичные-ошибки">Оптимизация производительности и типичные ошибки</h2>
+<p>Эксплуатация сервера на базе TV-приставки требует внимания к температурному режиму, так как процессоры <em>Amlogic</em> склонны к троттингу при высоких нагрузках. Пассивного охлаждения, штатного для <em>H96MAX</em>, может быть недостаточно при активной записи логов и работе базы данных, поэтому рекомендуется установить дополнительный вентилятор или радиатор на чип. Перегрев приводит к снижению тактовой частоты и увеличению времени отклика системы.</p>
+<p>Оптимизация дисковой подсистемы также играет ключевую роль: регулярная дефрагментация (для ext4 не актуально, но полезно делать <code>fstrim</code> для SSD) и настройка параметров монтирования помогают продлить жизнь накопителю. В конфигурации <code>configuration.yaml</code> стоит ограничить размер хранящихся истории и логов, чтобы они не заполнили весь доступный объем памяти за короткий срок.</p>
+<p>В процессе настройки пользователи часто сталкиваются с рядом типичных проблем, решение которых требует понимания основ Linux и сети. Ниже приведен список наиболее частых ошибок и способы их устранения.</p>
+
+<ol>
+<li><strong>Отсутствие сети после загрузки</strong> — часто связано с отсутствием firmware для Wi-Fi модуля или неправильными настройками DHCP; решение заключается в установке пакета <code>firmware-realtek</code> или переходе на статический IP.</li>
+<li><strong>Медленная работа интерфейса</strong> — вызвана использованием медленной microSD-карты или переполнением журнала; требуется замена носителя на SSD и настройка ротации логов.</li>
+<li><strong>Не определяются USB-устройства</strong> — проблема питания или драйверов; необходимо проверить подключение через амперметр и убедиться, что ядро поддерживает конкретный чип адаптера.</li>
+<li><strong>Сбои времени и дат</strong> — отсутствие батарейки RTC приводит к сбросу времени при выключении; необходимо настроить синхронизацию через NTP и использовать интеграцию времени в Home Assistant.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Оптимизация охлаждения и выбор быстрого накопителя являются ключевыми факторами стабильной работы H96MAX в роли сервера.</p></aside>
+
+<h3>Мониторинг ресурсов системы</h3>
+<p>Для контроля за состоянием сервера рекомендуется установить аддоны или контейнеры для мониторинга, такие как <em>Glances</em> или <em>Node Exporter</em> в связке с <em>Grafana</em>. Они позволяют отслеживать температуру процессора, загрузку CPU, использование оперативной памяти и скорость записи на диск в реальном времени. Визуализация этих данных помогает вовремя заметить деградацию оборудования или необходимость оптимизации.</p>
+<p>Регулярное создание резервных копий конфигурации Home Assistant является обязательной процедурой, так как отказ microSD-карты может произойти в любой момент. Настройте автоматическую выгрузку бэкапов на удаленный сервер (NAS, Google Drive, S3) через интеграцию <em>Google Drive Backup</em> или <em>Samba</em>. Это спасет от потери всех настроек и сценариев в случае аппаратного сбоя.</p>
+
+<p>Использование TV-приставки <em>H96MAX</em> в качестве сервера для <em>Home Assistant</em> является экономически эффективным и технически оправданным решением для энтузиастов умного дома. Устройство предоставляет достаточную вычислительную мощность для обработки сложных сценариев, поддержки видеонаблюдения и работы с десятками периферийных устройств, оставаясь при этом компактным и энергоэффективным.</p>
+<p>Успех проекта зависит от тщательного подбора программного обеспечения, качественной системы охлаждения и надежного хранения данных. Соблюдение рекомендаций по настройке Linux и Docker позволяет превратить доступное Android-устройство в профессиональный инструмент автоматизации, не уступающий по функционалу дорогостоящим специализированным контроллерам.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-proverit-rabochij-li-mikrofon-dlya-karaoke.html" class="pb-related-card">
+                <span class="pb-related-title">Как проверить микрофон для караоке: диагностика и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке работоспособности микрофона для караоке на ПК, смартфонах и Smart T</span>
+            </a><a href="/articles/k/ka/kak-skachat-toku-boku-bez-tg.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать Току Боку без Telegram: полные методы</span>
+                <span class="pb-related-desc">Подробная инструкция по установке Toki Boku без использования мессенджера Telegram. Ссылки на APK, п</span>
+            </a><a href="/articles/b/ba/base-1-apk-base-apk.html" class="pb-related-card">
+                <span class="pb-related-title">Base APK: Установка, обновление и работа с базовыми модулями Android</span>
+                <span class="pb-related-desc">Подробная инструкция по работе с Base APK. Установка базовых компонентов, решение ошибок при обновле</span>
+            </a><a href="/articles/i/ig/igry-cherno-belye-bez-ineta.html" class="pb-related-card">
+                <span class="pb-related-title">Черно-белые игры без интернета: Лучшие офлайн-тайтлы</span>
+                <span class="pb-related-desc">Полный обзор черно-белых игр для телефона без интернета. Классические пасьянсы, логические головолом</span>
+            </a><a href="/articles/v/vi/vindovs-ne-vyvodit-na-pechat-sochetanie-ctrlp.html" class="pb-related-card">
+                <span class="pb-related-title">Не работает Ctrl+P в Windows: причины и способы устранения</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки печати Ctrl+P в Windows. Решение проблем с драйверами, слу</span>
+            </a><a href="/articles/k/ka/kak-udalit-lichnyj-kabinet-megafon-iz-kontaktov.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить контакты МегаФон: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по удалению личного кабинета и сервисных контактов МегаФон с телефона. Методы д</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

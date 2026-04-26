@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Home Assistant: Восстановление из резервной копии — Мастер Фикс</title>
+    <meta name="description" content="Полное руководство по восстановлению Home Assistant из бэкапа. Пошаговые инструкции для HAOS, Docker и Supervised версий.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/h/ho/home-assistant-vosstanovit-iz-rezervnoj-kopii.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Home Assistant: Восстановление из резервной копии">
+    <meta property="og:description" content="Полное руководство по восстановлению Home Assistant из бэкапа. Пошаговые инструкции для HAOS, Docker и Supervised версий.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Home Assistant: Восстановление из резервной копии</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-к-процедуре-восстановления-системы">Подготовка к процедуре восстановления системы</a></li><li><a href="#восстановление-через-мастер-первоначальной-настройки">Восстановление через мастер первоначальной настройки</a></li><li><a href="#восстановление-через-интерфейс-работающей-системы">Восстановление через интерфейс работающей системы</a></li><li><a href="#использование-командной-строки-и-cli">Использование командной строки и CLI</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-najti-ois-v-nastrojkakh.html">Как найти ОИС в настройках роутера: пошаговая инструкция</a></li><li><a href="/articles/e/ed/edifier-r1280db-ne-podklyuchaetsya-k-kompyuteru-cherez-provod.html">Edifier R1280DB не подключается: решение проблем с кабелем</a></li><li><a href="/articles/b/bl/blaupunkt-24hb5000t-sbros-nastroek.html">Сброс Blaupunkt 24HB5000T: Полная инструкция и коды</a></li><li><a href="/articles/k/ka/kak-sozdat-pomekhi-na-vajfaj.html">Диагностика помех Wi-Fi: причины и методы устранения</a></li><li><a href="/articles/k/ka/kak-sdelat-temu-na-kalkulyatore-svetlots.html">Как сделать тему на калькуляторе светлой: Инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление Home Assistant из резервной копии: Полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-к-процедуре-восстановления-системы">Подготовка к процедуре восстановления системы</a></li><li><a href="#восстановление-через-мастер-первоначальной-настройки">Восстановление через мастер первоначальной настройки</a></li><li><a href="#восстановление-через-интерфейс-работающей-системы">Восстановление через интерфейс работающей системы</a></li><li><a href="#использование-командной-строки-и-cli">Использование командной строки и CLI</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда автоматизация умного дома перестает реагировать на команды или сервер внезапно уходит в отказ после обновления, знакома многим пользователям систем домашней автоматизации. Потеря конфигурации, сценариев и истории датчиков может превратить умный дом в набор разрозненных устройств, требующих длительной ручной перенастройки.</p>
+<p>Часто причиной критических сбоев становится некорректное обновление компонентов, повреждение файловой системы SD-карты или человеческий фактор при редактировании файлов конфигурации YAML. В такие моменты единственной надеждой на быстрое возвращение системы в рабочее состояние остается наличие актуальной резервной копии, созданной заранее.</p>
+<p>Процедура восстановления данных в Home Assistant зависит от способа установки операционной системы и доступного интерфейса управления. Правильно выполненный откат позволит сохранить накопленную историю состояний устройств и избежать повторной интеграции всех компонентов умного дома с нуля.</p>
+
+<h2 id="подготовка-к-процедуре-восстановления-системы">Подготовка к процедуре восстановления системы</h2>
+<p>Перед началом активных действий необходимо убедиться в физической доступности носителя с сохраненным архивом данных. Если резервная копия хранится на внешнем USB-накопителе или сетевом хранилище NAS, следует проверить целостность соединения и возможность чтения файлов с другого компьютера.</p>
+<p>Важно понимать, что версия программного обеспечения, на которую планируется развертывание бэкапа, должна быть совместима с версией, на которой этот бэкап был создан. Обычно система позволяет восстанавливать данные на более новых версиях ядра, однако откат на старые версии может привести к некорректной работе базы данных.</p>
+<p>Если доступ к графическому интерфейсу полностью отсутствует, потребуется подготовить прямое подключение к консоли сервера через монитор и клавиатуру или организовать доступ по протоколу SSH. Без этого восстановить систему из состояния полной неработоспособности будет технически невозможно.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Прерывание процесса восстановления или отключение питания во время записи данных может привести к необратимому повреждению файловой системы и полной потере информации.</p></aside>
+
+<p>Стоит заранее определить метод восстановления, который будет наиболее эффективен в текущей ситуации. Существует несколько путей решения задачи: использование встроенного мастера при первой установке, восстановление через интерфейс настроек работающей системы или применение командной строки для продвинутых сценариев.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод восстановления</th>
+<th>Необходимые условия</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Мастер первоначальной настройки</td>
+<td>Чистая установка или сброшенная система</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Интерфейс Настройки</td>
+<td>Доступ к интерфейсу Home Assistant</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Командная строка (CLI)</td>
+<td>Доступ по SSH или консольный доступ</td>
+<td>Высокая</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех операции восстановления на 90% зависит от наличия актуального бэкапа и стабильного питания сервера во время процесса.</p></aside>
+
+<h2 id="восстановление-через-мастер-первоначальной-настройки">Восстановление через мастер первоначальной настройки</h2>
+<p>Данный сценарий актуален при развертывании системы на новом оборудовании или после полной переу операционной системы Home Assistant OS. При первом запуске браузер автоматически перенаправляет пользователя на стартовую страницу приветствия, где предлагается выбрать язык и местоположение.</p>
+<p>После выбора базовых параметров система предложит создать нового пользователя или восстановить данные из существующей резервной копии. Именно второй вариант позволяет мгновенно вернуть все настройки, интеграции и автоматизации без необходимости ручной конфигурации каждого устройства.</p>
+<p>Для начала процесса потребуется загрузить файл бэкапа с расширением <code>.tar</code> в специальное поле формы. Система автоматически проанализирует структуру архива и проверит его совместимость с текущей версией программного обеспечения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Восстановление при старте</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите язык интерфейса и нажмите «Начать»</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите кнопку «Восстановить из резервной копии»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Загрузите файл бэкапа с компьютера</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь завершения установки и перезагрузки</span></div></div>
+
+<p>В процессе восстановления на экране может отображаться прогресс-бар, показывающий текущий этап unpacking архива и установки аддонов. Прерывание этого процесса категорически не рекомендуется, так как это может оставить систему в полурабочем состоянии с поврежденной базой данных.</p>
+<p>Если резервная копия защищена паролем, который был установлен при её создании, система запросит ввод ключевой фразы. Без корректного пароля расшифровка данных невозможна, и процесс будет остановлен на этапе проверки целостности.</p>
+
+<h3>Нюансы восстановления на разных платформах</h3>
+<p>При использовании <em>Home Assistant Green</em> или <em>Yellow</em> процедура стандартизирована и проходит максимально гладко благодаря оптимизированной аппаратной части. Владельцы самодельных сборок на базе <em>Raspberry Pi</em> могут столкнуться с более длительным временем записи данных на карту памяти.</p>
+<p>Пользователи, migrating с других платформ, должны учитывать, что некоторые специфичные для предыдущей ОС пути к файлам могут быть изменены. Однако основная конфигурация <code>configuration.yaml</code> и папки аддонов сохраняются в исходном виде.</p>
+<p>В случае, если файл резервной копии очень велик (более 10 ГБ), процесс загрузки через браузер может занять значительное время. В таких ситуациях рекомендуется использовать локальное подключение к сети, минуя маршрутизаторы с ограниченной пропускной способностью.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип устройства</th>
+<th>Рекомендуемый метод загрузки</th>
+<th>Ожидаемое время (для 5 ГБ)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Home Assistant Green</td>
+<td>Прямое подключение Ethernet</td>
+<td>2-4 минуты</td>
+</tr>
+<tr>
+<td>Raspberry Pi 4</td>
+<td>USB 3.0 SSD</td>
+<td>5-8 минут</td>
+</tr>
+<tr>
+<td>Виртуальная машина</td>
+<td>Локальная сеть (LAN)</td>
+<td>1-3 минуты</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Если процесс восстановления завис на этапе 99%, не перезагружайте устройство сразу. Часто в этот момент происходит индексация базы данных, что может занять до 30 минут на медленных накопителях.</p></aside>
+
+<h2 id="восстановление-через-интерфейс-работающей-системы">Восстановление через интерфейс работающей системы</h2>
+<p>Если интерфейс Home Assistant доступен, но требуется откатить конфигурацию к предыдущему состоянию, удобнее всего использовать встроенные инструменты управления резервными копиями. Этот метод позволяет выбрать конкретную точку восстановления без переустановки всей операционной системы.</p>
+<p>Для доступа к функционалу необходимо перейти в меню <code>Настройки</code>, затем выбрать раздел <code>Система</code> и перейти в подраздел <code>Резервные копии</code>. Здесь отображается список всех доступных локальных архивов, отсортированных по дате создания.</p>
+<p>Выбрав нужный архив, пользователь видит детальную информацию о его содержимом: какие аддоны, базы данных и папки будут восстановлены. Это позволяет избежать ситуации, когда newer версия аддона перезаписывает более старую, но стабильную конфигурацию.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Восстановление через UI</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Система → Резервные копии</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите нужный архив из списка</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите кнопку «Восстановить»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Подтвердите действие во всплывающем окне</span></div></div>
+
+<p>Система предупредит о том, что текущие несохраненные изменения будут утеряны. После подтверждения начнется процесс остановки служб, очистки временных файлов и записи данных из архива. В это время интерфейс может стать недоступным на несколько минут.</p>
+<p>Особое внимание стоит уделить восстановлению аддонов. Если в резервной копии присутствовали дополнения, которых нет в текущей установке, они будут автоматически загружены и установлены из репозитория, если есть доступ к интернету.</p>
+
+<h3>Частичное восстановление данных</h3>
+<p>Иногда полный откат системы не требуется, и необходимо вернуть только конкретные компоненты, например, базу данных <em>MariaDB</em> или конфигурацию <em>Zigbee2MQTT</em>. Интерфейс позволяет выбрать опцию «Частичное восстановление» перед запуском процесса.</p>
+<p>При выборе частичного восстановления открывается список всех доступных категорий данных. Можно восстановить только настройки папок и игнорировать аддоны, или наоборот, обновить только список дополнений без трогания файлов конфигурации.</p>
+<p>Такой подход полезен при миграции настроек между разными серверами или при попытке исправить ошибку, вызванную обновлением конкретного компонента, не затрагивая работу остальной системы умного дома.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Регулярно проверяйте логи аддона «File editor» или «Terminal», чтобы убедиться, что восстановленные файлы конфигурации не содержат синтаксических ошибок, которые могли существовать в момент создания бэкапа.</p></aside>
+
+<h2 id="использование-командной-строки-и-cli">Использование командной строки и CLI</h2>
+<p>Для продвинутых пользователей и сценариев, когда графический интерфейс недоступен, предусмотрена возможность управления резервными копиями через командную строку. Доступ осуществляется через SSH-соединение с использованием учетной записи <code>root</code> или пользователя <code>homeassistant</code>.</p>
+<p>Основным инструментом является команда <code>ha</code>, которая предоставляет доступ к API управления системой. Для начала работы необходимо авторизоваться в терминале и убедиться, что команда <code>ha info</code> возвращает корректный статус системы.</p>
+<p>Первым шагом является загрузка файла резервной копии на сервер, если он еще не находится в папке <code>/backup</code>. Это можно сделать с помощью протокола SCP или SFTP, используя любой удобный файловый менеджер, например, <em>WinSCP</em> или <em>Cyberduck</em>.</p>
+
+<pre><code>scp /path/to/local/backup.tar homeassistant@192.168.1.10:/backup/</code></pre>
+
+<p>После загрузки файла необходимо получить список доступных резервных копий, чтобы убедиться, что система их видит. Команда <code>ha backups</code> выведет список всех архивов с их уникальными идентификаторами (slug), которые потребуются для дальнейших действий.</p>
+<p>Для запуска процесса восстановления используется команда <code>ha backups restore</code> с указанием slug-идентификатора нужного архива. Если архив защищен паролем, его необходимо передать через флаг <code>--password</code>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Восстановление через CLI</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Загрузите файл бэкапа в папку /backup через SCP</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните команду ha backups для получения списка</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите slug нужного архива</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Выполните ha backups restore --slug ID_АРХИВА</span></div></div>
+
+<p>В ходе выполнения команды в терминале будет выводиться лог процесса. Система последовательно остановит текущие сервисы, восстановит файлы и запустит сервисы заново. В случае успеха появится сообщение о завершении операции.</p>
+<p>Если восстановление прошло неудачно, логи CLI содержат информацию об ошибке, что позволяет диагностировать проблему, например, нехватку места на диске или повреждение архива.</p>
+
+<h3>Автоматизация через скрипты</h3>
+<p>Сценарии восстановления часто интегрируют в автоматизированные скрипты развертывания. Это позволяет быстро поднимать тестовые окружения или восстанавливать продакшн-серверы в случае аварийных ситуаций по расписанию или событию.</p>
+<p>Использование переменных окружения для хранения паролей и путей к файлам повышает безопасность таких скриптов. Не рекомендуется хранить пароли от бэкапов в открытом виде в текстовых файлах скриптов.</p>
+<p>Для сложных сценариев можно использовать API Home Assistant напрямую через HTTP-запросы, что дает еще больше гибкости, но требует более глубоких знаний структуры JSON-запросов системы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Команды CLI работают только в среде Home Assistant OS или Supervised. На установках Core (venv, Docker без Supervisor) эти команды недоступны, и восстановление производится вручную копированием файлов.</p></aside>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+<p>В процессе восстановления пользователи часто сталкиваются с повторяющимися проблемами, которые имеют стандартные решения. Понимание причин этих ошибок позволяет сэкономить время и избежать паники при возникновении сбоев.</p>
+
+<ol>
+<li><strong>Ошибка «Invalid password» или «Decryption failed»</strong> — означает, что введенный пароль не совпадает с тем, который использовался при шифровании резервной копии. Необходимо вспомнить точный пароль или найти его в менеджере паролей, повторное создание бэкапа не поможет, если оригинал утерян.</li>
+<li><strong>Ошибка «Not enough disk space»</strong> — возникает, когда объем восстанавливаемых данных превышает свободное место на диске. Требуется очистить пространство, удалив старые ненужные бэкапы или логи, либо увеличить объем хранилища.</li>
+<li><strong>Ошибка «Corrupted tar file»</strong> — указывает на повреждение архива при загрузке или записи. Следует проверить целостность файла контрольными суммами или попробовать загрузить его заново с исходного носителя.</li>
+<li><strong>Ошибка «Addon version mismatch»</strong> — может возникнуть, если версия аддона в бэкапе несовместима с текущей версией Supervisor. В этом случае иногда помогает предварительная установка нужной версии аддона вручную перед восстановлением.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Анализ методов восстановления</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над процессом</li><li>✅ Возможность выбора конкретных компонентов</li><li>✅ Работа без графического интерфейса</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует технических знаний</li><li>❌ Высокий риск ошибки при вводе команд</li><li>❌ Необходимость доступа по SSH</li></ul></div>
+</div></div>
+
+<p> Регулярное тестирование процедуры восстановления на тестовом стенде позволяет убедиться в работоспособности бэкапов до наступления реальной аварии.</p>
+<p>Соблюдение правил создания резервных копий, таких как хранение их на внешних носителях и использование надежных паролей, является фундаментом стабильной работы системы Home Assistant. Грамотное планирование стратегии бэкапирования избавляет от большинства проблем с потерей данных.</p>
+<p>В случае успешного восстановления рекомендуется сразу же создать новую точку восстановления на чистой системе, чтобы иметь свежий бэкап с актуальными настройками и исправленной структурой данных.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-najti-ois-v-nastrojkakh.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти ОИС в настройках роутера: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по поиску ОИС в веб-интерфейсе роутера. Настройка маршрутизатора, устранение о</span>
+            </a><a href="/articles/e/ed/edifier-r1280db-ne-podklyuchaetsya-k-kompyuteru-cherez-provod.html" class="pb-related-card">
+                <span class="pb-related-title">Edifier R1280DB не подключается: решение проблем с кабелем</span>
+                <span class="pb-related-desc">Колонки Edifier R1280DB не работают по проводу? Инструкция по диагностике RCA, оптического кабеля и </span>
+            </a><a href="/articles/b/bl/blaupunkt-24hb5000t-sbros-nastroek.html" class="pb-related-card">
+                <span class="pb-related-title">Сброс Blaupunkt 24HB5000T: Полная инструкция и коды</span>
+                <span class="pb-related-desc">Техническое руководство по сбросу настроек TV Blaupunkt 24HB5000T. Устранение зависаний, возврат к з</span>
+            </a><a href="/articles/k/ka/kak-sozdat-pomekhi-na-vajfaj.html" class="pb-related-card">
+                <span class="pb-related-title">Диагностика помех Wi-Fi: причины и методы устранения</span>
+                <span class="pb-related-desc">Как найти источники помех в сети Wi-Fi, проверить каналы и устранить проблемы с сигналом роутера.</span>
+            </a><a href="/articles/k/ka/kak-sdelat-temu-na-kalkulyatore-svetlots.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать тему на калькуляторе светлой: Инструкция</span>
+                <span class="pb-related-desc">Подробное руководство, как включить светлую тему на калькуляторе Android, iPhone и веб-версиях. Наст</span>
+            </a><a href="/articles/k/ka/kak-vzlomat-vaj-faj-stroka-vindovs.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление пароля Wi-Fi в Windows: методы сброса и настройки</span>
+                <span class="pb-related-desc">Как восстановить доступ к Wi-Fi на Windows, если забыт пароль. Инструкция по сбросу сетевых настроек</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

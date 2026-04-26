@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>DHCP-сервер на Windows 10: подробная инструкция настройки — Мастер Фикс</title>
+    <meta name="description" content="Руководство по установке и настройке DHCP-сервера на Windows 10. Решение проблем с IP-адресацией в локальной сети, устранение ошибок и советы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/dh/dhcp-server-v-win-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="DHCP-сервер на Windows 10: подробная инструкция настройки">
+    <meta property="og:description" content="Руководство по установке и настройке DHCP-сервера на Windows 10. Решение проблем с IP-адресацией в локальной сети, устранение ошибок и советы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">DHCP-сервер на Windows 10: подробная инструкция настройки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-выбор-метода-реализации">Подготовка сетевой инфраструктуры и выбор метода реализации</a></li><li><a href="#установка-и-базовая-конфигурация-программного-обеспечения">Установка и базовая конфигурация программного обеспечения</a></li><li><a href="#управление-арендами-и-мониторинг-сетевой-активности">Управление арендами и мониторинг сетевой активности</a></li><li><a href="#диагностика-неисправностей-и-устранение-конфликтов">Диагностика неисправностей и устранение конфликтов</a></li><li><a href="#завершающие-рекомендации-и-оптимизация-работы">Завершающие рекомендации и оптимизация работы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/i/in/instruktsiya-kamery-kerui-na-russkom-yazyke.html">Настройка камеры Kerui: полная инструкция, Wi-Fi и софт</a></li><li><a href="/articles/k/ka/kak-steret-dannye-v-idle-heroes.html">Как стереть данные в Idle Heroes: сброс аккаунта и прогресса</a></li><li><a href="/articles/a/aj/ajfon-11-pro-maks-kak-posmotret-datu-dobavleniya-kontakta.html">iPhone 11 Pro Max: как узнать дату добавления контакта</a></li><li><a href="/articles/a/aj/ajfon-100.html">iPhone 100: Анализ концепта, спецификаций и ожиданий</a></li><li><a href="/articles/k/ka/kak-podklyuchit-mi-boks-k-kompyuteru-cherez-hdim.html">Подключение Mi Box к ПК через HDMI: подробная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Организация DHCP-сервера на базе Windows 10</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-сетевой-инфраструктуры-и-выбор-метода-реализации">Подготовка сетевой инфраструктуры и выбор метода реализации</a></li><li><a href="#установка-и-базовая-конфигурация-программного-обеспечения">Установка и базовая конфигурация программного обеспечения</a></li><li><a href="#управление-арендами-и-мониторинг-сетевой-активности">Управление арендами и мониторинг сетевой активности</a></li><li><a href="#диагностика-неисправностей-и-устранение-конфликтов">Диагностика неисправностей и устранение конфликтов</a></li><li><a href="#завершающие-рекомендации-и-оптимизация-работы">Завершающие рекомендации и оптимизация работы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапное прекращение раздачи IP-адресов в локальной сети часто застает администратора врасплох, когда устройства перестают получать сетевые настройки автоматически.</p>
+<p>Ситуация усугубляется тем, что встроенный функционал клиентской операционной системы <em>Windows 10</em> не позволяет развернуть полноценный сервер DHCP без установки дополнительного программного обеспечения или активации скрытых ролей.</p>
+<p>Отсутствие центрального узла распределения адресов приводит к конфликтам IP-адресов и невозможности доступа к ресурсам корпоративной сети или интернету для всех подключенных клиентов.</p>
+<p>Решение задачи требует точного понимания архитектуры сетевых служб и последовательного выполнения технических процедур по внедрению серверной функциональности в среду персонального компьютера.</p>
+
+<h2 id="подготовка-сетевой-инфраструктуры-и-выбор-метода-реализации">Подготовка сетевой инфраструктуры и выбор метода реализации</h2>
+<p>Первым шагом является анализ текущей топологии сети и определение целесообразности использования именно <em>Windows 10</em> в качестве основного источника сетевых параметров.</p>
+<p>Стоит учитывать, что стандартная редакция операционной системы не содержит предустановленного компонента DHCP Server, в отличие от серверных версий <em>Windows Server</em>.</p>
+<p>Для реализации функционала потребуется либо использование стороннего специализированного ПО, либо активация встроенных, но скрытых возможностей через командную строку или групповые политики.</p>
+<p>Важно заранее зарезервировать статический IP-адрес для самого компьютера, который будет выполнять роль сервера, чтобы исключить изменение его адреса после перезагрузки.</p>
+<p>На практике это делается через интерфейс сетевых подключений, где вручную прописываются адрес, маска подсети и шлюз по умолчанию.</p>
+<p><strong>Фиксация IP-адреса</strong> является критически важным этапом, так как клиенты должны знать точный адрес узла, запрашивая конфигурацию.</p>
+
+<h3>Сравнение методов развертывания служб</h3>
+<p>Существует несколько подходов к организации раздачи адресов, каждый из которых имеет свои технические особенности и ограничения в среде настольной ОС.</p>
+<p>Использование сторонних легких серверов часто оказывается более эффективным решением для небольших офисов, чем попытки адаптировать серверные роли на клиентской системе.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность внедрения</th>
+<th>Стабильность работы</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Стороннее ПО (например, <em>Dhcpserver</em>)</td>
+<td>Низкая</td>
+<td>Высокая</td>
+</tr>
+<tr>
+<td>Активация роли через PowerShell</td>
+<td>Высокая</td>
+<td>Средняя (зависит от редакции)</td>
+</tr>
+<tr>
+<td>Встроенный хот-спот (Мобильный хот-спот)</td>
+<td>Минимальная</td>
+<td>Низкая (ограниченный функционал)</td>
+</tr>
+</tbody>
+</table>
+
+<p>Выбор конкретного способа зависит от требуемого масштаба сети и наличия прав администратора на целевом компьютере.</p>
+<p>Если планируется долгосрочная эксплуатация, рекомендуется рассмотреть вариант установки специализированного дистрибутива или выделенного сервера.</p>
+<p>Однако для временных нужд или тестовых лабораторий вполне допустимо использование программных эмуляторов службы.</p>
+
+<h2 id="установка-и-базовая-конфигурация-программного-обеспечения">Установка и базовая конфигурация программного обеспечения</h2>
+<p>Процесс установки начинается с загрузки дистрибутива выбранного программного обеспечения или подготовки команд для активации системных компонентов.</p>
+<p>При использовании сторонних улит, таких как <em>dhcpserver</em> от tftpd32, достаточно распаковать архив в корневую директорию диска и запустить исполняемый файл от имени администратора.</p>
+<p>Интерфейс программы обычно содержит вкладки для мониторинга текущей активности и настройки пулов адресов.</p>
+<p>Необходимо указать сетевой интерфейс, на котором будет прослушиваться порт 67 для входящих запросов от клиентов.</p>
+<p>В поле «Pool Start IP» вводится начальный адрес диапазона, а в «Pool Size» — количество выдаваемых адресов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка пула адресов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Задайтеный IP-адрес</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Укажите маску подсети 255.255.255.0</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите адрес шлюза по умолчанию</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните изменения в файле конфигурации</span></div></div>
+
+<p>Если выбор пал на нативные средства, то в профессиональных редакциях можно попытаться добавить компонент через панель управления, хотя это часто требует наличия установочного образа <em>Windows Server</em>.</p>
+<p>Командная строка предоставляет более гибкий инструмент для управления сетевыми службами через утилиту <code>netsh</code> или PowerShell.</p>
+<p>Для создания нового scopes (области) в PowerShell требуется использование модуля <code>DhcpServer</code>, который по умолчанию не установлен в <em>Win 10</em>.</p>
+<p>Поэтому наиболее стабильным вариантом остается использование портативных версий серверов, не требующих глубокой интеграции в систему.</p>
+<p>После запуска службы необходимо проверить, что брандмауэр не блокирует входящие UDP-пакеты на порты 67 и 68.</p>
+<p><strong>Настройка исключений в брандмауэре</strong> является обязательным условием для успешного прохождения запросов от клиентских машин.</p>
+
+<h3>Параметры конфигурации области действия</h3>
+<p>Область действия определяет диапазон адресов, которые сервер имеет право выдавать запрашивающим клиентам.</p>
+<p>Внутри области настраиваются дополнительные параметры, такие как длительность аренды (Lease Duration) и адресация DNS-серверов.</p>
+<p>Короткое время аренды полезно в сетях с высокой ротацией устройств, тогда как длинная аренда снижает сетевой трафик в стабильных офисах.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Время аренды</td>
+<td>8 часов - 3 дня</td>
+<td>Период, на который выдается IP</td>
+</tr>
+<tr>
+<td>DNS сервер</td>
+<p>8.8.8.8 / 1.1.1.1</td></p>
+<td>Адреса для разрешения имен</td>
+</tr>
+<tr>
+<td>Шлюз</td>
+<td>IP роутера</td>
+<td>Адрес выхода во внешнюю сеть</td>
+</tr>
+</tbody>
+</table>
+
+<p>Корректное указание DNS-серверов критически важно, так как без них клиенты получат IP-адрес, но не смогут открывать сайты по доменным именам.</p>
+<p>В поле шлюза по умолчанию следует прописывать адрес основного маршрутизатора, если сервер DHCP не является шлюзом сам по себе.</p>
+<p>Некоторые конфигурации позволяют зарезервировать конкретные IP-адреса за определенными MAC-адресами устройств.</p>
+<p>Это удобно для принтеров, сетевых хранилищ и серверов, которые должны иметь постоянный адрес в сети.</p>
+
+<h2 id="управление-арендами-и-мониторинг-сетевой-активности">Управление арендами и мониторинг сетевой активности</h2>
+<p>После запуска службы начинается процесс обработки запросов <code>DISCOVER</code> от клиентов и отправки ответов <code>OFFER</code>.</p>
+<p>В журнале событий или в интерфейсе программы отображается список текущих арендованных адресов с привязкой к MAC-адресам.</p>
+<p>Администратор может в реальном времени наблюдать, какие устройства подключились к сети и какие параметры они получили.</p>
+<p>При необходимости можно принудительно разорвать аренду, что заставит клиентское устройство запросить адрес заново.</p>
+<p>Мониторинг логов помогает выявлять попытки несанкционированного доступа или ошибки в конфигурации клиентов.</p>
+<p>Если в логах появляются сообщения об отсутствии свободных адресов, следует расширить пул или уменьшить время аренды.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В логах можно отследить MAC-адрес устройства, которое вызывает конфликты или потребляет слишком много ресурсов сети.</p></aside>
+
+<p>Регулярная проверка списков аренды позволяет поддерживать порядок в адресном пространстве локальной сети.</p>
+<p>Статистика показывает пиковые часы нагрузки, что полезно для планирования модернизации сетевого оборудования.</p>
+<p>Некоторые продвинутые утилиты позволяют экспортировать отчеты в формате CSV или TXT для дальнейшего анализа.</p>
+<p>Важно следить за временем работы службы, так как в условиях нестабильного электропитания возможны внезапные остановки процесса.</p>
+<p>Автоматический запуск службы вместе с операционной системой настраивается в планировщике задач или через реестр.</p>
+
+<h3>Резервирование адресов для критических устройств</h3>
+<p>Для сетевых принтеров, IP-камер и серверов необходимо настроить статические привязки внутри DHCP-сервера.</p>
+<p>Это гарантирует, что устройство всегда получит один и тот же IP-адрес, даже если оно перезагрузится или потеряет связь.</p>
+<p>Процедура требует знания точного MAC-адреса сетевого интерфейса целевого устройства.</p>
+<p>В интерфейсе управления выбирается опция «Static Leases» или «Reservations» и вносится соответствующая запись.</p>
+<p>Такой подход упрощает администрирование, так как не требует ручной настройки TCP/IP на каждом отдельном устройстве.</p>
+<p><strong>Централизованное управление</strong> адресами снижает риск человеческой ошибки при ручной прописке параметров.</p>
+
+<h2 id="диагностика-неисправностей-и-устранение-конфликтов">Диагностика неисправностей и устранение конфликтов</h2>
+<p>В процессе эксплуатации могут возникнуть ситуации, когда клиенты не получают адрес или получают неверные параметры.</p>
+<p>Частой причиной является наличие в сети другого активного DHCP-сервера, который отвечает быстрее или имеет приоритет.</p>
+<p>Для выявления rogue-серверов (неавторизованных серверов) используются инструменты сканирования сети или анализаторы пакетов.</p>
+<p>Конфликты адресов возникают, когда двум устройствам назначается одинаковый IP, что приводит к потере связи у обоих.</p>
+<p>Система Windows обычно уведомляет о конфликте адресов всплывающим окном в трее.</p>
+<p>Для сброса сетевых настроек на клиенте используется команда <code>ipconfig /release</code> и <code>ipconfig /renew</code>.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Наличие двух активных DHCP-серверов в одном сегменте сети без координации приведет к полному параличу сетевого обмена данными.</p></aside>
+
+<p>Если служба на сервере зависла, помогает перезапуск процесса или полная перезагрузка компьютера.</p>
+<p>Проверка целостности системных файлов может выявить повреждения, мешающие работе сетевых компонентов.</p>
+<p>В некоторых случаях антивирусное ПО может блокировать работу DHCP-сервера, считая его подозрительной активностью.</p>
+<p>Добавление процесса в исключения антивируса решает проблему ложных срабатываний защиты.</p>
+
+<ol>
+<li>Откройте командную строку с правами администратора.</li>
+<li>Введите команду <code>ipconfig /flushdns</code> для очистки кэша DNS.</li>
+<li>Выполните сброс стека TCP/IP командой <code>netsh int ip reset</code>.</li>
+<li>Перезагрузите компьютер и проверьте получение адреса.</li>
+</ol>
+
+<h3>Типичные ошибки конфигурации</h3>
+<ol>
+<li><strong>Неверная маска подсети</strong> — приводит к тому, что клиенты не видят друг друга и шлюз, хотя IP-адрес получен; необходимо проверить соответствие маски на сервере и клиентах.</li>
+<li><strong>Отсутствие шлюза по умолчанию</strong> — клиенты получают IP, но не имеют выхода в интернет; следует проверить параметр «Router» или «Gateway» в настройках пула.</li>
+<li><strong>Блокировка портов брандмауэром</strong> — запросы DHCP не проходят через фаервол; нужно добавить правило для UDP портов 67 и 68.</li>
+<li><strong>Исчерпание пула адресов</strong> — новым устройствам не хватает адресов; требуется увеличить размер пула или сократить время аренды.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Грамотная настройка DHCP на Windows 10 требует фиксации IP сервера, правильной настройки пула адресов и исключения конфликтов с другими серверами.</p></aside>
+
+<h2 id="завершающие-рекомендации-и-оптимизация-работы">Завершающие рекомендации и оптимизация работы</h2>
+<p>Организация DHCP-сервера на базе Windows 10 является временным или тестовым решением, не предназначенным для масштабных корпоративных сетей.</p>
+<p>Для постоянной работы в производственной среде рекомендуется использовать выделенные серверы на базе <em>Windows Server</em> или сетевое оборудование с встроенным DHCP.</p>
+<p>Тем не менее, для домашнего лабораторного стенда или малого офиса такой подход позволяет гибко управлять сетевыми параметрами.</p>
+<p>Регулярное обновление используемого программного обеспечения закрывает уязвимости безопасности и улучшает стабильность.</p>
+<p>Документирование внесенных изменений в конфигурацию поможет в будущем быстро восстановить работоспособность сети.</p>
+<p>Соблюдение правил адресации и логическое разделение сетей повышают общую надежность инфраструктуры.</p>
+
+<p>Использование специализированного софта минимизирует нагрузку на операционную систему хоста.</p>
+<p>Важно помнить о безопасности: открытый DHCP-сервер может стать точкой входа для злоумышленников, если не настроена фильтрация по MAC-адресам.</p>
+<p>Контроль за выдаваемыми адресами позволяет быстро выявлять посторонние устройства в сети.</p>
+<p>Финальным шагом должна стать проверка connectivity со всех типов клиентов: ПК, смартфонов, IoT-устройств.</p>
+<p>Только комплексный подход к настройке гарантирует стабильную и бесперебойную работу локальной сети.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/i/in/instruktsiya-kamery-kerui-na-russkom-yazyke.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка камеры Kerui: полная инструкция, Wi-Fi и софт</span>
+                <span class="pb-related-desc">Подробная инструкция для IP-камер Kerui. Настройка Wi-Fi, подключение к приложению CloudEdge, устран</span>
+            </a><a href="/articles/k/ka/kak-steret-dannye-v-idle-heroes.html" class="pb-related-card">
+                <span class="pb-related-title">Как стереть данные в Idle Heroes: сброс аккаунта и прогресса</span>
+                <span class="pb-related-desc">Полная инструкция по удалению прогресса в Idle Heroes. Сброс аккаунта, отвязка Google Play и Game Ce</span>
+            </a><a href="/articles/a/aj/ajfon-11-pro-maks-kak-posmotret-datu-dobavleniya-kontakta.html" class="pb-related-card">
+                <span class="pb-related-title">iPhone 11 Pro Max: как узнать дату добавления контакта</span>
+                <span class="pb-related-desc">Подробная инструкция для iPhone 11 Pro Max: как найти дату создания контакта через компьютер, iCloud</span>
+            </a><a href="/articles/a/aj/ajfon-100.html" class="pb-related-card">
+                <span class="pb-related-title">iPhone 100: Анализ концепта, спецификаций и ожиданий</span>
+                <span class="pb-related-desc">Технический обзор концептуальных характеристик iPhone 100. Прогнозы по голограммам, ИИ, автономности</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-mi-boks-k-kompyuteru-cherez-hdim.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Mi Box к ПК через HDMI: подробная инструкция</span>
+                <span class="pb-related-desc">Руководство по подключению Xiaomi Mi Box к компьютеру через HDMI. Настройка вывода изображения, драй</span>
+            </a><a href="/articles/e/ex/ext-2-av-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Ext2av: что это за процесс и зачем он нужен</span>
+                <span class="pb-related-desc">Подробный разбор процесса ext2av в Android. Узнайте, как отключить ext2av, если он грузит процессор </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

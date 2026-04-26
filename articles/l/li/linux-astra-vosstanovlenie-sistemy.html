@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление Astra Linux: методы загрузки и реанимации — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по восстановлению Astra Linux. Разбор LiveCD, chroot, переустановки ядра и исправления загрузчика GRUB для серверов и ПК.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/li/linux-astra-vosstanovlenie-sistemy.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление Astra Linux: методы загрузки и реанимации">
+    <meta property="og:description" content="Подробное руководство по восстановлению Astra Linux. Разбор LiveCD, chroot, переустановки ядра и исправления загрузчика GRUB для серверов и ПК.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление Astra Linux: методы загрузки и реанимации</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-загрузочного-носителя-и-live-режима">Использование загрузочного носителя и Live-режима</a></li><li><a href="#восстановление-через-chroot-и-работа-с-ядром">Восстановление через chroot и работа с ядром</a></li><li><a href="#реанимация-загрузчика-grub">Реанимация загрузчика GRUB</a></li><li><a href="#диагностика-и-исправление-файловых-систем">Диагностика и исправление файловых систем</a></li><li><a href="#типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/o/ob/oboi-i-temy-v-chem-raznitsa.html">Обои и темы: в чем разница и как правильно настроить</a></li><li><a href="/articles/k/ka/kak-pomenyat-kolonki-mestami-v-vindovs-10.html">Как поменять колонки местами в Windows 10: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-otklyuchit-podpisku-start-ot-megafona.html">Как отключить подписку Старт от Мегафона: все способы</a></li><li><a href="/articles/k/ki/kino-hd-server-ne-dostupen.html">Kino HD сервер недоступен: причины и способы устранения ошибки</a></li><li><a href="/articles/c/co/coodisk-kak-polzovatsya-na-ajfone.html">Как пользоваться CoolDisk на iPhone: полная инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление Astra Linux: методы загрузки и реанимации</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-загрузочного-носителя-и-live-режима">Использование загрузочного носителя и Live-режима</a></li><li><a href="#восстановление-через-chroot-и-работа-с-ядром">Восстановление через chroot и работа с ядром</a></li><li><a href="#реанимация-загрузчика-grub">Реанимация загрузчика GRUB</a></li><li><a href="#диагностика-и-исправление-файловых-систем">Диагностика и исправление файловых систем</a></li><li><a href="#типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапный отказ системы после обновления ядра или сбой файловой системы при аварийном отключении электропитания часто ставят администратора перед фактом невозможности штатной загрузки операционной системы. Вместо привычного экрана входа в графическую оболочку или консоли ввода пароля пользователь наблюдает черный экран, бесконечный цикл перезагрузки или сообщения об отсутствии загрузочного устройства. В среде <em>Astra Linux Special Edition</em> или <em>Common Edition</em> такая ситуация может парализовать работу целого отдела или остановить критически важный сервис.</p>
+<p>Паника в подобных случаях — не лучший советчик, так как большинство проблем решается стандартными средствами дистрибутива без полной переустановки. Ключевым фактором успеха является наличие установочного носителя с той же версией дистрибутива, которая установлена на жестком диске, или заранее подготовленного LiveCD. Восстановление может занять от нескольких минут до часа, в зависимости от степени повреждения системных файлов и конфигурации оборудования.</p>
+<p>Первым шагом всегда должна стать диагностика: система не стартует вообще, застревает на этапе инициализации ядра или падает уже после запуска служб. От точного определения стадии сбоя зависит выбор метода реанимации. Ниже приведены проверенные алгоритмы действий для различных сценариев отказа, применимые к архитектурам x86_64 и актуальным версиям платформы.</p>
+
+<h2 id="использование-загрузочного-носителя-и-live-режима">Использование загрузочного носителя и Live-режима</h2>
+<p>Если штатная загрузка невозможна, единственным способом доступа к файловой системе становится использование внешнего установочного носителя. Запись образа <em>Astra Linux</em> на USB-накопитель или DVD позволяет запустить систему в режиме Live, где можно смонтировать поврежденный раздел и провести диагностику. Важно, чтобы версия дистрибутива на носитике максимально совпадала с установленной, во избежание конфликтов версий библиотек при восстановлении.</p>
+<p>После загрузки с флешки необходимо открыть терминал и определить имена дисков. Команда <code>lsblk</code> или <code>fdisk -l</code> выведет список всех подключенных накопителей. Обычно системный раздел имеет файловую систему ext4 и занимает значительную часть диска, в то время как разделы swap или home могут быть выделены отдельно. Необходимо четко идентифицировать устройство, например, <code>/dev/sda2</code>, чтобы не повредить данные на соседних разделах.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Перед выполнением любых операций записи на диск убедитесь, что выбрали правильное устройство. Ошибка в имени диска может привести к безвозвратной потере данных.</p></aside>
+
+<p>Следующим этапом становится монтирование корневой файловой системы поврежденной системы вную директорию. Стандартным местом для таких операций служит каталог <code>/mnt</code>. Если структура разделов сложная и присутствуют отдельные точки монтирования для <code>/boot</code>, <code>/home</code> или <code>/var</code>, их также следует смонтировать в соответствующие подкаталоги внутри <code>/mnt</code>. Это критически важно для корректной работы утилит восстановления, таких как <code>update-initramfs</code> или <code>grub-install</code>.</p>
+<p>Для обеспечения работы сетевых интерфейсов или доступа к внешним репозиториям внутри chroot-окружения может потребоваться копирование файлов конфигурации DNS. Файл <code>/etc/resolv.conf</code> из Live-системы часто содержит актуальные адреса серверов имен, что позволит загружать пакеты напрямую из интернета, если репозиторий доступен.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Монтирование разделов</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Определите системный раздел через lsblk</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Смонтируйте корень: mount /dev/sda2 /mnt</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Смонтируйте boot (если есть): mount /dev/sda1 /mnt/boot</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Смонтируйте остальные разделы по аналогии</span></div></div>
+
+<p>После подготовки точек монтирования можно переходить к более глубоким методам восстановления, требующим эмуляции работы системы. Без правильного монтирования всех необходимых каталогов дальнейшие действия будут невозможны или приведут к ошибкам. В таблице ниже приведены примеры путей для стандартной разметки.</p>
+
+<table>
+<thead>
+<tr>
+<th>Раздел</th>
+<th>Точка монтирования в Live</th>
+<th>Типичное устройство</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Корневой (/)</td>
+<td>/mnt</td>
+<td>/dev/sda2</td>
+</tr>
+<tr>
+<td>Загрузочный (/boot)</td>
+<td>/mnt/boot</td>
+<td>/dev/sda1</td>
+</tr>
+<tr>
+<td>Домашний (/home)</td>
+<td>/mnt/home</td>
+<td>/dev/sda3</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="восстановление-через-chroot-и-работа-с-ядром">Восстановление через chroot и работа с ядром</h2>
+<p>Метод <code>chroot</code> (change root) позволяет запустить оболочку командной строки в контексте смонтированной поврежденной системы. Это дает возможность выполнять команды так, как если бы система была загружена нормально. Для корректной работы необходимо смонтировать не только файловые системы, но и виртуальные файловые системы ядра: <code>/proc</code>, <code>/sys</code> и <code>/dev</code>. Без них многие системные утилиты не смогут получить информацию о процессах или оборудовании.</p>
+<p>Одной из частых причин неработоспособности <em>Astra Linux</em> является повреждение образа начального загрузчика <code>initramfs</code> или отсутствие актуального ядра. Ситуация часто возникает после прерванного обновления или сбоя при установке новых пакетов ядра. Находясь внутри chroot, можно заново сгенерировать образ initramfs для всех установленных ядер, используя команду <code>update-initramfs -u -k all</code>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В Astra Linux Special Edition (Smolensk) для работы некоторых утилит может потребоваться предварительная авторизация в системе защиты, однако в режиме восстановления это обычно обходится запуском от имени root.</p></aside>
+
+<p>Если проблема кроется в самом ядре, например, оно перестало совместимо с оборудованием после обновления, можно удалить проблемный пакет или установить предыдущую стабильную версию. В репозиториях <em>Astra Linux</em> обычно хранятся несколько версий ядер, и загрузчик при старте предлагает выбрать нужную. Если меню не появляется, возможно, требуется пересборка конфигурации GRUB.</p>
+<p>Допустим, что поврежден файл конфигурации <code>/etc/fstab</code>, и система не может смонтировать разделы. Находясь в chroot, этот файл можно отредактировать любым текстовым редактором, например <code>nano</code> или <code>vi</code>, исправив UUID или пути к устройствам. Проверить актуальные UUID можно командой <code>blkid</code>, запущенной вне chroot или внутри него, если проброшены устройства.</p>
+
+<pre><code>mount --bind /dev /mnt/dev
+<p>mount --bind /proc /mnt/proc</p>
+<p>mount --bind /sys /mnt/sys</p>
+<p>chroot /mnt</p>
+</code></pre>
+
+<p>После выполнения всех восстановительных операций внутри chroot необходимо корректно завершить сеанс. Выход из оболочки chroot осуществляется командой <code>exit</code>, после чего следует размонтировать все разделы в обратном порядке. Только после успешного размонтирования можно перезагружаться и проверять результат.</p>
+
+<h2 id="реанимация-загрузчика-grub">Реанимация загрузчика GRUB</h2>
+<p>Загрузчик <code>GRUB</code> является первым звеном в цепочке запуска <em>Astra Linux</em>, и его повреждение приводит к появлению черного экрана с надписью «GRUB rescue» или полному отсутствию реакции на включение питания. Восстановление загрузчика возможно с помощью утилиты <code>grub-install</code> и генератора конфигурации <code>update-grub</code>, доступных в Live-режиме.</p>
+<p>Ключевым моментом здесь является правильный выбор целевого устройства. Команда установки должна указывать на физический диск (например, <code>/dev/sda</code>), а не на раздел (<code>/dev/sda1</code>). Если система использует UEFI, необходимо также убедиться, что ESP-раздел (EFI System Partition) отформатирован в FAT32 и смонтирован в <code>/boot/efi</code> (или соответствующую точку внутри chroot).</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Установка загрузчика на неверный диск может перезаписать MBR другого диска с данными, сделав его нечитаемым для ОС. Будьте внимательны при указании устройства.</p></aside>
+
+<p>В случае использования BIOS (Legacy) процесс выглядит проще: достаточно выполнить <code>grub-install /dev/sdX</code>. Для UEFI может потребоваться указание пути к файлу загрузчика и флага <code>--target=x86_64-efi</code>. Если стандартные методы не помогают, можно создать минималистичный конфигурационный файл вручную прямо в режиме rescue, указав путь к ядру и initrd.</p>
+<p>Часто после восстановления загрузчика требуется обновить его конфигурацию, чтобы в меню появились все доступные ядра и операционные системы. Команда <code>update-grub</code> сканирует диски, находит установленные системы и генерирует файл <code>grub.cfg</code>. В <em>Astra Linux</em> это также может активировать пункты меню для восстановления и безопасного режима.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>BIOS (Legacy)</th>
+<th>UEFI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Целевое устройство</td>
+<td>/dev/sda (диск)</td>
+<td>/dev/sda (диск)</td>
+</tr>
+<tr>
+<td>Раздел загрузчика</td>
+<td>MBR (скрыт)</td>
+<td>EFI (FAT32, /boot/efi)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="диагностика-и-исправление-файловых-систем">Диагностика и исправление файловых систем</h2>
+<p>Нарушение целостности файловой системы — еще одна распространенная причина сбоев. Файловая система ext4, используемая по умолчанию в <em>Astra Linux</em>, обладает журналированием, но при серьезных сбоях питания журнал может быть поврежден или помечен как «нечистый». Для проверки и исправления ошибок используется утилита <code>fsck</code> (File System Consistency Check).</p>
+<p>Важнейшее правило: никогда не запускайте <code>fsck</code> на смонтированном разделе. Это гарантированно приведет к потере данных. Перед проверкой раздел должен быть размонтирован. В Live-режиме это делается автоматически, если вы не монтировали раздел для других целей, или же нужно явно выполнить <code>umount /dev/sdXn</code>.</p>
+<p>Запуск проверки осуществляется командой <code>fsck -y /dev/sdXn</code>, где флаг <code>-y</code> автоматически подтверждает исправление всех найденных ошибок. Процесс может занять длительное время на больших дисках. Если утилита сообщает о серьезных повреждениях inode или суперблока, может потребоваться ручной ввод резервного суперблока, информация о которых хранится в структуре файловой системы.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Восстановление файловой системы</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Автоматическое исправление логических ошибок</li><li>✅ Возврат системы в рабочее состояние без переустановки</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск потери данных при агрессивном исправлении</li><li>❌ Не помогает при физических повреждениях диска</li></ul></div>
+</div></div>
+
+<p>Помимо логических ошибок, стоит проверить состояние SMART-атрибутов диска, чтобы исключить физическую неисправность накопителя. Утилита <code>smartctl</code> из пакета <em>smartmontools</code> позволяет получить подробную информацию о здоровье диска. Если диск имеет много переназначенных секторов или ошибок чтения, восстановление системы может быть временной мерой перед заменой оборудования.</p>
+<p>В некоторых случаях проблема кроется не в самой файловой системе, а в переполнении раздела <code>/var</code> или <code>/tmp</code>, что мешает старту служб. Находясь в chroot или просто смонтировав диск, можно проанализироватьение места командой <code>du</code> и очистить старые логи или временные файлы, освободив критически важное пространство.</p>
+
+<h2 id="типичные-ошибки-при-восстановлении">Типичные ошибки при восстановлении</h2>
+<p>Процесс восстановления требует внимательности, и даже опытные администраторы допускают ошибки, которые усугубляют ситуацию. Ниже перечислены наиболее распространенные mistakes и способы их избежать.</p>
+<ol>
+<li><strong>Запуск fsck на смонтированном разделе</em> — это приводит к рассинхронизации данных и возможной потере информации; всегда проверяйте статус монтирования через <code>mount</code> перед запуском проверки.</li>
+<li><strong>Использование неверной версии дистрибутива для chroot</strong> — библиотеки разных версий <em>Astra Linux</strong> могут быть несовместимы, что вызовет ошибки исполнения бинарных файлов; используйте носитель той же версии или новее.</li>
+<li><strong>Попытка установить GRUB на раздел вместо диска</em> — команда <code>grub-install /dev/sda1</code> не запишет загрузочный код в MBR, и система не стартует; указывайте устройство без номера раздела.</li>
+<li><strong>Игнорирование монтирования /proc и /sys</em> — без проброса этих виртуальных файловых систем в chroot многие команды (например, <code>update-initramfs</code>) завершатся фатальной ошибкой, так как не смогут получить доступ к ядру.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Ведите лог действий: записывайте команды, которые вы выполняете в Live-режиме. Это поможет воспроизвести шаги или откатить изменения, если что-то пойдет не так.</p></aside>
+
+<p>Восстановление <em>Astra Linux</em> — это процесс, требующий понимания структуры загрузки Linux и файловой системы. Большинство проблем решаются возвратом к рабочей конфигурации ядра или пересборкой загрузчика. Главное — действовать последовательно, начиная с диагностики и резервного копирования важных данных, если это возможно.</p>
+<p>Регулярное создание резервных копий конфигурационных файлов и критичных данных значительно упрощает процедуру восстановления. Наличие актуального загрузочного носителя с той же версией ОС должно быть обязательным стандартом для любого администратора, работающего с инфраструктурой на базе Astra Linux.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешное восстановление зависит от правильного монтирования разделов, использования chroot для эмуляции среды и аккуратного выполнения команд переустановки ядра или загрузчика.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/o/ob/oboi-i-temy-v-chem-raznitsa.html" class="pb-related-card">
+                <span class="pb-related-title">Обои и темы: в чем разница и как правильно настроить</span>
+                <span class="pb-related-desc">Подробное руководство по различиям обоев и тем. Анализ влияния на систему, методы установки и типичн</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-kolonki-mestami-v-vindovs-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как поменять колонки местами в Windows 10: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по смене левого и правого каналов в Windows 10. Настройки драйверов Realtek, системны</span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-podpisku-start-ot-megafona.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить подписку Старт от Мегафона: все способы</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению подписки Старт от Мегафона. Способы через USSD, личный кабинет, п</span>
+            </a><a href="/articles/k/ki/kino-hd-server-ne-dostupen.html" class="pb-related-card">
+                <span class="pb-related-title">Kino HD сервер недоступен: причины и способы устранения ошибки</span>
+                <span class="pb-related-desc">Ошибка «Сервер недоступен» в приложении Kino HD. Подробная инструкция по диагностике сети, очистке D</span>
+            </a><a href="/articles/c/co/coodisk-kak-polzovatsya-na-ajfone.html" class="pb-related-card">
+                <span class="pb-related-title">Как пользоваться CoolDisk на iPhone: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по подключению и работе с CoolDisk на iPhone. Настройка файловой системы, перенос дан</span>
+            </a><a href="/articles/a/a1/a1bu-lichnyj-kabinet.html" class="pb-related-card">
+                <span class="pb-related-title">А1.бу личный кабинет: полная инструкция по входу и настройке</span>
+                <span class="pb-related-desc">Подробное руководство по работе с ЛК А1.бу. Вход, регистрация, тарифы, проверка баланса и устранение</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

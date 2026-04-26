@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>GRUB 2 и Windows 10: Установка и настройка загрузки — Мастер Фикс</title>
+    <meta name="description" content="Полное руководство по установке GRUB 2 для загрузки Windows 10 в Linux. Настройка os-prober, правка конфигурации и устранение ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/g/gr/grub-2-ustanovka-i-zagruzka-os-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="GRUB 2 и Windows 10: Установка и настройка загрузки">
+    <meta property="og:description" content="Полное руководство по установке GRUB 2 для загрузки Windows 10 в Linux. Настройка os-prober, правка конфигурации и устранение ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">GRUB 2 и Windows 10: Установка и настройка загрузки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-системы-и-проверка-разделов">Подготовка системы и проверка разделов</a></li><li><a href="#установка-необходимых-пакетов-и-утилит">Установка необходимых пакетов и утилит</a></li><li><a href="#настройка-конфигурации-grub-для-windows-10">Настройка конфигурации GRUB для Windows 10</a></li><li><a href="#генерация-нового-загрузочного-меню">Генерация нового загрузочного меню</a></li><li><a href="#решение-проблем-с-определением-windows">Решение проблем с определением Windows</a></li><li><a href="#финальная-проверка-и-перезагрузка">Финальная проверка и перезагрузка</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/a/ak/akkumulyatory-dlya-noutbuka-toshiba-l500-raspinovka-razema.html">Распиновка аккумулятора Toshiba L500: схема, контакты, ремонт</a></li><li><a href="/articles/k/ka/kak-zapustit-igru-nedetskie-skazki-na-windows-10.html">Как запустить Недетские сказки на Windows 10: решение проблем</a></li><li><a href="/articles/k/ka/kak-sdelat-vidzhet-yandeks-muzyki-v-windows-10.html">Виджет Яндекс Музыки в Windows 10: установка и настройка</a></li><li><a href="/articles/w/wi/windows-7-izmenenie-parametrov-adaptera.html">Windows 7: изменение параметров адаптера и настройка сети</a></li><li><a href="/articles/l/le/lenovo-ideapad-morgaet-indikator-i-ne-vklyuchaetsya.html">Lenovo IdeaPad мигает индикатор и не включается: решение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>GRUB 2 и Windows 10: Установка и настройка загрузки</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-системы-и-проверка-разделов">Подготовка системы и проверка разделов</a></li><li><a href="#установка-необходимых-пакетов-и-утилит">Установка необходимых пакетов и утилит</a></li><li><a href="#настройка-конфигурации-grub-для-windows-10">Настройка конфигурации GRUB для Windows 10</a></li><li><a href="#генерация-нового-загрузочного-меню">Генерация нового загрузочного меню</a></li><li><a href="#решение-проблем-с-определением-windows">Решение проблем с определением Windows</a></li><li><a href="#финальная-проверка-и-перезагрузка">Финальная проверка и перезагрузка</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Многие пользователи, переходящие на операционные системы семейства <em>Linux</em>, сталкиваются с необходимостью сохранить доступ к уже установленной <em>Windows 10</em>. В таких случаях ключевую роль играет загрузчик <strong>GRUB 2</strong>, который позволяет выбирать нужную ОС при старте компьютера. Правильная конфигурация этого компонента критически важна для стабильной работы дуальной системы, так как ошибки могут привести к невозможности запуска любой из установленных платформ.</p>
+
+<p>Процесс интеграции требует внимательности к деталям файловой системы и разделам диска. <strong>Загрузочный сектор</strong> должен быть корректно перезаписан, а конфигурационные файлы — содержать актуальные пути к ядрам и образам операционных систем. Ниже мы подробно разберем технические аспекты настройки, чтобы вы могли безопасно управлять загрузкой.</p>
+
+<p>Стоит отметить, что современные дистрибутивы часто автоматически обнаруживают другие ОС, но в ряде случаев требуется ручное вмешательство. Понимание структуры <code>/boot/grub</code> и принципов работы <em>UEFI</em> или <em>BIOS</em> поможет избежать распространенных ошибок. Давайте перейдем к практической части и рассмотрим необходимые шаги для подготовки среды.</p>
+
+<h2 id="подготовка-системы-и-проверка-разделов">Подготовка системы и проверка разделов</h2>
+
+<p>Перед началом любых манипуляций с загрузчиком необходимо убедиться, что все разделы диска смонтированы корректно и доступны для чтения. Часто <strong>Windows 10</strong> использует функцию быстрого запуска, которая блокирует системный раздел в состоянии гибернации, делая его недоступным для сканирования Linux-утилитами. Вам потребуется отключить этот режим в самой Windows или выполнить принудительное размонтирование раздела.</p>
+
+<p>Для анализа структуры диска используйте утилиту <code>lsblk</code> или <code>fdisk -l</code>. Эти команды покажут список всех подключенных накопителей и их разделов. Обратите особое внимание на идентификаторы разделов, помеченных как <em>NTFS</em>, так как именно там resides ваша копия Windows.</p>
+
+<ul>
+<li>🔍 Проверьте наличие раздела EFI (обычно FAT32 размером 100–500 МБ), который необходим для загрузки в режиме UEFI.</li>
+<li>💾 Убедитесь, что раздел с Windows не помечен флагом "busy" или "locked".</li>
+<li>🛡️ Создайте резервную копию таблицы разделов на случай непредвиденных сбоев.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: Никогда не форматируйте раздел с файловой системой NTFS, если вы планируете сохранить Windows. Ошибка в выборе диска приведет к безвозвратной потере данных.</p>
+</blockquote>
+
+<p>Если вы работаете в режиме <strong>Legacy BIOS</strong>, структура будет отличаться от UEFI, что требует разных подходов к установке загрузчика. В первом случае загрузчик записывается в MBR (Master Boot Record), а во втором — в ESP (EFI System Partition). Определение текущего режима работы материнской платы — первый шаг к успеху.</p>
+
+<h2 id="установка-необходимых-пакетов-и-утилит">Установка необходимых пакетов и утилит</h2>
+
+<p>Для успешной настройки вам потребуется пакет <strong>os-prober</strong>, который отвечает за сканирование дисков на наличие других операционных систем. Без этого компонента GRUB 2 просто "не увидит" Windows 10, даже если она физически присутствует на диске. В современных дистрибутивах, таких как <em>Ubuntu</em> или <em>Debian</em>, этот пакет может быть не установлен по умолчанию.</p>
+
+<p>Установку можно произвести через терминал, используя менеджер пакетов вашей системы. Например, для дистрибутивов на базе Debian команда будет выглядеть следующим образом:</p>
+
+<pre><code>sudo apt update
+<p>sudo apt install os-prober grub2-common</code></pre></p>
+
+<p>После установки убедитесь, что версия <strong>GRUB</strong> актуальна и поддерживает необходимые модули для работы с файловыми системами NTFS. Старые версии могут некорректно обрабатывать сложные структуры разделов или не поддерживать Secure Boot.</p>
+
+<div class="pb-poll" id="poll-61c4fa68"><div class="pb-poll-question">📊 Какой дистрибутив Linux вы используете для настройки GRUB?</div><div class="pb-poll-option" data-poll="61c4fa68" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Ubuntu/Debian</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="61c4fa68" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">Fedora/CentOS</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="61c4fa68" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Arch Linux</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="61c4fa68" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Manjaro/Other</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<p>Важно также проверить наличие утилиты <code>ntfs-3g</code>, которая обеспечивает поддержку чтения и записи в разделы NTFS. Отсутствие этой библиотеки может привести к ошибкам при попытке GRUB считать конфигурацию Windows.</p>
+
+<h2 id="настройка-конфигурации-grub-для-windows-10">Настройка конфигурации GRUB для Windows 10</h2>
+
+<p>Основной файл конфигурации находится по пути <code>/etc/default/grub</code>. Именно здесь задаются параметры тайм-аута, разрешения экрана и, что самое важное, включается поиск других ОС. По умолчанию поиск сторонних загрузчиков может быть отключен в целях безопасности или оптимизации скорости.</p>
+
+<p>Вам необходимо открыть этот файл в текстовом редакторе с правами суперпользователя. Найдите строку <code>GRUB_DISABLE_OS_PROBER</code>. Если она закомментирована или установлена в <code>true</code>, измените её значение на <code>false</code>. Это действие активирует механизм автоматического обнаружения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендуемое значение</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GRUB_TIMEOUT</td>
+<td>10</td>
+<td>5-10</td>
+<td>Время ожидания выбора ОС</td>
+</tr>
+<tr>
+<td>GRUB_DISABLE_OS_PROBER</td>
+<td>true</td>
+<td>false</td>
+<td>Разрешить поиск других ОС</td>
+</tr>
+<tr>
+<td>GRUB_CMDLINE_LINUX_DEFAULT</td>
+<td>"quiet splash"</td>
+<td>"quiet splash"</td>
+<td>Параметры загрузки ядра</td>
+</tr>
+</tbody>
+</table>
+
+<p>После внесения изменений файл необходимо сохранить. Однако сами изменения не вступят в силу мгновенно, так как операционная система использует скомпилированный бинарный файл конфигурации, расположенный в <code>/boot/grub/grub.cfg</code>. Прямое редактирование этого файла запрещено, так как он будет перезаписан при следующем обновлении.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду sudo cp /etc/default/grub /etc/default/grub.bak перед редактированием, чтобы иметь возможность быстро откатить изменения в случае ошибки.</p></aside>
+
+<h2 id="генерация-нового-загрузочного-меню">Генерация нового загрузочного меню</h2>
+
+<p>После того как вы отредактировали конфигурационный файл и включили <strong>os-prober</strong>, необходимо перегенерировать главное меню загрузки. Этот процесс сканирует все подключенные диски, находит установленные системы и создает соответствующие записи в конфиге.</p>
+
+<p>Для выполнения этой операции используется команда <code>update-grub</code> (в Debian/Ubuntu) или <code>grub-mkconfig</code> (в Arch/Fedora). Процесс может занять несколько секунд, в течение которых вы увидите вывод информации о найденных ядрах Linux и обнаруженной Windows 10.</p>
+
+<pre><code>sudo update-grub</code></pre>
+
+<p>В логе выполнения вы должны увидеть строки, указывающие на добавление Windows Boot Manager. Если такой записи нет, значит, либо раздел заблокирован, либо утилита <code>os-prober</code> не сработала корректно. В таком случае стоит перепроверить монтирование разделов.</p>
+
+<ul>
+<li>🔄 Команда автоматически обновит файл <code>grub.cfg</code> на основе шаблонов.</li>
+<li>📝 В выводе терминала будет указано "Found Windows Boot Manager on...".</li>
+<li>⚙️ После завершения можно перезагрузиться для проверки результата.</li>
+</ul>
+
+<blockquote>
+<p>⚠️ Внимание: Если после обновления меню Windows не появилась, не перезагружайтесь сразу. Проверьте логи на наличие ошибок монтирования NTFS-разделов.</p>
+</blockquote>
+
+<h2 id="решение-проблем-с-определением-windows">Решение проблем с определением Windows</h2>
+
+<p>Иногда автоматическое сканирование не дает результатов из-за особенностей разметки диска или включенного <strong>Secure Boot</strong>. В таких случаях может потребоваться ручное добавление записи. Это более сложный метод, требующий точного знания UUID раздела и пути к загрузчику.</p>
+
+<p>Вы можете создать собственный скрипт в директории <code>/etc/grub.d/</code>, который будет принудительно добавлять пункт меню. Это особенно актуально, если Windows установлена на логический диск или в нестандартной конфигурации LVM.</p>
+
+<details class="pb-accordion"><summary>Пример ручного добавления записи</summary><div class="pb-accordion-body"><p>Для ручного добавления создайте файл 40_custom в папке /etc/grub.d/ и пропишите menuentry с указанием chainloader для соответствующего UUID раздела.</p></div></details>
+
+<p>Также проблема может крыться в том, что раздел с Windows помечен как "спящий". Принудительное завершение работы Windows (команда <code>shutdown /s /t 0</code> с зажатым Shift) помогает сбросить состояние гибернации и разблокировать файловую систему для чтения из-под Linux.</p>
+
+<h2 id="финальная-проверка-и-перезагрузка">Финальная проверка и перезагрузка</h2>
+
+<p>Завершающим этапом является перезагрузка системы. Именно в этот момент вы увидите обновленное меню <strong>GRUB</strong>, где среди вариантов загрузки должна присутствовать Windows 10. Если система загружается сразу в Linux без показа меню, возможно, тайм-аут установлен в ноль.</p>
+
+<p>Проверьте, что переключение между операционными системами происходит штатно. Отсутствие ошибок файловой системы при входе в Windows свидетельствует о корректной работе загрузчика и правильном размонтировании разделов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Чек-лист успешной установки</h4><label class="check-item"><input type="checkbox"><span>os-prober установлен и активен</span></label><label class="check-item"><input type="checkbox"><span>Параметр GRUB_DISABLE_OS_PROBER=false</span></label><label class="check-item"><input type="checkbox"><span>Команда update-grub выполнена без ошибок</span></label><label class="check-item"><input type="checkbox"><span>В меню появилась Windows 10</span></label><label class="check-item"><input type="checkbox"><span>Системы загружаются корректно</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 5</div></div>
+
+<p>Теперь ваш компьютер готов к работе в режиме дуальной загрузки. Регулярно обновляйте пакеты системы, чтобы сохранять совместимость загрузчика с новыми версиями ядер и обновлениями безопасности.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Успешная настройка GRUB 2 обеспечивает надежное и удобное переключение между Linux и Windows, делая работу с двумя системами прозрачной для пользователя.</p></aside>
+
+<details>
+<summary>Почему GRUB не видит Windows 10 после установки?</summary>
+<p>Чаще всего причина кроется в том, что раздел Windows заблокирован режимом быстрой загрузки (Fast Startup) или гибернацией. Также может быть отключен параметр <code>GRUB_DISABLE_OS_PROBER</code> в конфигурации. Проверьте целостность файловой системы NTFS и убедитесь, что утилита os-prober установлена.</p>
+</details>
+
+<details>
+<summary>Безопасно ли устанавливать GRUB рядом с Windows?</summary>
+<p>Да, это стандартная практика. GRUB аккуратно записывает свои данные в загруз</div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/a/ak/akkumulyatory-dlya-noutbuka-toshiba-l500-raspinovka-razema.html" class="pb-related-card">
+                <span class="pb-related-title">Распиновка аккумулятора Toshiba L500: схема, контакты, ремонт</span>
+                <span class="pb-related-desc">Подробная распиновка разъема аккумулятора Toshiba L500. Схема контактов, напряжения, методы активаци</span>
+            </a><a href="/articles/k/ka/kak-zapustit-igru-nedetskie-skazki-na-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как запустить Недетские сказки на Windows 10: решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску игры Недетские сказки на Windows 10. Настройка совместимости, устано</span>
+            </a><a href="/articles/k/ka/kak-sdelat-vidzhet-yandeks-muzyki-v-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Виджет Яндекс Музыки в Windows 10: установка и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по добавлению виджета Яндекс Музыки в Windows 10 через браузер, PWA и сторонние</span>
+            </a><a href="/articles/w/wi/windows-7-izmenenie-parametrov-adaptera.html" class="pb-related-card">
+                <span class="pb-related-title">Windows 7: изменение параметров адаптера и настройка сети</span>
+                <span class="pb-related-desc">Подробная инструкция по изменению параметров сетевого адаптера в Windows 7. Настройка IP, DNS, отклю</span>
+            </a><a href="/articles/l/le/lenovo-ideapad-morgaet-indikator-i-ne-vklyuchaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo IdeaPad мигает индикатор и не включается: решение</span>
+                <span class="pb-related-desc">Индикатор Lenovo IdeaPad мигает, но ноутбук не включается? Подробная инструкция по диагностике, сбро</span>
+            </a><a href="/articles/g/gd/gde-plyus-i-minus-elementov-v-akkumulyatore-noutbuka-skhemy.html" class="pb-related-card">
+                <span class="pb-related-title">Где плюс и минус на АКБ ноутбука: схема, мультиметр, полярность</span>
+                <span class="pb-related-desc">Техническое руководство по определению полярности аккумулятора ноутбука. Схемы BMS, поиск контактов </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

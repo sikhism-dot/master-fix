@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Битва аниме персонажей: создание пиксельной игры на движке — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по разработке файтинга с аниме-стилистикой в пиксель-арт. Настройка спрайтов, хитбоксов и сетевой код.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/b/bi/bitva-anime-personazhej-igra-pikselnaya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Битва аниме персонажей: создание пиксельной игры на движке">
+    <meta property="og:description" content="Техническое руководство по разработке файтинга с аниме-стилистикой в пиксель-арт. Настройка спрайтов, хитбоксов и сетевой код.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Битва аниме персонажей: создание пиксельной игры на движке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-графического-ассета-и-спрайт-листов">Подготовка графического ассета и спрайт-листов</a></li><li><a href="#настройка-физики-столкновений-и-хитбоксов">Настройка физики столкновений и хитбоксов</a></li><li><a href="#визуальные-эффекты-и-пост-обработка">Визуальные эффекты и пост-обработка</a></li><li><a href="#сетевая-архитектура-иrollback-netcode">Сетевая архитектура иrollback netcode</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/e/es/esli-na-ekrane-televizora-poyavilas-nadpis-tolko-dannye.html">Телевизор показывает только данные: причины и решение</a></li><li><a href="/articles/k/ka/kak-ustanovit-kion-na-televizor-samsung-2014-goda.html">Kion на Samsung 2014: установка приложения и обход ограничений</a></li><li><a href="/articles/d/dv/dvd-ls155t-kak-podklyuchit-tv-boks.html">Подключение ТВ-бокса к DVD LS155T: полная инструкция</a></li><li><a href="/articles/b/bl/blyutuz-pult-upravleniya-tv-skyworth-po-blyutuz-skachat.html">Skyworth Bluetooth пульт: скачать приложение и настроить управление</a></li><li><a href="/articles/m/mo/mozhno-li-veshat-televizor-na-imitatsiyu-brusa.html">Крепление телевизора на имитацию бруса: инструкция и риски</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Разработка файтинга: битва аниме персонажей в пиксельной графике</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-графического-ассета-и-спрайт-листов">Подготовка графического ассета и спрайт-листов</a></li><li><a href="#настройка-физики-столкновений-и-хитбоксов">Настройка физики столкновений и хитбоксов</a></li><li><a href="#визуальные-эффекты-и-пост-обработка">Визуальные эффекты и пост-обработка</a></li><li><a href="#сетевая-архитектура-иrollback-netcode">Сетевая архитектура иrollback netcode</a></li><li><a href="#типичные-ошибки-при-разработке">Типичные ошибки при разработке</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Разработчики инди-игр часто сталкиваются с критической проблемой рассинхронизации анимаций и хитбоксов при создании динамичных файтингов в ретро-стилистике.</p>
+<p>Если в статичных платформерах тайминги ударов можно настроить приблизительно, то в жанре, где счет идет на кадры, любая задержка ввода или смещение коллизии на один пиксель разрушает баланс и ощущение от геймплея.</p>
+<p>Особенно остро это встает при реализации механик, характерных для аниме-файтингов, таких как мгновенные рывки, многоударные комбо и эффекты замедления времени, требующие прецизионной работы движка.</p>
+
+<h2 id="подготовка-графического-ассета-и-спрайт-листов">Подготовка графического ассета и спрайт-листов</h2>
+<p>Начинать техническую реализацию необходимо с жесткой стандартизации размера спрайтов и точек привязки.</p>
+<p>Для аниме-стилистики характерно использование высоких разрешений спрайтов даже при низком разрешении рендеринга, что позволяет детализировать лица и одежду персонажей.</p>
+<p>Каждый кадр анимации должен быть вписан в единый bounding box, чтобы при смене кадра персонаж не «прыгал» по вертикали или горизонтали.</p>
+<p>Важно заранее определить pivot point (точку вращения) для каждого спрайта, обычно она располагается в центре стопы персонажа, что критично для корректного отображения прыжков и приседаний.</p>
+<p>Использование <strong>единого атласа текстур</strong> для всех анимаций одного персонажа значительно снижает количество вызовов draw call во время рендеринга.</p>
+
+<h3>Оптимизация спрайт-листов для мобильных и десктопных версий</h3>
+<p>Если у вас целевой платформой являются мобильные устройства с ограниченными видеопамятью, следует использовать отдельные, менее детализированные спрайт-листы.</p>
+<p>На десктопных версиях допускается использование 4K-атласов, тогда как для мобильных устройств разумнее ограничиться разрешением, кратным 1024 или 2048 пикселей.</p>
+<p>Процесс нарезки спрайтов должен быть автоматизирован через скрипты, чтобы исключить человеческий фактор при позиционировании кадров.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для аниме-стилистики характерно использование 12 или 24 кадра в секунду для анимаций движения, но 60 кадров для хитбоксов ударов.</p></aside>
+
+<p>При экспорте графики из графических редакторов важно сохранять прозрачность каналов RGBA без артефактов сжатия.</p>
+<p>Формат PNG остается стандартом для спрайтов, однако для финальной сборки проекта часто используется сжатие ASTC или ETC2 в зависимости от целевой платформы.</p>
+
+<h2 id="настройка-физики-столкновений-и-хитбоксов">Настройка физики столкновений и хитбоксов</h2>
+<p>Физическая модель файтинга базируется на взаимодействии двух типов коллайдеров: Hurtbox (тело персонажа) и Hitbox (зона поражения).</p>
+<p>Hurtbox должен плотно облегать визуальный спрайт персонажа, повторяя его контуры в каждом кадре анимации.</p>
+<p>Hitbox же активируется только в момент удара и может иметь форму, отличную от визуальной части оружия или конечности.</p>
+<p>В пиксельных играх важно избегать использования сложных полигональных коллайдеров, заменяя их наборами прямоугольников (AABB) для повышения производительности.</p>
+<p><strong>Точность хитбоксов</strong> напрямую влияет на честность игрового процесса и возможность парирования атак.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка хитбокса удара</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создайте пустой GameObject для Hitbox</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Привяжите его к скелету атакующей конечности</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Задайте размер в Inspector (Width/Height)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Настройте слой коллизий на"EnemyHit"</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Добавьте скрипт активации по таймингу</span></div></div>
+
+<h3>Реализация системы кадров (Frame Advantage)</h3>
+<p>Механика кадрового преимущества требует точного подсчета фреймов восстановления после удара.</p>
+<p>Система должна сравнивать время восстановления атакующего и время восстановления защищающегося после блока.</p>
+<p>Если атакующий восстанавливается быстрее, он получает преимущество и может продолжить комбо-цепочку.</p>
+<p>Для реализации этого в коде используется счетчик кадров, который инкрементируется в каждом цикле обновления игры.</p>
+<p>Логика проверки должна быть вынесена в отдельный менеджер боевой системы, чтобы не перегружать скрипты персонажей.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Влияние на геймплей</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Startup Frames</td>
+<td>Кадры перед активацией хитбокса</td>
+<td>Определяет скорость реакции удара</td>
+</tr>
+<tr>
+<td>Active Frames</td>
+<td>Кадры, когда хитбокс активен</td>
+<td>Влияет на длительность окна для попадания</td>
+</tr>
+<tr>
+<td>Recovery Frames</td>
+<td>Кадры восстановления после удара</td>
+<td>Определяет уязвимость атакующего</td>
+</tr>
+</tbody>
+</table>
+
+<p>Допустим, легкий удар имеет 3 кадра старта и 5 кадров активности, тогда как тяжелый — 15 и 10 соответственно.</p>
+<p>Балансировка этих значений является ключевым этапом настройки боевой системы.</p>
+<p>Необходимо учитывать, что в аниме-файтингах часто используются «отменяемые» анимации, позволяющие прервать восстановление специальным приемом.</p>
+
+<h2 id="визуальные-эффекты-и-пост-обработка">Визуальные эффекты и пост-обработка</h2>
+<p>Визуальная составляющая битвы аниме персонажей требует применения специфических шейдеров и эффектов частиц.</p>
+<p>Для создания эффекта скорости используются линии скорости (speed lines), которые рендерятся на заднем плане или поверх персонажа.</p>
+<p>При столкновении ударов часто применяется эффект «заморозки кадра» (hit stop), который останавливает время на несколько миллисекунд.</p>
+<p>Это придает ударам вес и визуальную значимость, позволяя игроку осознать момент контакта.</p>
+<p><strong>Шейдеры искажения</strong> используются для передачи мощных энергетических атак, характерных для жанра.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование тяжелых пост-эффектов (Bloom, Motion Blur) на мобильных устройствах может снизить FPS ниже 30, что неприемлемо для файтинга.</p></aside>
+
+<h3>Синхронизация эффектов с анимацией</h3>
+<p>Эффекты должны запускаться строго в определенные моменты анимации, а не просто накладываться поверх.</p>
+<p>Для этого в анимационном клипе размещаются события (Animation Events), которые вызывают методы спавна префабов эффектов.</p>
+<p>Важно настроить время жизни частиц так, чтобы они исчезали до начала следующего цикла атаки.</p>
+<p>Оверлей экрана (screen shake) также должен быть привязан к силе удара, но не должен мешать обзору игрока.</p>
+<p>Цветовая палитра эффектов должна контрастировать с фоном и спрайтами персонажей для лучшей читаемости ситуации.</p>
+
+<ul>
+<li>Используйте аддитивное смешивание цветов для эффектов энергии и магии.</li>
+<li>Ограничивайте количество одновременно активных частиц на экране.</li>
+<li>Применяйте пулинг объектов для префабов эффектов, чтобы избежать аллокации памяти.</li>
+<li>Настраивайте сортировку слоев (Sorting Layers) для правильного перекрытия эффектов.</li>
+</ul>
+
+<p>На практике, правильное использование слоев сортировки позволяет эффектам находиться «между» частями тела персонажа или за ним.</p>
+<p>Это создает ощущение объема даже в 2D-пространстве.</p>
+<p>Для аниме-стилистики характерно использование целлулоидного затенения (cel-shading) даже на спрайтах, что достигается через специальные палитры цветов.</p>
+
+<h2 id="сетевая-архитектура-иrollback-netcode">Сетевая архитектура иrollback netcode</h2>
+<p>Организация сетевой игры для файтингов является одной из самых сложных технических задач в индустрии.</p>
+<p>Традиционная модель запрос-ответ (request-response) не подходит из-за задержек, которые делают игру невозможной на расстоянии.</p>
+<p>Стандартом де-факто стала технология Rollback Netcode, pioneered by компаниями вроде RetroArch и реализованная в GGPO.</p>
+<p>Суть метода заключается в предсказании ввода удаленного игрока и откате состояния игры в случае ошибки предсказания.</p>
+<p><strong>Детерминизм</strong> игровой логики является обязательным условием для работы этой системы.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Внедрение Rollback</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Реализуйте сохранение полного состояния игры (snapshot)</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Создайте буфер ввода для локального и удаленного игрока</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Напишите логику отката (rewind) при расхождении кадров</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Настройте интерполяцию для плавности картинки</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Протестируйте на искусственной задержке</span></div></div>
+
+<h3>Обработка ввода и буферизация</h3>
+<p>Ввод игрока должен считываться и буферизироваться с минимально возможной задержкой.</p>
+<p>Каждый кадр игры должен иметь соответствующий ему ввод от обоих игроков, даже если данные еще не пришли по сети.</p>
+<p>В случае отсутствия пакета данные берутся из последнего известного состояния или предсказываются как «отсутствие действия».</p>
+<p>При получении корректного пакета происходит сравнение предсказания с реальностью.</p>
+<p>Если предсказание было верным, игра продолжается без рывков; если нет — игра мгновенно откатывается и пересчитывается заново.</p>
+
+<pre><code>void Update {
+<p>if (networkManager.IsRollbackNeeded) {</p>
+<p>stateManager.RestoreState(networkManager.GetConfirmedFrame);</p>
+<p>SimulateFrames(networkManager.GetConfirmedFrame, currentFrame);</p>
+<p>}</p>
+<p>ProcessInput;</p>
+<p>UpdatePhysics;</p>
+<p>stateManager.SaveState;</p>
+<p>}</code></pre></p>
+
+<p>Данная функция демонстрирует базовую логику проверки необходимости отката и пересчета кадров.</p>
+<p>Важно, чтобы физический движок и логика игры работали на фиксированном timestep, независимом от частоты кадров рендеринга.</p>
+<p>Это гарантирует, что симуляция будет идентичной на любых устройствах при одинаковом наборе входных данных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Задержка (Latency)</th>
+<th>Стабильность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Delay-Based</td>
+<td>Высокая (зависит от пинга)</td>
+<td>Низкая (рывки при лагах)</td>
+</tr>
+<tr>
+<td>Rollback (GGPO)</td>
+<td>Минимальная (локальная)</td>
+<td>Высокая (скрывает лаги)</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества Rollback</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Минимальная задержка ввода</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Плавная игра даже при нестабильном интернете</li></ul></div>
+</div></div>
+
+<p>Для реализации сетевой части часто используют готовые решения или библиотеки, такие как <em>GGPO</em> или их порты для современных движков.</p>
+<p>Самостоятельная реализация возможна, но требует глубокого понимания работы с памятью и потоками.</p>
+<p>Тестирование сети должно проводиться на различных типах соединений, включая 3G/4G и Wi-Fi с искусственными потерями пакетов.</p>
+
+<h2 id="типичные-ошибки-при-разработке">Типичные ошибки при разработке</h2>
+<p>В процессе создания пиксельного файтинга разработчики часто наступают на одни и те же грабли, которые могут стоить месяцев работы.</p>
+<p>Ниже приведены наиболее критичные ошибки, которых следует избегать.</p>
+
+<ol>
+<li><strong>Игнорирование детерминизма физики</strong> — использование плавающей точки для расчетов координат без фиксированной точности приводит к рассинхронизации у разных игроков; используйте фиксированную математику или целочисленные вычисления.</li>
+<li><strong>Отсутствие буферизации ввода</strong> - если игра считывает ввод только в момент рендеринга кадра, то при падении FPS управление становится «ватным»; ввод должен считываться в отдельном высокочастотном потоке.</li>
+<li><strong>Сложные шейдеры на спрайтах</strong> — попытка запечь освещение в реальном времени на 2D-спрайтах убивает производительность; используйте заранее отрисованные тени в спрайте или простые спрайтовые маски.</li>
+<li><strong>Неоптимизированная проверка коллизий</strong> — проверка каждого хитбокса против каждого хертбокса каждый кадр (O(N*M)) приведет к лагам при большом количестве объектов; используйте пространственное разбиение или квадродеревья.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Всегда ведите логирование кадровых данных (input log) для отладки рассинхронизации в сетевом режиме.</p></aside>
+
+<p>Избегание этих ошибок позволит создать стабильную и отзывчивую боевую систему.</p>
+<p>Качество технической реализации часто важнее количества контента на старте проекта.</p>
+<p>Игроки простят мало персонажей, но не простят лагающий или несправедливые хитбоксы.</p>
+
+<h2 id="резюме">Резюме</h2>
+<p>Создание качественной пиксельной битвы аниме персонажей требует баланса между художественной стилистикой и жесткой технической дисциплиной.</p>
+<p>Ключевыми элементами успеха являются прецизионная настройка хитбоксов, использование rollback-неткода для сетевой игры и оптимизация рендеринга спрайтов.</p>
+<p>Соблюдение принципов детерминизма и правильная работа с памятью обеспечат стабильную работу проекта на любых целевых платформах.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успех файтинга зависит от точности хитбоксов, отсутствия задержек ввода и стабильного FPS, а не только от количества персонажей.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/e/es/esli-na-ekrane-televizora-poyavilas-nadpis-tolko-dannye.html" class="pb-related-card">
+                <span class="pb-related-title">Телевизор показывает только данные: причины и решение</span>
+                <span class="pb-related-desc">Экран ТВ показывает текст вместо изображения? Подробная инструкция по устранению ошибки режима ввода</span>
+            </a><a href="/articles/k/ka/kak-ustanovit-kion-na-televizor-samsung-2014-goda.html" class="pb-related-card">
+                <span class="pb-related-title">Kion на Samsung 2014: установка приложения и обход ограничений</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску Kion на старых телевизорах Samsung серии F (2013-2014). Методы Smart</span>
+            </a><a href="/articles/d/dv/dvd-ls155t-kak-podklyuchit-tv-boks.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение ТВ-бокса к DVD LS155T: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке Smart TV Box с DVD LS155T. Схемы подключения HDMI, AV, решение пр</span>
+            </a><a href="/articles/b/bl/blyutuz-pult-upravleniya-tv-skyworth-po-blyutuz-skachat.html" class="pb-related-card">
+                <span class="pb-related-title">Skyworth Bluetooth пульт: скачать приложение и настроить управление</span>
+                <span class="pb-related-desc">Полная инструкция по подключению Bluetooth пульта к ТВ Skyworth. Как скачать приложение, настроить г</span>
+            </a><a href="/articles/m/mo/mozhno-li-veshat-televizor-na-imitatsiyu-brusa.html" class="pb-related-card">
+                <span class="pb-related-title">Крепление телевизора на имитацию бруса: инструкция и риски</span>
+                <span class="pb-related-desc">Можно ли вешать ТВ на имитацию бруса? Подробный анализ нагрузки, выбор крепежа и технология монтажа </span>
+            </a><a href="/articles/v/vt/vtv-shturm-2-ne-zapuskaetsya-na-vin-10.html" class="pb-related-card">
+                <span class="pb-related-title">ВТБ Штурм 2 не запускается на Windows 10: решения</span>
+                <span class="pb-related-desc">Системный анализ причин отказа работы ВТБ Штурм 2 на Windows 10. Инструкция по настройке эмуляции, д</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

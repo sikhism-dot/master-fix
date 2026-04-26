@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Waifu Hub: Полный гид по установке и настройке сервера — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по развертыванию Waifu Hub для управления коллекцией аниме. Настройка Docker, базы данных и решение типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wa/waifu-hub.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Waifu Hub: Полный гид по установке и настройке сервера">
+    <meta property="og:description" content="Подробная инструкция по развертыванию Waifu Hub для управления коллекцией аниме. Настройка Docker, базы данных и решение типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Waifu Hub: Полный гид по установке и настройке сервера</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-серверного-окружения-и-зависимостей">Подготовка серверного окружения и зависимостей</a></li><li><a href="#инсталляция-и-первичная-конфигурация-waifu-hub">Инсталляция и первичная конфигурация Waifu Hub</a></li><li><a href="#настройка-библиотеки-и-парсинг-метаданных">Настройка библиотеки и парсинг метаданных</a></li><li><a href="#удаленный-доступ-и-безопасность">Удаленный доступ и безопасность</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-zaregistrirovatsya-fit-pro-v-prilozhenii.html">Регистрация в FitPro: пошаговая инструкция и решение ошибок</a></li><li><a href="/articles/v/ve/venetica-zapustit-na-10.html">Как запустить Venetica на Windows 10: Полный гид по настройке</a></li><li><a href="/articles/k/ka/kak-pomenyat-region-na-galaksi-a50.html">Как поменять регион на Galaxy A50: Полная инструкция</a></li><li><a href="/articles/k/ka/kak-sdelat-s-ok-url-rabochuyu-ssylku-m3u8.html">Как сделать из ok.ru ссылку m3u8: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-pult-hyundai.html">Как подключить пульт Hyundai: полная инструкция для ТВ и кондиционеров</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Развертывание и настройка Waifu Hub: Техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-серверного-окружения-и-зависимостей">Подготовка серверного окружения и зависимостей</a></li><li><a href="#инсталляция-и-первичная-конфигурация-waifu-hub">Инсталляция и первичная конфигурация Waifu Hub</a></li><li><a href="#настройка-библиотеки-и-парсинг-метаданных">Настройка библиотеки и парсинг метаданных</a></li><li><a href="#удаленный-доступ-и-безопасность">Удаленный доступ и безопасность</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Организация локальной медиатеки аниме-контента часто сталкивается с проблемой разрозненности файлов: серии лежат в разных папках, метаданные отсутствуют, а доступ с мобильных устройств ограничен или требует сложных обходных путей. Пользователи, пытающиеся систематизировать коллекцию, часто оказываются перед выбором между громоздкими NAS-системами и облачными хранилищами с ограниченным функционалом.</p>
+<p>На практике это приводит к тому, что поиск нужного эпизода занимает больше времени, чем его просмотр, а отсутствие единого интерфейса для управления библиотекой создает хаос в файловой структуре. Особенно остро стоит вопрос кроссплатформенности, когда необходимо продолжить просмотр с того же места на другом устройстве без ручной синхронизации прогресса.</p>
+<p>Современные решения, такие как Waifu Hub, предлагают централизованный подход, позволяя превратить обычный сервер или персональный компьютер в мощную медиа-станцию. Ниже представлен детальный алгоритм действий, охватывающий все этапы от подготовки окружения до тонкой настройки параметров доступа.</p>
+
+<h2 id="подготовка-серверного-окружения-и-зависимостей">Подготовка серверного окружения и зависимостей</h2>
+
+<p>Фундаментом стабильной работы любой медиа-системы является корректно настроенная операционная среда. Перед началом инсталляции основного программного обеспечения необходимо убедиться, что базовая система обновлена и содержит все необходимые пакеты для компиляции или запуска контейнеров.</p>
+<p>Если используется дистрибутив на базе Debian или Ubuntu, первым шагом станет обновление репозиториев и установка критически важных утилит. Это гарантирует совместимость библиотек и отсутствие конфликтов версий в будущем.</p>
+
+<h3>Настройка Docker и Docker Compose</h3>
+<p>Современные версии Waifu Hub часто распространяются в виде Docker-контейнеров, что упрощает развертывание и изолирует приложение от системных библиотек. Для работы требуется установка Docker Engine и плагина Compose, который управляет многоконтейнерными приложениями.</p>
+<p>Процесс установки можно автоматизировать, используя официальные скрипты или пакетные менеджеры. Важно убедиться, что сервис Docker запущен и имеет необходимые права для работы с сетевыми интерфейсами.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка Docker</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Проверка обновлений системы</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установка Docker Engine</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Настройка прав пользователя</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запуск сервиса Docker</span></div></div>
+
+<p>После установки движка необходимо добавить текущего пользователя в группу <code>docker</code>, чтобы избежать постоянного использования команды <code>sudo</code> при запуске контейнеров. Это стандартная практика обеспечения безопасности и удобства администрирования.</p>
+<p>В некоторых случаях, особенно на системах с ограниченным объемом оперативной памяти, может потребоваться ручная настройка лимитов ресурсов для Docker. Это предотвратит ситуации, когда фоновые процессы «съедают» всю доступную память, блокируя работу основного интерфейса.</p>
+
+<h3>Конфигурация файловой системы</h3>
+<p>Структура папок играет ключевую роль в производительности сканирования и индексации контента. Рекомендуется выделенный раздел или отдельный логический том для хранения медиафайлов, чтобы отделить данные от системных файлов.</p>
+<p>Для обеспечения максимальной скорости чтения и записи, особенно при работе с видео высокого разрешения, предпочтительно использовать файловые системы с поддержкой журналирования, такие как <code>ext4</code> или <code>XFS</code>. Файловая система <code>NTFS</code> не рекомендуется для нативной работы сервера под Linux из-за проблем с правами доступа и производительностью.</p>
+<p>Создание (каталогов) должно следовать логической структуре, которую впоследствии примет Waifu Hub. Обычно это корневая папка, внутри которой располагаются подпапки для разных сезонов или жанров.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для сетевых хранилищ (NAS) убедитесь, что протокол SMB или NFS настроен с правами на чтение и запись для пользователя, от имени которого запускается контейнер.</p></aside>
+
+<p>Стоит проверить права доступа к созданным директориям. Владелец папок должен совпадать с UID и GID пользователя, запускающего Docker-контейнер, иначе приложение не сможет записывать метаданные или создавать миниатюры.</p>
+
+<h2 id="инсталляция-и-первичная-конфигурация-waifu-hub">Инсталляция и первичная конфигурация Waifu Hub</h2>
+
+<p>Процесс развертывания самого приложения требует внимательного отношения к файлу конфигурации. Именно в нем прописываются пути к данным, порты доступа и параметры подключения к базе данных.</p>
+<p>Основным инструментом управления конфигурацией в данном сценарии выступает файл <code>docker-compose.yml</code>. Он описывает желаемое состояние сервиса, включая версии образов, переменные окружения и маппинг портов.</p>
+
+<h3>Создание файла docker-compose.yml</h3>
+<p>Создайте директорию для проекта и внутри нее файл конфигурации. В этом файле необходимо указать образ приложения, который будет загружен из реестра, и параметры его запуска.</p>
+<p>Ключевым моментом является правильное сопоставление портов. Внешний порт, на который будут обращаться клиенты, мапится на внутренний порт контейнера, где слушает веб-сервис.</p>
+
+<pre><code>version:'3'
+<p>services:</p>
+<p>waifu-hub:</p>
+<p>image: lscr.io/linuxserver/waifu-hub:latest</p>
+<p>container_name: waifu-hub</p>
+<p>environment:</p>
+<p>- PUID=1000</p>
+<p>- PGID=1000</p>
+<p>- TZ=Europe/Moscow</p>
+<p>volumes:</p>
+<p>- /path/to/config:/config</p>
+<p>- /path/to/anime:/downloads</p>
+<p>ports:</p>
+<p>- 8080:80</p>
+<p>restart: unless-stopped</p>
+</code></pre>
+
+<p>В секции <code>volumes</code> указываются пути к конфигурации и самим файлам аниме. Важно, чтобы пути слева (хост-система) были абсолютными и существовали физически.</p>
+<p>Переменные окружения <code>PUID</code> и <code>PGID</code> должны соответствовать идентификаторам пользователя в вашей системе. Узнать их можно командой <code>id</code> в терминале. Это гарантирует, что созданные внутри контейнера файлы будут доступны хозяину на основной системе.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение PUID/PGID после создания файлов может привести к ошибкам доступа (Permission Denied). Меняйте эти значения только перед первым запуском или после очистки прав.</p></aside>
+
+<h3>Запуск и первоначальный вход</h3>
+<p>После подготовки конфигурационного файла производится запуск стека. Команда запускает все описанные сервисы в фоновом режиме.</p>
+<p>Первый запуск может занять несколько минут, так как системе требуется время на загрузку образа, инициализацию базы данных и создание необходимых структур файлов. Логи процесса можно отслеживать в реальном времени.</p>
+<p>Доступ к веб-интерфейсу осуществляется через браузер по адресу <code>http://IP-адрес-сервера:8080</code>. При первом входе может потребоваться создание учетной записи администратора или ввод начальных настроек безопасности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение по умолчанию</th>
+<th>Рекомендация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Порт</td>
+<td>80</td>
+<td>8080 или 443 (SSL)</td>
+</tr>
+<tr>
+<td>База данных</td>
+<td>SQLite (встроенная)</td>
+<td>PostgreSQL для больших библиотек</td>
+</tr>
+<tr>
+<td>Кодировка</td>
+<td>UTF-8</td>
+<td>Обязательно UTF-8 для имен файлов</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="настройка-библиотеки-и-парсинг-метаданных">Настройка библиотеки и парсинг метаданных</h2>
+
+<p>После успешного входа в интерфейс основной задачей становится наполнение библиотеки контентом и настройка автоматического распознавания серий. Система должна правильно интерпретировать имена файлов, чтобы связать их с описанием, обложками и синопсисом.</p>
+<p>Процесс сканирования зависит от именования файлов. Существует несколько принятых стандартов, соблюдение которых значительно повышает точность работы парсера.</p>
+
+<h3>Стандарты именования файлов</h3>
+<p>Наиболее надежным форматом является схема <code>Название аниме - Сезон x Серия - Название.epub</code> или вариации с указанием номера серии в круглых скобках. Парсеры обычно игнорируют лишние символы, но порядок элементов важен.</p>
+<p>Если файлы названы хаотично, например, просто номерами или случайными хешами, автоматическая идентификация будет невозможна без предварительной переименования. В таких случаях рекомендуется использовать внешние улиты для пакетного переименования перед добавлением в Waifu Hub.</p>
+<p>Для серий с несколькими аудио-дорожками или субтитрами в отдельных файлах, рекомендуется группировать их в папки по сериям или использовать единый контейнер (например, MKV), содержащий все потоки.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте регулярные выражения в настройках парсера, если стандартные шаблоны не справляются со специфическим форматом именования ваших файлов.</p></aside>
+
+<h3>Работа с внешними базами данных</h3>
+<p>Для получения обложек и описаний Waifu Hub обращается к внешним API, таким как AniList, MyAnimeList или TheTVDB. Необходимо зарегистрировать API-ключи в соответствующих разделах настроек приложения.</p>
+<p>При наличии большого количества записей стоит учитывать лимиты запросов (rate limits) внешних сервисов. Чрезмерно частые запросы могут привести к временной блокировке IP-адреса сервера.</p>
+<p>Кэширование метаданных позволяет снизить нагрузку на сеть и ускорить повторные открытия страниц. В настройках можно период актуальности кэша.</p>
+
+<table>
+<thead>
+<tr>
+<th>Источник</th>
+<th>Тип контента</th>
+<th>Требуется ключ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AniList</td>
+<td>Аниме, манга</td>
+<td>Да (Client ID)</td>
+</tr>
+<tr>
+<td>TheTVDB</td>
+<td>Сериалы</td>
+<td>Да (API Key)</td>
+</tr>
+<tr>
+<td>TMDB</td>
+<td>Фильмы</td>
+<td>Да (API Key)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="удаленный-доступ-и-безопасность">Удаленный доступ и безопасность</h2>
+
+<p>Доступ к личной медиатеке извне домашней сети требует тщательной настройки безопасности. Простое пробрасывание портов на роутере без дополнительной защиты exposes систему к потенциальным атакам.</p>
+<p>Наиболее безопасным методом организации удаленного доступа является использование VPN или reverse proxy с шифрованием трафика.</p>
+
+<h3>Настройка Reverse Proxy</h3>
+<p>Использование веб-сервера, такого как Nginx или Caddy, в качестве обратного прокси позволяет централизованно управлять SSL-сертификатами и правилами доступа. Это избавляет от необходимости настраивать HTTPS внутри каждого контейнера.</p>
+<p>Конфигурация Nginx включает в себя проксирование запросов на локальный порт Waifu Hub и передачу заголовков для корректной работы WebSocket, если они используются приложением для уведомлений.</p>
+<p>Для автоматического получения сертификатов Let's Encrypt можно использовать инструменты вроде Certbot или встроенные механизмы в Caddy. Это обеспечивает актуальность шифрования и доверие браузеров.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка Nginx</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Создание конфига сайта</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Настройка проксирования портов</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключение SSL</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверка конфигурации</span></div></div>
+
+<h3>Аутентификация и доступ</h3>
+<p>Встроенная система пользователей Waifu Hub позволяет разграничивать права доступа. Можно создать гостевые аккаунты с правами только на просмотр и административные для настройки.</p>
+<p>Рекомендуется отключить вход по умолчанию для внешних IP-адресов, если не используется дополнительный слой защиты, например, Fail2Ban или геоблокировка на уровне роутера.</p>
+<p>Регулярная смена паролей и использование сложных комбинаций символов являются базовыми правилами гигиены цифровой безопасности, которые нельзя игнорировать даже в домашней сети.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе эксплуатации могут возникать ситуации, когда система ведет себя некорректно. Большинство проблем связано с правами доступа, нехваткой ресурсов или ошибками в конфигурации.</p>
+
+<ol>
+<li><strong>Ошибка 403 Forbidden при сканировании</strong> — возникает, когда пользователь Docker не имеет прав на чтение папки с файлами. <em>Решение:</em> Проверьте совпадение UID/GID в docker-compose.yml и реальных прав на папку командой <code>ls -ld</code>.</li>
+<li><strong>Контейнер циклически перезагружается</strong> — часто вызвано ошибкой в файле конфигурации или отсутствием обязательных переменных окружения. <em>Решение:</em> Изучите логи командой <code>docker logs waifu-hub</code> для выявления конкретной причины падения.</li>
+<li><strong>Отсутствие обложек и описаний</strong> — проблема с подключением к внешним API или неверный часовой пояс. <em>Решение:</em> Проверьте настройки времени в контейнере и наличие активного интернет-соединения.</li>
+<li><strong>Буферизация видео при воспроизведении</strong> — нехватка пропускной способности сети или мощности процессора для транскодинга. <em>Решение:</em> Убедитесь, что клиент поддерживает формат файла, или настройте аппаратное ускорение, если поддерживается.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Стабильность работы</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Изоляция зависимостей</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Легкость обновления</li></ul></div>
+</div></div>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Развертывание Waifu Hub позволяет создать мощную, независимую платформу для управления аниме-коллекцией, свободную от ограничений коммерческих стриминговых сервисов. Правильная настройка окружения и соблюдение стандартов именования файлов обеспечивают стабильную работу системы в долгосрочной перспективе.</p>
+<p>Регулярное обновление контейнеров и мониторинг логов помогут поддерживать инфраструктуру в актуальном состоянии. При грамотном подходе к безопасности, доступ к библиотеке останется быстрым и защищенным в любой точке мира.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Waifu Hub превращает набор файлов в структурированную медиатеку с доступом с любых устройств, требуя минимальных затрат на поддержку после первоначальной настройки.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-zaregistrirovatsya-fit-pro-v-prilozhenii.html" class="pb-related-card">
+                <span class="pb-related-title">Регистрация в FitPro: пошаговая инструкция и решение ошибок</span>
+                <span class="pb-related-desc">Полное руководство по регистрации аккаунта в приложении FitPro. Настройка умных часов, устранение ош</span>
+            </a><a href="/articles/v/ve/venetica-zapustit-na-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как запустить Venetica на Windows 10: Полный гид по настройке</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску игры Venetica на Windows 10. Решения проблем с совместимостью, ошибк</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-region-na-galaksi-a50.html" class="pb-related-card">
+                <span class="pb-related-title">Как поменять регион на Galaxy A50: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене региона CSC на Samsung Galaxy A50. Методы смены кода страны, риски ра</span>
+            </a><a href="/articles/k/ka/kak-sdelat-s-ok-url-rabochuyu-ssylku-m3u8.html" class="pb-related-card">
+                <span class="pb-related-title">Как сделать из ok.ru ссылку m3u8: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по получению прямой m3u8 ссылки из видео OK.ru. Методы через код страницы, бра</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-pult-hyundai.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить пульт Hyundai: полная инструкция для ТВ и кондиционеров</span>
+                <span class="pb-related-desc">Подробное руководство по сопряжению пультов Hyundai для телевизоров и климатической техники. Настрой</span>
+            </a><a href="/articles/i/in/inqmega-5mp-solar-manual.html" class="pb-related-card">
+                <span class="pb-related-title">INQMEGA 5MP Solar: Настройка, ошибки и обновление</span>
+                <span class="pb-related-desc">Полная инструкция по подключению камеры INQMEGA 5MP Solar. Сброс, настройка Wi-Fi, устранение ошибок</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

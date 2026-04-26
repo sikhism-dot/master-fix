@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Lazy Load для WebOS: ускорение загрузки медиа на Smart TV — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по внедрению Lazy Media на WebOS. Оптимизация буфера, настройка плееров и устранение зависаний при воспроизведении.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/la/lazy-media-webos.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Lazy Load для WebOS: ускорение загрузки медиа на Smart TV">
+    <meta property="og:description" content="Техническое руководство по внедрению Lazy Media на WebOS. Оптимизация буфера, настройка плееров и устранение зависаний при воспроизведении.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Lazy Load для WebOS: ускорение загрузки медиа на Smart TV</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-буферизации-в-webos">Принципы работы буферизации в WebOS</a></li><li><a href="#настройка-сетевых-параметров-для-потоковой-передачи">Настройка сетевых параметров для потоковой передачи</a></li><li><a href="#конфигурация-сторонних-медиаплееров">Конфигурация сторонних медиаплееров</a></li><li><a href="#диагностика-и-устранение-ошибок-воспроизведения">Диагностика и устранение ошибок воспроизведения</a></li><li><a href="#сравнительный-анализ-методов-оптимизации">Сравнительный анализ методов оптимизации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/c/cm/cmit-is-2019dp1398.html">CMIT IS 2019DP1398: Расшифровка сертификата EAC</a></li><li><a href="/articles/s/se/serv-u-port.html">Порты Serv-U FTP: настройка, выбор и безопасность</a></li><li><a href="/articles/a/al/alli360-k-ak-udalit.html">Как удалить Alli360: полное руководство по деинсталляции</a></li><li><a href="/articles/a/aa/aap-client-chto-eto.html">AAP Client: что это, назначение и удаление на Android</a></li><li><a href="/articles/e/es/esli-karta-magnit-udalena.html">Если карта Магнит удалена: как восстановить доступ и вернуть бонусы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация воспроизведения Lazy Media на платформе WebOS</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-буферизации-в-webos">Принципы работы буферизации в WebOS</a></li><li><a href="#настройка-сетевых-параметров-для-потоковой-передачи">Настройка сетевых параметров для потоковой передачи</a></li><li><a href="#конфигурация-сторонних-медиаплееров">Конфигурация сторонних медиаплееров</a></li><li><a href="#диагностика-и-устранение-ошибок-воспроизведения">Диагностика и устранение ошибок воспроизведения</a></li><li><a href="#сравнительный-анализ-методов-оптимизации">Сравнительный анализ методов оптимизации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто сталкиваются с ситуацией, когда интерфейс Smart TV становится вялым, а попытки запустить тяжелый видеофайл приводят к длительной буферизации или полному зависанию системы.</p>
+<p>В операционной системе WebOS, разработанной LG, механизм ленивой загрузки (lazy loading) мультимедиа не всегда работает корректно из коробки, особенно при использовании сторонних приложений или воспроизведении файлов с высокой битрейтом.</p>
+<p>Игнорирование проблем с предзагрузкой контента приводит к неравномерному потреблению ресурсов процессора и переполнению оперативной памяти, что в конечном итоге вызывает падение запущенного приложения или всей оболочки.</p>
+
+<h2 id="принципы-работы-буферизации-в-webos">Принципы работы буферизации в WebOS</h2>
+<p>Механизм отложенной загрузки медиафайлов в WebOS базируется на асинхронном чтении данных, что позволяет системе не блокировать основной поток выполнения при ожидании ответа от сервера.</p>
+<p>Если у вас наблюдается постоянная буферизация, это часто указывает на рассинхронизацию между скоростью поступления пакетов данных и скоростью их декодирования видеопроцессором телевизора.</p>
+<p>На практике <strong>ключевым параметром</strong> становится размер буфера, который по умолчанию может быть слишком мал для сетей с нестабильным пингом или для файлов 4K HDR.</p>
+<p>Допустим, пользователь запускает поток через DLNA-сервер; в этом случае операционная система пытается заранее загрузить определенный сегмент видео, но если таймаут соединения истек раньше, воспроизведение прерывается.</p>
+<p>Важно понимать, что WebOS ограничивает объем памяти, доступный для буферизации в фоновом режиме, чтобы не нарушить работу других системных процессов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На телевизорах с менее чем 2 ГБ оперативной памяти размер буфера следует уменьшать вручную в настройках плеера, чтобы избежать вылетов.</p></aside>
+
+<h3>Особенности архитектуры для моделей 2018-2026 годов</h3>
+<p>В более старых моделях телевизоров LG, работающих на WebOS 4.0 и ниже, управление памятью осуществлялось менее эффективно, что требовало более агрессивных настроек кэширования.</p>
+<p>С выходом WebOS 5.0 и новее, включая версии на базе AI Picture Pro, изменился приоритет процессов, и теперь система сама пытается прогнозировать потребность в данных, но этот алгоритм часто ошибается при использовании нестандартных кодеков.</p>
+<p>Если вы используете устройство с процессором ARMv8, стоит проверить, включено ли аппаратное ускорение, так как программное декодирование значительно увеличивает нагрузку на буфер.</p>
+<table>
+<thead>
+<tr>
+<th>Версия WebOS</th>
+<th>Рекомендуемый размер буфера</th>
+<th>Поддержка HEVC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4.0 - 4.5</td>
+<td>15-20 МБ</td>
+<td>Частичная (до 4K 30fps)</td>
+</tr>
+<tr>
+<td>5.0 - 6.0</td>
+<td>30-50 МБ</td>
+<td>Полная (до 4K 60fps)</td>
+</tr>
+<tr>
+<td>7.0 и новее</td>
+<td>Динамический</td>
+<td>Полная (до 8K)</td>
+</tr>
+</tbody>
+</table>
+<p>Стоит учитывать, что поддержка кодеков напрямую влияет на то, как быстро заполняется буфер воспроизведения.</p>
+
+<h2 id="настройка-сетевых-параметров-для-потоковой-передачи">Настройка сетевых параметров для потоковой передачи</h2>
+<p>Стабильность lazy loading напрямую зависит от качества сетевого соединения и правильности конфигурации сетевых интерфейсов в операционной системе.</p>
+<p>Откройте <code>Настройки → Сеть → Wi-Fi соединение</code> и убедитесь, что используется протокол безопасности WPA2/WPA3, так как старые стандарты шифрования могут вносить задержки.</p>
+<p>Для снижения задержек при загрузке медиа рекомендуется вручную прописать DNS-серверы, которые обеспечивают более быстрое разрешение доменных имен медиасерверов.</p>
+<p>Перейдите в <code>Настройки → Сеть → Расширенные настройки Wi-Fi</code> и измените параметр DNS с «Авто» на «Ввести вручную», указав адреса 1.1.1.1 или 8.8.8.8.</p>
+<p>Если телевизор подключен через Ethernet, убедитесь, что кабель соответствует стандарту Cat5e или выше, чтобы обеспечить гигабитную скорость передачи данных.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка статического IP и DNS</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Сеть</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Изменить» для активного подключения</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Переключите режим на «Вручную»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите IP, маску и DNS-серверы</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Сохраните изменения</span></div></div>
+
+<h3>Оптимизация Wi-Fi и Ethernet соединений</h3>
+<p>При использовании беспроводного соединения частой проблемой является переключение между диапазонами 2.4 ГГц и 5 ГГц, что вызывает разрывы буфера.</p>
+<p>На практике <strong>диапазон 5 ГГц</strong> является предпочтительным для передачи тяжелого видеоконтента благодаря более высокой пропускной способности.</p>
+<p>Если роутер транслирует одну сеть для обоих диапазонов, имеет смысл разделить их в настройках маршрутизатора и принудительно подключить TV к сети 5 ГГц.</p>
+<p>Допустим, сигнал 5 ГГц слабый; в таком случае использование Powerline-адаптеров может стать компромиссным решением, обеспечивающим стабильность проводного соединения через электропроводку.</p>
+<p>В разделе <code>Настройки → Сеть → Состояние подключения</code> можно проверить текущую скорость линка; она должна быть не менее 100 Мбит/с для комфортного просмотра 4K.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение сетевых настроек на корпоративных сетях может привести к потере доступа к интернету. Уточните параметры у системного администратора.</p></aside>
+
+<h2 id="конфигурация-сторонних-медиаплееров">Конфигурация сторонних медиаплееров</h2>
+<p>Штатный плеер WebOS часто не предоставляет достаточного количества настроек для тонкой отладки lazy loading, поэтому установка альтернативных решений является распространенной практикой.</p>
+<p>Наиболее популярными приложениями являются <em>nPlayer</em>, <em>VLC for WebOS</em> и <em>MX Player</em>, которые позволяют гибко управлять размером буфера и методами декодирования.</p>
+<p>В настройках выбранного плеера следует найти раздел, отвечающий за «Декодирование» или «Сеть», и увеличить значение кэша до максимального доступного предела.</p>
+<p>Если у вас установлен <em>VLC</em>, перейдите в <code>Настройки → Видео → Кэширование</code> и установите значение 500 мс или выше для сетевых потоков.</p>
+<p>Для <em>nPlayer</em> важно активировать опцию «Предварительная загрузка», которая заставляет приложение запрашивать следующий сегмент видео заранее.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Выбор плеера для WebOS</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка всех кодеков без конвертации</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Гибкая настройка буфера</li></ul></div>
+</div></div>
+
+<h3>Специфика работы с IPTV и онлайн-кинотеатрами</h3>
+<p>При использовании приложений для IPTV, таких как <em>Peers.TV</em> или <em>OTT Navigator</em>, настройки буферизации могут находиться внутри самого приложения, а не в системе.</p>
+<p>Откройте настройки конкретного приложения и найдите пункт «Размер буфера» или «HLS buffer size», увеличив его до 10-15 секунд.</p>
+<p>В некоторых случаях помогает переключение метода воспроизведения с HTTP на TS или наоборот, что меняет алгоритм запроса данных у сервера.</p>
+<p>Стоит отметить, что некоторые провайдеры блокируют запросы с нестандартными User-Agent, поэтому в настройках плеера иногда требуется эмуляция другого устройства.</p>
+<p>Проверьте наличие обновлений для установленных приложений в <code>LG Content Store → Мои приложения</code>, так как разработчики часто оптимизируют работу с сетью.</p>
+
+<h2 id="диагностика-и-устранение-ошибок-воспроизведения">Диагностика и устранение ошибок воспроизведения</h2>
+<p>Если проблемы с lazy media сохраняются, необходимо провести глубокую диагностику системы для выявления узких мест в обработке данных.</p>
+<p>Первым шагом всегда должна быть очистка кэша приложений, так как накопленные временные файлы могут конфликтовать с новыми процессами загрузки.</p>
+<p>Перейдите в <code>Настройки → Общие → Управление хранилищем</code> и выберите «Очистить память» для удаления временных файлов системы.</p>
+<p>Допустим, очистка не помогла; тогда стоит попробовать сбросить настройки сети до заводских, чтобы исключить программные ошибки конфигурации.</p>
+<p>В крайнем случае, выполняется полный сброс телевизора, но это требует повторной настройки всех аккаунтов и приложений.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Полный сброс настроек TV</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройки → Общие</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите «Сброс к начальным настройкам»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите защитный код (по умолчанию 0000, 1234 или 7777)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Подтвердите действие и дождитесь перезагрузки</span></div></div>
+
+<h3>Типичные ошибки и методы их решения</h3>
+<ol>
+<li><strong>Игнорирование обновлений прошивки</strong> — старые версии WebOS содержат баги в сетевом стеке, которые исправляются в патчах безопасности, поэтому всегда проверяйте <code>Настройки → Поддержка → Обновление ПО</code>.</li>
+<li><strong>Использование VPN на роутере без разделения трафика</strong> — если весь трафик TV идет через VPN, скорость может падать, что срывает lazy loading; настройте исключения для локальных адресов.</li>
+<li><strong>Некорректный MTU пакетов</strong> — если провайдер требует специфического размера MTU, а в телевизоре стоит стандартный, пакеты могут фрагментироваться, вызывая задержки.</li>
+<li><strong>Переполнение DNS кэша</strong> — иногда помогает простая перезагрузка роутера, который кэширует ошибочные DNS-записи медиасерверов.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой диагностики скорости интернета прямо на телевизоре можно установить приложение «Network Inspector» из магазина LG Content Store.</p></aside>
+
+<h2 id="сравнительный-анализ-методов-оптимизации">Сравнительный анализ методов оптимизации</h2>
+<p>Существует несколько подходов к решению проблем с буферизацией, и выбор зависит от конкретной инфраструктуры домашнего кинотеатра.</p>
+<p>Использование внешнего медиаплеера (например, Apple TV или Android Box) часто дает лучший результат, так как эти устройства имеют более мощное железо и лучше оптимизированы для работы с потоковым видео.</p>
+<p>Однако, встроенные решения WebOS выигрывают в удобстве управления одним пультом и интеграции с другими функциями телевизора.</p>
+<p>Если вы выбираете путь программной оптимизации, сосредоточьтесь на настройке роутера и DNS, так как это дает наибольший прирост стабильности.</p>
+<p>Аппаратное улучшение, такое как переход на кабельную сеть, является самым надежным, но требует прокладки проводов.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Эффективность</th>
+<th>Сложность внедрения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Настройка DNS</td>
+<td>Средняя</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Переход на 5 ГГц</td>
+<td>Высокая</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>Внешний плеер</td>
+<td>Максимальная</td>
+<td>Средняя (покупка)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Оптимальная работа Lazy Media на WebOS достигается комбинацией стабильного сетевого соединения 5 ГГц и правильной настройки буфера в плеере.</p></aside>
+
+<p>В заключение, эффективное управление lazy media на платформе WebOS требует комплексного подхода, включающего настройку сети, выбор правильного программного обеспечения и регулярное обслуживание системы.</p>
+<p>Понимание принципов буферизации позволяет пользователю самостоятельно устранять большинство проблем с воспроизведением, не прибегая к помощи сервисных центров.</p>
+<p>Соблюдение рекомендаций по обновлению прошивок и использованию проводных соединений гарантирует стабильную работу мультимедийных функций вашего Smart TV в течение длительного времени.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/c/cm/cmit-is-2019dp1398.html" class="pb-related-card">
+                <span class="pb-related-title">CMIT IS 2019DP1398: Расшифровка сертификата EAC</span>
+                <span class="pb-related-desc">Что означает маркировка CMIT IS 2019DP1398 на роутерах Xiaomi. Полная расшифровка кода, проверка под</span>
+            </a><a href="/articles/s/se/serv-u-port.html" class="pb-related-card">
+                <span class="pb-related-title">Порты Serv-U FTP: настройка, выбор и безопасность</span>
+                <span class="pb-related-desc">Полная инструкция по настройке портов в Serv-U FTP Server. Разбор стандартных портов 21, 20, диапазо</span>
+            </a><a href="/articles/a/al/alli360-k-ak-udalit.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить Alli360: полное руководство по деинсталляции</span>
+                <span class="pb-related-desc">Подробная инструкция по удалению Alli360 с ПК и мобильных устройств. Очистка реестра, удаление остат</span>
+            </a><a href="/articles/a/aa/aap-client-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">AAP Client: что это, назначение и удаление на Android</span>
+                <span class="pb-related-desc">Технический анализ процесса AAP Client на Android. Разбор функций, причин высокой нагрузки на ЦП и б</span>
+            </a><a href="/articles/e/es/esli-karta-magnit-udalena.html" class="pb-related-card">
+                <span class="pb-related-title">Если карта Магнит удалена: как восстановить доступ и вернуть бонусы</span>
+                <span class="pb-related-desc">Подробная инструкция: что делать, если карта Магнит удалена из приложения или кошелька. Восстановлен</span>
+            </a><a href="/articles/k/ka/kak-ubrat-kopirovanie-konnekt-menedzhera-s-nouta.html" class="pb-related-card">
+                <span class="pb-related-title">Удаление Connect Manager с ноутбука: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по удалению Conneсt Manager с ноутбука. Методы очистки реестра, удаление скрыты</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

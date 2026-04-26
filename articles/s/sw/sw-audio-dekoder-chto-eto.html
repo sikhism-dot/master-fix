@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>SW аудио декодер: что это, настройка и устранение ошибок — Мастер Фикс</title>
+    <meta name="description" content="Технический анализ программных аудио декодеров: принцип работы, разница с DSP, настройка на Android и ПК, устранение рассинхронизации звука.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/sw/sw-audio-dekoder-chto-eto.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SW аудио декодер: что это, настройка и устранение ошибок">
+    <meta property="og:description" content="Технический анализ программных аудио декодеров: принцип работы, разница с DSP, настройка на Android и ПК, устранение рассинхронизации звука.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/multimedia-zvuk/">Мультимедиа и Звук</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">SW аудио декодер: что это, настройка и устранение ошибок</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-программной-декодировки-звука">Принципы работы программной декодировки звука</a></li><li><a href="#сценарии-использования-в-мобильных-ос-и-smart-tv">Сценарии использования в мобильных ОС и Smart TV</a></li><li><a href="#программные-решения-для-пк-и-медиацентров">Программные решения для ПК и медиацентров</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#оптимизация-и-заключение">Оптимизация и заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/l/li/live-the-sound-card-v8-ii-instruktsiya-podklyucheniya.html">Live Sound Card V8 II: полная инструкция подключения</a></li><li><a href="/articles/j/jb/jbl-drajver-dlya-go3.html">JBL Go 3 драйвер: установка, обновление и настройка на Windows</a></li><li><a href="/articles/o/ot/ottplayer-sony-kak-vopesprrishchvesti.html">Настройка OTTPlayer на Sony Android TV: подробное руководство</a></li><li><a href="/articles/l/la/lazymedia-deluxe-s-kakimi-videopleerami-rabotaet.html">Совместимость LaZymedia Deluxe с видеоплеерами: Настройка и тесты</a></li><li><a href="/articles/h/hp/hp-envy-m6-kak-otklyuchit-vtoruyu-videokartu.html">HP Envy m6: отключение второй видеокарты и оптимизация</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>SW аудио декодер: назначение, настройка и диагностика</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-программной-декодировки-звука">Принципы работы программной декодировки звука</a></li><li><a href="#сценарии-использования-в-мобильных-ос-и-smart-tv">Сценарии использования в мобильных ОС и Smart TV</a></li><li><a href="#программные-решения-для-пк-и-медиацентров">Программные решения для ПК и медиацентров</a></li><li><a href="#диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</a></li><li><a href="#оптимизация-и-заключение">Оптимизация и заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>При воспроизведении видеофайла высокого разрешения на экране смартфона или телевизора может внезапно возникнуть ситуация, когда изображение движется плавно, а звуковая дорожка прерывается, трещит или полностью отсутствует. Пользователь видит сообщение об ошибке «Неподдерживаемый формат» или «Аудиокодек не найден», хотя файл ранее открывался без проблем на других устройствах. В логах системы или расширенных настройках плеера в этот момент часто фигурирует термин «SW Audio Decoder» или «Software Decoder», который вызывает непонимание у большинства владельцев техники.</p>
+<p>Подобные сбои часто происходят после обновления операционной системы или при попытке воспроизведения контента с новым стандартом сжатия, например, Dolby Atmos или DTS:X. Система перестает полагаться на встроенные аппаратные модули и принудительно переключается на программную обработку, что требует значительных ресурсов центрального процессора. Если устройство не справляется с вычислениями в реальном времени, возникает рассинхронизация аудио и видеоряда, а также повышенное энергопотребление.</p>
+<p>Понимание природы программной декодировки необходимо для грамотной настройки мультимедийных систем и выбора подходящего программного обеспечения. Игнорирование этого аспекта приводит к ложным выводам о неисправности динамиков или дефектах материнской платы, тогда как проблема кроется исключительно в алгоритмах обработки цифрового потока. Дальнейший разбор позволит детально изучить архитектуру процесса и методы оптимизации.</p>
+
+<h2 id="принципы-работы-программной-декодировки-звука">Принципы работы программной декодировки звука</h2>
+<p>Процесс воспроизведения цифрового аудио заключается в преобразовании сжатых данных, хранящихся в файле, в аналоговый сигнал, который способны воспринимать динамики. <strong>SW аудио декодер</strong> (Software Decoder) представляет собой программный алгоритм, выполняющий математические операции по распаковке звукового потока силами центрального процессора устройства. В отличие от аппаратных решений, где за decoding отвечают специализированные микросхемы (DSP), программный метод использует универсальные вычислительные ядра CPU.</p>
+<p>Если у вас возникает необходимость воспроизвести редкий или новый формат аудио, встроенный hardware decoder может не содержать необходимых инструкций для его обработки. В этом случае операционная система инициирует запуск программной библиотеки, которая эмулирует работу недостающего оборудования. На практике это означает, что процессор начинает выполнять миллионы вычислений в секунду для восстановления исходной звуковой волны из сжатого цифрового кода.</p>
+<p>Допустим, видеоплеер получает поток данных в формате FLAC или AAC. Программный декодер принимает этот поток, анализирует заголовки пакетов, применяет алгоритмы обратного преобразования и устраняет артефакты сжатия. Результатом работы становится поток PCM (Pulse Code Modulation) данных, готовый к отправке на цифро-аналоговый преобразователь. Именно этот этап является наиболее ресурсоемким, особенно при работе с многоканальным звуком высокой частоты дискретизации.</p>
+
+<h3>Отличия от аппаратного декодирования</h3>
+<p>Ключевое различие кроется в распределении нагрузки. Аппаратный декодер разгружает центральный процессор, беря на себя всю тяжелую работу, что обеспечивает минимальное энергопотребление и нагрев. Программный метод, напротив, загружает основные вычислительные мощности, что может привести к троттлингу (снижению частоты процессора) при длительном воспроизведении. Однако программная реализация обладает гибкостью, позволяя обновлять кодеки без замены железа.</p>
+<p>В таблице ниже приведено сравнение характеристик двух подходов к обработке аудиопотока:</p>
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Аппаратный декодер (HW)</th>
+<th>Программный декодер (SW)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Загрузка CPU</td>
+<td>Минимальная (1-5%)</td>
+<td>Высокая (15-40% и выше)</td>
+</tr>
+<tr>
+<td>Энергопотребление</td>
+<td>Низкое</td>
+<td>Повышенное</td>
+</tr>
+<tr>
+<td>Поддержка форматов</td>
+<td>Ограничена чипом</td>
+<td>Зависит от ПО (гибкая)</td>
+</tr>
+<tr>
+<td>Задержка (Latency)</td>
+<td>Минимальная</td>
+<td>Возможны задержки буферизации</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На современных мобильных процессорах границы размываются: некоторые DSP могут перепрограммироваться, имитируя работу SW декодера для поддержки новых кодеков.</p></aside>
+
+<h2 id="сценарии-использования-в-мобильных-ос-и-smart-tv">Сценарии использования в мобильных ОС и Smart TV</h2>
+<p>В экосистеме Android и оболочках Smart TV программная декодировка активируется автоматически при отсутствии аппаратной поддержки конкретного кодека. Часто пользователи сталкиваются с этим при просмотре фильмов через торрент-стриминг или локальные плееры вроде <em>VLC for Android</em> или <em>MX Player</em>. Система пытается сначала задействовать <code>OMX.google.aac.decoder</code> или аналогичные системные компоненты, и если они не справляются, происходит переключение на программные библиотеки.</p>
+<p>Если вы используете телевизор на базе <em>Android TV</em> или приставку, переключение в режим SW может быть вызвано несовместимостью версии Android и встроенного кодека. Например, старые версии Android TV могут не иметь лицензионных кодеков для Dolby Digital Plus, что заставляет приложение (например, <em>Kodi</em> или <em>Nova Video Player</em>) использовать программный обходной путь. Это часто приводит к тому, что звук отстает от видео на несколько секунд.</p>
+<p>На практике замечено, что при подключении внешней акустики через оптический выход (S/PDIF) требования к декодеру возрастают. Встроенные динамики телевизора могут обрабатывать сжатый поток (passthrough), но для вывода на ресивер требуется полное декодирование. Если ресивер старый, телевизор обязан сам декодировать звук программно, что создает дополнительную нагрузку на систему.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Постоянная работа SW аудио декодера на Smart TV может привести к перегреву процессора и сокращению срока службы устройства из-за высокого тепловыделения.</p></aside>
+
+<h3>Настройка кодеков в Android</h3>
+<p>Для принудительного выбора метода декодирования в некоторых плеерах необходимо изменить настройки производительности. В <em>MX Player</em> это делается через меню «Настройки» → «Декодер», где можно выбрать режим «HW+» (ускоренный программный) или «SW» (только программный). Переключение на SW часто решает проблему отсутствия звука, но увеличивает расход батареи.</p>
+<p>В системных настройках разработчика Android иногда доступны опции для управления кодеками. Перейдите в <code>Настройки → О телефоне → Номер сборки</code> (7 раз), затем в <code>Система → Для разработчиков</code>. Здесь можно найти пункты, связанные с ограничением фоновых процессов, что косвенно влияет на выделение ресурсов для аудиодекодера.</p>
+<p>Следующий список действий поможет диагностировать проблему с аудио на Android:</p>
+<ol>
+<li>Установите сторонний плеер с собственными библиотеками кодеков, например, <em>VLC</em> или <em>nPlayer</em>.</li>
+<li>Воспроизведите проблемный файл и наблюдайте за индикатором загрузки процессора.</li>
+<li>Если звук есть, но идет рывками, попробуйте снизить качество аудио в настройках файла или приложения.</li>
+<li>Проверьте наличие обновлений системы, так как новые версии Android часто содержат обновленные системные кодеки.</li>
+</ol>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Сброс аудио настроек Android</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте Настройства → Приложения</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите «Настройки» (системные)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите «Хранилище» → «Очистить кэш»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите устройство</span></div></div>
+
+<h2 id="программные-решения-для-пк-и-медиацентров">Программные решения для ПК и медиацентров</h2>
+<p>На персональных компьютерах под управлением Windows или Linux роль SW аудио декодера часто берут на себя системные фильтры DirectShow или фреймворки вроде GStreamer. Пользователи, собирающие домашний кинотеатр на базе ПК, часто сталкиваются с необходимостью ручной установки кодеков, если стандартных средств ОС недостаточно для воспроизведенияLossless-форматов или многоканального звука.</p>
+<p>Допустим, вы используете медиацентр <em>Kodi</em> или <em>Plex</em>. Эти приложения имеют встроенные движки декодирования, но могут делегировать задачу операционной системе. В настройках аудио <em>Kodi</em> (раздел «Система» → «Аудио») можно выбрать устройство вывода и разрешить или запретить passthrough. Если passthrough отключен, ЦП компьютера берет на себя декодирование всех потоков, включая Dolby TrueHD и DTS-HD MA.</p>
+<p>Важно различать понятия декодирования и рендеринга. Декодер распаковывает данные, а рендерер (например, <em>Audio Renderer</em> в Windows) управляет их отправкой на звуковую карту. Ошибки часто возникают на стыке этих процессов. Использование универсальных пакетов кодеков, таких как <em>K-Lite Codec Pack</em>, позволяет заменить стандартные системные декодеры на более производительные программные аналоги, например, <em>LAV Filters</em>.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование внешних кодеков на ПК</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая совместимость с редкими форматами</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Возможность тонкой настройки параметров</li></ul></div>
+</div></div>
+
+<h3>Конфигурация LAV Filters и MPC-HC</h3>
+<p>Для продвинутых пользователей ПК оптимальным решением является связка плеера <em>MPC-HC</em> и фильтров <em>LAV</em>. В настройках LAV Audio Decoder можно принудительно включить использование конкретных библиотек (libavcodec) и активировать аппаратное ускорение там, где это возможно, оставив программную обработку только для сложных случаев. Это обеспечивает баланс между качеством и производительностью.</p>
+<p>В окне свойств LAV Audio Decoder, доступном через контекстное меню плеера, рекомендуется активировать опцию «Bitstreaming» только если ваш ресивер поддерживает формат исходного файла. В противном случае следует выбрать «Decode all formats», чтобы компьютер сам конвертировал звук в PCM. Это гарантирует совместимость, но повышает нагрузку на CPU.</p>
+<p>Сравнение популярных программных декодеров для ПК представлено в таблице:</p>
+<table>
+<thead>
+<tr>
+<th>Декодер</th>
+<th>Лицензия</th>
+<th>Поддержка форматов</th>
+<th>Интеграция</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LAV Audio</td>
+<td>GPL / Commercial</td>
+<td>Полная (FFmpeg base)</td>
+<td>DirectShow, WASAPI</td>
+</tr>
+<tr>
+<td>FFmpeg (internal)</td>
+<td>LGPL</td>
+<td>Максимальная</td>
+<td>VLC, Kodi, CLI</td>
+</tr>
+<tr>
+<td>Windows Media Foundation</td>
+<td>Proprietary</td>
+<td>Базовая (AAC, MP3)</td>
+<td>Системная (UWP)</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При использовании ПК как источника звука для Hi-Fi системы убедитесь, что в настройках Windows (Панель управления звуком) установлена частота дискретизации, соответствующая вашему ЦАПу, обычно 48000 Гц или 96000 Гц.</p></aside>
+
+<h2 id="диагностика-проблем-и-типичные-ошибки">Диагностика проблем и типичные ошибки</h2>
+<p>Некорректная работа программного декодера часто проявляется не только в отсутствии звука, но и в артефактах, таких как металлический призвук, треск или периодические замирания. Диагностика должна начинаться с мониторинга ресурсов: если загрузка CPU достигает 100% при воспроизведении аудио, это прямой признак нехватки мощности для выбранного метода декодирования. В таких случаях система может сбрасывать буферы, вызывая разрывы в воспроизведении.</p>
+<p>Если у вас наблюдается рассинхронизация (audio lag), проблема может крыться в размере буфера декодера. Увеличение буфера в настройках плеера часто сглаживает рывки, но увеличивает задержку. Важно проверить, не запущены ли фоновые процессы, потребляющие ресурсы процессора, что мешает декодеру работать в реальном времени.</p>
+<p>Ниже приведен список типичных ошибок и способы их устранения:</p>
+<ol>
+<li><strong>Звук отстает от видео</strong> — чаще всего вызвано переполнением буфера или низкой производительностью CPU; следует уменьшить разрешение видео или переключиться на аппаратное декодирование, если возможно.</li>
+<li><strong>Полное отсутствие звука при наличии изображения</strong> — означает, что SW декодер не может инициализироваться из-за отсутствия библиотеки; требуется установка пакета кодеков или смена плеера.</li>
+<li><strong>Треск и искажения при высокой громкости</strong> — может указывать на переполнение буфера вывода (clipping) или конфликт драйверов; попробуйте изменить формат вывода в настройках ОС на 16-bit, 44100 Гц.</li>
+<li><strong>Высокий разряд батареи на мобильном устройстве</strong> — следствие постоянной работы CPU в режиме SW декодирования; рекомендуется конвертировать файлы в более легкий формат (например, AAC) перед просмотром.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Большинство проблем со SW аудио декодером решаются обновлением плеера, установкой актуальных кодеков или снижением битрейта воспроизводимого файла.</p></aside>
+
+<h2 id="оптимизация-и-заключение">Оптимизация и заключение</h2>
+<p>Для стабильной работы мультимедийной системы важно понимать ограничения своего оборудования. Если устройство старое, reliance на программное декодирование тяжелых форматов вроде DTS-HD может быть невозможным. В таких случаях единственным выходом остается транскодирование файлов на компьютере перед передачей их на мобильное устройство или ТВ, либо использование внешних DAC/декодеров, принимающих цифровой сигнал.</p>
+<p>Своевременное обновление программного обеспечения плееров и операционной системы часто приносит оптимизированные версии декодеров. Разработчики постоянно улучшают алгоритмы, снижая потребление ресурсов. Не стоит игнорировать обновления, особенно если вы активно используете устройство для просмотра медиаконтента высокого качества.</p>
+<p>В конечном итоге, SW аудио декодер является мощным инструментом, обеспечивающим совместимость с огромным количеством форматов файлов. Грамотное управление его настройками позволяет превратить обычное устройство в универсальный медиацентр, способный воспроизводить практически любой аудиопоток, доступный на сегодняшний день.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/l/li/live-the-sound-card-v8-ii-instruktsiya-podklyucheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Live Sound Card V8 II: полная инструкция подключения</span>
+                <span class="pb-related-desc">Подробное руководство по подключению и настройке звуковой карты Live V8 II к ПК, телефону и микшеру.</span>
+            </a><a href="/articles/j/jb/jbl-drajver-dlya-go3.html" class="pb-related-card">
+                <span class="pb-related-title">JBL Go 3 драйвер: установка, обновление и настройка на Windows</span>
+                <span class="pb-related-desc">Полное руководство по установке драйверов для JBL Go 3 на ПК. Решение проблем с подключением, настро</span>
+            </a><a href="/articles/o/ot/ottplayer-sony-kak-vopesprrishchvesti.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка OTTPlayer на Sony Android TV: подробное руководство</span>
+                <span class="pb-related-desc">Как установить и настроить OTTPlayer на телевизорах Sony. Решение проблем с воспроизведением, кодами</span>
+            </a><a href="/articles/l/la/lazymedia-deluxe-s-kakimi-videopleerami-rabotaet.html" class="pb-related-card">
+                <span class="pb-related-title">Совместимость LaZymedia Deluxe с видеоплеерами: Настройка и тесты</span>
+                <span class="pb-related-desc">Полный список видеоплееров для LaZymedia Deluxe. Инструкция по настройке MX Player, VLC, Kodi. Решен</span>
+            </a><a href="/articles/h/hp/hp-envy-m6-kak-otklyuchit-vtoruyu-videokartu.html" class="pb-related-card">
+                <span class="pb-related-title">HP Envy m6: отключение второй видеокарты и оптимизация</span>
+                <span class="pb-related-desc">Подробная инструкция по отключению дискретной видеокарты на HP Envy m6. Методы через BIOS, диспетчер</span>
+            </a><a href="/articles/z/za/zapis-video-s-ekrana-m31.html" class="pb-related-card">
+                <span class="pb-related-title">Как записать видео с экрана Samsung M31: Полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по записи экрана на Samsung Galaxy M31. Настройка качества, звука и устранение ошибок</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

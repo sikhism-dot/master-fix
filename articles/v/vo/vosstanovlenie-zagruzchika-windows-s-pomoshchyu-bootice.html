@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Bootice: Восстановление загрузчика Windows. Пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробный гайд по восстановлению MBR и PBR загрузчика Windows через Bootice. Решение ошибок загрузки, работа с UEFI и Legacy BIOS без переустановки.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vo/vosstanovlenie-zagruzchika-windows-s-pomoshchyu-bootice.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Bootice: Восстановление загрузчика Windows. Пошаговая инструкция">
+    <meta property="og:description" content="Подробный гайд по восстановлению MBR и PBR загрузчика Windows через Bootice. Решение ошибок загрузки, работа с UEFI и Legacy BIOS без переустановки.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Bootice: Восстановление загрузчика Windows. Пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-проблемы-и-подготовка-загрузочной-среды">Диагностика проблемы и подготовка загрузочной среды</a></li><li><a href="#интерфейс-bootice-и-выбор-целевого-диска">Интерфейс Bootice и выбор целевого диска</a></li><li><a href="#восстановление-mbr-для-legacy-bios-систем">Восстановление MBR для Legacy BIOS систем</a></li><li><a href="#настройка-pbr-и-активного-раздела">Настройка PBR и активного раздела</a></li><li><a href="#особенности-работы-с-uefi-и-gpt-дисками">Особенности работы с UEFI и GPT дисками</a></li><li><a href="#редактирование-bcd-и-устранение-сложных-ошибок">Редактирование BCD и устранение сложных ошибок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-otkryt-diskovod-na-noutbuke-icl.html">Как открыть дисковод на ноутбуке ICL: способы и решения</a></li><li><a href="/articles/d/do/doska-ne-videt-noutbuk-interaktivnaya-vidit.html">Ноутбук не видит интерактивную доску: полное руководство</a></li><li><a href="/articles/c/cr/creality-ender-3-neo-ne-podklyuchaetsya-k-kompyuteru-po-yusb-kabelyu.html">Creality Ender 3 Neo не подключается к USB: решение проблем</a></li><li><a href="/articles/l/le/lenovo-vidit-tolko-1-set-wifi.html">Lenovo видит только 1 сеть Wi-Fi: решение проблемы</a></li><li><a href="/articles/k/ka/kak-otkryt-panel-videokarty-klavishami-na-noutbuke-asus51l.html">Как открыть панель видеокарты на Asus X51L: горячие клавиши и драйверы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика Windows с помощью Bootice: полное руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-проблемы-и-подготовка-загрузочной-среды">Диагностика проблемы и подготовка загрузочной среды</a></li><li><a href="#интерфейс-bootice-и-выбор-целевого-диска">Интерфейс Bootice и выбор целевого диска</a></li><li><a href="#восстановление-mbr-для-legacy-bios-систем">Восстановление MBR для Legacy BIOS систем</a></li><li><a href="#настройка-pbr-и-активного-раздела">Настройка PBR и активного раздела</a></li><li><a href="#особенности-работы-с-uefi-и-gpt-дисками">Особенности работы с UEFI и GPT дисками</a></li><li><a href="#редактирование-bcd-и-устранение-сложных-ошибок">Редактирование BCD и устранение сложных ошибок</a></li><li><a href="#часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда компьютер при включении выдает черный экран с сообщением об отсутствии операционной системы, знакома многим пользователям. Часто проблема кроется в повреждении <strong>загрузочных записей</strong>, что может произойти после сбоя электропитания, вирусной атаки или неудачного обновления. Вместо переустановки всей системы или использования сложной командной строки, специалисты часто обращаются к утилите <em>Bootice</em>, которая позволяет быстро и безопасно восстановить структуру загрузки.</p>
+
+<p>Этот инструмент предоставляет графический интерфейс для управления секторами диска, что делает процесс понятным даже для тех, кто не является глубоким экспертом в файловых системах. <strong>Восстановление загрузчика</strong> с его помощью занимает всего несколько минут и требует минимального набора действий, если следовать алгоритму. Ниже мы подробно разберем, как подготовить среду, выбрать правильный тип записи и вернуть вашу Windows к жизни.</p>
+
+<h2 id="диагностика-проблемы-и-подготовка-загрузочной-среды">Диагностика проблемы и подготовка загрузочной среды</h2>
+
+<p>Прежде чем приступать к активным действиям, необходимо точно определить характер неисправности. Если BIOS или UEFI не видит загрузочное устройство, а на экране появляются ошибки вроде "No Bootable Device" или "Missing Operating System", это прямой сигнал о повреждении <strong>MBR</strong> (Master Boot Record) или <strong>PBR</strong> (Partition Boot Record). Для работы вам потребуется рабочий компьютер с доступом в интернет и USB-накопитель, так как запускать утилиту лучше всего с внешней среды, чтобы не затрагивать системный диск в активном режиме.</p>
+
+<p>Самый надежный способ — создать загрузочную флешку с набором инструментов, куда входит <em>Bootice</em>. Можно использовать готовые сборки вроде <em>WinPE</em> или <em> Sergei Strelec</em>, которые уже содержат необходимый софт. Если такой возможности нет, скачайте портативную версию утилиты на флешку и запустите ее из-под работающей Windows, выбрав целевым диском системный раздел, но будьте предельно осторожны, чтобы не затереть данные.</p>
+
+<p>Важно понимать разницу между режимами работы BIOS, так как от этого зависит тип восстанавливаемой записи. В старых системах используется <strong>Legacy BIOS</strong> с таблицей разделов MBR, тогда как современные компьютеры работают в режиме <em>UEFI</em> с разметкой GPT. Ошибка в выборе типа записи приведет к тому, что система так и не запустится, поэтому перед началом процедуры уточните конфигурацию вашего оборудования.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Перед любыми манипуляциями с загрузочными секторами настоятельно рекомендуется сделать полный бэкап важных данных на внешний носитель, так как ошибка в выборе диска может привести к потере доступа к информации.</p>
+</blockquote>
+
+<div class="pb-poll" id="poll-96a71cd9"><div class="pb-poll-question">📊 Какой тип BIOS установлен на вашем компьютере?</div><div class="pb-poll-option" data-poll="96a71cd9" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">Legacy (MBR)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="96a71cd9" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">UEFI (GPT)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="96a71cd9" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Не знаю, буду проверять</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="96a71cd9" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Dual Boot (оба режима)</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+
+<h2 id="интерфейс-bootice-и-выбор-целевого-диска">Интерфейс Bootice и выбор целевого диска</h2>
+
+<p>После запуска утилиты <em>Bootice</em> пользователь видит лаконичное окно с минимумом элементов управления. В верхней части расположен выпадающий список <code>Destination Disk</code>, где отображаются все подключенные физические накопители. Критически важно выбрать именно тот диск, на котором установлена операционная система, ориентируясь на его объем и модель. Неправильный выбор может привести к модификации загрузочной записи на флешке или внешнем HDD, что сделает их нечитаемыми для BIOS.</p>
+
+<p>Для работы с загрузчиком нас интересует кнопка <strong>Process MBR</strong>, которая открывает доступ к управлению главной загрузочной записью. Эта область диска объемом 512 байт содержит код, необходимый для старта операционной системы, и таблицу разделов. При нажатии на кнопку программа запросит подтверждение прав администратора, после чего откроется новое диалоговое окно с доступными опциями.</p>
+
+<p>В открывшемся окне вы увидите текущий статус MBR и список доступных действий. Здесь можно не только восстановить стандартный код, но и полностью переписать структуру, что иногда требуется после удаления Linux-разделов или работы с менеджерами загрузки вроде <em>GRUB</em>. Интерфейс программы не содержит лишних функций, фокусируясь на основной задаче — обеспечении корректного старта <strong>Windows</strong>.</p>
+
+<details class="pb-accordion"><summary>Почему диск может не отображаться в списке?</summary><div class="pb-accordion-body"><p>Если ваш диск не виден в списке Destination Disk, проверьте подключение кабелей SATA или попробуйте подключить его через другой порт USB. Также диск может быть скрыт, если он не инициализирован или имеет критические физические повреждения, которые блокируют чтение таблицы разделов.</p></div></details>
+
+<h2 id="восстановление-mbr-для-legacy-bios-систем">Восстановление MBR для Legacy BIOS систем</h2>
+
+<p>Для компьютеров, работающих в режиме совместимости или использующих старый стандарт BIOS, восстановление начинается с кнопки <code>Restore MBR</code>. Нажатие на нее вызывает окно выбора типа загрузчика, где по умолчанию предлагается <strong>NT 6.x MBR</strong>. Этот вариант является оптимальным для современных версий Windows, начиная с Vista и заканчивая Windows 10/11, так как он поддерживает загрузку с разделов NTFS и FAT32.</p>
+
+<p>Процесс восстановления занимает доли секунды. После выбора типа кода необходимо нажать кнопку <code>Install / Upgrade</code>, а затем подтвердить действие в появившемся предупреждении. Программа предупредит, что текущая запись будет перезаписана, и запросит финальное подтверждение. После успешного выполнения операции вы увидите сообщение об успешном завершении, что означает, сектор MBR теперь содержит корректный код.</p>
+
+<p>Однако восстановление MBR — это только половина дела для систем с BIOS. После этого необходимо перейти к управлению загрузочной записью раздела (PBR), так как именно она указывает системе, где искать файлы ядра. Без корректного PBR даже правильный MBR не сможет передать управление операционной системе, и ошибка загрузки сохранится.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Чек-лист восстановления MBR</h4><label class="check-item"><input type="checkbox"><span>Выбрать правильный физический диск в списке</span></label><label class="check-item"><input type="checkbox"><span>Нажать кнопку Process MBR</span></label><label class="check-item"><input type="checkbox"><span>Выбрать тип NT 6.x MBR из списка</span></label><label class="check-item"><input type="checkbox"><span>Нажать Install / Upgrade и подтвердить действие</span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+
+<h2 id="настройка-pbr-и-активного-раздела">Настройка PBR и активного раздела</h2>
+
+<p>Чтобы завершить восстановление, вернитесь в главное окно и нажмите кнопку <strong>Process PBR</strong>. Это действие переключит режим работы утилиты с уровня физического диска на уровень логического раздела. В открывшемся списке необходимо выбрать системный раздел, который обычно помечен как активный (Active) и имеет файловую систему NTFS. Если раздел не активен, его нужно активировать через меню управления разделами перед этим шагом.</p>
+
+<p>В окне управления PBR снова выбираем тип загрузчика. Для Windows актуален пункт <code>NTFS PBR</code> (или FAT32, если система установлена на такой раздел, что характерно для UEFI). Процедура аналогична восстановлению MBR: выбираем тип, жмем <code>Install / Upgrade</code> и подтверждаем замену. Это действие запишет в первый сектор раздела код, необходимый для продолжения загрузки.</p>
+
+<p>После выполнения этих двух этапов (MBR и PBR) структура загрузки считается полностью восстановленной для Legacy-систем. Компьютер теперь сможет найти загрузочный сектор, считать код запуска и передать управление файлам операционной системы. В некоторых случаях может потребоваться также проверить, что нужный раздел помечен флагом <strong>Active</strong>, что делается через любую программу для работы с разделами, например, <em>Disk Management</em>.</p>
+
+<blockquote>
+<p>⚠️ Внимание: Убедитесь, что восстанавливаете PBR именно на том разделе, где находятся файлы Windows (обычно диск C:), а не на скрытом разделе восстановления или EFI-разделе, если речь идет о Legacy-режиме.</p>
+</blockquote>
+
+<h2 id="особенности-работы-с-uefi-и-gpt-дисками">Особенности работы с UEFI и GPT дисками</h2>
+
+<p>Современные компьютеры используют стандарт <em>UEFI</em> и таблицу разделов <strong>GPT</strong>, что вносит коррективы в процесс восстановления. В таких системах роль загрузчика выполняет файл <code>bootmgfw.efi</code>, расположенный на скрытом EFI-разделе (обычно FAT32 объемом 100-500 Мб). Утилита <em>Bootice</em> позволяет управлять и этим разделом, но подход здесь отличается от классического MBR.</p>
+
+<p>Если проблема заключается в повреждении загрузчика UEFI, использование функции <code>Process MBR</code> не даст результата, так как в GPT используется защитная MBR-запись, которая не содержит кода загрузки ОС. Вместо этого необходимо работать с файловой системой EFI-раздела. Через меню <code>Process PBR</code> можно проверить и восстановить загрузочную запись самого FAT32 раздела, выбрав тип <strong>FAT32 PBR</strong>.</p>
+
+<p>Часто для UEFI систем требуется не только восстановление секторов, но и пересоздание записей в NVRAM. Bootice имеет вкладку <code>BCD Edit</code>, которая позволяет редактировать конфигурацию загрузки. Здесь можно добавить новую запись, указав путь к файлу <code>\EFI\Microsoft\Boot\bootmgfw.efi</code>. Это критически важный шаг, если BIOS "забыл" путь к загрузчику после сброса настроек или замены материнской платы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При работе с UEFI всегда проверяйте, включен ли в BIOS режим Secure Boot. Если вы восстанавливаете загрузчик вручную, иногда требуется временно отключить Secure Boot, чтобы система приняла изменения.</p></aside>
+
+<h2 id="редактирование-bcd-и-устранение-сложных-ошибок">Редактирование BCD и устранение сложных ошибок</h2>
+
+<p>В случаях, когда файлы загрузчика целы, но система не видит установленную Windows, на помощь приходит встроенный в <em>Bootice</em> редактор <strong>BCD</strong> (Boot Configuration Data). Перейдя на вкладку <code>BCD Edit</code>, вы можете увидеть текущую конфигурацию загрузки. Если список пуст или содержит ошибки, можно создать новую запись, нажав кнопку <code>Add new...</code> и выбрав тип <em>Windows Boot Manager</em>.</p>
+
+<p>В открывшемся окне необходимо указать диск и раздел, где установлена система, а также путь к файлу загрузчика. Для Windows 10 и 11 это обычно <code>\Windows\Boot\EFI\bootmgfw.efi</code> для UEFI или <code>\Windows\system32\winload.exe</code> для BIOS. Правильное указание этих путей позволяет "собрать" загрузку заново, игнорируя повреждения в реестре или конфигурационных файлах.</p>
+
+<p>Использование <strong>BCD Edit</strong> также позволяет настроить параметры загрузки, такие как тайм-аут выбора ОС или режим отладки. Это мощный инструмент в руках опытного пользователя, позволяющий реанимировать систему даже после серьезных сбоев, когда автоматические средства восстановления Windows оказываются бессильны. Главное — внимательно проверять буквенные обозначения дисков, так как в среде WinPE они могут отличаться от привычных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Legacy BIOS (MBR)</th>
+<th>UEFI (GPT)</th>
+<th>Назначение</th>
+</tr>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Тип записи</td>
+<td>NT 6.x MBR + NTFS PBR</td>
+<td>Protective MBR + FAT32 PBR</td>
+<td>Инициализация загрузки</td>
+</tr>
+<tr>
+<td>Файл загрузчика</td>
+<td>winload.exe</td>
+<td>bootmgfw.efi</td>
+<td>Запуск ядра ОС</td>
+</tr>
+<tr>
+<td>Разметка диска</td>
+<td>MBR</td>
+<td>GPT</td>
+<td>Структура разделов</td>
+</tr>
+<tr>
+<td>Размер сектора</td>
+<td>512 байт (MBR)</td>
+<td>Зависит от раздела EFI</td>
+<td>Хранение кода</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Успех восстановления в UEFI-системах на 90% зависит от правильного указания пути к EFI-файлу и наличия активного FAT32 раздела.</p></aside>
+
+<h2 id="часто-задаваемые-вопросы-faq">Часто задаваемые вопросы (FAQ)</h2>
+
+<details>
+<summary>Можно ли использовать Bootice для восстановления загрузчика Linux?</summary>
+<p>Да, утилита поддерживает установку загрузчиков GRUB2 и GRUB4DOS. В меню Process MBR или Process PBR необходимо выбрать соответствующий пункт из списка. Однако для тонкой настройки конфигурации Linux-загрузчиков все же рекомендуется использовать специализированные инструменты вроде <em>Grub Customizer</em> или командную строку.</p>
+</details>
+
+<details>
+<summary>Что делать, если после восстановления Bootice система пишет "Operating System not found"?</summary>
+<p>Скорее всего, восстановлен только код MBR, но не помечен активный раздел или повреждена файловая система. Проверьте, стоит ли флаг Active на системном разделе, и убедитесь, что файлы Windows не повреждены, запустив проверку диска <code>chkdsk</code> через командную строку.</p>
+</details>
+
+<details>
+<summary>Безопасно ли использовать Bootice на ноутбуках с гарантией?</summary>
+<p>Сама по себе программа не нарушает гарантийных условий, так как является программным инструментом. Однако если в процессе будут повреждены данные из-за ошибок пользователя, гарантийный случай это не покроет. Действуйте осторожно и только если понимаете, какой диск выбираете.</p>
+</details>
+
+<details>
+<summary>Нужно ли перезагружать компьютер после каждого этапа восстановления?</summary>
+<p>Нет, изменения в MBR и PBR применяются мгновенно. Перезагрузка требуется только один раз в самом конце, чтобы проверить результат. Многократные перезагрузки между этапами не требуются и лишь увеличивают время ремонта.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-otkryt-diskovod-na-noutbuke-icl.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть дисковод на ноутбуке ICL: способы и решения</span>
+                <span class="pb-related-desc">Подробная инструкция по открытию дисковода на ноутбуках ICL. Методы программной и механической разбл</span>
+            </a><a href="/articles/d/do/doska-ne-videt-noutbuk-interaktivnaya-vidit.html" class="pb-related-card">
+                <span class="pb-related-title">Ноутбук не видит интерактивную доску: полное руководство</span>
+                <span class="pb-related-desc">Инструкция по устранению неполадок, когда интерактивная панель не определяет ноутбук. Проверка кабел</span>
+            </a><a href="/articles/c/cr/creality-ender-3-neo-ne-podklyuchaetsya-k-kompyuteru-po-yusb-kabelyu.html" class="pb-related-card">
+                <span class="pb-related-title">Creality Ender 3 Neo не подключается к USB: решение проблем</span>
+                <span class="pb-related-desc">Принтер Creality Ender 3 Neo не виден компьютеру? Узнайте причины и способы устранения ошибок драйве</span>
+            </a><a href="/articles/l/le/lenovo-vidit-tolko-1-set-wifi.html" class="pb-related-card">
+                <span class="pb-related-title">Lenovo видит только 1 сеть Wi-Fi: решение проблемы</span>
+                <span class="pb-related-desc">Устройство Lenovo отображает одну Wi-Fi сеть? Инструкция по устранению ошибок драйверов, настроек ро</span>
+            </a><a href="/articles/k/ka/kak-otkryt-panel-videokarty-klavishami-na-noutbuke-asus51l.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть панель видеокарты на Asus X51L: горячие клавиши и драйверы</span>
+                <span class="pb-related-desc">Полная инструкция по открытию настроек видеокарты на ноутбуке Asus X51L. Разбор сочетаний клавиш, др</span>
+            </a><a href="/articles/d/dr/drajver-dlya-blyutuz-kolonki-jbl-dlya-windows.html" class="pb-related-card">
+                <span class="pb-related-title">Драйвер для Bluetooth колонки JBL на Windows: установка и решение проблем</span>
+                <span class="pb-related-desc">Подробная инструкция по установке драйвера для Bluetooth-колонки JBL на Windows 10 и 11. Решения про</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

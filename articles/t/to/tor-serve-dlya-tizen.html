@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Tor Server на Tizen: полная инструкция по настройке и запуску — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по развертыванию Tor сервера на Tizen. Настройка Tizen Studio, эмуляция, установка зависимостей и запуск relay на умных устройствах.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/t/to/tor-serve-dlya-tizen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tor Server на Tizen: полная инструкция по настройке и запуску">
+    <meta property="og:description" content="Подробная инструкция по развертыванию Tor сервера на Tizen. Настройка Tizen Studio, эмуляция, установка зависимостей и запуск relay на умных устройствах.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Tor Server на Tizen: полная инструкция по настройке и запуску</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-окружения-и-анализ-архитектуры-tizen">Подготовка окружения и анализ архитектуры Tizen</a></li><li><a href="#компиляция-и-сборка-бинарного-файла-tor">Компиляция и сборка бинарного файла Tor</a></li><li><a href="#развертывание-и-конфигурирование-сервиса">Развертывание и конфигурирование сервиса</a></li><li><a href="#запуск-отладка-и-мониторинг-работы">Запуск, отладка и мониторинг работы</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/m/mi/mi-box-4-kak-vklyuchit-bez-pulta.html">Mi Box 4 без пульта: полное руководство по управлению и настройке</a></li><li><a href="/articles/k/ka/kak-v-lichnom-kabinete-trikolor-oplatit-s-litsevogo-scheta.html">Как оплатить Триколор с лицевого счета: пошаговая инструкция</a></li><li><a href="/articles/k/ka/kak-perevesti-dengi-s-trikolor-scheta-a-tarif-sms.html">Как перевести деньги с Триколор счета на тариф СМС</a></li><li><a href="/articles/k/ka/kak-pomenyat-kabel-golovki-trikolor.html">Как заменить кабель головки Триколор: полная инструкция</a></li><li><a href="/articles/k/ka/kak-podklyuchit-universalnyj-pult-k-pristavke-selenga.html">Как подключить универсальный пульт к приставке Селенга: инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Развертывание Tor Server на платформе Tizen: техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-окружения-и-анализ-архитектуры-tizen">Подготовка окружения и анализ архитектуры Tizen</a></li><li><a href="#компиляция-и-сборка-бинарного-файла-tor">Компиляция и сборка бинарного файла Tor</a></li><li><a href="#развертывание-и-конфигурирование-сервиса">Развертывание и конфигурирование сервиса</a></li><li><a href="#запуск-отладка-и-мониторинг-работы">Запуск, отладка и мониторинг работы</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователи часто сталкиваются с ситуацией, когда необходимо развернуть узел анонимной сети на специфическом аппаратном обеспечении, таком как умные телевизоры или носимые гаджеты, работающие под управлением операционной системы Tizen.</p>
+<p>Основная сложность заключается в том, что стандартные репозитории пакетов, доступные для десктопных Linux-систем, здесь недоступны, а архитектура процессоров часто отличается от привычной x86, требуя кросс-компиляции бинарных файлов.</p>
+<p>Отсутствие готовых нативных приложений в магазине Samsung Store вынуждает администраторов искать обходные пути, такие как использование Tizen Native App или запуск через эмулятор с последующей проброской портов.</p>
+<p>Решение задачи требует глубокого понимания структуры файловой системы Tizen, наличия настроенного окружения для разработки и четкого следования алгоритмам установки зависимостей, так как любая ошибка на этапе компиляции приведет к неработоспособности сервиса.</p>
+
+<h2 id="подготовка-окружения-и-анализ-архитектуры-tizen">Подготовка окружения и анализ архитектуры Tizen</h2>
+
+<p>Первым шагом является определение аппаратной платформы целевого устройства, так как от этого зависит выбор инструментария для сборки бинарного файла Tor.</p>
+<p>Большинство современных телевизоров Samsung используют процессоры архитектуры ARM, в то время как более старые модели или эмуляторы могут базироваться на x86.</p>
+<p>Для работы потребуется установка Tizen Studio, которая предоставляет полный набор инструментов для создания, отладки и профилирования приложений.</p>
+<p>Важно установить Extension SDK для эмулятора, если физическое устройство временно недоступно для тестирования, хотя работа на реальном железе всегда предпочтительнее из-за различий в производительности.</p>
+
+<h3>Установка Tizen Studio и необходимых плагинов</h3>
+<p>Процесс начинается с загрузки установщика с официального портала разработчиков, где необходимо выбрать минимальный набор компонентов для начала работы.</p>
+<p>В процессе установки следует обязательно отметить компоненты Native App Framework и Certificate Manager, без которых невозможна подпись и запуск приложений на устройстве.</p>
+<p>После завершения установки потребуется создать профиль сертификата, который будет использоваться для авторизации устройства в режиме отладки.</p>
+<p>Без действительного сертификата безопасности система блокирует установку любых приложений из внешних источников, что является критическим моментом.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка окружения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скачайте Tizen Studio с официального сайта</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите Native App Framework и Certificate Manager</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Создайте сертификат разработчика в Certificate Manager</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Добавьте устройство в Device Manager через IP-адрес</span></div></div>
+
+<p>Настройка переменных окружения позволяет запускать команды SDK из любой директории терминала, что существенно ускоряет процесс разработки.</p>
+<p>Проверка подключения выполняется через командную строку, где успешный статус устройства отображается в списке подключенных девайсов.</p>
+
+<h3>Определение версии ядра и совместимости</h3>
+<p>Версия ядра Tizen напрямую влияет на доступные системные вызовы и библиотеки, которые может использовать Tor сервер.</p>
+<p>Для получения информации о системе можно использовать команду uname -a, выполненную через sdb shell после подключения.</p>
+<table>
+<thead>
+<tr>
+<th>Версия Tizen</th>
+<th>Архитектура</th>
+<th>Статус поддержки Tor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tizen 4.0</td>
+<td>ARMv7 / x86</td>
+<td>Требует статической сборки</td>
+</tr>
+<tr>
+<td>Tizen 5.5</td>
+<td>ARM64</td>
+<td>Возможна динамическая линковка</td>
+</tr>
+<tr>
+<td>Tizen 6.0+</td>
+<td>ARM64</td>
+<td>Полная совместимость</td>
+</tr>
+</tbody>
+</table>
+<p>Стоит учитывать, что более старые версии могут не поддерживать необходимые криптографические инструкции процессора, что потребует использования программных реализаций алгоритмов шифрования.</p>
+<p>Проверка доступной оперативной памяти также важна, так как Tor может потреблять значительные ресурсы при активной маршрутизации трафика.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На телевизорах серий M и Q запущенных на Tizen 4.0 и выше, доступ к root-разделу может быть ограничен политиками безопасности Samsung.</p></aside>
+
+<h2 id="компиляция-и-сборка-бинарного-файла-tor">Компиляция и сборка бинарного файла Tor</h2>
+
+<p>Сборка Tor для Tizen невозможна стандартными средствами пакетного менеджера, поэтому требуется кросс-компиляция исходного кода на хост-машине.</p>
+<p>Необходимо скачать исходные коды Tor, Libevent и OpenSSL, так как они являются обязательными зависимостями для функционирования анонимайзера.</p>
+<p>Использование toolchain, поставляемого вместе с Tizen Studio, гарантирует совместимость собранного бинарника с системными библиотеками целевой платформы.</p>
+
+<h3>Настройка Toolchain и кросс-компиляция</h3>
+<p>Для начала работы следует активировать нужный профиль toolchain в терминале, выбрав соответствующую версию SDK и архитектуру.</p>
+<p>Команда export CC и CFLAGS позволяет задать компилятор и флаги оптимизации, необходимые для корректной работы кода на ARM-процессорах.</p>
+<pre><code>export CC=arm-linux-gnueabi-gcc
+<p>export CFLAGS="--sysroot=/path/to/tizen-rootfs"</p>
+<p>./configure --host=arm-linux-gnueabi --disable-systemd</pre></p>
+<p>Отключение systemd необходимо, так как в среде Tizen используется собственная система инициализации, и наличие зависимостей от systemd приведет к краху процесса.</p>
+<p>В процессе компиляции могут возникнуть ошибки отсутствия заголовочных файлов, которые решаются добавлением путей к include-директориям Tizen.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование неверных флагов компиляции может привести к нестабильной работе устройства или циклической перезагрузке телевизора.</p></aside>
+
+<h3>Статическая vs Динамическая линковка</h3>
+<p>Выбор типа линковки зависит от наличия необходимых библиотек в корневой файловой системе устройства.</p>
+<p>Статическая линковка увеличивает размер бинарного файла, но гарантирует запуск на любом устройстве без установки дополнительных пакетов.</p>
+<p>Динамическая линковка требует предварительной установки библиотек libevent и openssl на устройство, что может быть затруднено ограничениями прав доступа.</p>
+<p>На практике для Tizen чаще всего выбирают статическую сборку, чтобы избежать конфликтов версий библиотек с системными компонентами.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Сравнение методов сборки</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Гарантированная работа на любом устройстве</li><li>✅ Отсутствие зависимостей</li><li>✅ Простота деплоя</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Большой размер файла</li><li>❌ Длительное время компиляции</li><li>❌ Сложность обновления библиотек безопасности</li></ul></div>
+</div></div>
+
+<h2 id="развертывание-и-конфигурирование-сервиса">Развертывание и конфигурирование сервиса</h2>
+
+<p>После успешной компиляции бинарный файл необходимо передать на устройство через отладочный интерфейс sdb.</p>
+<p>Файл размещается в директории, доступной для исполнения, обычно это раздел user или специально созданная папка в корне.</p>
+<p>Конфигурационный файл torrc должен быть адаптирован под ограничения мобильной операционной системы, в частности, касающиеся сетевых портов и путей к данным.</p>
+
+<h3>Передача файлов и установка прав</h3>
+<p>Использование команды sdb push позволяет скопировать исполняемый файл и конфигурацию в нужную директорию на устройстве.</p>
+<p>После копирования обязательно устанавливаются права на исполнение командой chmod, иначе запуск процесса будет невозможен.</p>
+<p>Для удобства управления можно создать скрипт-обертку, который будет запускать Tor с необходимыми параметрами от имени пользователя.</p>
+<p>Проверка целостности переданных файлов выполняется через сравнение контрольных сумм на хосте и устройстве.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Деплой на устройство</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите устройство по Wi-Fi или USB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выполните команду sdb push tor /usr/bin/tor</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите права: chmod +x /usr/bin/tor</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите тестовый режим: tor --version</span></div></div>
+
+<h3>Настройка torrc для Tizen</h3>
+<p>Конфигурация требует указания путей к директориям DataDirectory и CacheDirectory, которые должны находиться в области с правами на запись.</p>
+<p>Параметр RunAsDaemon устанавливается в значение 0, если планируется запуск в foreground режиме для отладки.</p>
+<p>Для экономии ресурсов можно ограничить количество одновременных соединений и объем используемой памяти в конфигурационном файле.</p>
+<p>Важно прописать правильные пути к лог-файлам, чтобы в случае сбоев иметь возможность проанализировать причину остановки сервиса.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Описание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RunAsDaemon</td>
+<td>0</td>
+<td>Запуск в фоновом режиме</td>
+</tr>
+<tr>
+<td>ORPort</td>
+<td>9001</td>
+<td>Порт для входящих соединений</td>
+</tr>
+<tr>
+<td>DataDirectory</td>
+<td>/home/owner/tor_data</td>
+<td>Путь к данным узла</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="запуск-отладка-и-мониторинг-работы">Запуск, отладка и мониторинг работы</h2>
+
+<p>Запуск сервиса производится через терминал эмулятора или через adb shell на реальном устройстве с указанием пути к конфигурации.</p>
+<p>Первый запуск может занять длительное время из-за генерации ключей и первоначальной синхронизации с сетью.</p>
+<p>Мониторинг осуществляется через анализ лог-файлов или использование встроенных команд управления Tor.</p>
+
+<h3>Диагностика проблем с сетью</h3>
+<p>Частой проблемой является блокировка портов операционной системой или сетевым экраном устройства.</p>
+<p>Необходимо убедиться, что приложение имеет разрешение на доступ к сети, что регулируется manifest файлом при упаковке в .tpk.</p>
+<p>Если соединение не устанавливается, следует проверить настройки DNS, так как Tizen может использовать собственные резолверы.</p>
+<p>Использование утилит netstat или ss помогает определить, слушает ли процесс назначенный порт.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для постоянной работы сервиса рассмотрите возможность создания нативного приложения-обертки, которое будет запускать Tor в фоне при старте системы.</p></aside>
+
+<h3>Анализ логов и производительности</h3>
+<p>Логи Tor содержат детальную информацию о подключенных ретрансляторах и состоянии сети.</p>
+<p>Высокая загрузка процессора может свидетельствовать о проблемах с криптографическими вычислениями на слабом железе.</p>
+<p>Для снижения нагрузки можно отключить некоторые плагины или уменьшить приоритет процесса.</p>
+<p>Регулярная проверка логов позволяет своевременно выявлять попытки блокировки или проблемы с соединением.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<ol>
+<li><strong>Ошибка запуска из-за отсутствия библиотек</strong> — возникает при динамической линковке, решается статической сборкой или установкой недостающих .so файлов в системную папку.</li>
+<li><strong>Отказ в доступе к сети</strong> — вызван отсутствием разрешений в manifest.xml, необходимо добавить privilege <code>http://tizen.org/privilege/internet</code>.</li>
+<li><strong>Циклическая перезагрузка устройства</strong> — следствие конфликта системных вызовов или некорректной работы с памятью, требуется отладка через gdbserver.</li>
+<li><strong>Неверное время системы</strong> — Tor не сможет соединиться с сетью, если время на устройстве сильно рассинхронизировано, необходима синхронизация через NTP.</li>
+</ol>
+
+<p>Понимание причин возникновения этих ошибок позволяет быстро локализовать проблему и вернуть систему в рабочее состояние.</p>
+<p>В большинстве случаев проблемы связаны именно с правами доступа и зависимостями, а не с самим кодом Tor.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешный запуск Tor на Tizen требует статической сборки, правильных прав в манифесте и адаптации конфигурации под ограничения ОС.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Развертывание Tor сервера на платформе Tizen представляет собой сложный технический процесс, требующий навыков кросс-компиляции и глубокого знания архитектуры операционной системы.</p>
+<p>Несмотря на ограничения, использование статически связанных бинарных файлов и правильная настройка окружения позволяют успешно запустить узел анонимной сети на умных телевизорах и носимых устройствах.</p>
+<p>Дальнейшая оптимизация может включать создание специализированных нативных приложений для автоматического старта сервиса и упрощения управления конфигурацией.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/m/mi/mi-box-4-kak-vklyuchit-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Mi Box 4 без пульта: полное руководство по управлению и настройке</span>
+                <span class="pb-related-desc">Как включить и настроить Mi Box 4 без оригинального пульта. Способы подключения через HDMI CEC, USB-</span>
+            </a><a href="/articles/k/ka/kak-v-lichnom-kabinete-trikolor-oplatit-s-litsevogo-scheta.html" class="pb-related-card">
+                <span class="pb-related-title">Как оплатить Триколор с лицевого счета: пошаговая инструкция</span>
+                <span class="pb-related-desc">Узнайте, как оплатить подписку Триколор с основного счета. Инструкция по активации, проверке баланса</span>
+            </a><a href="/articles/k/ka/kak-perevesti-dengi-s-trikolor-scheta-a-tarif-sms.html" class="pb-related-card">
+                <span class="pb-related-title">Как перевести деньги с Триколор счета на тариф СМС</span>
+                <span class="pb-related-desc">Подробная инструкция по переводу средств с лицевого счета Триколор на тариф СМС. Разбор методов, лим</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-kabel-golovki-trikolor.html" class="pb-related-card">
+                <span class="pb-related-title">Как заменить кабель головки Триколор: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по замене антенного кабеля спутниковой антенны Триколор. Диагностика, выбор ма</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-universalnyj-pult-k-pristavke-selenga.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить универсальный пульт к приставке Селенга: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке универсального ИК-пульта для ресиверов Selenga. Коды, режимы обуч</span>
+            </a><a href="/articles/k/k-/k-kakomu-sputniku-privyazany-skretch-karty-dlya-oplaty-trikolora.html" class="pb-related-card">
+                <span class="pb-related-title">Спутник Триколор для оплаты: как активировать скретч-карту</span>
+                <span class="pb-related-desc">К какому спутнику привязаны скретч-карты Триколор? Инструкция по активации кодов, проверке оборудова</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

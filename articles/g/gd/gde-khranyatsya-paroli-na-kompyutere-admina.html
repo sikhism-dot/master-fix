@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Где хранятся пароли админа: Windows, Linux и браузеры — Мастер Фикс</title>
+    <meta name="description" content="Технический обзор мест хранения учетных данных: SAM, LSA, KDBX, Keychain. Методы поиска, извлечения и защиты паролей администратора.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/g/gd/gde-khranyatsya-paroli-na-kompyutere-admina.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Где хранятся пароли админа: Windows, Linux и браузеры">
+    <meta property="og:description" content="Технический обзор мест хранения учетных данных: SAM, LSA, KDBX, Keychain. Методы поиска, извлечения и защиты паролей администратора.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Где хранятся пароли админа: Windows, Linux и браузеры</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-хранения-учетных-данных-в-windows">Архитектура хранения учетных данных в Windows</a></li><li><a href="#системы-хранения-паролей-в-linux-и-unix-подобных-ос">Системы хранения паролей в Linux и Unix-подобных ОС</a></li><li><a href="#браузерные-хранилища-и-кэш-приложений">Браузерные хранилища и кэш приложений</a></li><li><a href="#корпоративные-менеджеры-паролей-и-сетевые-хранилища">Корпоративные менеджеры паролей и сетевые хранилища</a></li><li><a href="#типичные-ошибки-при-поиске-и-анализе">Типичные ошибки при поиске и анализе</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/2/22/2268-pram.html">Pram 2268: Диагностика и устранение ошибок в Android</a></li><li><a href="/articles/d/do/dom-ru-chto-esli-otklyuchit-movix.html">Что будет если отключить Movix на Дом ру: последствия и решение</a></li><li><a href="/articles/d/de/dexp-dv3-t2.html">DEXP DV3 T2: Настройка, прошивка и устранение неисправностей</a></li><li><a href="/articles/w/wi/wizardry-8-apk.html">Wizardry 8 APK: Установка, совместимость и настройка эмуляторов</a></li><li><a href="/articles/r/rs/rs-out-cs-out.html">Ошибки RS OUT CS OUT: диагностика и устранение</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Где хранятся пароли админа: анализ системных хранилищ</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-хранения-учетных-данных-в-windows">Архитектура хранения учетных данных в Windows</a></li><li><a href="#системы-хранения-паролей-в-linux-и-unix-подобных-ос">Системы хранения паролей в Linux и Unix-подобных ОС</a></li><li><a href="#браузерные-хранилища-и-кэш-приложений">Браузерные хранилища и кэш приложений</a></li><li><a href="#корпоративные-менеджеры-паролей-и-сетевые-хранилища">Корпоративные менеджеры паролей и сетевые хранилища</a></li><li><a href="#типичные-ошибки-при-поиске-и-анализе">Типичные ошибки при поиске и анализе</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда требуется получить доступ к учетной записи администратора, а пароль утерян или неизвестен, является классической проблемой в системном администрировании и информационной безопасности. Часто возникает необходимость проверить, не сохранился ли где-то пароль в открытом виде или в легко извлекаемом хэше после обновления системы или миграции профиля. В операционных системах пароли никогда не хранятся в виде простого текста в файлах конфигурации, что часто вызывает заблуждения у начинающих пользователей, ищущих текстовый файл с данными.</p>
+
+<p>На практике поиск учетных данных сводится к анализу специфических системных файлов, реестровых ключей и защищенных областей памяти, доступ к которым ограничен правами суперпользователя. Понимание архитектуры хранения секретов критически важно как для восстановления доступа к собственным ресурсам, так и для проведения аудита безопасности корпоративной инфраструктуры. Локализация этих данных зависит от используемой операционной системы, версии ядра и применяемых механизмов шифрования.</p>
+
+<p>Если у вас возникла задача найти следы авторизации, необходимо учитывать, что современные ОС используют сложные алгоритмы хэширования и соления, делая прямое чтение невозможным без специальных утилит. Ниже представлен детальный разбор мест хранения учетных данных в различных средах, методы их извлечения и типичные ошибки, допускаемые при попытках доступа к этим чувствительным зонам.</p>
+
+<h2 id="архитектура-хранения-учетных-данных-в-windows">Архитектура хранения учетных данных в Windows</h2>
+
+<p>В операционных системах семейства Windows пароли локальных пользователей и администраторов хранятся в реестре, но не в читаемом виде, а в виде хэшей. Основным хранилищем является файл <code>SAM</code> (Security Account Manager), который находится по пути <code>C:\Windows\System32\config\SAM</code>. Этот файл заблокирован системой во время работы ОС, поэтому прямой доступ к нему через проводник или стандартные команды копирования невозможен без использования специальных утилит или загрузки с другого носителя.</p>
+
+<p>Для декодирования хэшей из файла <code>SAM</code> также требуется файл <code>SYSTEM</code>, расположенный в той же директории, так как он содержит ключ шифрования, необходимый для расшифровки записей безопасности. Кроме локальных аккаунтов, Windows хранит кэш доменных учетных записей в файле <code>SECURITY</code>, что позволяет пользовател входит в систему даже при отсутствии связи с контроллером домена. Данные в этих файлах представлены в виде хэшей LM (устаревший) и NTLM, которые являются целью атак типа Pass-the-Hash.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Файлы SAM, SECURITY и SYSTEM доступны для копирования только с правами TrustedInstaller или из-под загрузочного носителя (LiveCD).</p></aside>
+
+<p>Помимо системных файлов, Windows активно использует Менеджер учетных данных для сохранения паролей веб-сайтов, сетевых ресурсов и приложений. Эти данные сохраняются в зашифрованном виде в папке профиля пользователя, однако ключ дешифрования привязан к конкретному сеансу входа и аппаратному обеспечению. Для извлечения этих данных часто используются утилиты вроде <em>Mimikatz</em> или <em>LaZagne</em>, которые работают с памятью процесса <code>lsass.exe</code>.</p>
+
+<h3>Доступ к реестру и файлам конфигурации</h3>
+
+<p>Если система загружена, получить доступ к хэшам можно через экспорт реестра. Ключ <code>HKEY_LOCAL_MACHINE\SAM</code> содержит текущие данные, но для его чтения требуются права администратора и использование специализированных инструментов, так как стандартный редактор реестра не позволяет экспортировать этот раздел напрямую в читаемом виде. Альтернативным методом является создание теневой копии тома, что позволяет скопировать системные файлы без перезагрузки.</p>
+
+<pre><code>vssadmin create shadow /for=C:
+<p>copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SAM C:\temp\</p>
+<p>copy \\?\GLOBALROOT\Device\HarddiskVolumeShadowCopy1\Windows\System32\config\SYSTEM C:\temp\</code></pre></p>
+
+<p>После получения копий файлов <code>SAM</code> и <code>SYSTEM</code> их можно проанализировать на другой машине или в изолированной среде. Важно понимать, что наличие этих файлов дает полный контроль над учетными записями, поэтому их хранение должно быть строго регламентировано. В корпоративных средах доступ к этим файлам часто логируется системами мониторинга целостности.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Извлечение хэшей через реестр</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите командную строку от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду reg save hklm\sam c:\temp\sam.hive</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду reg save hklm\system c:\temp\system.hive</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Используйте утилиту hashcat или john для анализа</span></div></div>
+
+<h2 id="системы-хранения-паролей-в-linux-и-unix-подобных-ос">Системы хранения паролей в Linux и Unix-подобных ОС</h2>
+
+<p>В отличие от Windows, в Linux-системах разделение информации о пользователях и их паролях реализовано на уровне файлов по умолчанию. Информация о пользователях, включая имя, UID и домашнюю директорию, хранится в файле <code>/etc/passwd</code>, который доступен для чтения всем пользователям системы. Однако сами хэши паролей в современных дистрибутивах здесь не содержатся, что является базовым принципом безопасности Unix-подобных систем.</p>
+
+<p>Непосредственно хэши паролей, включая учетную запись root (суперпользователя), хранятся в файле <code>/etc/shadow</code>. Доступ к этому файлу имеет только пользователь <code>root</code>, что предотвращает возможность проведения офлайн-атак перебором обычными пользователями. Формат записей в файле <code>shadow</code> включает имя пользователя, идентифицированный алгоритм хэширования (например, <code>$6$</code> для SHA-512), соль и сам хэш.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка изменить права доступа к файлу /etc/shadow или скопировать его без необходимости может быть расценена системой безопасности как атака и заблокировать учетные записи.</p></aside>
+
+<p>Помимо локальных файлов, Linux может использовать централизованные базы данных аутентификации, такие как LDAP или Kerberos. В таких конфигурациях файл <code>/etc/shadow</code> может не содержать хэшей локальных пользователей, а лишь указывать на внешние источники аутентификации. Для управления паролями в таких средах используются утилиты <code>kadmin</code> или инструменты администрирования LDAP.</p>
+
+<h3>Анализ файлов shadow и passwd</h3>
+
+<p>Для просмотра содержимого файла <code>/etc/shadow</code> необходимо выполнить команду с правами суперпользователя. Структура строки в этом файле строго регламентирована и разделяется двоеточиями. Первое поле содержит имя пользователя, второе — хэш пароля. Если во втором поле стоит символ <code>!</code> или <code>*</code>, это означает, что учетная запись заблокирована или не имеет пароля для входа.</p>
+
+<table>
+<thead>
+<tr>
+<th>Поле</th>
+<th>Описание</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Имя пользователя</td>
+<td>admin</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Хэш пароля</td>
+<td>$6$rounds=...xyz</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Дата последнего смены (дни)</td>
+<td>19000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Мин. дней до смены</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+
+<p>При анализе стоит обратить внимание на алгоритм хэширования, указанный в начале строки хэша. Современные дистрибутивы, такие как <em>Ubuntu 22.04</em> или <em>Debian 11</em>, по умолчанию используют <code>yescrypt</code> или <code>SHA-512</code>, тогда как старые системы могли использовать <code>MD5</code> или даже <code>DES</code>, которые считаются криптографически нестойкими. Проверка алгоритма позволяет оценить уязвимость системы к брутфорс-атакам.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки стойкости паролей используйте утилиту john (John the Ripper) в режиме тестирования, не запуская полный перебор, чтобы оценить нагрузку на процессор.</p></aside>
+
+<h2 id="браузерные-хранилища-и-кэш-приложений">Браузерные хранилища и кэш приложений</h2>
+
+<p>Современные веб-браузеры часто берут на себя функцию менеджера паролей, сохраняя учетные данные для автоматического входа на сайты. Эти данные хранятся в локальных базах данных SQLite, расположенных в профилях пользователей. Например, в Google Chrome база называется <code>Login Data</code> и находится в папке <code>User Data/Default</code>. Однако содержимое этой базы зашифровано ключом, который хранится в системном хранилище ключей ОС.</p>
+
+<p>В Windows браузеры используют API <code>DPAPI</code> (Data Protection API) для шифрования сохраненных паролей. Ключ дешифрования привязан к учетной записи пользователя Windows и часто защищен мастер-ключом, который может быть восстановлен при знании пароля входа в систему. В Linux для шифрования используется связка <em>KWallet</em> (KDE) или <em>GNOME Keyring</em>, доступ к которым также требует аутентификации.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Удаление профиля браузера не всегда гарантирует полное удаление паролей, так как данные могут синхронизироваться с облачным аккаунтом Google или Firefox.</p></aside>
+
+<p>Если администратор имеет физический доступ к машине и права на вход в систему пользователя, он может извлечь пароли, запустив браузер с отладочным профилем или используя специализированные скрипты, которые обращаются к API браузера. В корпоративной среде политики группы могут запрещать сохранение паролей в браузере, но пользователи часто обходят эти ограничения, используя portable-версии ПО.</p>
+
+<h3>Локализация профилей и баз данных</h3>
+
+<p>Поиск браузерных хранилищ требует знания точных путей к профилям, которые могут отличаться в зависимости от версии ОС и способа установки браузера. Для Chrome и Chromium на Windows путь обычно выглядит как <code>C:\Users\[User]\AppData\Local\Google\Chrome\User Data\Default\Login Data</code>. На Linux аналогичный файл находится в <code>~/.config/google-chrome/Default/Login Data</code>.</p>
+
+<p>Firefox использует отдельную базу данных <code>logins.json</code> и ключевой файл <code>key4.db</code>. Без наличия обоих файлов восстановить пароли невозможно, так как ключ шифрования хранится отдельно от зашифрованных данных. Это добавляет дополнительный уровень сложности для исследователя, но также повышает безопасность данных пользователя при компрометации одного из файлов.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск базы Chrome в Windows</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте проводник и введите %LOCALAPPDATA%</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Google\Chrome\User Data\Default</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Найдите файл Login Data</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Скопируйте файл для анализа (браузер должен быть закрыт)</span></div></div>
+
+<h2 id="корпоративные-менеджеры-паролей-и-сетевые-хранилища">Корпоративные менеджеры паролей и сетевые хранилища</h2>
+
+<p>В профессиональной среде использование встроенных средств браузера или текстовых файлов категорически не рекомендуется. Вместо этого применяются специализированные менеджеры паролей, такие как <em>KeePass</em>, <em>1Password</em> или <em>Bitwarden</em>. Эти приложения хранят данные в зашифрованных контейнерах (например, файлы с расширением <code>.kdbx</code>), которые могут располагаться локально на диске или синхронизироваться через облачные сервисы.</p>
+
+<p>Локальная копия базы данных менеджера паролей представляет собойенный файл, содержащий все учетные данные организации. Безопасность такого файла зависит исключительно от мастер-пароля и ключевого файла (если используется). Администраторам необходимо знать, где могут располагаться резервные копии таких баз, так как пользователи часто копируют их на флешки или отправляют себе по почте «на всякий случай».</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Попытка открыть базу KeePass без мастер-пароля методом перебора может занять годы, если используется сложный пароль и алгоритм шифрования AES-256 или ChaCha20.</p></aside>
+
+<p>Кроме того, в Windows существуют сетевые хранилища учетных данных, доступные через Панель управления. Здесь могут сохраняться пароли для доступа к общим папкам, RDP-сессиям и другим сетевым ресурсам. Эти данные также шифруются через DPAPI и привязаны к конкретному пользователю и машине, что затрудняет их перенос на другой компьютер для анализа.</p>
+
+<h3>Поиск файлов баз данных и ключей</h3>
+
+<p>Для обнаружения файлов менеджеров паролей на диске стоит использовать поиск по расширениям файлов. Наиболее распространенные расширения включают <code>.kdbx</code> (KeePass), <code>.agilekeychain</code> (1Password) и <code>.psafe3</code> (Password Safe). Поиск следует проводить не только в стандартных папках документов, но и в скрытых директориях, а также на подключенных внешних носителях.</p>
+
+<p>Важно также проверить автозагрузку и запущенные процессы на наличие клиентов менеджеров паролей. Если приложение запущено и разблокировано, память процесса может содержать мастер-ключ в открытом виде, что позволяет извлечь данные без знания пароля. Это является распространенным вектором атак при наличии физического доступа к включенному компьютеру.</p>
+
+<table>
+<thead>
+<tr>
+<th>Приложение</th>
+<th>Расширение файла</th>
+<th>Расположение по умолчанию</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>KeePass</td>
+<td>.kdbx</td>
+<td>Документы / Рабочий стол</td>
+</tr>
+<tr>
+<td>1Password</td>
+<td>.agilekeychain</td>
+<td>AppData (Win) / Library (Mac)</td>
+</tr>
+<tr>
+<td>Bitwarden</td>
+<td>SQLite (local)</td>
+<p>\AppData\Roaming\Bitwarden</td></p>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Локальное хранение баз паролей</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая скорость доступа</li><li>✅ Полный контроль над данными</li><li>✅ Отсутствие зависимости от интернета</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Риск потери при поломке диска</li><li>❌ Сложность синхронизации</li><li>❌ Уязвимость при физическом доступе</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-при-поиске-и-анализе">Типичные ошибки при поиске и анализе</h2>
+
+<ol>
+<li><strong>Поиск паролей в открытом тексте в системных файлах</strong> — многие пользователи тратят время на поиск файлов с названиями вроде <code>passwords.txt</code> в системных папках, не понимая, что ОС хранит только хэши. Правильный подход подразумевает работу с хэшами и использование инструментов для их восстановления или сброса.</li>
+<li><strong>Игнорирование привязки к аппаратуре (TPM)</strong> — при попытке перенести файлы хранилищ (например, <code>Login Data</code> браузера или базу <em>KeePass</em> с ключом в TPM) на другой компьютер, доступ к данным теряется. Ключи дешифрования часто генерируются на основе уникальных идентификаторов железа.</li>
+<li><strong>Попытка редактирования файлов SAM или Shadow на работающей системе</strong> — прямое изменение этих файлов без использования специализированных редакторов (вроде <em>Registry Editor</em> с загрузкой куста или <code>vipw</code> в Linux) почти гарантированно приведет к повреждению системы и невозможности загрузки.</li>
+<li><strong>Неучет кодировки и экранирования</strong> — при извлечении хэшей или данных из реестра важно соблюдать точный формат. Лишний пробел, изменение регистра букв в хэше или потеря символа «<code>$</code>» в Linux делают хэш невалидным для дальнейшей обработки.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Пароли администратора хранятся в виде хэшей в защищенных системных файлах (SAM, Shadow) или в зашифрованных базах данных приложений, доступ к которым требует прав суперпользователя и часто привязан к конкретному сеансу или оборудованию.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Поиск мест хранения паролей администратора требует четкого понимания архитектуры безопасности операционной системы. В Windows основными мишенями являются файлы <code>SAM</code> и <code>SYSTEM</code> в реестре, а также браузерные базы данных, защищенные <code>DPAPI</code>. В Linux фокус смещается на файл <code>/etc/shadow</code> и системные кольцa ключей. Ни в одной из современных систем пароли не хранятся в открытом виде, что требует использования специализированных инструментов для их извлечения или сброса.</p>
+
+<p>Безопасность этих данных напрямую зависит от сложности мастер-паролей и защиты физического доступа к устройству. Администраторам следует регулярно аудировать системы на предмет наличия незащищенных копий баз паролей и контролировать права доступа к критическим системным файлам. Понимание принципов работы этих механизмов является фундаментом для построения надежной инфраструктуры защиты информации.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/2/22/2268-pram.html" class="pb-related-card">
+                <span class="pb-related-title">Pram 2268: Диагностика и устранение ошибок в Android</span>
+                <span class="pb-related-desc">Подробное руководство по коду ошибки 2268 pram. Разбор причин сбоев в Android, методы очистки кэша и</span>
+            </a><a href="/articles/d/do/dom-ru-chto-esli-otklyuchit-movix.html" class="pb-related-card">
+                <span class="pb-related-title">Что будет если отключить Movix на Дом ру: последствия и решение</span>
+                <span class="pb-related-desc">Технический анализ последствий отключения приложения Movix на ТВ приставке Дом ру. Методы восстановл</span>
+            </a><a href="/articles/d/de/dexp-dv3-t2.html" class="pb-related-card">
+                <span class="pb-related-title">DEXP DV3 T2: Настройка, прошивка и устранение неисправностей</span>
+                <span class="pb-related-desc">Полная инструкция по DEXP DV3 T2. Настройка каналов, обновление ПО, сброс настроек и решение проблем</span>
+            </a><a href="/articles/w/wi/wizardry-8-apk.html" class="pb-related-card">
+                <span class="pb-related-title">Wizardry 8 APK: Установка, совместимость и настройка эмуляторов</span>
+                <span class="pb-related-desc">Полное руководство по запуску Wizardry 8 на Android. Выбор эмулятора DOSBox, настройка управления, р</span>
+            </a><a href="/articles/r/rs/rs-out-cs-out.html" class="pb-related-card">
+                <span class="pb-related-title">Ошибки RS OUT CS OUT: диагностика и устранение</span>
+                <span class="pb-related-desc">Полный гид по устранению ошибок RS OUT и CS OUT. Анализ причин, проверка шлейфов, настройка T-CON и </span>
+            </a><a href="/articles/y/ya/yandeks-satellit-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Яндекс Сателлит: что это за программа и как ее отключить</span>
+                <span class="pb-related-desc">Подробный разбор утилиты Yandex Satellite: функции, влияние на систему, методы удаления и настройки </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

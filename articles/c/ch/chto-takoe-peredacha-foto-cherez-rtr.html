@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Передача фото через RTP: Протоколы, настройки и ошибки — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по передаче изображений через RTP. Настройка потоков, анализ задержек, выбор кодеков и устранение неполадок в IP-видеонаблюдении.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/c/ch/chto-takoe-peredacha-foto-cherez-rtr.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Передача фото через RTP: Протоколы, настройки и ошибки">
+    <meta property="og:description" content="Техническое руководство по передаче изображений через RTP. Настройка потоков, анализ задержек, выбор кодеков и устранение неполадок в IP-видеонаблюдении.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/foto-kamery/">Фото и Камеры</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Передача фото через RTP: Протоколы, настройки и ошибки</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-потоковой-передачи-мультимедиа">Архитектура потоковой передачи мультимедиа</a></li><li><a href="#настройка-сервера-и-клиентского-по">Настройка сервера и клиентского ПО</a></li><li><a href="#сетевая-инфраструктура-и-производительность">Сетевая инфраструктура и производительность</a></li><li><a href="#диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/n/na/najti-po-foto-cheloveka.html">Как найти человека по фото: эффективные методы и сервисы</a></li><li><a href="/articles/k/ka/kak-raspechatat-foto-4-na-6-na-printere.html">Как распечатать фото 4 на 6 на принтере: инструкция</a></li><li><a href="/articles/f/fo/fotoredaktor-multyashnyj-simpsony.html">Фоторедактор Симпсоны: Полная инструкция по стилизации фото</a></li><li><a href="/articles/r/re/registry-protsessora-foto.html">Регистры процессора фото: устройство и настройка</a></li><li><a href="/articles/o/op/oppo-reno-13f-gde-raspolozhena-papka-galereya.html">Папка Галерея на OPPO Reno 13F: где найти и как открыть</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Организация передачи фотопотоков через протокол RTP</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-потоковой-передачи-мультимедиа">Архитектура потоковой передачи мультимедиа</a></li><li><a href="#настройка-сервера-и-клиентского-по">Настройка сервера и клиентского ПО</a></li><li><a href="#сетевая-инфраструктура-и-производительность">Сетевая инфраструктура и производительность</a></li><li><a href="#диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</a></li><li><a href="#типичные-ошибки">Типичные ошибки</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Операторы систем видеонаблюдения часто сталкиваются с ситуацией, когда статичное изображение с камеры поступает с критической задержкой или распадается на артефакты при попытке просмотра через сеть.</p>
+<p>Вместо четкой картинки на мониторе централизованного пульта появляются квадраты, цветные полосы или полное отсутствие сигнала, что делает невозможным идентификацию объектов в реальном времени.</p>
+<p>Подобные проблемы обычно указывают на некорректную настройку транспортного уровня или несоответствие параметров потока пропускной способности канала, что требует глубокого анализа используемых протоколов передачи данных.</p>
+<p>На практике стандартный HTTP-запрос для получения каждого кадра оказывается слишком ресурсоемким и медленным, поэтому инженеры переходят на использование потоковых протоколов реального времени.</p>
+<p>Протокол <strong>RTP (Real-time Transport Protocol)</strong> разработан специально для доставки мультимедийных данных с минимальными задержками, обеспечивая непрерывность потока даже в условиях нестабильного соединения.</p>
+
+<h2 id="архитектура-потоковой-передачи-мультимедиа">Архитектура потоковой передачи мультимедиа</h2>
+<p>Фундаментальной основой передачи видео и фото в реальном времени является разделение функций кодирования, упаковки и транспорта данных между различными уровнями сетевой модели.</p>
+<p>Если у вас возникает необходимость транслировать изображение с высокой частотой кадров, важно понимать, что сам по себе RTP не гарантирует доставку каждого пакета, так как работает поверх UDP.</p>
+<p>В связке с <strong>RTCP (Real-time Transport Control Protocol)</strong> обеспечивается мониторинг качества соединения, позволяющий принимающей стороне отслеживать потери пакетов и джиттер.</p>
+
+<h3>Роль RTP и RTCP в обмене данными</h3>
+<p>Основной задачей RTP является маркировка временными метками последовательности кадров, что позволяет плееру или декодеру правильно восстанавливать порядок следования изображений.</p>
+<p>Протокол RTCP периодически рассылает служебные пакеты, содержащие статистику о количестве доставленных байт, потерях и задержках, что критически важно для адаптивного кодирования.</p>
+<p>Без механизма обратной связи от RTCP отправитель не узнает о проблемах в сети и будет продолжать слать данные в «черную дыру», расходуя впустую канал связи.</p>
+<p>Для настройки корректной работы необходимо убедиться, что брандмауэры не блокируют динамический диапазон портов, используемый для RTP-потоков.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Стандартный диапазон портов для RTP обычно составляет 10000–20000, но может быть изменен в конфигурации сервера.</p></aside>
+
+<p>Важно различать транспортные протоколы, так как выбор между TCP и UDP влияет на стратегию обработки потерь данных при передаче фото.</p>
+<p>Использование TCP гарантирует доставку, но вносит задержки из-за повторной отправки потерянных пакетов, что недопустимо для систем реального времени.</p>
+<p>UDP, используемый по умолчанию в RTP, отбрасывает опоздавшие пакеты, сохраняя актуальность картинки, но требуя устойчивого канала связи.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Режим UDP</th>
+<th>Режим TCP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Гарантия доставки</td>
+<td>Отсутствует</td>
+<td>Полная</td>
+</tr>
+<tr>
+<td>Задержка (Latency)</td>
+<td>Минимальная</td>
+<td>Высокая при потерях</td>
+</tr>
+<tr>
+<td>Порядок пакетов</td>
+<td>Не гарантирован</td>
+<td>Строгий</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>RTP поверх UDP обеспечивает минимальную задержку, жертвуя надежностью доставки каждого отдельного пакета ради актуальности изображения.</p></aside>
+
+<h2 id="настройка-сервера-и-клиентского-по">Настройка сервера и клиентского ПО</h2>
+<p>Конфигурация сервера медиатрансляции требует точного указания кодеков и параметров упаковки видеопотока для обеспечения совместимости с клиентскими устройствами.</p>
+<p>Допустим, вы настраиваете IP-камеру или медиасервер, первым шагом всегда должен быть выбор формата сжатия, так как от этого зависит нагрузка на сеть.</p>
+<p>Наиболее распространенными форматами являются <em>H.264</em> и <em>H.265</em>, которые эффективно сжимают изображение, сохраняя приемлемое качество для аналитики.</p>
+
+<h3>Выбор кодеков и форматов сжатия</h3>
+<p>Кодек <em>MJPEG</em> передает каждое фото как независимый JPEG-файл, что упрощает декодирование, но значительно увеличивает объем трафика.</p>
+<p>Для систем, где важна детализация статичного изображения, MJPEG может быть предпочтительнее, несмотря на высокий битрейт.</p>
+<p>Современные стандарты <em>H.265</em> позволяют снизить потребление bandwidth до 50% по сравнению с предшественниками при том же качестве картинки.</p>
+<p>При настройке сервера необходимо явно указать тип payload в заголовках RTP, чтобы клиент понимал, как декодировать входящие данные.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка кодека</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Выберите формат H.264 в меню Видео</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите битрейт 2048 кбит/с</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Включите переменный битрейт (VBR)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Сохраните настройки</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Перезапустите поток</span></div></div>
+
+<p>Клиентское программное обеспечение, такое как <em>VLC Media Player</em> или специализированные VMS, должно поддерживать выбранный профиль кодирования.</p>
+<p>Часто возникает ситуация, когда сервер транслирует поток в профиле High, а клиентское устройство поддерживает только Baseline, что приводит к черному экрану.</p>
+<p>Проверка спецификаций оборудования перед внедрением позволяет избежать несовместимости на этапе эксплуатации системы безопасности.</p>
+<p>Для отладки потока можно использовать утилиты командной строки, которые показывают структуру пакетов в реальном времени.</p>
+<p>Запуск сниффера трафика позволяет увидеть, приходят ли ключевые кадры (I-frames), необходимые для начала декодирования изображения.</p>
+
+<pre><code>ffmpeg -i rtsp://camera_ip/stream -c copy -f rtp rtp://destination_ip:port</code></pre>
+
+<p>Использование командной строки <em>FFmpeg</em> дает гибкие возможности для перекодирования потока на лету, если клиент не поддерживает оригинальный формат.</p>
+<p>Это создает дополнительную нагрузку на процессор сервера, но решает проблемы совместимостиlegacy-устройств.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Перекодирование видеопотока в реальном времени требует значительных вычислительных ресурсов сервера.</p></aside>
+
+<h2 id="сетевая-инфраструктура-и-производительность">Сетевая инфраструктура и производительность</h2>
+<p>Качество передачи фото напрямую зависит от состояния физической сети и настроек активного сетевого оборудования на пути следования пакетов.</p>
+<p>Если у вас наблюдаются регулярные разрывы изображения, первым делом стоит проверить загрузку каналов связи и отсутствие коллизий.</p>
+<p>В сегментах сети, где передаются потоки RTP, рекомендуется выделять отдельные VLAN для изоляции трафика видеонаблюдения от офисных данных.</p>
+
+<h3>Проблемы пропускной способности и джиттера</h3>
+<p>Джиттер представляет собой вариацию задержки прибытия пакетов, которая может приводить к рывкам и замиранию картинки на экране.</p>
+<p>Буферизация на стороне клиента помогает сгладить джиттер, но увеличивает общую задержку отображения, что критично для систем контроля доступа.</p>
+<p>Оптимальным решением является настройка QoS (Quality of Service) на коммутаторах для приоритизации RTP-трафика над другими типами данных.</p>
+<p>Правила QoS маркируют пакеты видеопотока высоким приоритетом, гарантируя их проход через сеть даже в часы пиковой нагрузки.</p>
+
+<ul>
+<li>Маркировка трафика DSCP значениями для видео (обычно AF41 или EF).</li>
+<li>Настройка очередей приоритетной передачи на портах коммутатора.</li>
+<li>Ограничение полосы пропускания для некритичных приложений.</li>
+<li>Использование Jumbo Frames для снижения накладных расходов процессора.</li>
+</ul>
+
+<p>Потери пакетов в сети приводят к появлению артефактов сжатия, известных как «квакание» или «пикселизация» изображения.</p>
+<p>Даже потеря 1-2% пакетов может сделать картинку нечитаемой, еслины ключевые кадры или важные части макроблоков.</p>
+<p>Для диагностики следует использовать инструменты вроде <em>ping</em> с большим размером пакета и <em>iperf</em> для проверки реальной пропускной способности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Назначение</th>
+<th>Интерпретация</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ping (1500 байт)</td>
+<td>Проверка MTU и потерь</td>
+<td>Фрагментация или таймауты</td>
+</tr>
+<tr>
+<td>Iperf3</td>
+<td>Тест скорости UDP</td>
+<td>Реальная пропускная способность</td>
+</tr>
+<tr>
+<td>Wireshark</td>
+<td>Анализ пакетов</td>
+<td>Потери и перепутывание порядка</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте кабели категории Cat6 или выше для гигабитных сетей, чтобы избежать проблем с качеством сигнала на длинных дистанциях.</p></aside>
+
+<h2 id="диагностика-и-устранение-неисправностей">Диагностика и устранение неисправностей</h2>
+<p>Процесс поиска причин нестабильной работы видеопотока требует системного подхода и использования специализированного инструментария для анализа.</p>
+<p>Начинать следует с проверки физического уровня, убеждаясь в исправности патч-кордов и отсутствии ошибок на портах коммутатора.</p>
+<p>Если физический уровень исправен, внимание переключается на логические настройки IP-адресации и маршрутизации между сегментами сети.</p>
+
+<h3>Использование анализаторов трафика</h3>
+<p>Программа <em>Wireshark</em> является стандартом де-факто для глубокого анализа RTP-потоков и выявления скрытых проблем сети.</p>
+<p>Функция «Telephony -> RTP -> Stream Analysis» позволяет визуализировать график джиттера и потерь пакетов во времени.</p>
+<p>Анализируя временные метки, можно определить, где именно происходит задержка: на стороне камеры, в сети или на сервере записи.</p>
+<p>Цветовая маркировка пакетов в анализаторе помогает быстро выявить аномалии, такие как дублирование пакетов или нарушение последовательности.</p>
+<p>Фильтрация по протоколу <code>rtp</code> позволяет отсечь лишний шум и сосредоточиться исключительно на медиа-трафике.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Анализ в Wireshark</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите захват на интерфейсе</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Отфильтруйте по «rtp»</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите поток «Telephony -> RTP»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Нажмите «Analyze»</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Изучите график потерь</span></div></div>
+
+<p>Частой ошибкой является игнорирование настроек MTU (Maximum Transmission Unit), что приводит к фрагментации пакетов и их потере.</p>
+<p>Если размер пакета превышает MTU канала, он разбивается на части, и потеря любой части ведет к отбрасыванию всего кадра.</p>
+<p>Оптимальным значением MTU для сетей с видеотрафиком часто является 1400-1450 байт, чтобы оставить запас для заголовков.</p>
+<p>Проверка целостности пути с помощью <code>traceroute</code> помогает выявить узкие места и проблемные маршрутизаторы.</p>
+
+<p>Некорректная синхронизация времени на сервере и клиенте может приводить к проблемам с воспроизведением архива и работой событийной аналитики.</p>
+<p>Протокол <em>NTP</em> должен быть настроен на всех устройствах системы безопасности для единого времени событий.</p>
+<p>Рассинхронизация даже в несколько секунд может сделать невозможным поиск нужного момента в архиве по времени события.</p>
+
+<h2 id="типичные-ошибки">Типичные ошибки</h2>
+<ol>
+<li><strong>Игнорирование различий между TCP и UDP</strong> — попытка передать тяжелый поток H.265 через TCP в нестабильной сети приводит к «зависанию» картинки; следует использовать UDP с механизмом восстановления или снизить битрейт.</li>
+<li><strong>Неверный расчет (bandwidth)</strong> — суммарный битрейт всех камер превышает пропускную способность uplink-порта коммутатора, что вызывает массовые потери пакетов; необходимо агрегировать каналы или сегментировать сеть.</li>
+<li><strong>Отсутствие буферизации на клиенте</strong> — установка слишком малого буфера джиттера приводит к рывкам изображения при малейших скачках задержки; рекомендуется увеличить размер буфера в настройках плеера.</li>
+<li><strong>Блокировка динамических портов</strong> — файрволы блокируют порты RTP, определенные в SDP-описании; требуется открыть диапазон портов или использовать режим туннелирования.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование RTP</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Минимальная задержка</li><li>✅ Эффективное использование</li><li>✅ Поддержка multicast</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует настройки сети</li><li>❌ Нет гарантии доставки</li><li>❌ Сложнее в отладке чем HTTP</li></ul></div>
+</div></div>
+
+<h2 id="резюме">Резюме</h2>
+<p>Передача фото и видео через протокол RTP является стандартом для систем, требующих минимальной задержки и высокой производительности.</p>
+<p>Успешная реализация зависит от грамотной настройки кодеков, правильной организации сетевой инфраструктуры и использования приоритизации трафика.</p>
+<p>Регулярный мониторинг параметров потока и своевременное устранение узких мест позволяют поддерживать стабильную работу системы видеонаблюдения.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/n/na/najti-po-foto-cheloveka.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти человека по фото: эффективные методы и сервисы</span>
+                <span class="pb-related-desc">Полная инструкция по поиску людей через изображение. Обзор нейросетей, обратного поиска в Google и Я</span>
+            </a><a href="/articles/k/ka/kak-raspechatat-foto-4-na-6-na-printere.html" class="pb-related-card">
+                <span class="pb-related-title">Как распечатать фото 4 на 6 на принтере: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство: печать фотографий 10х15 см. Настройка принтера, выбор бумаги, работа в Word и</span>
+            </a><a href="/articles/f/fo/fotoredaktor-multyashnyj-simpsony.html" class="pb-related-card">
+                <span class="pb-related-title">Фоторедактор Симпсоны: Полная инструкция по стилизации фото</span>
+                <span class="pb-related-desc">Подробный гайд по созданию мультяшных аватаров в стиле Симпсонов. Обзор методов, приложений, нейросе</span>
+            </a><a href="/articles/r/re/registry-protsessora-foto.html" class="pb-related-card">
+                <span class="pb-related-title">Регистры процессора фото: устройство и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по работе с регистрами процессора фото. Настройка параметров экспозиции, баланс</span>
+            </a><a href="/articles/o/op/oppo-reno-13f-gde-raspolozhena-papka-galereya.html" class="pb-related-card">
+                <span class="pb-related-title">Папка Галерея на OPPO Reno 13F: где найти и как открыть</span>
+                <span class="pb-related-desc">Полная инструкция по поиску папки Галерея на OPPO Reno 13F. Пути к файлам, работа с ColorOS и решени</span>
+            </a><a href="/articles/p/po/pochemu-foto-otkryvaetsya-cherez-paint.html" class="pb-related-card">
+                <span class="pb-related-title">Почему фото открывается через Paint: решение проблемы</span>
+                <span class="pb-related-desc">Узнайте, почему изображения открываются в Paint вместо просмотра. Полное руководство по восстановлен</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

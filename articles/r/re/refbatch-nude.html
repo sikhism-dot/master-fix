@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Оптимизация пакетной обработки изображений: RefBatch и методы — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по настройке RefBatch для обработки изображений. Анализ производительности, устранение ошибок и оптимизация памяти.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/r/re/refbatch-nude.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Оптимизация пакетной обработки изображений: RefBatch и методы">
+    <meta property="og:description" content="Техническое руководство по настройке RefBatch для обработки изображений. Анализ производительности, устранение ошибок и оптимизация памяти.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Оптимизация пакетной обработки изображений: RefBatch и методы</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-референтной-пакетной-обработки">Принципы работы референтной пакетной обработки</a></li><li><a href="#техническая-реализация-и-настройка-параметров">Техническая реализация и настройка параметров</a></li><li><a href="#диагностика-проблем-и-устранение-ошибок">Диагностика проблем и устранение ошибок</a></li><li><a href="#расширенные-стратегии-масштабирования">Расширенные стратегии масштабирования</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/t/te/tenorshare-icarefone-podklyuchenie.html">Tenorshare iCareFone: подключение и настройка iPhone, Android</a></li><li><a href="/articles/k/ka/kak-ubrat-umnuyu-kameru-v-yandekse.html">Как отключить и убрать умную камеру Яндекс: полная инструкция</a></li><li><a href="/articles/k/ka/kak-otkryt-okno-soobshcheniya.html">Как открыть окно сообщения: полная инструкция для Android и iOS</a></li><li><a href="/articles/i/ir/irbis-nb-73-ne-zagoraetsya-monitor.html">IRBIS NB73: Не включается экран — причины и решение</a></li><li><a href="/articles/v/v-/v-kakoj-razem-podklyuchat-mikrofon-k-kompyuteru-na-zadnej-paneli.html">Куда подключать микрофон: разъемы на задней панели ПК</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Оптимизация пакетной обработки: RefBatch и методы</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-референтной-пакетной-обработки">Принципы работы референтной пакетной обработки</a></li><li><a href="#техническая-реализация-и-настройка-параметров">Техническая реализация и настройка параметров</a></li><li><a href="#диагностика-проблем-и-устранение-ошибок">Диагностика проблем и устранение ошибок</a></li><li><a href="#расширенные-стратегии-масштабирования">Расширенные стратегии масштабирования</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>В процессе настройки конвейера обработки данных для генеративных нейросетей часто возникает ситуация, когда стандартные методы загрузки изображений становятся узким местом. Вместо того чтобы GPU выполнял вычисления, он простаивает в ожидании данных с диска, а оперативная память переполняется из-за неэффективного управления буфером.</p>
+
+<p>Пользователи сталкиваются с резким падением скорости генерации (it/s), когда количество эталонных изображений превышает несколько десятков. Система перестает успевать кодировать изображения в тензоры, что приводит к рассинхронизации процессов и, в худшем случае, к аварийному завершению работы приложения с кодом ошибки OOM (Out Of Memory).</p>
+
+<p>На практике это означает, что сложные сценарии с использованием множественных референсов становятся невозможными без глубокой переработки скрипта загрузки. Требуется внедрение специализированного механизма референтной пакетной обработки, который будет управлять потоком данных независимо от основного цикла генерации.</p>
+
+<h2 id="принципы-работы-референтной-пакетной-обработки">Принципы работы референтной пакетной обработки</h2>
+
+<p>Механизм RefBatch базируется на предварительной загрузке и кэшировании эталонных изображений в выделенный сегмент памяти перед началом основного цикла генерации. Это позволяет исключить задержки ввода-вывода (I/O latency) в критический момент работы модели. Если у вас реализована классическая загрузка"на лету", то каждое обращение к файловой системе создает микростопы, которые суммируются и ощутимо влияют на производительность.</p>
+
+<p>Ключевым аспектом является управление памятью. <strong>Референтный буфер</strong> должен быть строго лимитирован, чтобы не конфликтовать с памятью, необходимой для весов модели и промежуточных вычислений. Допустим, вы работаете с моделью SDXL, требующей значительных ресурсов VRAM; в таком случае агрессивное кэширование всех изображений в высоком разрешении может привести к переполнению.</p>
+
+<p>Существует два основных подхода к реализации: статическая загрузка всего пакета и динамическая подгрузка по мере необходимости. Статический метод обеспечивает максимальную скорость, но требует большой объем RAM. Динамический метод экономит память, но вносит накладные расходы на управление очередью задач. В современных реализациях, таких как <em>ComfyUI</em> или <em>Automatic1111</em>, часто используется гибридный подход.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При работе с моделями диффузии важно учитывать, что изображения референсов должны быть приведены к одинаковому размеру или иметь кратные стороны для корректного батчинга.</p></aside>
+
+<p>Эффективность работы RefBatch напрямую зависит от формата хранения данных в памяти. Использование массивов NumPy или тензоров PyTorch в нативном формате позволяет минимизировать накладные расходы при передаче данных на GPU. Конвертация форматов"на лету" является одной из самых частых причин снижения производительности.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Статическая загрузка</th>
+<th>Динамическая загрузка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Использование RAM</td>
+<td>Высокое</td>
+<td>Низкое</td>
+</tr>
+<tr>
+<td>Скорость доступа</td>
+<td>Максимальная</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>Риск OOM</td>
+<td>Высокий</td>
+<td>Низкий</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Сценарии использования в генеративных моделях</h3>
+
+<p>В сценариях Image-to-Image или при использовании ControlNet референтные изображения играют роль условия для генерации. Если система не успевает подготовить батч условий, конвейер останавливается. Для сценариев с множественными референсами (Multi-Reference) важно правильно настроить размер батча, чтобы он соответствовал архитектуре модели.</p>
+
+<p>Допустим, вы используете LoRA-адаптеры, которые также требуют загрузки дополнительных весов. В этом случае RefBatch должен работать в фоновом потоке, не блокируя основной поток выполнения. Это особенно актуально для серверных развертываний, где один инстанс обслуживает несколько запросов одновременно.</p>
+
+<p>Настройка параметров батчинга требует экспериментального подбора. Слишком маленький размер батча не даст прироста скорости, а слишком большой приведет к фрагментации памяти. Оптимальным считается значение, при котором загрузка GPU составляет 95-99% в течение всего цикла генерации.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка базового RefBatch</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Определите путь к папке с референсами</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Задайте максимальный размер батча в конфиге</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Установите формат предобработки (resize/crop)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите тестовую генерацию для замера метрик</span></div></div>
+
+<h2 id="техническая-реализация-и-настройка-параметров">Техническая реализация и настройка параметров</h2>
+
+<p>Для внедрения эффективной пакетной обработки необходимо модифицировать конфигурационный файл или скрипт запуска. Если вы используете Python-окружение, ключевым параметром часто выступает <code>batch_size</code> и <code>num_workers</code>. Увеличение числа воркеров позволяет распараллелить чтение файлов с диска, что критически важно для HDD-накопителей.</p>
+
+<p>В коде это реализуется через создание DataLoader с соответствующими параметрами. <strong>Важно правильно установить функцию коллации</strong>, которая будет собирать отдельные изображения в единый тензор. Ошибки в этой функции приводят к тому, что изображения разных размеров не могут быть объединены, и процесс падает.</p>
+
+<pre><code>loader = DataLoader(dataset, batch_size=4, num_workers=4, pin_memory=True)</code></pre>
+
+<p>Параметр <code>pin_memory=True</code> ускоряет передачу данных на GPU, фиксируя память в физическом адресном пространстве. Однако на системах с ограниченной оперативной памятью (менее 16 ГБ) включение этой опции может вызвать свопинг и общее падение производительности системы.</p>
+
+<p>При работе с большими разрешениями (4K и выше) рекомендуется использовать превью в низком разрешении для предварительной обработки и только затем загружать полные веса. Это позволяет сохранить отзывчивость интерфейса и быстро оценить результат перед финальным рендером.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение параметров num_workers выше количества физических ядер процессора не даст прироста скорости, но увеличит потребление памяти и нагрузку на планировщик задач ОС.</p></aside>
+
+<h3>Оптимизация для различных аппаратных конфигураций</h3>
+
+<p>Владельцы видеокарт NVIDIA с архитектурой Ampere и новее могут использовать Tensor Coords для ускорения обработки батчей. Для этого необходимо убедиться, что данные в RefBatch приведены к формату FP16 или BF16. Использование FP32 в таких случаях неоправданно расходует пропускную способность памяти.</p>
+
+<p>Если у вас система с интегрированной графикой или слабой видеокартой, основная нагрузка ложится на CPU. В этом случае приоритетом становится минимизация копирований памяти. Следует использовать shared memory buffers, если операционная система и драйверы поддерживают такую функциональность.</p>
+
+<p>Для серверов с NVMe накопителями (узким местом) часто становится не диск, а шина PCIe. В таких конфигурациях имеет смысл увеличить размер буфера предзагрузки, чтобы компенсировать задержки шины при burst-нагрузках. SSD SATA могут не успевать за темпом генерации даже при оптимальных настройках софта.</p>
+
+<ul>
+<li>Используйте форматы изображений без потерь (PNG, WEBP lossless) для референсов, чтобы избежать артефактов сжатия.</li>
+<li>Отключайте антивирусное сканирование папок с временными данными и кэшем модели.</li>
+<li>Убедитесь, что драйверы видеокарты обновлены до последней стабильной версии.</li>
+<li>Проверьте температуру компонентов, так как троттлинг снижает частоты и замедляет обработку.</li>
+</ul>
+
+<h2 id="диагностика-проблем-и-устранение-ошибок">Диагностика проблем и устранение ошибок</h2>
+
+<p>Наиболее распространенной проблемой при работе с RefBatch является утечка памяти. Если после каждой итерации генерации потребление RAM растет, значит, объекты не освобождаются сборщиком мусора. В Python это часто связано с циклическими ссылками или глобальными переменными, хранящими тензоры.</p>
+
+<p>Допустим, вы наблюдаете сообщение"CUDA out of memory". Это не всегда означает нехватку VRAM. Ошибка может возникать из-за фрагментации памяти, когда свободные блоки слишком малы для размещения нового батча. В таких случаях помогает очистка кэша CUDA перед началом новой серии генераций.</p>
+
+<p>Для диагностики используйте профилировщики, такие как <em>Nsight Systems</em> или встроенные инструменты <code>torch.profiler</code>. Они покажут, сколько времени тратится на загрузку данных, а сколько на вычисления. Если время загрузки превышает 20% от общего времени, требуется оптимизация I/O.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация RefBatch</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Ускорение генерации до 3 раз</li><li>✅ Стабильность при больших объемах данных</li><li>✅ Возможность работы в фоновом режиме</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует тонкой настройки</li><li>❌ Увеличивает стартовое время</li><li>❌ Сложнее в отладке</li></ul></div>
+</div></div>
+
+<p>Логирование ошибок должно быть включено на уровне приложения. Анализируйте файлы логов на предмет предупреждений о переполнении буфера или таймаутах подключения. Часто проблема кроется в блокировках потоков (deadlocks), когда один процесс ждет ресурс, занятый другим.</p>
+
+<table>
+<thead>
+<tr>
+<th>Симптом</th>
+<th>Вероятная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Резкие скачки FPS</td>
+<td>Нехватка RAM</td>
+<td>Уменьшить batch_size</td>
+</tr>
+<tr>
+<td>Черные изображения</td>
+<td>Ошибка конвертации</td>
+<td>Проверить формат входа</td>
+</tr>
+<tr>
+<td>Зависание интерфейса</td>
+<td>Блокировка GUI</td>
+<td>Вынести обработку в тред</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Типичные ошибки конфигурации</h3>
+
+<p>При настройке системы пользователи часто допускают ряд системных ошибок, которые сводят на нет все преимущества пакетной обработки. Понимание этих ошибок позволяет избежать долгих поисков неисправностей.</p>
+
+<ol>
+<li><strong>Игнорированиеaspect ratio</strong> — попытка объединить в батч изображения с разными пропорциями без предварительного кропа или паддинга приводит к искажению геометрии или ошибке выполнения.</li>
+<li><strong>Превышение лимита воркеров</strong> — установка <code>num_workers</code> больше 8-16 часто дает обратный эффект из-за накладных расходов на переключение контекста процессора.</li>
+<li><strong>Отсутствие нормализации</strong> — если референсы имеют разную яркость или цветовой профиль, модель будет работать некорректно; необходима приведение к единому стандарту (например, 0-1 или -1 to 1).</li>
+<li><strong>Блокировка основного потока</strong> — выполнение тяжелых операций предобработки в главном потоке приложения вызывает"фризы" интерфейса и делает систему неотзывчивой.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте мониторинг ресурсов в реальном времени (например, HTOP или Task Manager) во время тестового запуска, чтобы увидеть узкие места в потреблении CPU и RAM.</p></aside>
+
+<h2 id="расширенные-стратегии-масштабирования">Расширенные стратегии масштабирования</h2>
+
+<p>Для промышленных применений, где требуется обработка тысяч запросов в минуту, одного сервера может быть недостаточно. В таких случаях RefBatch реализуется как микросервис, общающийся с основным приложением через очередь сообщений (например, Redis или RabbitMQ).</p>
+
+<p>Распределенная обработка позволяет балансировать нагрузку между несколькими GPU. Если у вас кластер из нескольких узлов, задача разбивается на под-батчи, которые распределяются по узлам. Результаты затем агрегируются и возвращаются пользователю. Это требует сложной orchestration-логике.</p>
+
+<p>Важным аспектом является версионирование моделей и референсов. При обновлении весов модели старые батчи могут стать несовместимыми. Необходима система управления метаданными, которая будет отслеживать совместимость версий конфигов, моделей и входных данных.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Эффективная работа с RefBatch требует баланса между объемом памяти, скоростью диска и вычислительной мощностью GPU, а также тщательной настройки параметров загрузки.</p></aside>
+
+<p>В заключение следует отметить, что грамотная настройка пакетной обработки изображений является фундаментом для стабильной работы любых современных генеративных систем. Пренебрежение этим этапом приводит к нестабильности и низкой производительности, независимо от мощности установленного оборудования.</p>
+
+<p>Регулярный аудит конфигурации, обновление библиотек и мониторинг метрик производительности позволяют поддерживать систему в оптимальном состоянии. Внедрение описанных практик превращает хаотичный процесс генерации в предсказуемый и управляемый производственный конвейер.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/t/te/tenorshare-icarefone-podklyuchenie.html" class="pb-related-card">
+                <span class="pb-related-title">Tenorshare iCareFone: подключение и настройка iPhone, Android</span>
+                <span class="pb-related-desc">Инструкция по подключению Tenorshare iCareFone к iPhone и Android. Решение проблем с драйверами, USB</span>
+            </a><a href="/articles/k/ka/kak-ubrat-umnuyu-kameru-v-yandekse.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить и убрать умную камеру Яндекс: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по отключению, удалению и настройке приватности умных камер Яндекс. Решение пр</span>
+            </a><a href="/articles/k/ka/kak-otkryt-okno-soobshcheniya.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть окно сообщения: полная инструкция для Android и iOS</span>
+                <span class="pb-related-desc">Подробный гид по активации и настройке всплывающих уведомлений на смартфонах. Решение проблем с отоб</span>
+            </a><a href="/articles/i/ir/irbis-nb-73-ne-zagoraetsya-monitor.html" class="pb-related-card">
+                <span class="pb-related-title">IRBIS NB73: Не включается экран — причины и решение</span>
+                <span class="pb-related-desc">Почему не загорается монитор на ноутбуке IRBIS NB73? Полный гид по диагностике, ремонту подсветки, м</span>
+            </a><a href="/articles/v/v-/v-kakoj-razem-podklyuchat-mikrofon-k-kompyuteru-na-zadnej-paneli.html" class="pb-related-card">
+                <span class="pb-related-title">Куда подключать микрофон: разъемы на задней панели ПК</span>
+                <span class="pb-related-desc">Подробная инструкция: какой разъем выбрать для микрофона на задней панели компьютера. Различия розов</span>
+            </a><a href="/articles/w/wa/wave-200-podruzhit-s-assistentom.html" class="pb-related-card">
+                <span class="pb-related-title">Wave 200 и Голосовой Ассистент: Полная Инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по интеграции контроллера Wave 200 с умным помощником. Настройка API, устран</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Точки восстановления Windows Server 2019: создание и настройка — Мастер Фикс</title>
+    <meta name="description" content="Полная инструкция по настройке, созданию и проверке точек восстановления на Windows Server 2019. Анализ дискового пространства и типичных ошибок.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/w/wi/windows-server-2019-tochka-vosstanovleniya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Точки восстановления Windows Server 2019: создание и настройка">
+    <meta property="og:description" content="Полная инструкция по настройке, созданию и проверке точек восстановления на Windows Server 2019. Анализ дискового пространства и типичных ошибок.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Точки восстановления Windows Server 2019: создание и настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#активация-защиты-системы-и-настройка-дискового-квотирования">Активация защиты системы и настройка дискового квотирования</a></li><li><a href="#создание-контрольных-точек-перед-внесением-изменений">Создание контрольных точек перед внесением изменений</a></li><li><a href="#процедура-восстановления-системы-из-сохраненной-копии">Процедура восстановления системы из сохраненной копии</a></li><li><a href="#анализ-дискового-пространства-и-управление-историей">Анализ дискового пространства и управление историей</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vklyuchit-tachpad-v-bios-intel.html">Как включить тачпад в BIOS Intel: полная инструкция</a></li><li><a href="/articles/k/ka/kak-otkryt-slot-sim-karty-na-noutbuke-hp.html">Как открыть слот SIM на ноутбуке HP: полная инструкция</a></li><li><a href="/articles/b/be/besprovodnoj-displej-windows-10.html">Беспроводной дисплей Windows 10: настройка, Miracast, устранение ошибок</a></li><li><a href="/articles/a/as/asus-x750l-gde-raspolozhen-mikrofon.html">Где микрофон на Asus X750L: расположение и настройка</a></li><li><a href="/articles/v/v-/v-noutbuke-asus-pro57t-kak-snyat-videokartu.html">Как снять видеокарту в ноутбуке ASUS Pro57T: Инструкция</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Настройка и управление точками восстановления Windows Server 2019</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#активация-защиты-системы-и-настройка-дискового-квотирования">Активация защиты системы и настройка дискового квотирования</a></li><li><a href="#создание-контрольных-точек-перед-внесением-изменений">Создание контрольных точек перед внесением изменений</a></li><li><a href="#процедура-восстановления-системы-из-сохраненной-копии">Процедура восстановления системы из сохраненной копии</a></li><li><a href="#анализ-дискового-пространства-и-управление-историей">Анализ дискового пространства и управление историей</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-лучшие-практики">Резюме и лучшие практики</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Внезапный сбой после установки критического обновления безопасности или ошибочная конфигурация системного реестра могут парализовать работу корпоративного сервера за считанные минуты. Администраторы часто сталкиваются с ситуацией, когда система перестает отвечать на запросы, а стандартные методы диагностики не дают результата, требуя немедленного отката изменений.</p>
+
+<p>Использование механизма точек восстановления (System Restore) позволяет вернуть операционную систему к предыдущему стабильному состоянию без потери пользовательских данных на других разделах. В среде <em>Windows Server 2019</em> эта функция по умолчанию отключена на системном диске, что требует ручного вмешательства для активации защиты системы перед внесением любых изменений.</p>
+
+<p>Игнорирование предварительной настройки резервного копирования системных файлов может привести к невозможности восстановления работоспособности сервера без полной переу ОС. Грамотное планирование дискового пространства и понимание логики работы теневых копий являются ключевыми факторами обеспечения отказоустойчивости инфраструктуры.</p>
+
+<h2 id="активация-защиты-системы-и-настройка-дискового-квотирования">Активация защиты системы и настройка дискового квотирования</h2>
+
+<p>Первым шагом в организации системы восстановления является включение соответствующей функции для системного тома, так как в серверных редакциях ОС она деактивирована по умолчанию для экономии ресурсов. Для начала работы необходимо открыть оснастку «Свойства системы», перейдя в панель управления или использовав команду <code>sysdm.cpl</code> в диалоговом окне «Выполнить».</p>
+
+<p>После перехода на вкладку «Защита системы» в списке доступных дисков будет отображаться статус «Отключено» для диска C. Выделив нужный том, следует нажать кнопку «Настроить», где откроется окно управления параметрами восстановления для выбранного накопителя.</p>
+
+<p>В открывшемся окне требуется выбрать опцию «Включить защиту системы», что активирует механизм создания контрольных точек. Параллельно с этим задается максимальный объем дискового пространства, который может быть использован для хранения старых версий файлов и снимков системы, при этом рекомендуется выделять не менее 10-15% от общего объема диска или фиксированный размер в 20-30 Гб.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Выделение слишком малого объема дискового пространства приведет к быстрому переполнению буфера и удалению самых ранних точек восстановления, что сократит период возможного отката.</p></aside>
+
+<p>После применения настроек система автоматически создаст первую контрольную точку, о чем будет свидетельствовать появление текущей даты и времени в списке доступных вариантов восстановления. Важно учитывать, что для корректной работы функции службы <em>Volume Shadow Copy</em> должны быть запущены и иметь статус «Автоматический».</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Включение защиты</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте свойства системы</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите на вкладку Защита системы</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выберите диск и нажмите Настроить</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Включите защиту и задайте лимит места</span></div></div>
+
+<h3>Управление размером хранилища через PowerShell</h3>
+
+<p>Для автоматизации развертывания на множестве серверов целесообразно использовать командную строку PowerShell, что позволяет избежать ручного прохождения через графический интерфейс. С помощью модуля <em>Microsoft.Windows.ServerManager</em> или стандартных cmdlet можно быстро активировать защиту и установить лимиты.</p>
+
+<p>Команда позволяет не только включить функцию, но и сразу задать процент использования диска, что особенно удобно при скриптовой настройке новых узлов. Ниже приведен пример команды, которая включает защиту для диска C и устанавливает максимальное использование дискового пространства на уровне 15%.</p>
+
+<pre><code>Enable-WindowsOptionalFeature -Online -FeatureName SystemRestore
+<p>Set-VSSStorageArea -Disk C: -MaxSize 15%</code></pre></p>
+
+<p>Альтернативный метод предполагает использование утилиты <code>vssadmin</code>, которая предоставляет детальный контроль над теневыми копиями. Проверка текущего состояния хранилища выполняется командой <code>vssadmin list shadowstorage</code>, которая покажет текущий, минимальный и максимальный зарезервированный объем.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MaxSize</td>
+<td>Максимальный размер хранилища</td>
+<td>15-20% от диска или 30 ГБ</td>
+</tr>
+<tr>
+<td>MinSize</td>
+<td>Минимальный гарантированный размер</td>
+<td>Не менее 300 МБ</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="создание-контрольных-точек-перед-внесением-изменений">Создание контрольных точек перед внесением изменений</h2>
+
+<p>Непосредственно перед установкой новых приложений, драйверов устройств или обновлений безопасности рекомендуется вручную создать точку восстановления с понятным именным идентификатором. Это действие гарантирует наличие конкретного состояния системы, к которому можно будет вернуться в случае неудачного исхода обновления.</p>
+
+<p>Процесс создания снимка занимает от нескольких секунд до пары минут в зависимости от нагрузки на дисковую подсистему и количества изменяемых файлов. Во время этой операции пользователи могут продолжать работу, однако производительность дискового ввода-вывода может временно снизиться.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте descriptive names для точек восстановления, указывая дату и суть изменений, например «Before_SQL_Update_Oct2023», чтобы упростить навигацию в будущем.</p></aside>
+
+<p>Создать точку можно через графический интерфейс, нажав кнопку «Создать» в окне настройки защиты системы, либо воспользовавшись командной строкой. При использовании PowerShell команда <code>Checkpoint-Computer</code> позволяет создать снимок с описанием, которое будет отображаться в списке доступных вариантов отката.</p>
+
+<pre><code>Checkpoint-Computer -Description "Pre-Update Check" -RestorePointType "MODIFY_SETTINGS"</code></pre>
+
+<p> Они сохраняют только системные файлы, реестр, установленные программы и скрипты, игнорируя документы в папках пользователей.</p>
+
+<h3>Автоматизация создания точек перед установкой ПО</h3>
+
+<p>Многие установщики программного обеспечения, такие как пакеты <em>Microsoft Exchange</em> или <em>SQL Server</em>, автоматически инициируют создание точки восстановления перед началом инсталляции. Однако полагаться исключительно на этот механизм рискованно, так как поведение установщика может быть изменено или прервано.</p>
+
+<p>Лучшей практикой считается ручное создание точки или запуск скрипта-обертки, который сначала фиксирует состояние системы, а затем запускает установку. Такой подход обеспечивает наличие чистого снимка именно перед началом любых модификаций окружения.</p>
+
+<ul>
+<li>Откройте PowerShell с правами администратора.</li>
+<li>Введите команду создания точки с понятным описанием.</li>
+<li>Дождитесь подтверждения успешного завершения операции.</li>
+<li>Приступайте к установке обновлений или программного обеспечения.</li>
+</ul>
+
+<h2 id="процедура-восстановления-системы-из-сохраненной-копии">Процедура восстановления системы из сохраненной копии</h2>
+
+<p>В случае возникновения критических ошибок, синего экрана смерти или невозможности загрузки операционной системы в штатном режиме, необходимо инициировать процесс восстановления. Если сервер еще способен загрузиться, процедуру можно запустить через стандартный интерфейс свойств системы, выбрав кнопку «Восстановить».</p>
+
+<p>Запустится мастер восстановления, который предложит выбрать рекомендуемую точку или самостоятельно указать дату и время из списка доступных вариантов. После выбора целевого состояния система запросит подтверждение и предупредит о том, что процесс нельзя прерывать, после чего потребуется перезагрузка.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Процесс восстановления может занять значительное время, в течение которого сервер будет недоступен. Не выключайте питание и не перезагружайте оборудование принудительно.</p></aside>
+
+<p>Если операционная система не загружается, восстановление выполняется через среду восстановления Windows (WinRE), куда можно попасть, загрузившись с установочного носителя или диска восстановления. В меню выбора действий следует перейти в раздел «Поиск и устранение неисправностей» и выбрать «Восстановление системы».</p>
+
+<p>После завершения процедуры и успешной загрузки ОС появится отчет о результатах, в котором будет указано, какие файлы были восстановлены, а какие остались без изменений. Системный журнал событий также пополнится записями о successful restore operation, что полезно для аудита.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Запуск восстановления</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите rstrui.exe</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите точку восстановления</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подтвердите действие</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь перезагрузки и завершения</span></div></div>
+
+<h3>Восстановление в безопасном режиме</h3>
+
+<p>Иногда стандартный режим работы системы не позволяет завершить процесс отката из-за блокировки файлов антивирусом или сторонними службами. В таких случаях рекомендуется загрузить сервер в безопасном режиме, где запускается только минимальный набор драйверов.</p>
+
+<p>Для входа в безопасный режим используйте параметр загрузки или команду <code>msconfig</code>, установив соответствующий флаг в разделе «Загрузка». После загрузки в этом режиме процедура восстановления проходит быстрее и с меньшей вероятностью возникновения конфликтов.</p>
+
+<p>Стоит учитывать, что после восстановления системы в безопасном режиме может потребоваться дополнительная проверка целостности системных файлов с помощью утилиты <code>sfc /scannow</code>. Это гарантирует, что все компоненты ОС вернулись в корректное состояние.</p>
+
+<h2 id="анализ-дискового-пространства-и-управление-историей">Анализ дискового пространства и управление историей</h2>
+
+<p>Эффективное управление точками восстановления требует регулярного мониторинга занимаемого ими дискового пространства, так как переполнение выделенной области приводит к автоматическому удалению старых снимков. Администратор должен периодически проверять размер хранилища теневых копий и при необходимости корректировать квоты.</p>
+
+<p>Утилита <code>vssadmin</code> предоставляет подробную информацию о текущем использовании места, позволяя оценить, насколько часто создаются новые точки и как быстро заполняется буфер. Команда <code>vssadmin list shadowstorage</code> выводит данные о максимальном, текущем и используемом объеме для каждого тома.</p>
+
+<p>В ситуациях, когда требуется освободить место экстренно, можно вручную удалить все точки восстановления, кроме самой последней, или очистить историю полностью. Это действие необратимо удаляет возможность отката к предыд�ущим состояниям, поэтому применять его следует с осторожностью.</p>
+
+<pre><code>vssadmin delete shadows /for=C: /oldest</code></pre>
+
+<p>Для долгосрочного планирования целесообразно настроить мониторинг свободного места на диске и alerts, которые будут уведомлять администратора при приближении к лимиту хранилища теневых копий. Это позволяет вовремя принять решение об увеличении квоты или очистке ненужных данных.</p>
+
+<table>
+<thead>
+<tr>
+<th>Команда</th>
+<th>Функция</th>
+<th>Риск потери данных</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>delete shadows /oldest</td>
+<td>Удаление самой старой точки</td>
+<td>Низкий (сохраняются новые)</td>
+</tr>
+<tr>
+<td>delete shadows /all</td>
+<td>Удаление всех точек восстановления</td>
+<td>Высокий (откат невозможен)</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка политики хранения через групповые политики</h3>
+
+<p>В доменной среде управление параметрами восстановления можно централизованно осуществлять через групповые политики (GPO), что обеспечивает единообразие конфигурации на всех серверах. Существуют специфические политики, позволяющие отключать создание точек или ограничивать размер хранилища.</p>
+
+<p>Настройки находятся в ветке <code>Computer Configuration → Administrative Templates → System → System Restore</code>. Здесь можно запретить клиентам создавать точки восстановления или установить фиксированный процент дискового пространства, доступного для этой функции.</p>
+
+<p>Применение таких политик особенно актуально для серверов с ограниченным дисковым пространством, где каждый гигабайт на счету. Однако на критически важных узлах рекомендуется оставлять возможность ручного управления размером квоты.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Регулярный мониторинг и настройка квот дискового пространства предотвращают неожиданное удаление старых точек восстановления и обеспечивают стабильность работы механизма отката.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе эксплуатации механизма восстановления администраторы часто сталкиваются с рядовыми проблемами, которые легко решаются при понимании причин их возникновения. Ниже приведен список наиболее частых ошибок и методы их коррекции.</p>
+
+<ol>
+<li><strong>Ошибка 0x800423f4 при создании точки</strong> — обычно возникает из-за нехватки свободного места на диске или повреждения службы теневого копирования; требуется проверить службу <em>VSS</em> и освободить место.</li>
+<li><strong>Отсутствие точек в списке восстановления</strong> — часто вызвано тем, что защита системы была отключена в момент создания снимка или антивирус заблокировал доступ к системным файлам; необходимо проверить статус защиты и исключения антивируса.</li>
+<li><strong>Неудачное завершение процесса отката</strong> — может происходить из-за повреждения файловой системы или ошибок на физическом диске; перед повторной попыткой рекомендуется запустить <code>chkdsk</code> и проверить SMART-статус накопителя.</li>
+<li><strong>Исчезновение точек после перезагрузки</strong> — иногда случается при сбоях питания или некорректном завершении работы, что приводит к помечиванию хранилища теневых копий как недействительного; требуется пересоздать точку вручную.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для диагностики проблем со службой VSS используйте команду vssadmin list writers и убедитесь, что все писатели находятся в состоянии Stable и без ошибок.</p></aside>
+
+<h2 id="резюме-и-лучшие-практики">Резюме и лучшие практики</h2>
+
+<p>Механизм точек восстановления в <em>Windows Server 2019</em> является важным инструментом в арсенале системного администратора, позволяющим быстро минимизировать последствия сбоев конфигурации или неудачных обновлений. Правильная настройка квот дискового пространства и регулярное создание контрольных точек перед внесением изменений значительно повышают отказоустойчивость серверной инфраструктуры.</p>
+
+<p>Не следует рассматривать эту функцию как замену полноценному резервному копированию, поскольку она не защищает данные пользователей и не гарантирует восстановление в случае физического выхода оборудования из строя. Оптимальная стратегия предполагает комбинацию использования точек восстановления для оперативного отката системы и регулярного бэкапа критических данных на внешние носители.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Быстрый откат системы</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ :Не требует внешнего носителя</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сохраняет личные файлы</li></ul></div>
+</div></div></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vklyuchit-tachpad-v-bios-intel.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить тачпад в BIOS Intel: полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по активации тачпада через BIOS Intel. Решение проблем с неработающей сенсорно</span>
+            </a><a href="/articles/k/ka/kak-otkryt-slot-sim-karty-na-noutbuke-hp.html" class="pb-related-card">
+                <span class="pb-related-title">Как открыть слот SIM на ноутбуке HP: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по установке SIM-карты в ноутбуки HP. Поиск лотка, проверка модема, настройка APN и ус</span>
+            </a><a href="/articles/b/be/besprovodnoj-displej-windows-10.html" class="pb-related-card">
+                <span class="pb-related-title">Беспроводной дисплей Windows 10: настройка, Miracast, устранение ошибок</span>
+                <span class="pb-related-desc">Полная инструкция по подключению беспроводного дисплея в Windows 10. Настройка Miracast, устранение </span>
+            </a><a href="/articles/a/as/asus-x750l-gde-raspolozhen-mikrofon.html" class="pb-related-card">
+                <span class="pb-related-title">Где микрофон на Asus X750L: расположение и настройка</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску встроенного микрофона на ноутбуке Asus X750L. Расположение модуля, пр</span>
+            </a><a href="/articles/v/v-/v-noutbuke-asus-pro57t-kak-snyat-videokartu.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять видеокарту в ноутбуке ASUS Pro57T: Инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по демонтажу видеокарты в ноутбуке ASUS Pro57T. Разборка корпуса, доступ к моду</span>
+            </a><a href="/articles/v/vi/vidy-shlejfov-v-noutbuke.html" class="pb-related-card">
+                <span class="pb-related-title">Виды шлейфов в ноутбуке: классификация и замена</span>
+                <span class="pb-related-desc">Полный гид по типам шлейфов ноутбука: матрицы, клавиатуры, тачпада. Инструкция по диагностике, выбор</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

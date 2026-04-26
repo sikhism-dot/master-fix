@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как создать клон приложения СберБанк Онлайн — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по созданию клона приложения СберБанк Онлайн. Настройка эмуляции, проксирование трафика и анализ API для тестирования.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-sozdat-klon-dlya-prilozheniya-sberbank-onlajn.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как создать клон приложения СберБанк Онлайн">
+    <meta property="og:description" content="Техническое руководство по созданию клона приложения СберБанк Онлайн. Настройка эмуляции, проксирование трафика и анализ API для тестирования.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как создать клон приложения СберБанк Онлайн</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-изолированного-окружения-для-эмуляции">Подготовка изолированного окружения для эмуляции</a></li><li><a href="#установка-и-конфигурация-apk-файла-приложения">Установка и конфигурация APK-файла приложения</a></li><li><a href="#организация-перехвата-и-анализа-сетевого-трафика">Организация перехвата и анализа сетевого трафика</a></li><li><a href="#типичные-ошибки-при-клонировании-и-эмуляции">Типичные ошибки при клонировании и эмуляции</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-ochistit-zhurnal-oshibok-prilozhenij.html">Как очистить журнал ошибок приложений: полное руководство</a></li><li><a href="/articles/k/ka/kak-vybrat-disk-zagruzki-v-fujitsu.html">Как выбрать диск загрузки в Fujitsu: полное руководство BIOS/UEFI</a></li><li><a href="/articles/l/la/lamer-chto-eto-za-programma.html">Lamer: что это за программа, вирус или системный процесс</a></li><li><a href="/articles/v/vo/vosstanovlenie-bitlocker.html">Восстановление BitLocker: полное руководство по доступу</a></li><li><a href="/articles/k/ka/kak-zapustit-vil-rok-na-vindovs-10.html">Как запустить Вил Рок на Windows 10: полное руководство</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как создать клон приложения СберБанк Онлайн</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-изолированного-окружения-для-эмуляции">Подготовка изолированного окружения для эмуляции</a></li><li><a href="#установка-и-конфигурация-apk-файла-приложения">Установка и конфигурация APK-файла приложения</a></li><li><a href="#организация-перехвата-и-анализа-сетевого-трафика">Организация перехвата и анализа сетевого трафика</a></li><li><a href="#типичные-ошибки-при-клонировании-и-эмуляции">Типичные ошибки при клонировании и эмуляции</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда необходимо воссоздать точную копию интерфейса мобильного банка для отладки собственных интеграций или демонстрации работы API, возникает у разработчиков довольно часто. Стандартные эмуляторы часто не справляются с корректным отображением защищенных банковских приложений, а доступ к реальному устройству с установленным клиентом может быть ограничен политиками безопасности корпоративной сети. В таких случаях требуется развертывание изолированной среды, имитирующей работу оригинального приложения, что позволяет проводить глубокий анализ сетевых запросов и верифицировать сценарии взаимодействия без риска блокировки аккаунта.</p>
+
+<p>Процесс создания функционального клона или его эмуляционной среды требует тщательной подготовки программного окружения и понимания принципов работы мобильных операционных систем. Необходимо учитывать, что современные финансовые приложения, такие как <em>СберБанк Онлайн</em>, используют сложные механизмы защиты, включая детектирование рут-прав, проверку целостности файловой системы и анализ окружения запуска. Игнорирование этих факторов приведет к мгновенному отказу приложения в запуске или его некорректной работе, что сделает процесс тестирования бессмысленным.</p>
+
+<p>Данное руководство описывает технические аспекты настройки среды для эмуляции или создания визуального прототипа (mockup) банковского приложения. Основное внимание уделяется методам перехвата трафика, конфигурации эмуляторов и обходу базовых проверок безопасности, необходимым для исследовательских целей. Важно понимать, что все действия выполняются исключительно в локальной, изолированной сети и не предполагают взаимодействия с реальной инфраструктурой банка в продакшн-режиме.</p>
+
+<h2 id="подготовка-изолированного-окружения-для-эмуляции">Подготовка изолированного окружения для эмуляции</h2>
+
+<p>Первым шагом является выбор и настройка базовой платформы, на которой будет разворачиваться копия приложения. На практике наиболее гибким решением является использование Android-x86 в связке с виртуальной машиной или специализированных эмуляторов, поддерживающих проброс аппаратных ключей безопасности. Допустим, рассматривается вариант с <em>Genymotion</em> или <em>Android Studio Emulator</em>, так как они предоставляют расширенные возможности для модификации системных образов.</p>
+
+<p>Для корректной работы банковского ПО необходимо, чтобы эмулируемое устройство имело сертифицированный профиль Google Play Services, так как многие библиотеки безопасности завязаны на проверку лицензий GMS. Если используется чистый образ Android, потребуется вручную внедрить соответствующие пакеты, что может потребовать пересборки системного раздела. В случае создания статического клона (веб-версии или гибридного приложения) важно обеспечить поддержку современных стандартов веб-безопасности, таких как CORS и CSP.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование модифицированных образов Android может привести к нестабильной работе эмулятора. Рекомендуется делать снимки состояния системы перед внесением изменений.</p></aside>
+
+<p>Настройка параметров виртуального устройства должна имитировать реальное «железо». В конфигурационном файле <code>config.ini</code> эмулятора следует прописать параметры, соответствующие популярным моделям смартфонов, чтобы минимизировать риск детектирования эмуляции со стороны защищаемого приложения. Особое внимание стоит уделить разрешению экрана и плотности пикселей (DPI), так как интерфейсы банковских приложений часто адаптируются под эти параметры.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Рекомендуемое значение</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hw.device.name</code></td>
+<td>pixel_6_pro</td>
+<td>Имитация популярного устройства</td>
+</tr>
+<tr>
+<td><code>hw.gpu.enabled</code></td>
+<td>yes</td>
+<td>Аппаратное ускорение графики</td>
+</tr>
+<tr>
+<td><code>hw.keyboard</code></td>
+<td>yes</td>
+<td>Поддержка физической клавиатуры</td>
+</tr>
+</tbody>
+</table>
+
+<p>После первичной настройки образа необходимо убедиться, что в системе отсутствуют явные признаки отладки, если целью является запуск оригинального APK. Для этого в свойствах системы <code>build.prop</code> меняются флаги <code>ro.debuggable</code> и <code>ro.secure</code>. Если же создается клон-прототип для демонстрации, эти шаги можно пропустить, сосредоточившись на визуальной составляющей и логике работы интерфейса.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Для эмуляции iOS-версии приложения потребуется использование симулятора Xcode, однако возможности по внедрению сертификатов и перехвату трафика там ограничены по сравнению с Android.</p></aside>
+
+<h2 id="установка-и-конфигурация-apk-файла-приложения">Установка и конфигурация APK-файла приложения</h2>
+
+<p>Процесс инсталляции приложения на эмулируемую среду требует наличия актуального установочного пакета. Поскольку официальный магазин Google Play может блокировать установку на эмулируемые устройства с измененными подписями, используется метод прямой загрузки APK-файла через ADB (Android Debug Bridge). Команда для установки выглядит следующим образом:</p>
+
+<pre><code>adb install -r sbol_app.apk</code></pre>
+
+<p>Если приложение отказывается запускаться, выдавая ошибку о целостности или подписи, может потребоваться переподпись APK. Это актуально, если в оригинальный файл вносились изменения для отладки или локализации. Для переподписи используется утилита <em>apksigner</em>, входящая в состав Android SDK Build-tools. Важно сохранить оригинальную структуру манифеста, чтобы не нарушить работу компонентов приложения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка приложения</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Получите APK-файл</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Подключите эмулятор через ADB</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Выполните команду install -r</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Запустите приложение и проверьте логи</span></div></div>
+
+<p>В случаях, когда оригинальное приложение невозможно запустить из-за жестких проверок безопасности, разработчики часто прибегают к созданию «облегченного» клона. Такой клон представляет собой приложение-заглушку, которое визуально копирует интерфейс <em>СберБанк Онлайн</em>, но работает с локальным бэкендом. Это позволяет тестировать UX/UI и логику переходов без необходимости обхода сложных защитных механизмов.</p>
+
+<p>Для настройки окружения внутри эмулятора часто требуется отключить Play Protect, так как он может помечать модифицированные или переподписанные версии приложений как потенциально опасные. Делается это через настройки Google Play Store в разделе «Защита Play Protect». Также стоит проверить разрешения приложения, убедившись, что ему доступен интернет и необходимые датчики устройства.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип проверки</th>
+<th>Метод обхода/Настройки</th>
+<th>Риск детекта</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Root-права</td>
+<td>Magisk Hide / SuHide</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td>Эмулятор</td>
+<td>Изменение build.prop</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>Отладка</td>
+<td>Отключение USB Debugging</td>
+<td>Низкий</td>
+</tr>
+</tbody>
+</table>
+
+<p>При работе с клонированным приложением важно учитывать версию операционной системы. Старые версии Android могут не поддерживать новые библиотеки шифрования, используемые банком, что приведет к крашу на старте. Оптимальным выбором является Android 10 или 11, так как они обеспечивают баланс между совместимостью и возможностями настройки безопасности.</p>
+
+<h2 id="организация-перехвата-и-анализа-сетевого-трафика">Организация перехвата и анализа сетевого трафика</h2>
+
+<p>Ключевым этапом в создании функционального клона или анализе работы приложения является возможность мониторинга сетевых запросов. Для этого трафик с эмулятора перенаправляется на прокси-сервер, запущенный на хост-машине. Наиболее распространенным инструментом является <em>Mitmproxy</em> или <em>Charles Proxy</em>. Настройка предполагает указание IP-адреса хоста и порта прокси в параметрах Wi-Fi сети эмулятора.</p>
+
+<p>Основной сложностью является работа с HTTPS-трафиком. Современные приложения, включая <em>СберБанк Онлайн</em>, используют механизм SSL Pinning, который отвергает любые сертификаты, кроме доверенных. Чтобы проксирование работало, необходимо внедрить корневой сертификат прокси-сервера в системное хранилище доверенных сертификатов Android. На устройствах без root-прав это возможно только для трафика пользовательских приложений, но банковские клиенты часто игнорируют пользовательские сертификаты.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Начиная с Android 7.0, приложения по умолчанию не доверяют пользовательским сертификатам. Требуется модификация конфигурации безопасности сети (network_security_config).</p></aside>
+
+<p>Для успешного перехвата данных в конфигурационный файл приложения (<code>network_security_config.xml</code>) добавляется правило, разрешающее доверие к установленным пользователем сертификатам. Если модификация APK невозможна, используются инструменты вроде <em>Frida</em> или <em>Xposed</em> с модулями для обхода SSL Pinning (например, <em>JustTrustMe</em>). Это позволяет «на лету» изменять поведение методов проверки сертификатов в рантайме.</p>
+
+<p>Анализ трафика позволяет понять структуру API-запросов, форматы передаваемых данных и заголовки авторизации. Это критически важно для воссоздания логики работы бэкенда при создании клона. Однако стоит помнить, что многие параметры, такие как токены сессии и подписи запросов, генерируются динамически и зависят от состояния приложения.</p>
+
+<pre><code>frida -U -f ru.sberbank.mobile -l ssl_unpinning.js --no-pause</code></pre>
+
+<p>В процессе анализа может потребоваться декодирование трафика, если используется дополнительное шифрование payload (тела запроса). Часто банковские приложения применяют протоколы вроде gRPC или бинарные форматы данных, что усложняет чтение трафика в текстовом виде. В таких случаях необходимы специализированные плагины для прокси или дизассемблеры для анализа кода приложения.</p>
+
+<h2 id="типичные-ошибки-при-клонировании-и-эмуляции">Типичные ошибки при клонировании и эмуляции</h2>
+
+<p>В процессе настройки окружения и запуска клонированного приложения пользователи часто сталкиваются с повторяющимися проблемами, которые блокируют дальнейшую работу. Понимание природы этих ошибок позволяет быстрее находить решения и избегать тупиковых ситуаций.</p>
+
+<ol>
+<li><strong>Ошибка «Устройство не сертифицировано»</strong> — возникает, когда приложение detects эмулятор или отсутствие Google Play Services. Решается правкой <code>build.prop</code> и установкой GApps пакета соответствующей версии Android.</li>
+<li><strong>SSL Handshake Failed</strong> — означает, что приложение отвергло сертификат прокси. Требуется внедрение сертификата в системный раздел или использование скриптов Frida для обхода Pinning.</li>
+<li><strong>Приложение закрывается сразу после запуска</strong> — часто вызвано наличием отладчика или включенным режимом разработчика. Необходимо отключить отладку по USB и скрыть наличие отладчика через модули Magisk.</li>
+<li><strong>Неверное отображение интерфейса</strong> — связано с неправильным DPI или разрешением экрана в эмуляторе. Следует настроить профиль устройства ближе к реальным показателям современных смартфонов.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Глубокая эмуляция</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над системой</li><li>✅ Возможность перехвата трафика</li><li>✅ Гибкость настройки</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность настройки</li><li>❌ Высокий риск детекта</li><li>❌ Нестабильность работы</li></ul></div>
+</div></div>
+
+<p>Отдельного внимания заслуживает проблема с сетевым взаимодействием. Если эмулятор находится в изолированной сети, приложение может не запуститься из-за отсутствия доступа к серверам проверки лицензии или времени. В таких случаях настраивается локальный DNS-сервер, который перенаправляет запросы к критическим доменам на заглушки или локальные сервисы-имитаторы.</p>
+
+<h2 id="резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</h2>
+
+<p>Создание клона или рабочей эмуляционной копии приложения <em>СберБанк Онлайн</em> является сложной технической задачей, требующей глубоких знаний в области мобильной безопасности и сетевых протоколов. Успех зависит от правильной подготовки окружения, умения обходить базовые проверки целостности и способности анализировать защищенный трафик. Все описанные методы предназначены исключительно для исследовательских целей, тестирования собственных разработок или образовательной деятельности.</p>
+
+<p> Поэтому вся работа должна вестись в полностью изолированном сегменте сети, без доступа к интернету или через выделенные тестовые контуры, если такие предоставлены банком для партнеров.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Клонирование банковских приложений возможно только в изолированной среде для тестирования и требует обхода механизмов SSL Pinning и детекции эмуляции.</p></aside>
+
+<p>Для минимизации рисков рекомендуется использовать виртуальные машины с возможностью быстрого отката к чистому состоянию (snapshots). Это позволяет экспериментировать с настройками и модификациями, не опасаясь необратимо повредить базовую систему или оставить следы, которые могут быть интерпретированы как угроза безопасности.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-ochistit-zhurnal-oshibok-prilozhenij.html" class="pb-related-card">
+                <span class="pb-related-title">Как очистить журнал ошибок приложений: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по очистке журналов ошибок на Android, Windows и Linux. Методы сброса логов, ис</span>
+            </a><a href="/articles/k/ka/kak-vybrat-disk-zagruzki-v-fujitsu.html" class="pb-related-card">
+                <span class="pb-related-title">Как выбрать диск загрузки в Fujitsu: полное руководство BIOS/UEFI</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке приоритета загрузки на ноутбуках и серверах Fujitsu. Решение пробл</span>
+            </a><a href="/articles/l/la/lamer-chto-eto-za-programma.html" class="pb-related-card">
+                <span class="pb-related-title">Lamer: что это за программа, вирус или системный процесс</span>
+                <span class="pb-related-desc">Подробный анализ процесса lamer.exe: функции, риски для безопасности, методы удаления и отличия от в</span>
+            </a><a href="/articles/v/vo/vosstanovlenie-bitlocker.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление BitLocker: полное руководство по доступу</span>
+                <span class="pb-related-desc">Подробная инструкция по восстановлению доступа к BitLocker. Поиск ключа, сброс TPM, команды recovery</span>
+            </a><a href="/articles/k/ka/kak-zapustit-vil-rok-na-vindovs-10.html" class="pb-related-card">
+                <span class="pb-related-title">Как запустить Вил Рок на Windows 10: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по запуску игры Вил Рок на ПК с Windows 10. Решения проблем совместимости, наст</span>
+            </a><a href="/articles/k/ka/kak-obojti-kaspersky-safe-kids-na-kompyutere-postupayushchikh-spisok.html" class="pb-related-card">
+                <span class="pb-related-title">Kaspersky Safe Kids: управление списком приложений и доступом</span>
+                <span class="pb-related-desc">Техническое руководство по настройке списка приложений в Kaspersky Safe Kids. Обход блокировок через</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

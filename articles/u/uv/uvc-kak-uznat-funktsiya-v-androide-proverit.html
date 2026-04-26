@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>UVC на Android: как проверить и включить камеру USB — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по проверке поддержки UVC в Android, использованию OTG-кабелей и тестированию веб-камер через ADB и приложения.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/u/uv/uvc-kak-uznat-funktsiya-v-androide-proverit.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="UVC на Android: как проверить и включить камеру USB">
+    <meta property="og:description" content="Подробная инструкция по проверке поддержки UVC в Android, использованию OTG-кабелей и тестированию веб-камер через ADB и приложения.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">UVC на Android: как проверить и включить камеру USB</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#аппаратная-совместимость-и-проверка-otg-функционала">Аппаратная совместимость и проверка OTG функционала</a></li><li><a href="#программная-проверка-через-adb-и-системные-логи">Программная проверка через ADB и системные логи</a></li><li><a href="#настройка-прав-доступа-и-разрешений-безопасности">Настройка прав доступа и разрешений безопасности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-svyazat-khonor-noutbuk-ch-iphone.html">Как связать Honor ноутбук и iPhone: полная инструкция</a></li><li><a href="/articles/k/ka/kak-skopirovat-ssylku-v-brauzere-telefona.html">Как скопировать ссылку в браузере телефона: полная инструкция</a></li><li><a href="/articles/b/bl/blkivaet-nepolnyj-ekran-na-vidose-vsekh-na-telefone-kogda-smotrish-film.html">Почему не работает полноэкранный режим на Android: решение</a></li><li><a href="/articles/k/ka/kak-otkleit-magnit-derzhatel-s-telefona.html">Как отклеить магнит с телефона: полная инструкция по удалению</a></li><li><a href="/articles/v/vi/vid-nedavnikh-prilozhenij-redmi-15.html">Настройка вида недавних приложений Redmi: гид по MIUI и HyperOS</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Проверка и настройка UVC-камер на Android устройствах</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#аппаратная-совместимость-и-проверка-otg-функционала">Аппаратная совместимость и проверка OTG функционала</a></li><li><a href="#программная-проверка-через-adb-и-системные-логи">Программная проверка через ADB и системные логи</a></li><li><a href="#настройка-прав-доступа-и-разрешений-безопасности">Настройка прав доступа и разрешений безопасности</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда приобретенная USB-камера не работает при подключении к смартфону или планшету, возникает достаточно часто, особенно в сценариях организации видеоконференций или систем видеонаблюдения. Пользователь ожидает, что операционная система автоматически распознает внешнее устройство, однако экран остается черным или появляется сообщение об ошибке подключения. Это указывает на то, что либо аппаратная часть не обеспечивает необходимую мощность, либо программный уровень не имеет драйверов для взаимодействия с веб-камерой по стандарту UVC.</p>
+
+<p>Проблема усугубляется тем, что производители мобильных устройств часто отключают поддержку USB Host Mode на уровне прошивки или ядра, чтобы сэкономить заряд батареи или снизить стоимость конечного продукта. В результате даже физически исправное оборудование не получает питания или не может передать данные. Для решения задачи необходимо последовательно проверить аппаратную совместимость, наличие драйверов в ядре системы и корректность настроек разработчика.</p>
+
+<p>На практике диагностика начинается с проверки физической возможности устройства выдавать ток на USB-порт. Если смартфон не может обеспечить питание для камеры, никакие программные методы не заставят её работать без внешнего источника энергии. Далее следует убедиться, что версия операционной системы и установленное приложение поддерживают протокол UVC, так как стандартная галерея или камера Android часто не умеют работать с внешними источниками видеосигнала.</p>
+
+<h2 id="аппаратная-совместимость-и-проверка-otg-функционала">Аппаратная совместимость и проверка OTG функционала</h2>
+
+<p>Первым критическим этапом является верификация поддержки режима USB Host, который позволяет мобильному устройству выступать в роли (хоста) для периферии. Многие бюджетные модели, особенно выпущенные несколько лет назад, имеют физическую возможность подключения, но программно заблокированы или лишены необходимых контроллеров питания. Для начала стоит проверить спецификации процессора и чипсета на официальном сайте производителя, так как именно от SoC зависит базовая поддержка протокола.</p>
+
+<p>Если документация недоступна или не содержит подробностей, можно воспользоваться специализированными утилитами для проверки статуса OTG. Эти приложения считывают системные флаги и сообщают, видит ли контроллер подключенные устройства и может ли он их обслуживать. Отсутствие поддержки в этом пункте делает дальнейшие попытки подключения камеры бессмысленными без использования внешних хабов с собственным питанием.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с портом USB Type-C поддержка OTG реализована практически всегда, однако на старых моделях с Micro-USB вероятность отказа значительно выше.</p></aside>
+
+<p>Важным аспектом является энергопотребление. Веб-камеры, особенно модели с высоким разрешением или встроенным микрофоном, могут потреблять ток, превышающий лимиты USB-порта смартфона (обычно 100-500 мА). Если устройство не может выдать нужный ток, камера будет постоянно отключаться или работать с артефактами. В таких случаях необходимо использование активного USB-хаба с внешним блоком питания.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип подключения</th>
+<th>Вероятность поддержки</th>
+<th>Требования к питанию</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>USB Type-C (нативный)</td>
+<td>Высокая</td>
+<td>Часто достаточно встроенного</td>
+</tr>
+<tr>
+<td>Micro-USB (старые флагманы)</td>
+<td>Средняя</td>
+<td>Часто требуется внешний хаб</td>
+</tr>
+<tr>
+<td>Micro-USB (бюджетный сегмент)</td>
+<td>Низкая</td>
+<td>Требуется активный хаб</td>
+</tr>
+</tbody>
+</table>
+
+<p>Допустим, что базовая проверка пройдена успешно и устройство видит флеш-накопители, но камера все равно не работает. В этом случае проблема кроется не в физическом порту, а в отсутствии драйверов для класса устройств Video Class. Стандарт Android не включает в себя полный набор драйверов для всех существующих UVC-камер, поэтому часто требуется стороннее программное обеспечение.</p>
+
+<h3>Использование тестовых приложений для диагностики</h3>
+
+<p>Для точной диагностики функциональности UVC целесообразно установить специализированное приложение, которое берет на себя управление драйверами в обход стандартных ограничений системы. Одним из наиболее популярных и функциональных инструментов является <em>USB Camera</em> от компании Jiang Hong или аналоги, такие как <em>Check USB OTG</em>. Эти программы содержат встроенные библиотеки драйверов для широкого спектра чипсетов камер.</p>
+
+<p>После установки приложения необходимо предоставить ему все запрашиваемые разрешения, включая доступ к хранилищу и микрофону. При подключении камеры через OTG-кабель приложение должно автоматически определить новое устройство и предложить начать трансляцию. Если на экране появляется изображение, значит, аппаратная часть и базовый драйвер UVC в ядре Android функционируют корректно.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Первичная диагностика UVC</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Подключите OTG-кабель к смартфону</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Запустите приложение USB Camera</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключите веб-камеру к кабелю</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Дождитесь появления изображения или ошибки</span></div></div>
+
+<p>В случаях, когда приложение обнаруживает устройство, но изображение отсутствует или искажено, следует проверить параметры видеопотока. Некоторые камеры поддерживают несколько режимов разрешения и частоты кадров, и стандартный режим по умолчанию может не поддерживаться пропускной способностью USB-порта или процессора смартфона. Переключение в приложении на более низкое разрешение (например, 640x480) часто помогает диагностировать проблему нехватки bandwidth.</p>
+
+<h2 id="программная-проверка-через-adb-и-системные-логи">Программная проверка через ADB и системные логи</h2>
+
+<p>Для более глубокого анализа, особенно когда графический интерфейс не дает четкого ответа, необходимо обратиться к системным логам Android. Инструментарий ADB (Android Debug Bridge) позволяет получать доступ к внутренним журналам системы в реальном времени. Это дает возможность увидеть, как ядро реагирует на подключение USB-устройства и какие именно ошибки возникают при попытке инициализации драйвера.</p>
+
+<p>Для начала работы требуется включить режим отладки по USB на устройстве. Для этого нужно перейти в настройки, найти раздел <code>О телефоне</code> и семь раз быстро нажать на номер сборки, чтобы активировать меню разработчика. Затем в появившемся меню <code>Для разработчиков</code> активируется пункт <code>Отладка по USB</code>. После подключения смартфона к компьютеру через ADB можно запустить мониторинг событий ядра.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Работа с системными логами требует внимательности. Не отключайте критические системные процессы, если вы не уверены в их назначении, это может привести к нестабильной работе ОС.</p></aside>
+
+<p>Команда для отслеживания подключения выглядит следующим образом:
+<pre><code>adb logcat -s USBHost:*, UVC*:*, android.hardware.usb.*</code></pre>
+<p>При подключении камеры в логах должны появиться сообщения о обнаружении нового устройства. Ключевые строки, такие как <code>new device</code>, <code>config</code> или <code>UVC probing</code>, указывают на успешное распознавание. Если же видны строки <code>device descriptor read/64, error -75</code> или сообщения о нехватке питания, проблема носит аппаратный характер.</p></p>
+
+<p>Анализ логов также позволяет определить, загружается ли модуль ядра <code>uvcvideo</code>. В некоторых кастомных прошивках этот модуль может быть исключен из сборки. Если в логах есть упоминание о том, что устройство подключено как"Mass Storage" вместо"Video", это означает, что система распознала камеру как накопитель (если в ней есть карта памяти), но не как источник видео.</p>
+
+<table>
+<thead>
+<tr>
+<th>Код ошибки / Сообщение</th>
+<th>Вероятная причина</th>
+<th>Метод решения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>error -75 / -32</td>
+<td>Недостаточно питания</td>
+<td>Использовать хаб с питанием</td>
+</tr>
+<tr>
+<td>No UVC device found</td>
+<td>Отсутствие драйвера в ядре</td>
+<td>Смена прошивки или ядра</td>
+</tr>
+<tr>
+<td>Permission denied</td>
+<td>Нет прав доступа у приложения</td>
+<td>Проверить разрешения Android</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Анализ поддержки ядром Linux</h3>
+
+<p>Поскольку Android базируется на ядре Linux, проверка наличия драйера <code>uvcvideo</code> является фундаментальной. На устройствах с правами root можно напрямую содержимое папки <code>/proc/modules</code> или выполнить команду <code>lsmod</code>. Наличие строки <code>uvcvideo</code> подтверждает, что ядро теоретически способно работать с вебкамерами.</p>
+
+<p>Если модуль отсутствует, стандартными методами включить его не получится. Требуется перекомпиляция ядра с включенной опцией <code>CONFIG_USB_VIDEO_CLASS</code> или установка готового модуля, совместимого с конкретной версией ядра и архитектурой процессора. Для обычных пользователей этот путь сложен и требует разблокировки загрузчика, что может аннулировать гарантию.</p>
+
+<p>В логах также стоит обратить внимание на версию протокола UVC. Старые камеры могут использовать спецификации, которые плохо эмулируются новыми контроллерами, и наоборот. Совместимость версий протокола (1.0, 1.1, 1.5) иногда становится узким местом, особенно при использовании дешевых китайских камер без сертификации.</p>
+
+<h2 id="настройка-прав-доступа-и-разрешений-безопасности">Настройка прав доступа и разрешений безопасности</h2>
+
+<p>Современные версии Android, начиная с 10-й и особенно в 12-й и 13-й версиях, значительно ужесточили политику безопасности regarding доступа к USB-устройствам. Даже если драйвер работает, система может блокировать передачу видеопотока, если приложение не имеет соответствующих разрешений или если пользователь не подтвердил подключение в системном диалоге.</p>
+
+<p>При первом подключении камеры система должна вывести запрос: «Разрешить приложению доступ к USB-устройству?». Если этот диалог был проигнорирован или автоматически закрыт, доступ блокируется. Проверить список заблокированных или разрешенных USB-устройств можно в настройках приложений. Необходимо найти используемое приложение для камеры и убедиться, что в разделе разрешений активирован пункт <code>Подключенные устройства</code> или аналогичный.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Если диалог разрешения не появляется, попробуйте отключить отладку по USB на время подключения камеры, так как в некоторых прошивках режим отладки перехватывает управление USB-портом.</p></aside>
+
+<p>Также стоит проверить настройки энергосбережения. Агрессивные алгоритмы оптимизации батареи могут отключать питание USB-порта, если система считает, что приложение не активно или устройство простаивает. В настройках батареи для приложения-камеры следует выбрать режим «Без ограничений» или «Не оптимизировать», чтобы обеспечить стабильную подачу питания.</p>
+
+<p>В некоторых случаях, особенно на устройствах Xiaomi, Huawei и Samsung, требуется вручную разрешать доступ каждый раз при подключении. Это можно обойти, включив в меню разработчика пункт <code>По умолчанию включать режим USB-аудио</code> (если доступно) или отключив мониторинг USB, однако эти настройки могут быть скрыты или отсутствовать в зависимости от версии оболочки производителя.</p>
+
+<h3>Специфика работы на разных версиях Android</h3>
+
+<p>На версиях Android 9 и ниже механизм подключения был более простым, часто требуя лишь наличия драйвера в ядре. Начиная с Android 10, внедрена более строгая модель разрешений, а в Android 12 изменился механизм работы с фоновыми процессами, что может прерывать видеопоток, если приложение свернуто. Для Android 13 и 14 характерны дополнительные ограничения на доступ к точным данным о устройстве, что иногда мешает корректной идентификации модели камеры.</p>
+
+<p>Если на устройстве установлена кастомная прошивка (например, LineageOS или Pixel Experience), поддержка UVC может быть выше, чем в стоковой прошивке от производителя, так как энтузиасты часто включают дополнительные модули ядра. Однако стабильность работы в таких случаях не гарантируется, и возможны сбоны при записи видео высокого разрешения.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Настройка разрешений</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в Настройки → Приложения</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Найдите приложение для USB-камеры</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Откройте раздел Разрешения</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Включите доступ к USB-устройствам и Микрофону</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">Проверьте настройки батареи для этого приложения</span></div></div>
+
+<p>Отдельного внимания заслуживают устройства Android TV Box. На них часто отсутствуют стандартные интерфейсы для управления разрешениями USB. Здесь проверка функции осуществляется исключительно через совместимые приложения, устанавливаемые из магазина, или через sideloading APK-файлов с поддержкой UVC. Интерфейс управления разрешениями может быть скрыт в инженерном меню.</p>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>В процессе настройки и эксплуатации UVC-камер на Android пользователи часто сталкиваются с повторяющимися проблемами. Понимание природы этих ошибок позволяет сократить время на диагностику и избежать ненужных действий, таких как сброс настроек или перепрошивка.</p>
+
+<ol>
+<li><strong>Камера мигает или изображение дергается</strong> — чаще всего это свидетельствует о нестабильном питании или перегреве USB-контроллера. Решение заключается в использовании короткого качественного OTG-кабеля или подключении активного хаба с внешним источником питания 5В/2А.</li>
+<li><strong>Черный экран при работающем индикаторе камеры</strong> — означает, что устройство распознано, но выбран неверный кодек или разрешение. Необходимо в настройках приложения-клиента сменить формат видео с MJPG на YUYV или снизить разрешение до 640x480.</li>
+<li><strong>Системное сообщение «USB-устройство не поддерживается»</strong> — указывает на отсутствие драйвера <code>uvcvideo</code> в ядре или несовместимость VID/PID устройства с базой данных драйверов Android. Требуется замена приложения на более универсальное или пересборка ядра.</li>
+<li><strong>Звук есть, видео нет</strong> — проблема с пропускной способностью USB-шины. Видео требует больше ресурсов, чем аудио. Следует закрыть фоновые приложения, отключить передачу данных по Wi-Fi или использовать камеру с компрессией MJPEG вместо uncompressed YUV.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества UVC на Android</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Мобильность решения</li><li>✅ Отсутствие необходимости в драйверах (Plug & Play)</li><li>✅ Возможность использования профессиональных камер</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Недостатки реализации:Высокое энергопотребление</li><li>❌ Зависимость от поддержки ядра</li><li>❌ Ограниченная совместимость с дешевыми камерами</li></ul></div>
+</div></div>
+
+<p>Еще одной распространенной ошибкой является использование дешевых переходников USB Type-C to USB-A, которые не поддерживают передачу данных, а только зарядку. Визуально они неотличимы от полноценных OTG-кабелей, но электрически в них отсутствует линия соединения для данных. Проверить кабель можно, подключив к нему обычную USB-флешку: если смартфон не видит файлы, то и камера работать не будет.</p>
+
+<h2 id="заключение-и-итоговые-рекомендации">Заключение и итоговые рекомендации</h2>
+
+<p>Проверка функции UVC на Android требует комплексного подхода, включающего анализ аппаратных возможностей, проверку системных логов и правильную настройку программного обеспечения. Успех подключения зависит от совокупности факторов: наличия режима Host, поддержки драйверов ядром и корректности работы приложения-клиента. В большинстве случаев проблему удается решить подбором правильного приложения или использованием активного USB-хаба.</p>
+
+<p>Для стабильной работы в профессиональных целях, таких как стриминг или видеонаблюдение, рекомендуется использовать устройства с гарантированной поддержкой OTG и свежими версиями Android. </p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Ключевым фактором успеха является наличие драйвера uvcvideo в ядре и достаточное питание USB-порта, что проверяется через специализированные приложения и ADB логи.</p></aside>
+
+<p>Если ни один из программных методов не помог, вероятно, ограничение заложено производителем на уровне hardware или bootloader, и обойти его без глубокой модификации системы не удастся. В таких случаях рациональнее рассмотреть альтернативные варианты подключения, например, IP-камеры, которые передают видеопоток по сети Wi-Fi, минуя ограничения USB-интерфейса.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-svyazat-khonor-noutbuk-ch-iphone.html" class="pb-related-card">
+                <span class="pb-related-title">Как связать Honor ноутбук и iPhone: полная инструкция</span>
+                <span class="pb-related-desc">Подробный технический гайд по интеграции устройств Honor и iPhone. Настройка Bluetooth, Wi-Fi, облач</span>
+            </a><a href="/articles/k/ka/kak-skopirovat-ssylku-v-brauzere-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Как скопировать ссылку в браузере телефона: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по копированию URL на Android и iOS. Методы для Chrome, Safari, Яндекс.браузер</span>
+            </a><a href="/articles/b/bl/blkivaet-nepolnyj-ekran-na-vidose-vsekh-na-telefone-kogda-smotrish-film.html" class="pb-related-card">
+                <span class="pb-related-title">Почему не работает полноэкранный режим на Android: решение</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению черных полос и блокировке полного экрана при просмотре видео на с</span>
+            </a><a href="/articles/k/ka/kak-otkleit-magnit-derzhatel-s-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Как отклеить магнит с телефона: полная инструкция по удалению</span>
+                <span class="pb-related-desc">Подробное руководство, как безопасно отклеить магнитный держатель с телефона, очистить клей и не пов</span>
+            </a><a href="/articles/v/vi/vid-nedavnikh-prilozhenij-redmi-15.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка вида недавних приложений Redmi: гид по MIUI и HyperOS</span>
+                <span class="pb-related-desc">Подробная инструкция по смене стиля меню многозадачности на Redmi. Переключение между вертикальным и</span>
+            </a><a href="/articles/h/ho/honor-magicbook-x14-knopka-printscreen.html" class="pb-related-card">
+                <span class="pb-related-title">Honor MagicBook X14: Кнопка Print Screen и скриншоты</span>
+                <span class="pb-related-desc">Подробная инструкция по созданию скриншотов на Honor MagicBook X14. Клавиши, сочетания, настройки кл</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

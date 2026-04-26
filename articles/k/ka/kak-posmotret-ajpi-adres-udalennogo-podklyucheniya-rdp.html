@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как узнать IP адрес удаленного RDP подключения: Полное руководство — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по определению IP-адреса клиента в RDP через журналы событий, командную строку и PowerShell. Решения для Windows Server и 10.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-posmotret-ajpi-adres-udalennogo-podklyucheniya-rdp.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как узнать IP адрес удаленного RDP подключения: Полное руководство">
+    <meta property="og:description" content="Подробная инструкция по определению IP-адреса клиента в RDP через журналы событий, командную строку и PowerShell. Решения для Windows Server и 10.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как узнать IP адрес удаленного RDP подключения: Полное руководство</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#использование-журнала-событий-windows-для-ретроспективного-анализа">Использование журнала событий Windows для ретроспективного анализа</a></li><li><a href="#анализ-текущих-сессий-через-командную-строку-и-powershell">Анализ текущих сессий через командную строку и PowerShell</a></li><li><a href="#определение-ip-через-оснастку-управления-remote-desktop-services">Определение IP через оснастку управления Remote Desktop Services</a></li><li><a href="#специфика-windows-10-11-и-server-core-без-графического-интерфейса">Специфика Windows 10, 11 и Server Core без графического интерфейса</a></li><li><a href="#типичные-ошибки-и-проблемы-при-идентификации-адреса">Типичные ошибки и проблемы при идентификации адреса</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-sozdat-shablon-dlya-tekhniki-trikotin.html">Как создать шаблон для трикотина: пошаговая инструкция</a></li><li><a href="/articles/c/cu/cube-perestal-zapisyvat-zvonki-posle-obnovleniya-na-hyperos.html">Cube не записывает звонки на HyperOS: решение</a></li><li><a href="/articles/v/ve/vertikalnye-oranzhevye-polosy-pri-zagruzke-pk.html">Вертикальные оранжевые полосы на мониторе: причины и методы устранения</a></li><li><a href="/articles/i/in/informatsiya-po-displeyam-insell-ajfon.html">Дисплеи In-Cell для iPhone: Характеристики, отличия и тесты</a></li><li><a href="/articles/e/e-/e-ac3-ili-atmos-luchshe.html">e-AC3 или Atmos: что лучше выбрать для домашнего кинотеатра</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как определить IP-адрес удаленного RDP подключения</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#использование-журнала-событий-windows-для-ретроспективного-анализа">Использование журнала событий Windows для ретроспективного анализа</a></li><li><a href="#анализ-текущих-сессий-через-командную-строку-и-powershell">Анализ текущих сессий через командную строку и PowerShell</a></li><li><a href="#определение-ip-через-оснастку-управления-remote-desktop-services">Определение IP через оснастку управления Remote Desktop Services</a></li><li><a href="#специфика-windows-10-11-и-server-core-без-графического-интерфейса">Специфика Windows 10, 11 и Server Core без графического интерфейса</a></li><li><a href="#типичные-ошибки-и-проблемы-при-идентификации-адреса">Типичные ошибки и проблемы при идентификации адреса</a></li><li><a href="#резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Ситуация, когда администратору необходимо точно идентифицировать источник входящего удаленного подключения, возникает регулярно в процессе обслуживания корпоративной инфраструктуры. Часто стандартные средства отображения текущих сессий показывают только имя пользователя или сетевое доменное имя, оставляя реальный сетевой адрес скрытым за слоями абстракции операционной системы.</p>
+<p>Необходимость узнать конкретный числовой идентификатор узла может быть продиктована требованиями безопасности, необходимостью блокировки подозрительной активности или просто желанием вести точный учет рабочего времени сотрудников, работающих удаленно. Без знания точного адреса невозможно настроить правила файрвола или провести детальный анализ сетевых логов на периметре.</p>
+<p>В операционных системах семейства Windows информация о входящих соединениях протокола удаленного рабочего стола фиксируется глубоко в системе, и для ее извлечения требуются специфические знания о структуре журналов событий и доступных утилитах командной строки. Существуют несколько проверенных методов получения этих данных, каждый из которых имеет свои особенности применения в зависимости от версии ОС и наличия прав доступа.</p>
+
+<h2 id="использование-журнала-событий-windows-для-ретроспективного-анализа">Использование журнала событий Windows для ретроспективного анализа</h2>
+<p>Наиболее надежным и информативным источником данных о всех попытках входа в систему, включая RDP-сессии, является встроенный механизм логирования событий Windows. Система автоматически записывает детали каждого успешного и неудачного подключения в специальный раздел журналов, доступ к которому возможен через стандартную оснастку управления или командную строку.</p>
+<p>Для начала анализа необходимо открыть консоль управления событиями, введя соответствующий запрос в меню «Выполнить» или поисковой строке. В открывшемся интерфейсе навигация осуществляется по древовидной структуре, где требуется перейти в раздел, отвечающий за безопасность системы, так как именно там фиксируются события авторизации.</p>
+<p>В левой панели дерева событий следует последовательно раскрыть ветку <code>Журналы Windows</code> и выбрать пункт <code>Безопасность</code>. Этот журнал содержит миллионы записей, поэтому ручной поиск нужного события нецелесообразен; вместо этого рекомендуется использовать встроенный фильтр для отсеивания лишнего шума и отображения только релевантных кодов событий.</p>
+<p>Ключевым параметром для фильтрации является код события <code>4624</code>, который обозначает успешный вход в систему. Однако стоит учитывать, что этот код генерируется при любом типе входа, включая локальный вход и вход служб, поэтому потребуется дополнительная фильтрация по типу входа.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск IP в журнале событий</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте eventvwr.msc</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Перейдите в Журналы Windows -> Безопасность</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Нажмите «Фильтр текущих журнала»</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите 4624 в поле кодов событий</span></div></div>
+
+<p>После применения фильтра список сократится до событий входа, но для выделения именно RDP-подключений необходимо обращать внимание на поле «Тип входа». Для протокола удаленного рабочего стола этот параметр принимает значение <code>10</code>, что соответствует удаленному интерактивному входу.</p>
+<p>При двойном клике на конкретное событие с кодом 4624 и типом входа 10 открывается детальное окно свойств, где в нижней части вкладки «Общие» или «Подробно» можно найти поле «Источник сети». Именно в этом поле отображается искомый IP-адрес удаленного клиента, с которого было инициировано соединение.</p>
+<p>Важно отметить, что если подключение осуществлялось через шлюз Remote Desktop Gateway, в поле источника может отображаться адрес самого шлюза, а не конечного клиента, что требует дополнительного анализа логов шлюза для получения истинного адреса.</p>
+<p>Для более удобного чтения больших объемов данных можно переключиться на вкладку «Подробно» и скопировать XML-представление события, где поля структурированы и их легче парсить автоматизированными скриптами или анализировать визуально без лишнего текстового окружения.</p>
+<p>Использование журнала событий является штатным методом, не требующим установки дополнительного ПО, однако он имеет ограничение: логи могут переполняться и перезаписываться, если не настроено их архивирование или увеличение размера файла журнала.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>По умолчанию размер журнала безопасности ограничен, поэтому для серверов с высокой нагрузкой рекомендуется увеличить квоту или настроить экспорт логов на внешний syslog-сервер.</p></aside>
+
+<h2 id="анализ-текущих-сессий-через-командную-строку-и-powershell">Анализ текущих сессий через командную строку и PowerShell</h2>
+<p>В ситуациях, когда требуется получить информацию оcurrently активных подключениях в реальном времени, использование графических интерфейсов может быть избыточным или невозможным, например, при работе через консольное соединение или скрипты автоматизации. Командная строка и PowerShell предоставляют мощные инструменты для мгновенного опроса состояния терминальных служб.</p>
+<p>Базовой утилитой для просмотра сессий является команда <code>query session</code> или ее сокращенный вариант <code>qwinsta</code>. Запуск этой команды в командной строке выводит список всех активных сессий на локальном компьютере, однако стандартный вывод часто не содержит IP-адреса, ограничиваясь именем пользователя и состоянием сессии.</p>
+<p>Для получения расширенной информации, включая сетевые адреса, необходимо использовать PowerShell с запросом к классам WMI или CIM. Командлет <code>Get-RDSession</code> доступен только на серверах с установленной ролью Remote Desktop Services, но на обычных рабочих станциях и серверах без этой роли можно использовать более низкоуровневые запросы.</p>
+<p>Одним из эффективных способов является использование утилиты <code>netstat</code> в сочетании с фильтрацией по порту прослушивания RDP. Стандартный порт протокола — 3389, поэтому команда <code>netstat -an | find "3389"</code> покажет все установленные соединения на этот порт, где в столбце «Foreign Address» будет указан IP-адрес клиента.</p>
+
+<pre><code>netstat -an | findstr /C:":3389" /C:"ESTABLISHED"</code></pre>
+
+<p>Результат выполнения команды <code>netstat</code> отображает адреса в формате <code>IP:порт</code>, что позволяет легко идентифицировать удаленную сторону соединения. Если порт RDP был изменен в реестре или через групповые политики, в команде необходимо указать актуальный номер порта вместо стандартного 3389.</p>
+<p>Более продвинутым методом является использование PowerShell для опроса класса <code>Win32_TerminalServiceSetting</code> или анализ сессий через модуль <code>RDS</code>. Однако для простых задач часто достаточно связки <code>query user</code> для получения ID сессии и последующего поиска соответствующего процесса или сетевого соединения.</p>
+<p>Следует помнить, что утилита <code>netstat</code> показывает только активные соединения в состоянии <code>ESTABLISHED</code>; если сессия простаивает слишком долго и разорвана по таймауту, но процесс пользователя еще не завершен, запись в netstat может отсутствовать, хотя сессия в <code>query session</code> будет видна какDisconnected.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Команда netstat показывает только текущие соединения. Если пользователь отключился (Disconnection), но не завершил сеанс, его IP-адрес может не отображаться в сетевых таблицах, пока соединение не будет восстановлено.</p></aside>
+
+<p>Для автоматизации сбора данных можно создать скрипт PowerShell, который периодически опрашивает состояние портов и логирует изменения, что особенно полезно для мониторинга в реальном времени без нагрузки на графический интерфейс.</p>
+<p>Использование командной строки предпочтительно на серверах с минимальной конфигурацией (Server Core), где графический интерфейс полностью отсутствует, и все администрирование производится исключительно через текстовые команды.</p>
+
+<h2 id="определение-ip-через-оснастку-управления-remote-desktop-services">Определение IP через оснастку управления Remote Desktop Services</h2>
+<p>На серверах, где развернута полноценная роль Remote Desktop Services (RDS), администраторам доступен специализированный графический интерфейс управления, который предоставляет значительно более детализированную информацию о пользователях и их подключениях по сравнению со стандартными средствами ОС.</p>
+<p>Для доступа к этим данным необходимо открыть диспетчер серверов, перейти в раздел <code>Средства</code> и выбрать <code>Remote Desktop Services</code> -> <code>Remote Desktop Services Manager</code>. В некоторых версиях Windows Server этот инструмент может называться просто «Диспетчер RDS».</p>
+<p>В центральном окне оснастки отображается список всех серверов коллекции, и при выборе конкретного сервера в нижней панели открывается список активных пользовательских сессий. В отличие от стандартного диспетчера задач, здесь по умолчанию могут отображаться дополнительные столбцы, включая клиентский IP-адрес.</p>
+<p>Если столбец с IP-адресом не виден сразу, необходимо настроить вид таблицы, вызвав контекстное меню заголовков столбцов и активировав отображение поля <code>Client IP Address</code> или <code>IP-адрес клиента</code>. Это действие мгновенно добавит колонку с числовым значением адреса для каждой активной строки.</p>
+<p>Оснастка позволяет не только просматривать адреса, но и выполнять действия над сессиями, такие как отключение, завершение процесса или отправку сообщения пользователю, что делает ее основным инструментом оперативного администрирования RDS-ферм.</p>
+<p>Важной особенностью является возможность просмотра истории сессий через отчеты, если настроена роль RD Licensing и сбор данных о лицензировании, однако оперативные данные о текущих IP доступны именно в менеджере сессий.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Просмотр IP в RDS Manager</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите tsadmin или через Server Manager</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Выберите коллекцию или сервер</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">В списке сессий найдите столбец Client IP</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Если столбца нет, добавьте его через настройки вида</span></div></div>
+
+<p>Использование специализированной оснастки RDS предпочтительно в корпоративных средах, где количество одновременных подключений велико, и требуется централизованный контроль над всеми узлами фермы без необходимости подключения к каждому серверу отдельно.</p>
+<p>Стоит отметить, что для работы с Remote Desktop Services Manager требуются права администратора на целевом сервере или соответствующие права в домене, иначе список сессий может не загрузиться или быть пустым.</p>
+<p>В больших развертываниях RDS этот инструмент также позволяет видеть, к какому именно серверу фермы подключен пользователь, если используется балансировка нагрузки, что упрощает навигацию в сложной инфраструктуре.</p>
+
+<h2 id="специфика-windows-10-11-и-server-core-без-графического-интерфейса">Специфика Windows 10, 11 и Server Core без графического интерфейса</h2>
+<p>В операционных системах клиентского сегмента, таких как Windows 10 и 11, а также в серверных редакциях Core, интерфейс управления RDS отсутствует, и администраторы вынуждены полагаться на системные утилиты и реестр. Методы, описанные ранее, частично применимы, но имеют свои нюансы реализации.</p>
+<p>Для Windows 10/11 наиболее быстрым способом получения информации о текущем подключении является использование диспетчера задач. Перейдя на вкладку <code>Пользователи</code>, можно увидеть список активных учетных записей, но IP-адрес там не отображается напрямую, требуя перехода к деталям процесса <code>svchost.exe</code>, связанного с TermService, что неудобно.</p>
+<p>Более эффективным методом для клиентских ОС остается использование PowerShell с запросом к WMI-классу, специфичному для терминальных служб. Команда может выглядеть громоздко, но она возвращает точный результат без необходимости копаться в логах.</p>
+
+<pre><code>Get-WmiObject -Namespace root\cimv2\terminalservices -Class Win32_TerminalServiceSetting | Select-Object ClientAddress</code></pre>
+
+<p>Однако, класс <code>Win32_TerminalServiceSetting</code> может не вернуть IP для всех типов подключений или требовать специфических прав. Альтернативой является анализ журнала безопасности (Event ID 4624), который работает идентично на всех версиях Windows, начиная с Vista и Server 2008.</p>
+<p>В среде Server Core, где отсутствует графическая оболочка, единственным вариантом остаются команды <code>query user</code>, <code>netstat</code> и PowerShell. Для постоянного мониторинга в таких условиях целесообразно использовать сторонние утилиты или скрипты, выгружающие данные в текстовый файл.</p>
+<p>Также стоит упомянуть возможность изменения стандартного порта RDP в реестре по пути <code>HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp</code> в параметре <code>PortNumber</code>. При изменении порта все команды фильтрации (netstat, firewall) должны быть адаптированы под новое значение.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Методы получения IP в Windows</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Журнал событий (полная история, детализация)</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует времени на анализ, большой объем данных</li></ul></div>
+</div></div>
+
+<p>Для версий Windows Home, где функция удаленного рабочего стола ограничена или отсутствует (только клиентская часть), получение IP входящего подключения невозможно стандартными средствами, так как система не выступает в роли RDP-хоста.</p>
+<p>При работе с Windows 11 стоит учитывать обновления интерфейса и возможные изменения в групповых политиках безопасности, которые могут ограничивать доступ к некоторым журналам событий для стандартных пользователей, требуя запуска консоли от имени администратора.</p>
+
+<h2 id="типичные-ошибки-и-проблемы-при-идентификации-адреса">Типичные ошибки и проблемы при идентификации адреса</h2>
+<p>В процессе определения IP-адреса удаленного подключения администраторы часто сталкиваются с рядом типичных проблем, которые могут привести к неверной интерпретации данных или получению ложных результатов. Понимание этих нюансов позволяет избежать ошибок в настройке безопасности и блокировок.</p>
+<ol>
+<li><strong>Отображение адреса шлюза вместо клиента</strong> — если подключение осуществляется через Remote Desktop Gateway (RD Gateway) или NAT-устройство с пробросом портов, в логах может фигурировать внутренний адрес шлюза или прокси-сервера, а не реальный IP пользователя; для решения требуется анализ логов самого шлюза.</
+<li><strong>Неверная интерпретация IPv6 адресов</strong> — современные системы по умолчанию приоритизируют протокол IPv6, и в логах может отображаться длинный адрес вида <code>::1</code> (локальная петля) или глобальный IPv6 адрес, который администраторы часто игнорируют, ожидая привычный IPv4 формат.</li>
+<li><strong>Отсутствие записей из-за переполнения журнала</strong> — если размер журнала безопасности ограничен и настроена политика перезаписи старых событий, информация о входе, совершенном несколько дней назад, может быть уже утеряна; необходимо увеличивать размер журнала или настраивать архивацию.</li>
+<li><strong>Игнорирование смены порта RDP</strong> — попытки отфильтровать соединения командой <code>netstat</code> по порту 3389 могут дать нулевой результат, если в системе порт удаленного доступа был изменен в целях безопасности; всегда проверяйте актуальный порт в реестре.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для постоянного мониторинга и упрощения анализа рассмотрите внедрение системы SIEM или использование специализированных скриптов, которые будут парсить Event ID 4624 и отправлять уведомления о новых IP-адресах в реальном времени.</p></aside>
+
+<p>Еще одной распространенной ошибкой является попытка найти IP-адрес в логах самого приложения «Подключение к удаленному рабочему столу» (mstsc.exe) на стороне клиента; эта программа сохраняет только историю имен серверов, но не логирует свои входящие соединения, так как является клиентским ПО.</p>
+<p>Также стоит помнить о динамической природе IP-адресов в локальных сетях: адрес, полученный сегодня по DHCP, завтра может быть выдан другому устройству, поэтому для постоянной идентификации лучше использовать привязку по MAC-адресу или статические назначения.</p>
+
+<h2 id="резюме-и-рекомендации-по-безопасности">Резюме и рекомендации по безопасности</h2>
+<p>Определение IP-адреса удаленного подключения RDP является базовым навыком системного администратора, необходимым для обеспечения безопасности и контроля доступа к инфраструктуре. Наиболее универсальным и надежным методом остается анализ журнала безопасности Windows с фильтрацией по событию 4624 и типу входа 10, так как этот способ работает на всех версиях ОС и сохраняет историю подключений.</p>
+<p>Для оперативного контроля активных сессий эффективно использование командной строки (<code>netstat</code>, <code>query session</code>) или оснастки Remote Desktop Services Manager на серверах. </p>
+<p>Регулярный аудит входящих подключений и понимание того, откуда они исходят, позволяет своевременно выявлять попытки несанкционированного доступа и предотвращать потенциальные утечки данных. Внедрение практик наименьших привилегий и использование двухфакторной аутентификации в дополнение к контролю IP-адресов значительно повышает общий уровень защищенности удаленного доступа.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Для получения IP-адреса RDP клиента используйте журнал событий (ID 4624) для истории и netstat/query session для активных подключений.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Тип данных</th>
+<th>Сложность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event Viewer (4624)</td>
+<td>Исторический, детальный</td>
+<td>Средняя</td>
+</tr>
+<tr>
+<td>netstat / query session</td>
+<td>Только активные</td>
+<td>Низкая</td>
+</tr>
+<tr>
+<td>RDS Manager</td>
+<td>Активные, управление</td>
+<td>Низкая</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение для RDP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Event ID</td>
+<td>4624</td>
+</tr>
+<tr>
+<td>Logon Type</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Default Port</td>
+<td>3389</td>
+</tr>
+</tbody>
+</table></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-sozdat-shablon-dlya-tekhniki-trikotin.html" class="pb-related-card">
+                <span class="pb-related-title">Как создать шаблон для трикотина: пошаговая инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по созданию шаблонов для вязальной машины трикотин. Настройка карточек, выбор </span>
+            </a><a href="/articles/c/cu/cube-perestal-zapisyvat-zvonki-posle-obnovleniya-na-hyperos.html" class="pb-related-card">
+                <span class="pb-related-title">Cube не записывает звонки на HyperOS: решение</span>
+                <span class="pb-related-desc">Почему Cube перестал записывать звонки после обновления на HyperOS? Разбираем настройки Android 14, </span>
+            </a><a href="/articles/v/ve/vertikalnye-oranzhevye-polosy-pri-zagruzke-pk.html" class="pb-related-card">
+                <span class="pb-related-title">Вертикальные оранжевые полосы на мониторе: причины и методы устранения</span>
+                <span class="pb-related-desc">Подробная инструкция по диагностике и устранению оранжевых полос на экране ПК. Проверка кабелей, дра</span>
+            </a><a href="/articles/i/in/informatsiya-po-displeyam-insell-ajfon.html" class="pb-related-card">
+                <span class="pb-related-title">Дисплеи In-Cell для iPhone: Характеристики, отличия и тесты</span>
+                <span class="pb-related-desc">Полный технический гид по экранам In-Cell для iPhone. Сравнение с OGS, проверка качества, тесты и ос</span>
+            </a><a href="/articles/e/e-/e-ac3-ili-atmos-luchshe.html" class="pb-related-card">
+                <span class="pb-related-title">e-AC3 или Atmos: что лучше выбрать для домашнего кинотеатра</span>
+                <span class="pb-related-desc">Техническое сравнение кодеков e-AC3 и Dolby Atmos. Анализ битрейта, совместимости и качества звука д</span>
+            </a><a href="/articles/k/ka/kak-na-zte-otklyuchit-bezopasnyj-rezhim.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить безопасный режим на ZTE: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выходу из безопасного режима на смартфонах ZTE. Методы перезагрузки, сброса</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

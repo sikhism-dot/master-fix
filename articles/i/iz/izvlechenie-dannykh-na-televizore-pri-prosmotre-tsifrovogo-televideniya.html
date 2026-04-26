@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Извлечение данных цифрового ТВ: лога, видео и статистики — Мастер Фикс</title>
+    <meta name="description" content="Как извлечь данные на телевизоре при просмотре цифрового телевидения. Анализ логов, дампов памяти и видеопотока через ADB и снифферы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/iz/izvlechenie-dannykh-na-televizore-pri-prosmotre-tsifrovogo-televideniya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Извлечение данных цифрового ТВ: лога, видео и статистики">
+    <meta property="og:description" content="Как извлечь данные на телевизоре при просмотре цифрового телевидения. Анализ логов, дампов памяти и видеопотока через ADB и снифферы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/" class="pb-nav-active">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/nastroika-tv/">Настройка ТВ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Извлечение данных цифрового ТВ: лога, видео и статистики</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-хранения-данных-в-smart-tv">Архитектура хранения данных в Smart TV</a></li><li><a href="#подключение-через-adb-и-доступ-к-консоли">Подключение через ADB и доступ к консоли</a></li><li><a href="#анализ-системных-логов-и-видеопотока">Анализ системных логов и видеопотока</a></li><li><a href="#инструменты-для-сниффинга-сетевого-трафика">Инструменты для сниффинга сетевого трафика</a></li><li><a href="#аппаратные-методы-hdmi-и-захват-видео">Аппаратные методы: HDMI и захват видео</a></li><li><a href="#извлечение-данных-с-внешних-накопителей">Извлечение данных с внешних накопителей</a></li><li><a href="#faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-vklyuchit-saundbar-samsung-hw-k550-bez-pulta.html">Как включить саундбар Samsung HW-K550 без пульта: полное руководство</a></li><li><a href="/articles/i/iv/ivi-est-kanal-dlya-vzroslykh.html">Как найти каналы 18+ на Иви: инструкция и настройки</a></li><li><a href="/articles/v/vn/vneshnij-diskovod-aqes-kak-podklyuchit-ego-k-telefonu-i-televizoru.html">Подключение Aqes к телефону и ТВ: полная инструкция</a></li><li><a href="/articles/x/xm/xmeye-na-televizore.html">Как настроить XMEye на телевизоре: полная инструкция</a></li><li><a href="/articles/h/ha/haier-smart-tv-m1-miracast.html">Miracast на Haier Smart TV M1: инструкция и настройка</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Извлечение данных на телевизоре при просмотре цифрового телевидения</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-хранения-данных-в-smart-tv">Архитектура хранения данных в Smart TV</a></li><li><a href="#подключение-через-adb-и-доступ-к-консоли">Подключение через ADB и доступ к консоли</a></li><li><a href="#анализ-системных-логов-и-видеопотока">Анализ системных логов и видеопотока</a></li><li><a href="#инструменты-для-сниффинга-сетевого-трафика">Инструменты для сниффинга сетевого трафика</a></li><li><a href="#аппаратные-методы-hdmi-и-захват-видео">Аппаратные методы: HDMI и захват видео</a></li><li><a href="#извлечение-данных-с-внешних-накопителей">Извлечение данных с внешних накопителей</a></li><li><a href="#faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Современный телевизор перестал быть просто устройством для отображения эфирного сигнала, превратившись в мощный мультимедийный компьютер с операционной системой. Когда вы смотрите цифровое телевидение, устройство генерирует огромный массив информации, который скрыт от обычного пользователя, но доступен для анализа. Извлечение этих данных может потребоваться инженерам для отладки, энтузиастам для восстановления удаленных записей или исследователям безопасности для проверки защищенности потоков.</p>
+<p>Процесс получения информации с устройства напрямую зависит от архитектуры Smart TV, будь то <strong>Android TV</strong>, <em>webOS</em> или <em>Tizen</em>. В большинстве случаев речь идет о доступе к системным логам, буферу воспроизведения или прямому захвату транспортного потока (TS). Понимание принципов работы <strong>DVB-тюнера</strong> и декодера позволяет не только диагностировать проблемы, но и сохранять контент локально.</p>
+<p>Важно осознавать, что вмешательство в работу программного обеспечения и попытка извлечь служебные данные часто нарушают условия гарантии. Любые манипуляции с системными файлами требуют высокой квалификации и наличия специализированного оборудования, такого как отладочные кабели или настроенные снифферы трафика.</p>
+
+<h2 id="архитектура-хранения-данных-в-smart-tv">Архитектура хранения данных в Smart TV</h2>
+<p>Внутренняя структура памяти современного телевизора напоминает структуру смартфона или планшета. Основным хранилищем служит флеш-память eMMC или UFS, разделенная на несколько логических. Здесь находятся разделы с загрузчиком, ядром системы, пользовательскими данными и, что наиболее важно для нас, кэшем воспроизведения. При просмотре цифрового канала видеопоток буферизируется, и эти данные временно записываются в <strong>RAM</strong> или специальный раздел диска.</p>
+<p>Операционные системы, такие как <em>Android TV</em>, используют файловую систему ext4 или f2fs, где логи приложений и системные события пишутся в директории <code>/data/log</code> или <code>/sdcard/Android/data</code>. Доступ к этим областям без прав суперпользователя (<strong>root</strong>) ограничен политиками безопасности SELinux. Однако, даже без полных прав, некоторые метаданные о воспроизводимом контенте, кодеках и битрейте доступны через стандартные интерфейсы отладки.</p>
+<p>В отличие от компьютеров, телевизоры часто используют <strong>аппаратное декодирование</strong>, которое происходит в отдельном процессоре (SoC). Данные передаются по шине памяти, и перехватить их программными методами сложнее, чем на ПК. Тем не менее, системные вызовы и драйверы оставляют следы в логах ядра, которые можно считать для анализа технических параметров сигнала.</p>
+<blockquote>⚠️ Внимание: Попытка записи системного раздела recovery или boot может привести к необратимому повреждению прошивки и превращению телевизора в «кирпич».</blockquote>
+<p>Для исследователя критически важно понимать разницу между пользовательскими данными и системными логами. Первые доступны проще, вторые требуют глубокой интеграции. Использование <mark>режимов отладки ADB</mark> открывает доступ к консоли, где можно наблюдать за процессами в реальном времени, но не всегда позволяет читать защищенные области памяти.</p>
+
+<h2 id="подключение-через-adb-и-доступ-к-консоли">Подключение через ADB и доступ к консоли</h2>
+<p>Наиболее распространенным методом взаимодействия с телевизором на базе Android является использование протокола <strong>Android Debug Bridge</strong> (ADB). Этот инструмент позволяет подключиться к устройству по локальной сети или USB и выполнять команды от имени shell-пользователя. Для активации необходимо зайти в меню настроек, найти раздел «О телевизоре» и семь раз нажать на номер сборки, чтобы активировать режим разработчика.</p>
+<p>После включения отладки по USB в меню <code>Настройки → Для разработчиков → Отладка по USB</code>, телевизор становится видимым для внешних компьютеров. Подключение осуществляется командой <code>adb connect IP_адрес_телевизора:5555</code>. Успешное соединение дает возможность выполнять команды, собирать логи и передавать файлы. Это первый шаг к извлечению любой полезной информации.</p>
+<ul>
+<li>🔌 Для стабильного соединения используйте кабель Ethernet, так как Wi-Fi может вносить задержки при передаче больших объемов логов.</li>
+<li>🛡️ Антивирус на компьютере может блокировать входящие соединения ADB, поэтому стоит добавить исключение для adb.exe.</li>
+<li>📱 Некоторые производители скрывают IP-адрес в меню, его можно узнать через роутер или командой <code>ip addr</code> в терминале самого ТВ.</li>
+</ul>
+<p>Получив доступ к оболочке (<code>adb shell</code>), вы можете использовать стандартные утилиты Linux для навигации. Команда <code>logcat</code> позволяет выводить логи в реальном времени, фильтруя их по тегам, связанным с видеоплеером или тюнером. Например, фильтр <code>logcat | grep -i"video"</code> покажет все события, связанные с видеопотоком.</p>
+<div class="pb-poll" id="poll-bf56b720"><div class="pb-poll-question">📊 Какой интерфейс отладки вы используете чаще?</div><div class="pb-poll-option" data-poll="bf56b720" data-idx="0" onclick="pbPollVote(this)"><span class="pb-poll-label">ADB по Wi-Fi</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="bf56b720" data-idx="1" onclick="pbPollVote(this)"><span class="pb-poll-label">ADB по USB</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="bf56b720" data-idx="2" onclick="pbPollVote(this)"><span class="pb-poll-label">Telnet/SSH</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div><div class="pb-poll-option" data-poll="bf56b720" data-idx="3" onclick="pbPollVote(this)"><span class="pb-poll-label">Только встроенные логи</span><span class="pb-poll-bar"></span><span class="pb-poll-pct"></span></div></div>
+<p>Стоит отметить, что на некоторых моделях порты ADB могут быть закрыты или требовать подтверждения на экране телевизора при каждом подключении нового устройства. Это мера безопасности, предотвращающая несанкционированный доступ злоумышленников в той же сети.</p>
+
+<h2 id="анализ-системных-логов-и-видеопотока">Анализ системных логов и видеопотока</h2>
+<p>Системные логи — это «черный ящик» телевизора, где фиксируются все события: от запуска приложения до ошибок декодирования. При просмотре цифрового телевидения наиболее интересны логи медиасервера (<strong>mediaserver</strong>) и драйверов тюнера. В них содержатся данные о частоте сигнала, уровне BER (Bit Error Rate) и параметрах MPEG-TS потока.</p>
+<p>Для извлечения полного лога используется команда <code>adb logcat -b all -d > tv_log.txt</code>. Полученный файл может достигать десятков мегабайт. Анализировать его лучше на компьютере, используя текстовые редакторы с поддержкой больших файлов или специализированные утилиты вроде <em>MatLog</em>. Ключевые слова для поиска: <code>tuner</code>, <code>demux</code>, <code>codec</code>, <code>buffer</code>.</p>
+<p>Если стоит задача проанализировать сам видеопоток, можно попытаться перенаправить вывод с демуксера. Однако, из-за защиты DRM (Digital Rights Management), потоки от платных каналов часто шифруются. В логах это будет отображаться как ошибки decryption или отсутствие видеодорожки при наличии аудио.</p>
+<details class="pb-accordion"><summary>Что такое BER и почему он важен?</summary><div class="pb-accordion-body"><p>BER (Bit Error Ratio) — это коэффициент битовых ошибок. Высокий BER указывает на плохой сигнал антенны или проблемы с кабелем, что приводит к артефактам изображения («квадратикам») или полному пропаданию картинки. В логах значение BER > 1e-4 обычно считается критическим.</p></div></details>
+<p>Для более глубокого анализа можно использовать утилиту <code>dumpsys</code>, которая показывает состояние системных служб. Команда <code>dumpsys media.codec</code> выдаст информацию о загруженности аппаратного декодера и используемых буферах. Это помогает понять, хватает ли ресурсов процессора для обработки потока высокого разрешения.</p>
+
+<h2 id="инструменты-для-сниффинга-сетевого-трафика">Инструменты для сниффинга сетевого трафика</h2>
+<p>Если цифровой контент транслируется через IPTV или OTT-приложения, данные передаются по сети. В этом случае эффективным методом извлечения информации является сниффинг трафика. Для этого телевизор подключают к сети, где установлен сниффер, например, <strong>Wireshark</strong> или <em>tcpdump</em>, запущенный на роутере или отдельном компьютере с пробросом портов.</p>
+<p>Сниффер позволяет захватывать пакеты данных и анализировать их содержимое. В случае незашифрованного HTTP-потока можно восстановить ссылку на видеофайл или даже собрать весь поток заново. Однако современные сервисы используют протокол <strong>HTTPS</strong>, что делает содержимое пакетов нечитаемым без внедрения собственного сертификата.</p>
+<p>Для перехвата HTTPS-трафика на телевизоре необходимо установить корневой сертификат сниффера (например, <em>Charles Proxy</em> или <em>Mitmproxy</em>) в хранилище доверенных сертификатов устройства. На Android это требует root-прав или эмуляции через <em>VirtualBox</em>/<em>Genymotion</em>, так как системный раздел сертификатов защищен.</p>
+<ul>
+<li>🌐 Настройте статический IP-адрес для телевизора, чтобы фильтр в сниффере работал корректно.</li>
+<li>🔒 Многие приложения используют SSL Pinning, игнорируя системные сертификаты, что делает перехват HTTPS крайне сложным.</li>
+<li>📡 При анализе DVB-T2 через антенну сетевой сниффер бесполезен, так как сигнал идет напрямую в тюнер, минуя сетевой стек.</li>
+</ul>
+<p>В таблице ниже приведено сравнение методов анализа трафика в зависимости от типа подключения:</p>
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Тип сигнала</th>
+<th>Сложность</th>
+<th>Эффективность</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ADB Logcat</td>
+<td>Любой</td>
+<td>Низкая</td>
+<td>Высокая (для логов)</td>
+</tr>
+<tr>
+<td>Wireshark (HTTP)</td>
+<td>IPTV/OTT</td>
+<td>Средняя</td>
+<td>Высокая (без шифрования)</td>
+</tr>
+<tr>
+<td>Mitmproxy (HTTPS)</td>
+<td>IPTV/OTT</td>
+<td>Высокая</td>
+<td>Средняя (нужен Root)</td>
+</tr>
+<tr>
+<td>HDMI Capture Card</td>
+<td>Любой</td>
+<td>Низкая</td>
+<td>Максимальная (видео)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="аппаратные-методы-hdmi-и-захват-видео">Аппаратные методы: HDMI и захват видео</h2>
+<p>Когда программные методы ограничены защитой HDCP (High-bandwidth Digital Content Protection), единственным надежным способом извлечь изображение остается аппаратный захват. Для этого используется внешняя карта видеозахвата, подключаемая между телевизором (выход HDMI, если есть) или приставкой и компьютером. Некоторые карты захвата умеют обходить или игнорировать проверку HDCP.</p>
+<p>Если телевизор имеет выход HDMI ARC/eARC, его можно использовать для вывода звука, но видеосигнал обычно только принимается. Поэтому для захвата цифрового эфирного сигнала чаще используют отдельную приставку или сплиттер HDMI. Сигнал разделяется: одна часть идет на телевизор для просмотра, другая — на карту захвата для записи и анализа на ПК.</p>
+<p>Использование карт захвата позволяет получить «чистое» изображение без оверлеев меню и системных уведомлений. Программное обеспечение, такое как <em>OBS Studio</em> или <strong>VirtualDub</strong>, позволяет записывать поток в реальном времени, сохранять скриншоты или проводить покадровый анализ артефактов сжатия.</p>
+<blockquote>⚠️ Внимание: Попытка использования дешевых HDMI-сплиттеров для обхода HDCP может привести к потере качества сигнала или полному отсутствию изображения (черный экран).</blockquote>
+<p>Для профессионального анализа качества сигнала цифрового ТВ инженеры используют осциллографы и анализаторы спектра, подключаясь непосредственно к антенному входу или выходу тюнера. Это позволяет оценить уровень шума, модуляцию и соответствие сигнала стандарту DVB-T2, но требует дорогостоящего оборудования.</p>
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>При выборе карты захвата обращайте внимание на поддержку разрешения 1080p60 и наличие аппаратного кодировщика H.264, чтобы снизить нагрузку на процессор компьютера при записи.</p></aside>
+
+<h2 id="извлечение-данных-с-внешних-накопителей">Извлечение данных с внешних накопителей</h2>
+<p>Многие современные телевизоры поддерживают функцию <strong>TimeShift</strong> и запись эфира на подключенный USB-накопитель. Файлы записей часто сохраняются в проприетарном формате или шифруются, привязываясь к уникальному идентификатору телевизора. Это сделано для предотвращения копирования контента на другие устройства.</p>
+<p>Чтобы извлечь такие данные, необходимо подключить USB-накопитель к компьютеру. Если файловая система стандартная (NTFS, FAT32), файлы будут видны, но могут не открываться в плеерах. Иногда достаточно изменить расширение файла или использовать специальный плеер от производителя ТВ. В более сложных случаях требуется клонирование накопителя и анализ его структуры.</p>
+<p>Процесс клонирования диска (<strong>dd</strong> в Linux или <em>Win32 Disk Imager</em> в Windows) создает точную копию раздела. Это позволяет безопасно экспериментировать с файловой системой, пытаясь найти ключи дешифровки или заголовки файлов. Часто метаданные о записи хранятся в скрытой базе данных SQLite внутри папки приложения TV.</p>
+<div class="pb-steps"><h4 class="pb-steps-title">☑️ Проверка USB-накопителя</h4><label class="check-item"><input type="checkbox"><span>Формат NTFS или FAT32</span></label><label class="check-item"><input type="checkbox"><span>Скорость записи > 10 МБ/с</span></label><label class="check-item"><input type="checkbox"><span>Отсутствие физических повреждений</span></label><label class="check-item"><input type="checkbox"><span>Наличие свободного места></span></label><div class="check-progress">Выполнено: <span class="check-count">0</span> / 4</div></div>
+<p>Стоит помнить, что форматирование накопителя телевизором для записи создает скрытые разделы, которые стандартными средствами ОС могут не отображаться. Для работы с ними потребуются утилиты управления дисками, такие как <em>Disk Management</em> или <strong>GParted</strong>.</p>
+
+<h2 id="faq-часто-задаваемые-вопросы">FAQ: Часто задаваемые вопросы</h2>
+<details>
+<summary>Можно ли извлечь данные с телевизора без root-прав?</summary>
+<p>Да, частично. Вы можете получать логи через ADB, если включена отладка, и анализировать сетевой трафик. Однако доступ к системным файлам и защищенным буферам памяти будет закрыт.</p>
+</details>
+<details>
+<summary>Безопасно ли включать режим разработчика?</summary>
+<p>Сам по себе режим безопасен, но он открывает порты для подключения. Если ваш телевизор находится в публичной сети Wi-Fi, это создает уязвимость. Используйте только доверенные домашние сети.</p>
+</details>
+<details>
+<summary>Почему запись экрана через ADB (screenrecord) не работает с видео?</summary>
+<p>Это защита DRM. При воспроизведении защищенного контента (Netflix, платные каналы) видеопоток блокируется на уровне драйвера, и на записи будет черный экран. Работает только захват через HDMI.</p>
+</details>
+<details>
+<summary>Где хранятся логи на телевизорах Samsung (Tizen) и LG (webOS)?</summary>
+<p>На Tizen и webOS доступ к файловой системе ограничен сильнее, чем на Android. Для получения логов часто требуется использование специальных SDK и инструментов от разработчика, таких как <em>Prism</em> для LG или <em>Tizen Studio</em>.</p>
+</details>
+<details>
+<summary>Можно ли восстановить удаленную запись с USB-флешки?</summary>
+<p>Да, если данные не были перезаписаны. Используйте программы для восстановления данных, такие как <em>Recuva</em> или <strong>PhotoRec</strong>, предварительно создав образ диска.</p>
+</details></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-vklyuchit-saundbar-samsung-hw-k550-bez-pulta.html" class="pb-related-card">
+                <span class="pb-related-title">Как включить саундбар Samsung HW-K550 без пульта: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по активации Samsung HW-K550 без пульта ДУ. Управление через HDMI ARC, Bluetoot</span>
+            </a><a href="/articles/i/iv/ivi-est-kanal-dlya-vzroslykh.html" class="pb-related-card">
+                <span class="pb-related-title">Как найти каналы 18+ на Иви: инструкция и настройки</span>
+                <span class="pb-related-desc">Подробное руководство по активации родительского контроля и доступу к контенту для взрослых на платф</span>
+            </a><a href="/articles/v/vn/vneshnij-diskovod-aqes-kak-podklyuchit-ego-k-telefonu-i-televizoru.html" class="pb-related-card">
+                <span class="pb-related-title">Подключение Aqes к телефону и ТВ: полная инструкция</span>
+                <span class="pb-related-desc">Техническое руководство по подключению внешнего дисковода Aqes к смартфонам и телевизорам через USB </span>
+            </a><a href="/articles/x/xm/xmeye-na-televizore.html" class="pb-related-card">
+                <span class="pb-related-title">Как настроить XMEye на телевизоре: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выводу камер на телевизор через XMEye. Настройка Smart TV, Android Box и HD</span>
+            </a><a href="/articles/h/ha/haier-smart-tv-m1-miracast.html" class="pb-related-card">
+                <span class="pb-related-title">Miracast на Haier Smart TV M1: инструкция и настройка</span>
+                <span class="pb-related-desc">Подробный гид по подключению Miracast на телевизоре Haier серии M1. Решение проблем, настройка Andro</span>
+            </a><a href="/articles/d/do/dolgo-zagruzhaetsya-prilozhenie-psb-banka-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Почему долго грузится ПСБ Онлайн: устранение проблем</span>
+                <span class="pb-related-desc">Долго загружается ПСБ Онлайн? Инструкция по устранению задержек, очистке кэша, настройке сети и реше</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

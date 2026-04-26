@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Как изменить MTU Windows 10: полная инструкция по настройке сети — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по изменению MTU в Windows 10. Оптимизация скорости интернета, устранение разрывов VPN и игровых соединений через командную строку.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/k/ka/kak-izmenit-mtu-windows-10.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Как изменить MTU Windows 10: полная инструкция по настройке сети">
+    <meta property="og:description" content="Подробное руководство по изменению MTU в Windows 10. Оптимизация скорости интернета, устранение разрывов VPN и игровых соединений через командную строку.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-nav-active">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/windows-pk/">Windows ПК</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Как изменить MTU Windows 10: полная инструкция по настройке сети</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-текущего-состояния-сети-и-определение-оптального-mtu">Диагностика текущего состояния сети и определение оптального MTU</a></li><li><a href="#методы-изменения-mtu-через-командную-строку-netsh">Методы изменения MTU через командную строку Netsh</a></li><li><a href="#альтернативные-способы-настройки-через-реестр-и-powershell">Альтернативные способы настройки через реестр и PowerShell</a></li><li><a href="#особенности-настройки-для-игровых-соединений-и-vpn">Особенности настройки для игровых соединений и VPN</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-pochistit-klavishi-na-noutbuke-asus-e510m.html">Чистка клавиатуры ноутбука Asus E510M: полная инструкция</a></li><li><a href="/articles/k/ka/kak-snyat-ogranichenie-na-otkrytie-fajlov-s-dlinnym-putyom-ili-imenem-windows-7.html">Как снять ограничение на длину пути в Windows 7: полная инструкция</a></li><li><a href="/articles/w/wi/windows-7-gde-najti-realtek-hd.html">Realtek HD в Windows 7: где найти и как настроить</a></li><li><a href="/articles/k/ka/kak-podklyuchit-gejmpad-ipega-9128-k-windows-7.html">Как подключить ipega 9128 к Windows 7: полная инструкция</a></li><li><a href="/articles/g/gd/gde-nakhoditsya-protsessor-noutbuka-dexter.html">Где процессор в ноутбуке Dexter: расположение и спецификации</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Как изменить MTU Windows 10: оптимизация сетевых пакетов</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-текущего-состояния-сети-и-определение-оптального-mtu">Диагностика текущего состояния сети и определение оптального MTU</a></li><li><a href="#методы-изменения-mtu-через-командную-строку-netsh">Методы изменения MTU через командную строку Netsh</a></li><li><a href="#альтернативные-способы-настройки-через-реестр-и-powershell">Альтернативные способы настройки через реестр и PowerShell</a></li><li><a href="#особенности-настройки-для-игровых-соединений-и-vpn">Особенности настройки для игровых соединений и VPN</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь может столкнуться с ситуацией, когда интернет-соединение работает нестабильно: страницы грузятся медленно, видеоконференции прерываются, а игровые сессии обрываются из-за таймаутов.</p>
+<p>Часто причиной таких сбоев становится некорректный размер максимального передаваемого блока данных, известный как MTU (Maximum Transmission Unit), который не соответствует требованиям провайдера или маршрутизатора.</p>
+<p>Если значение MTU установлено слишком высоким для текущего канала связи, пакеты данных начинают фрагментироваться или теряться, что приводит к заметному падению производительности сети и увеличению пинга.</p>
+<p>Решение данной проблемы требует точной диагностики текущего состояния сети и последующего внесения изменений в системные параметры операционной системы <em>Windows 10</em> без использования стороннего программного обеспечения.</p>
+
+<h2 id="диагностика-текущего-состояния-сети-и-определение-оптального-mtu">Диагностика текущего состояния сети и определение оптального MTU</h2>
+
+<p>Перед внесением любых изменений в конфигурацию системы необходимо точно определить текущее значение MTU и выявить оптимальный параметр для конкретного сетевого интерфейса.</p>
+<p>Стандартное значение для Ethernet-соединений обычно составляет 1500 байт, однако при использовании туннелирования, например VPN или PPPoE, эффективный размер пакета должен быть уменьшен во избежание фрагментации.</p>
+<p>Для проведения первичной диагностики используется встроенная утилита командной строки, которая позволяет отправлять тестовые пакеты разного размера и анализировать реакцию удаленного узла.</p>
+
+<h3>Использование команды ping для проверки фрагментации</h3>
+
+<p>Процесс подбора правильного значения начинается с последовательной отправки эхо-запросов с флагом запрета фрагментации, что позволяет выявить предельный размер пакета, проходящего без потерь.</p>
+<p>Необходимо открыть консоль с правами администратора и выполнить команду, постепенно уменьшая размер данных до тех пор, пока пакеты не начнут проходить успешно без сообщений об ошибке.</p>
+<p>Если команда возвращает сообщение о необходимости фрагментации, но установлен флаг DF, это указывает на то, что текущий размер пакета превышает возможности канала, и MTU следует уменьшить.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка MTU через Ping</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте командную строку (cmd) от имени администратора</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду ping ya.ru -f -l 1472</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Если есть фрагментация, уменьшите число (например, до 1400)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Если проходит, увеличьте число, пока не найдете предел</span></div></div>
+
+<p>Важно учитывать, что к указанному в команде числу необходимо добавить 28 байт заголовка IP и ICMP, чтобы получить итоговое значение MTU, которое будет устанавливаться в системе.</p>
+<p>На практике поиск оптимального значения часто ведут методом бинарного поиска: если 1400 проходит, а 1500 нет, проверяют 1450, затем 1475 и так далее до получения точного результата.</p>
+
+<h3>Анализ интерфейсов и текущего конфигурирования</h3>
+
+<p>В современных операционных системах может быть активировано множество сетевых интерфейсов, включая виртуальные адаптеры, созданные программами виртуализации или антивирусами.</p>
+<p>Для просмотра текущих параметров всех активных соединений используется команда, отображающая интерфейс, текущий MTU и состояние медиа.</p>
+<p>Следует обратить внимание на название интерфейса, так как оно потребуется для последующего применения настроек, и оно должно совпадать с названием в списке сетевых подключений.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип соединения</th>
+<th>Стандартный MTU</th>
+<th>Рекомендуемый MTU (с VPN)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ethernet (Кабель)</td>
+<td>1500</td>
+<td>1400-1450</td>
+</tr>
+<tr>
+<td>Wi-Fi (Беспроводное)</td>
+<td>1500</td>
+<td>1400-1450</td>
+</tr>
+<tr>
+<td>PPPoE (Ростелеком, Дом.ру)</td>
+<td>1492</td>
+<td>1450-1480</td>
+</tr>
+</tbody>
+</table>
+
+<p>Знание типа подключения помогает сразу сузить круг поиска и не тратить время на тестирование заведомо неподходящих значений, характерных для других технологий доступа.</p>
+<p>Если в списке присутствуют адаптеры с названием <em>VirtualBox</em> или <em>VMware</em>, их изменение обычно не требуется, если только проблемы не связаны specifically с виртуальной машиной.</p>
+
+<h2 id="методы-изменения-mtu-через-командную-строку-netsh">Методы изменения MTU через командную строку Netsh</h2>
+
+<p>Наиболее надежным и универсальным способом изменения параметров сетевого стека в <em>Windows 10</em> является использование утилиты <code>netsh</code>, встроенной в операционную систему.</p>
+<p>Этот метод не требует установки дополнительного программного обеспечения и позволяет вносить изменения, которые сохраняются после перезагрузки компьютера.</p>
+<p>Для выполнения операций необходимы права администратора, так как изменение сетевых параметров влияет на работу всей операционной системы.</p>
+
+<h3>Пошаговая инструкция по применению команды netsh</h3>
+
+<p>Процесс изменения начинается с запуска командной строки от имени администратора, что можно сделать через поиск в меню «Пуск» или контекстное меню кнопки «Пуск».</p>
+<p>После открытия консоли вводится команда установки MTU, где указываются имя интерфейса, протокол IPv4 и рассчитанное ранее оптимальное значение размера пакета.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неправильное указание имени интерфейса приведет к ошибке выполнения команды. Копируйте название точно, включая пробелы и регистр символов.</p></aside>
+
+<ol>
+<li>Введите команду для перехода в контекст интерфейса: <code>netsh</code>, затем <code>int</code>, затем <code>ipv4</code>.</li>
+<li>Используйте команду установки: <code>set subinterface</code>.</li>
+<li>Укажите имя интерфейса в кавычках, если оно содержит пробелы, например <code>"Ethernet"</code>.</li>
+<li>Добавьте параметр <code>mtu=</code> и нужное числовое значение.</li>
+</ol>
+
+<p>Полная команда будет выглядеть как единая строка, которую можно скопировать и вставить в окно терминала, предварительно заменив название интерфейса.</p>
+<p>После выполнения команды система должна вернуть сообщение об подтверждении выполнения, что означает успешное применение новых параметров к сетевому адаптеру.</p>
+
+<pre><code>netsh interface ipv4 set subinterface"Ethernet" mtu=1450 store=persistent</code></pre>
+
+<p>Параметр <code>store=persistent</code> гарантирует, что настройки не сбросятся после выключения питания или перезагрузки операционной системы.</p>
+<p>Если интерфейс переименовывался пользователем, необходимо использовать именно то имя, которое отображается в списке сетевых подключений в текущий момент времени.</p>
+
+<h3>Проверка примененных настроек</h3>
+
+<p>После внесения изменений рекомендуется немедленно проверить, приняла ли система новые параметры, повторив команду вывода информации об интерфейсах.</p>
+<p>В выводе утилиты <code>netsh</code> должно отображаться новое значение MTU напротив соответствующего имени сетевого адаптера.</p>
+<p>Если значение не изменилось, возможно, команда была выполнена без прав администратора или было допущено несоответствие в написании имени интерфейса.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Изменения вступают в силу немедленно, но для полной перестройки сетевых соединений может потребоваться кратковременный разрыв связи на несколько секунд.</p></aside>
+
+<p>Стоит также выполнить повторный пинг с большими пакетами, чтобы убедиться, что фрагментация действительно устранена и соединение стало стабильнее.</p>
+<p>В некоторых случаях может потребоваться обновление DHCP-аренды или полный сброс стека TCP/IP, если старые настройки кэшируются системой.</p>
+
+<h2 id="альтернативные-способы-настройки-через-реестр-и-powershell">Альтернативные способы настройки через реестр и PowerShell</h2>
+
+<p>Для пользователей, предпочитающих графический интерфейс или автоматизацию скриптами, существуют альтернативные методы изменения MTU, не требующие использования классической командной строки CMD.</p>
+<p>Мощность PowerShell позволяет управлять сетевыми параметрами более гибко, используя объектно-ориентированный подход к конфигурированию системы.</p>
+<p>Редактирование реестра является более глубоким методом, который может потребоваться в случаях, когда стандартные команды по какой-то причине не работают или блокируются политиками безопасности.</p>
+
+<h3>Использование модуля NetTCPIP в PowerShell</h3>
+
+<p>В <em>Windows 10</em> и более новых версиях серверных ОС доступен модуль <code>NetTCPIP</code>, который предоставляет удобные cmdlet для управления сетевыми настройками.</p>
+<p>Для работы с этим модулем не нужно переходить в специальные контексты, как в <code>netsh</code>, достаточно знать правильную команду и параметры.</p>
+<p>Сначала необходимо получить текущий индекс интерфейса или его название, чтобы адресовать команду именно к нужному сетевому адаптеру.</p>
+
+<pre><code>Set-NetIPInterface -InterfaceAlias"Ethernet" -AddressFamily IPv4 -NlMtuBytes 1450</code></pre>
+
+<p>Данная команда устанавливает размер MTU для указанного интерфейса, и синтаксис PowerShell делает её более читаемой для администраторов, знакомых с этой средой.</p>
+<p>Преимуществом метода является возможность удаленного управления компьютером через PowerShell Remoting, что удобно для системных администраторов.</p>
+<p>Проверка результата выполняется командой <code>Get-NetIPInterface</code>, которая выведет актуальную конфигурацию всех сетевых интерфейсов в удобном табличном виде.</p>
+
+<h3>Ручное редактирование системного реестра</h3>
+
+<p>Изменение MTU через реестр требует особой осторожности, так как неверные действия могут привести к нестабильной работе сети или операционной системы в целом.</p>
+<p>Параметры MTU хранятся в ветке реестра, связанной с конкретным сетевым адаптером, и для доступа к ним требуется знание GUID интерфейса.</p>
+<p>Необходимо перейти по пути <code>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces</code> и найти папку с нужным идентификатором.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Перед редактированием реестра обязательно создайте его резервную копию. Ошибки в реестре могут сделать систему незагружаемой.</p></aside>
+
+<p>Внутри папки интерфейса создается или изменяется параметр <code>MTU</code> типа <code>DWORD (32 бита)</code>, которому присваивается десятичное значение желаемого размера пакета.</p>
+<p>После внесения изменений в реестр обязательна перезагрузка компьютера, так как сетевой стек считывает эти параметры только при инициализации.</p>
+<p>Этот метод считается устаревшим для простых задач, но может быть полезен для создания групповых политик или скриптов развертывания в корпоративной среде.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод</th>
+<th>Сложность</th>
+<th>Требуется перезагрузка</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Netsh (CMD)</td>
+<td>Низкая</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>PowerShell</td>
+<td>Средняя</td>
+<td>Нет</td>
+</tr>
+<tr>
+<td>Реестр</td>
+<td>Высокая</td>
+<td>Да</td>
+</tr>
+</tbody>
+</table>
+
+<p>Выбор метода зависит от привычек пользователя и конкретных задач, однако <code>netsh</code> остается наиболее совместимым вариантом для всех версий Windows.</p>
+
+<h2 id="особенности-настройки-для-игровых-соединений-и-vpn">Особенности настройки для игровых соединений и VPN</h2>
+
+<p>Геймеры и пользователи VPN-сервисов сталкиваются с проблемами MTU чаще других, так как их трафик чувствителен к задержкам и потере пакетов.</p>
+<p>В онлайн-играх высокий MTU может приводить к лагам и телепортации персонажей, если пакеты теряются на пути к серверу игры.</p>
+<p>VPN-протоколы, такие как OpenVPN или WireGuard, добавляют свои заголовки к пакетам, что уменьшает полезную нагрузку и требует уменьшения базового MTU.</p>
+
+<h3>Оптимизация для игровых платформ</h3>
+
+<p>Для игровых консолей и ПК, подключенных через маршрутизатор, настройку часто целесообразнее производить на уровне роутера, чтобы охватить все устройства.</p>
+<p>Однако, если изменение настроек роутера невозможно, снижение MTU на компьютере может улучшить стабильность соединения с игровыми серверами.</p>
+<p>Рекомендуется тестировать значения в диапазоне от 1400 до 1472, так как именно в этом диапазоне чаще всего кроется решение проблем с потерей пакетов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для игр часто оптимальным является значение 1472 или 1460, что обеспечивает баланс между размером пакета и надежностью доставки.</p></aside>
+
+<p>Стоит учитывать, что некоторые игры используют собственные механизмы фрагментации, и изменение системного MTU может не дать видимого эффекта в отдельных случаях.</p>
+<p>Тем не менее, для протокола ICMP и многих UDP-соединений правильная настройка MTU является критически важной для минимизации задержек.</p>
+
+<h3>Настройка туннелей и VPN-клиентов</h3>
+
+<p>При использовании VPN фактический размер полезного уменьшается на размер заголовка протокола туннелирования (обычно 20-60 байт).</p>
+<p>Если MTU операционной системы остается стандартным (1500), то внутри туннеля пакеты будут превышать допустимый лимит провайдера, вызывая фрагментацию.</p>
+<p>Большинство современных VPN-клиентов автоматически подбирают оптимальный MTU, но в случае проблем с соединением ручная установка значения 1400 или 1350 часто решает проблему.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Автоматический MTU в VPN</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Стабильное соединение по умолчанию</li><li>✅ Не требует вмешательства пользователя</li><li>✅ Адаптируется к сети</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Может не учитывать специфику канала</li><li>❌ Иногда выбирает слишком консервативные значения</li><li>❌ Зависит от реализации клиента</li></ul></div>
+</div></div>
+
+<p>Пользователям, часто переключающимся между обычным интернетом и VPN, может быть полезным создание скриптов для быстрой смены MTU в зависимости от статуса подключения.</p>
+<p>В корпоративных сетях с strict firewall правила могут блокировать ICMP-фрагментацию, что делает ручную настройку MTU единственным выходом.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+
+<p>В процессе настройки пользователи часто допускают ряд типичных ошибок, которые сводят на нет все усилия или даже ухудшают ситуацию с подключением.</p>
+<p>Понимание этих ошибок позволяет избежать ненужных проблем и быстро восстановить работоспособность сети в случае неудачи.</p>
+
+<ol>
+<li><strong>Неверное имя интерфейса</strong> — самая частая ошибка, когда команда вводится для интерфейса"Ethernet", а в системе он называется"Подключение по локальной сети" или имеет цифровые индексы.</li>
+<li><strong>Игнорирование заголовка в 28 байт</strong> — пользователи устанавливают MTU равным значению из ping (например, 1472), забывая добавить 28 байт, что приводит к установке слишком малого значения и снижению скорости.</li>
+<li><strong>Отсутствие прав администратора</strong> — попытка изменить сетевые параметры из обычной командной строки приводит к silencе-ошибке или отказу в доступе, хотя пользователю кажется, что команда выполнена.</li>
+<li><strong>Сброс настроек антивирусом</strong> — некоторые агрессивные антивирусы могут возвращать сетевые настройки к исходным значениям после перезагрузки, требуя внесения исключений.</li>
+</ol>
+
+<p>Если после изменения MTU пропал интернет, проще всего сбросить настройки командой <code>netsh int ipv4 reset</code>, что вернет все параметры к заводским.</p>
+<p>Также стоит проверить, не конфликтует ли установленное значение с настройками маршрутизатора, который может отбрасывать пакеты несоответствующего размера.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильная настройка MTU устраняет фрагментацию пакетов, снижая пинг и повышая стабильность соединения в играх и VPN.</p></aside>
+
+<p>В заключение, управление размером MTU является мощным инструментом сетевого администрирования, доступным каждому пользователю Windows 10.</p>
+<p>Грамотное применение описанных методов позволяет существенно улучшить качество связи, особенно в условиях нестабильных каналов или использования дополнительных сетевых сервисов.</p>
+<p>Регулярная проверка и оптимизация этого параметра должна стать частью routine обслуживания компьютера для обеспечения максимальной производительности сети.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-pochistit-klavishi-na-noutbuke-asus-e510m.html" class="pb-related-card">
+                <span class="pb-related-title">Чистка клавиатуры ноутбука Asus E510M: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по очистке клавиш ноутбука Asus E510M. Безопасные методы, разборка, выбор сред</span>
+            </a><a href="/articles/k/ka/kak-snyat-ogranichenie-na-otkrytie-fajlov-s-dlinnym-putyom-ili-imenem-windows-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как снять ограничение на длину пути в Windows 7: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по обходу ограничения в 260 символов для путей файлов в Windows 7. Редактирова</span>
+            </a><a href="/articles/w/wi/windows-7-gde-najti-realtek-hd.html" class="pb-related-card">
+                <span class="pb-related-title">Realtek HD в Windows 7: где найти и как настроить</span>
+                <span class="pb-related-desc">Полная инструкция по поиску Realtek HD Audio в Windows 7. Решение проблем с пропавшим диспетчером, д</span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-gejmpad-ipega-9128-k-windows-7.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить ipega 9128 к Windows 7: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по подключению геймпада ipega 9128 к ПК с ОС Windows 7. Настройка драйверов, ус</span>
+            </a><a href="/articles/g/gd/gde-nakhoditsya-protsessor-noutbuka-dexter.html" class="pb-related-card">
+                <span class="pb-related-title">Где процессор в ноутбуке Dexter: расположение и спецификации</span>
+                <span class="pb-related-desc">Подробный технический гайд по поиску процессора в ноутбуке Dexter. Методы идентификации через ПО, ра</span>
+            </a><a href="/articles/v/v-/v-chem-problema-esli-noutbuk-vo-vremya-igry-perestaet-zaryazhatsya.html" class="pb-related-card">
+                <span class="pb-related-title">Ноутбук перестает заряжаться во время игры: причины и решения</span>
+                <span class="pb-related-desc">Узнайте, почему ноутбук перестает заряжаться во время игры. Анализ драйверов, перегрева, настроек BI</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

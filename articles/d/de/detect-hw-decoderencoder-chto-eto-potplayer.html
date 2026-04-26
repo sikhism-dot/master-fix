@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Настройка аппаратного декодера в PotPlayer: полная инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по активации h/w decoder в PotPlayer. Настройка DXVA, CUDA, NVENC для разгрузки ЦП и устранения лагов при воспроизведении 4K.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/d/de/detect-hw-decoderencoder-chto-eto-potplayer.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Настройка аппаратного декодера в PotPlayer: полная инструкция">
+    <meta property="og:description" content="Подробное руководство по активации h/w decoder в PotPlayer. Настройка DXVA, CUDA, NVENC для разгрузки ЦП и устранения лагов при воспроизведении 4K.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/bezopasnost-dostup/">Безопасность и Доступ</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Настройка аппаратного декодера в PotPlayer: полная инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#принципы-работы-и-преимущества-аппаратного-ускорения">Принципы работы и преимущества аппаратного ускорения</a></li><li><a href="#диагностика-возможностей-системы-и-совместимость">Диагностика возможностей системы и совместимость</a></li><li><a href="#настройка-встроенных-декодеров-potplayer">Настройка встроенных декодеров PotPlayer</a></li><li><a href="#использование-внешних-фильтров-и-драйверов-gpu">Использование внешних фильтров и драйверов GPU</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/x/xt/xtream-codes-plejlisty-zagruzit.html">Как загрузить плейлисты Xtream Codes: полная инструкция</a></li><li><a href="/articles/v/ve/vendorco-productcode.html">VendorCode и ProductCode: полная расшифровка и поиск</a></li><li><a href="/articles/s/sh/shooting-plus-v3-preset-zagruzhen-no-ne-rabotaet.html">Shooting Plus V3 пресет загружен но не работает: решение</a></li><li><a href="/articles/r/re/recovery-winloadefi.html">Как восстановить winload.efi: полное руководство по ремонту загрузчика</a></li><li><a href="/articles/n/ni/nitro-sense-hotkey.html">Настройка NitroSense Hotkey: Инструкция и решения</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Активация аппаратного декодера в PotPlayer: устранение лагов и настройка</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#принципы-работы-и-преимущества-аппаратного-ускорения">Принципы работы и преимущества аппаратного ускорения</a></li><li><a href="#диагностика-возможностей-системы-и-совместимость">Диагностика возможностей системы и совместимость</a></li><li><a href="#настройка-встроенных-декодеров-potplayer">Настройка встроенных декодеров PotPlayer</a></li><li><a href="#использование-внешних-фильтров-и-драйверов-gpu">Использование внешних фильтров и драйверов GPU</a></li><li><a href="#типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</a></li><li><a href="#резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Пользователь сталкивается с ситуацией, когда воспроизведение высококачественного видео формата 4K или HEVC вызывает критическую нагрузку на центральный процессор, что приводит к рывкам изображения, рассинхронизации звука и перегреву оборудования. Вместо плавной картинки наблюдается эффект слайд-шоу, а вентиляторы системы охлаждения начинают работать на максимальных оборотах, создавая ощутимый шум. Это классический признак того, что программный плеер использует программный метод декодирования, возлагая всю вычислительную нагрузку на CPU, игнорируя специализированные блоки графического ускорителя.</p>
+<p>Решением проблемы служит принудительное переключение на аппаратное декодирование, обозначаемое в настройках как h/w decoder или hardware acceleration. Эта технология позволяет переложить задачу обработки видеопотока на GPU, который обладает специализированными модулями для работы с мультимедиа. В результате системные ресурсы освобождаются, энергопотребление снижается, а воспроизведение становится стабильным даже на устройствах со скромными характеристиками.</p>
+<p>В среде популярного мультимедийного проигрывателя <em>PotPlayer</em> управление этими процессами реализовано гибко, но требует понимания различий между доступными технологиями и правильности их конфигурации. Неправильная настройка может привести к артефактам изображения или полному отказу запуска видеофайла. Поэтому важно точно определить capabilities вашей видеокарты и выбрать соответствующий интерфейс взаимодействия.</p>
+
+<h2 id="принципы-работы-и-преимущества-аппаратного-ускорения">Принципы работы и преимущества аппаратного ускорения</h2>
+<p>Аппаратное декодирование представляет собой процесс обработки сжатого видеопотока специализированными схемами внутри графического процессора. В отличие от универсального центрального процессора, который вынужден выполнять сложные математические операции для каждого кадра программным путем, видеоядро содержит фиксированные логические блоки, заточенные под конкретные кодеки. При активации режима h/w decoder в <em>PotPlayer</em> видеопоток напрямую передается драйверу видеокарты, минуя тяжелые вычисления на CPU.</p>
+<p>Основным преимуществом такого подхода является значительное снижение нагрузки на систему. Если программное декодирование 4K-видео может загружать процессор на 80-100%, то при использовании аппаратных методов загрузка ЦП часто падает до 5-15%. Это позволяет одновременно воспроизводить тяжелый контент и выполнять другие ресурсоемкие задачи без потери производительности всей системы. Кроме того, снижается тепловыделение, что особенно актуально для ноутбуков и компактных медиацентров.</p>
+<p>Важно понимать, что поддержка конкретных кодеков зависит от поколения и модели видеокарты. Современные стандарты сжатия, такие как <em>HEVC (H.265)</em>, <em>AV1</em> или <em>VP9</em>, требуют наличия соответствующих физических блоков в GPU. Старые видеокарты могут не поддерживать аппаратное декодирование новых форматов, и попытка включить этот режим приведет либо к автоматическому откату на программный метод, либо к ошибкам воспроизведения.</p>
+<p>Для корректной работы технологии необходимо наличие свежих драйверов графического адаптера. Производители видеокарт регулярно обновляют программное обеспечение, добавляя поддержку новых версий кодеков и исправляя ошибки в работе механизмов ускорения. Без актуального драйвера операционная система и плеер не смогут правильно идентифицировать возможности оборудования.</p>
+
+<p>Сравнение методов обработки видеопотока показывает явное превосходство аппаратных решений в сценариях высокого разрешения.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Программное декодирование (Soft)</th>
+<th>Аппаратное декодирование (Hard)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Загрузка CPU</td>
+<td>Высокая (до 100%)</td>
+<td>Низкая (5-20%)</td>
+</tr>
+<tr>
+<td>Энергопотребление</td>
+<td>Максимальное</td>
+<td>Оптимальное</td>
+</tr>
+<tr>
+<td>Поддержка форматов</td>
+<td>Все (зависит от ПО)</td>
+<td>Ограничена железом GPU</td>
+</tr>
+</tbody>
+</table>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На laptops с гибридной графикой (Intel + NVIDIA/AMD) важно убедиться, что PotPlayer запускается именно на дискретной видеокарте для получения максимального эффекта ускорения.</p></aside>
+
+<h2 id="диагностика-возможностей-системы-и-совместимость">Диагностика возможностей системы и совместимость</h2>
+<p>Прежде чем вносить изменения в конфигурацию плеера, необходимо точно определить, какие технологии ускорения поддерживает установленное оборудование. <em>PotPlayer</em> предоставляет встроенные средства для анализа текущей конфигурации, но более полную информацию можно получить через системные утилиты или сторонние программы мониторинга. Ключевым моментом является проверка поддержки конкретных API, таких как DXVA, CUDA, NVDEC или VAAPI.</p>
+<p>Для владельцев видеокарт <em>NVIDIA</em> критически важно наличие поддержки технологии NVDEC (или более старой NVENC для кодирования). Начиная с серии <em>GeForce GTX 10xx</em> и новее, обеспечивается полная поддержка 10-битного HEVC и VP9. Пользователям карт <em>AMD</em> следует ориентироваться на поддержку UVD/VCE или более нового движка VCN. Встроенная графика <em>Intel</em> (Quick Sync Video) также способна эффективно справляться с декодированием, начиная с процессоров 6-го поколения и новее.</p>
+<p>Проверить текущий статус работы декодера можно непосредственно во время воспроизведения видео. Нажатие клавиши <code>Tab</code> вызывает информационное окно, где отображается тип используемого декодера. Если там указано <code>FFmpeg</code> или <code>System Default</code> без указания аппаратного ускорителя, значит, GPU не задействован. В логах плеера также можно найти строки, указывающие на успешную инициализацию аппаратного декодера.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка поддержки кодеков</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите тестовое видео 4K HEVC</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите клавишу Tab для вызова статистики</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">В строке Video Decoder проверьте наличие пометки HW или названия API (DXVA, NVDEC)</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Убедитесь, что загрузка CPU в Диспетчере задач не превышает 20%</span></div></div>
+
+<p>Существуют ограничения, связанные не только с железом, но и с операционной системой. Например, полноценная поддержка 10-битного цвета и HDR через аппаратные декодеры в Windows требует соответствующих версий ОС (Windows 10/11) и установленных компонентов. На старых версиях Windows 7 функционал может быть ограничен базовыми кодеками H.264, а новые форматы будут обрабатываться программно.</p>
+
+<h2 id="настройка-встроенных-декодеров-potplayer">Настройка встроенных декодеров PotPlayer</h2>
+<p>Встроенный механизм настройки <em>PotPlayer</em> позволяет гибко управлять приоритетами декодеров. По умолчанию плеер пытается автоматически выбрать оптимальный путь, но в сложных случаях требуется ручное вмешательство. Для доступа к настройкам необходимо открыть меню, выбрать <code>Настройки</code> (или нажать <code>F5</code>) и перейти в раздел <code>Фильтры</code>. Именно здесь решается, какой именно компонент будет обрабатывать видеопоток.</p>
+<p>В категории <code>Встроенные кодеки/DXVA</code> находится переключатель <code>Использовать аппаратное ускорение (DXVA)</code>. Активация этой опции включает использование интерфейса DirectX Video Acceleration, который является стандартным для Windows. Этот метод универсален и работает с большинством видеокарт, поддерживающих стандартные интерфейсы ускорения. Однако он не всегда является самым эффективным для специфических задач, таких как кодирование или работа с новейшими кодеками.</p>
+<p>Для более тонкой настройки можно перейти в раздел <code>Фильтры видео декодера</code>. Здесь представлен список кодеков (H.264, HEVC, VP9 и другие). Для каждого из них можно выбрать приоритетный фильтр. Рекомендуется установить значение <code>Встроенный кодек (FFmpeg, аппаратное ускорение)</code> или <code>System Default</code> с включенной галочкой аппаратного ускорения. Это заставит плеер использовать системные возможности GPU через стандартные механизмы Windows.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение приоритетов системных фильтров может привести к нестабильной работе других видео приложений. Рекомендуется записать исходные значения перед внесением изменений.</p></aside>
+
+<p>Отдельного внимания заслуживает настройка цветового пространства и битности. В разделе <code>Видео</code> -> <code>Цветовое пространство</code> можно задать параметры вывода. Если видеокарта и монитор поддерживают HDR, имеет смысл включить соответствующие опции, но только если используется аппаратный декодер, способный передавать метаданные HDR корректно. Программное декодирование часто не справляется с тональным маппингом на лету без потери качества.</p>
+
+<table>
+<thead>
+<tr>
+<th>Кодек</th>
+<th>Рекомендуемый фильтр PotPlayer</th>
+<th>Требуемый API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>H.264 / AVC</td>
+<td>Встроенный (FFmpeg HW)</td>
+<td>DXVA 2.0</td>
+</tr>
+<tr>
+<td>HEVC / H.265</td>
+<td>Встроенный (FFmpeg HW)</td>
+<td>DXVA 2.0 / NVDEC</td>
+</tr>
+<tr>
+<td>AV1</td>
+<td>Встроенный (FFmpeg HW)</td>
+<td>DXVA 2.0 (новое GPU)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="использование-внешних-фильтров-и-драйверов-gpu">Использование внешних фильтров и драйверов GPU</h2>
+<p>В некоторых случаях встроенных средств <em>PotPlayer</em> недостаточно для максимальной производительности, особенно если требуется использование специфических функций видеокарты, таких как <em>NVIDIA NVENC</em> для кодирования или продвинутые алгоритмы апскейлинга. Тогда на помощь приходят внешние фильтры, такие как <em>LAV Filters</em> или <em>MPC Video Renderer</em>. Эти компоненты часто обновляются независимо от плеера и могут предоставлять более свежую поддержку кодеков.</p>
+<p>При использовании <em>LAV Filters</em> настройка аппаратного ускорения производится в свойствах самого фильтра. После установки пакета LAV, в настройках <em>PotPlayer</em> в разделе <code>Фильтры</code> нужно добавить <code>LAV Video Decoder</code> и назначить его приоритетным для нужных форматов. Внутри конфигурации LAV Video Decoder необходимо перейти на вкладку <code>Hardware Acceleration</code> и выбрать <code>D3D11</code> или <code>DXVA2 (native)</code>. Это позволит использовать более современные пути доступа к железу, минуя некоторые ограничения стандартного DXVA.</p>
+<p>Для владельцев карт <em>NVIDIA</em> также актуально использование технологии <em>CUDA</em> для постобработки, хотя для чистого декодирования сейчас чаще используется <em>NVDEC</em>. В настройках <em>PotPlayer</em> можно встретить упоминание CUDA, но в контексте современных кодеков (HEVC, AV1) правильнее ориентироваться на NVDEC. Если в списке доступных декодеров присутствует <code>NVIDIA CUVID</code> или <code>NVDEC</code>, его выбор обеспечит наилучшую совместимость с экосистемой <em>NVIDIA</em>.</p>
+<p>Важно следить за совместимостью версий драйверов и фильтров. Конфликт версий может привести к тому, что фильтр не сможет инициализировать аппаратный декодер. В логах <em>PotPlayer</em> (клавиша <code>F7</code> для открытия журнала) можно увидеть сообщения об ошибках инициализации, например, "Failed to create device" или "No hardware decoder found".</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для максимального качества изображения при использовании внешних рендереров (например, madVR) связка LAV Filters (для декодирования) + madVR (для вывода) часто работает стабильнее, чем встроенные средства PotPlayer.</p></aside>
+
+<h2 id="типичные-ошибки-и-troubleshooting">Типичные ошибки и troubleshooting</h2>
+<p>Даже при правильной настройке могут возникать проблемы, связанные с особенностями конкретного оборудования или программного окружения. Понимание природы этих ошибок позволяет быстро устранить неполадки и вернуть системе стабильность. Ниже приведен список наиболее распространенных сценариев отказа аппаратного ускорения.</p>
+
+<ol>
+<li><strong>Черный экран при включенном DXVA</strong> — это означает, что видеопоток передается на декодер, но рендерер не может его отобразить, часто из-за проблем с цветовым пространством или защищенным контентом (HDCP). Решение: сменить видео рендерер в настройках PotPlayer на <code>Built-in Direct3D 11 Video Renderer</code> или <code>System Default</code>.</li>
+<li><strong>Зеленые полосы или артефакты на изображении</strong> — признак несовместимости драйвера видеокарты с выбранным методом декодирования или повреждение видеопотока. Решение: обновить драйверы GPU до последней стабильной версии и переключить метод ускорения с DXVA2 на D3D11 в настройках фильтра.</li>
+<li><strong>Высокая загрузка CPU несмотря на включенный h/w decoder</strong> — часто возникает, если выбран неправильный приоритет фильтра или видеокарта занята другими задачами. Решение: проверить в диспетчере задач вкладку "Производительность", убедиться, что GPU Engine задействован в процессе Video Decode, и перенастроить приоритеты фильтров.</li>
+<li><strong>Отсутствие звука при воспроизведении 4K HDR</strong> — может быть связано с тем, что аппаратный декодер не передает аудиопоток корректно в режиме passthrough или возникают конфликты с битстримом. Решение: проверить настройки аудиовыхода и попробовать отключить аппаратное ускорение только для аудио, оставив его для видео.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Эффективность методов</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Поддержка всех форматов</li><li>✅ Минимальная нагрузка на CPU</li><li>✅ Экономия энергии</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует современного GPU</li><li>❌ Возможны артефакты на старом ПО</li><li>❌ Сложнее в тонкой настройке</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-итоговые-рекомендации">Резюме и итоговые рекомендации</h2>
+<p>Активация аппаратного декодера (h/w decoder) в <em>PotPlayer</em> является необходимым шагом для комфортного просмотра современного видеоконтента высоких разрешений. Переход на использование ресурсов GPU позволяет устранить задержки, снизить нагрев оборудования и обеспечить плавность воспроизведения даже на системах средней мощности. Правильная конфигурация требует понимания различий между DXVA, NVDEC и программными методами обработки.</p>
+<p>Оптимальным сценарием является использование встроенных кодеков <em>PotPlayer</em> с включенной опцией DXVA для большинства задач, так как это обеспечивает наилучшую совместимость и стабильность. Для специфических требований или проблемных файлов целесообразно подключение внешних фильтров <em>LAV</em>, которые предоставляют более детальный контроль над процессами декодирования. Регулярное обновление драйверов видеокарты остается ключевым фактором успешной работы всей системы.</p>
+<p>В конечном итоге, грамотная настройка плеера превращает компьютер в мощный медиацентр, способный справляться с любыми форматами видеофайлов. Проверка статистики во время воспроизведения и умение читать логи позволяют оперативно диагностировать и решать возникающие проблемы, обеспечивая максимальное качество картинки без лишней нагрузки на систему.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Использование h/w decoder переносит нагрузку с CPU на GPU, что необходимо для плавного 4K/HEVC видео; ключ к успеху — актуальные драйверы и правильный выбор фильтра в настройках PotPlayer.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/x/xt/xtream-codes-plejlisty-zagruzit.html" class="pb-related-card">
+                <span class="pb-related-title">Как загрузить плейлисты Xtream Codes: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке Xtream Codes. Как добавить плейлист, проверить статус и устранить</span>
+            </a><a href="/articles/v/ve/vendorco-productcode.html" class="pb-related-card">
+                <span class="pb-related-title">VendorCode и ProductCode: полная расшифровка и поиск</span>
+                <span class="pb-related-desc">Технический анализ полей VendorCode и ProductCode. Как найти идентификаторы оборудования, расшифрова</span>
+            </a><a href="/articles/s/sh/shooting-plus-v3-preset-zagruzhen-no-ne-rabotaet.html" class="pb-related-card">
+                <span class="pb-related-title">Shooting Plus V3 пресет загружен но не работает: решение</span>
+                <span class="pb-related-desc">Пресет в Shooting Plus V3 не работает? Подробная инструкция: проверка Bluetooth, настройка контролле</span>
+            </a><a href="/articles/r/re/recovery-winloadefi.html" class="pb-related-card">
+                <span class="pb-related-title">Как восстановить winload.efi: полное руководство по ремонту загрузчика</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки winload.efi. Методы восстановления загрузчика Windows чере</span>
+            </a><a href="/articles/n/ni/nitro-sense-hotkey.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка NitroSense Hotkey: Инструкция и решения</span>
+                <span class="pb-related-desc">Полное руководство по настройке горячих клавиш NitroSense. Решение проблем с кнопкой N, драйверами A</span>
+            </a><a href="/articles/o/on/oneodio-studio-wireless-c-y80b-reset.html" class="pb-related-card">
+                <span class="pb-related-title">OneOdio Studio Wireless C Y80B: полный сброс и перезагрузка</span>
+                <span class="pb-related-desc">Инструкция по сбросу наушников OneOdio Studio Wireless C Y80B. Решение проблем с подключением, звуко</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

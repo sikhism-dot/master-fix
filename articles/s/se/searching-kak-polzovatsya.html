@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Поиск в Linux: полное руководство по командам и утилитам — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по использованию команд find, grep, locate для поиска файлов и текста в Linux. Синтаксис, ключи и оптимизация работы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/se/searching-kak-polzovatsya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Поиск в Linux: полное руководство по командам и утилитам">
+    <meta property="og:description" content="Техническое руководство по использованию команд find, grep, locate для поиска файлов и текста в Linux. Синтаксис, ключи и оптимизация работы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Поиск в Linux: полное руководство по командам и утилитам</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#базовый-поиск-файлов-с-помощью-утилиты-find">Базовый поиск файлов с помощью утилиты find</a></li><li><a href="#поиск-текстового-содержимого-внутри-файлов">Поиск текстового содержимого внутри файлов</a></li><li><a href="#быстрый-поиск-через-индексацию-locate">Быстрый поиск через индексацию locate</a></li><li><a href="#расширенные-критерии-и-фильтрация-результатов">Расширенные критерии и фильтрация результатов</a></li><li><a href="#типичные-ошибки-при-поиске-данных">Типичные ошибки при поиске данных</a></li><li><a href="#заключение">Заключение</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-v-fork-pleer-smotret-torrent.html">Как в Fork Player смотреть торрент: полная инструкция</a></li><li><a href="/articles/z/za/zachem-v-chekhlakh-dve-dyrochki-sleva.html">Зачем в чехлах две дырочки слева: технический разбор</a></li><li><a href="/articles/k/ka/kak-nastroit-dostup-k-yandeks-disku-na-webos.html">Яндекс Диск на WebOS: как подключить облако к LG TV</a></li><li><a href="/articles/k/ka/kak-udalit-skopirovannyj-tekst-iz-yandeksa.html">Как удалить скопированный текст из Яндекса: буфер и история</a></li><li><a href="/articles/k/ka/kak-skachat-obnovlenie-v-get-apps-esli-tam-vykhodit-obnovlenie-pozzhe.html">Как скачать обновление в GetApps, если оно долго не появляется</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Поиск в Linux: полное руководство по командам и утилитам</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#базовый-поиск-файлов-с-помощью-утилиты-find">Базовый поиск файлов с помощью утилиты find</a></li><li><a href="#поиск-текстового-содержимого-внутри-файлов">Поиск текстового содержимого внутри файлов</a></li><li><a href="#быстрый-поиск-через-индексацию-locate">Быстрый поиск через индексацию locate</a></li><li><a href="#расширенные-критерии-и-фильтрация-результатов">Расширенные критерии и фильтрация результатов</a></li><li><a href="#типичные-ошибки-при-поиске-данных">Типичные ошибки при поиске данных</a></li><li><a href="#заключение">Заключение</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда на диске накоплены терабайты данных, а нужный конфигурационный файл или лог затерялись в глубине директорий, является классической для системного администратора. Попытки найти документ вручную через графический интерфейс часто занимают неоправданно много времени, особенно если неизвестно точное имя или местоположение объекта.</p>
+<p>Эффективность работы в операционной системе Linux напрямую зависит от умения использовать инструментарий командной строки для навигации по файловой системе. Стандартные графические поисковики часто индексируют данные с задержкой или не имеют доступа к системным разделам, что делает их бесполезными в критических ситуациях.</p>
+<p>В данном материале рассматриваются профессиональные методы поиска, позволяющие находить файлы по маске, содержимому, дате изменения и правам доступа. Грамотное применение утилит <em>find</em>, <em>grep</em> и <em>locate</em> позволяет автоматизировать рутинные задачи и значительно сократить время на обслуживание серверов.</p>
+
+<h2 id="базовый-поиск-файлов-с-помощью-утилиты-find">Базовый поиск файлов с помощью утилиты find</h2>
+
+<p>Утилита <em>find</em> представляет собой наиболее мощный инструмент для поиска файлов в иерархической структуре файловой системы, работающий в реальном времени. В отличие от индексаторов, она сканирует диск непосредственно в момент выполнения команды, что гарантирует актуальность результатов, но может потреблять больше ресурсов процессора.</p>
+<p>Для начала работы достаточно указать путь к директории и имя искомого файла. Если запустить команду без аргументов поиска, она выведет все файлы в указанной папке и всех вложенных подкаталогах, что может привести к переполнению экрана выводом.</p>
+<p>Ключевым параметром является <code>-name</code>, который позволяет искать файлы по точному имени или с использованием wildcard-символов. txt</code> и <code>config.txt</code> будут считаться разными объектами.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовый поиск файла</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду find /путь/к/папке -name "имя"</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Проверьте вывод на наличие ошибок</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Используйте найденный путь для дальнейших действий</span></div></div>
+
+<p>При работе с большими массивами данных часто требуется искать файлы, игнорируя регистр символов. Для этого существует параметр <code>-iname</code>, который ведет себя аналогично <code>-name</code>, но не различает заглавные и строчные буквы, что упрощает поиск в пользовательских директориях.</p>
+<p>Системные администраторы часто сталкиваются с необходимостью найти файлы определенного типа, например, только исполняемые binaries или текстовые конфигурации. Фильтрация по типу файла осуществляется с помощью флага <code>-type</code>, за которым следует буквенный код, обозначающий тип объекта.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Символ звездочки (*) в масках поиска должен быть заключен в одинарные кавычки, чтобы оболочка shell не пыталась раскрыть его до передачи аргумента утилите find.</p></aside>
+
+<h3>Поиск по расширению и типу файла</h3>
+
+<p>Поиск файлов с конкретным расширением, например <code>.conf</code> или <code>.log</code>, является одной из самых частых задач при диагностике проблем. Команда должна быть сформулирована так, чтобы охватить все вложенные уровни директорий, начиная от корня или домашней папки пользователя.</p>
+<p>Для ограничения области поиска только определенными типами объектов, такими как файлы или директории, используется модификатор типа. Это позволяет отделить искомые конфигурации от папок с аналогичными именами, что часто встречается в структуре веб-серверов.</p>
+<p>Ниже приведена таблица с основными типами файлов, поддерживаемыми утилитой <em>find</em>, которые позволяют уточнить запрос.</p>
+
+<table>
+<thead>
+<tr>
+<th>Код типа</th>
+<th>Описание объекта</th>
+<th>Пример использования</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>f</code></td>
+<td>Обычный файл</td>
+<td><code>-type f</code></td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>Директория (папка)</td>
+<td><code>-type d</code></td>
+</tr>
+<tr>
+<td><code>l</code></td>
+<td>Символическая ссылка</td>
+<td><code>-type l</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Комбинирование условий поиска по имени и типу позволяет получить максимально точные результаты. Например, поиск всех исполняемых файлов с именем <em>nginx</em> в директории <code>/usr</code> потребует использования логического оператора «И», который в синтаксисе <em>find</em> подразумевается по умолчанию при перечислении условий.</p>
+
+<h2 id="поиск-текстового-содержимого-внутри-файлов">Поиск текстового содержимого внутри файлов</h2>
+
+<p>Когда имя файла неизвестно или не содержит полезной информации, единственным способом найти нужный документ становится анализ его содержимого. Утилита <em>grep</em> (Global Regular Expression Print) является стандартом де-факто для поиска строк, соответствующих заданному шаблону, внутри текстовых файлов.</p>
+<p>Базовый синтаксис предполагает передачу искомой строки и файла или списка файлов для проверки. Если не указать файлы явно, утилита будет ожидать ввода данных из стандартного потока, что может запутать неопытного пользователя, не знающего, почему терминал «завис».</p>
+<p>Для рекурсивного поиска по всем файлам в текущей директории и подкаталогах используется ключ <code>-r</code> или <code>-R</code>. Это позволяет сканировать целые проекты исходного кода или комплекты логов приложений без необходимости вручную открывать каждый файл.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Рекурсивный поиск по системным директориям, таким как /proc или /sys, может привести к зависанию терминала или переполнению буфера вывода, так как эти файловые системы виртуальны и огромны.</p></aside>
+
+<h3>Использование регулярных выражений и контекста</h3>
+<p>Простой поиск подстроки часто дает слишком много ложных срабатываний, поэтому важно уметь использовать регулярные выражения. С их помощью можно искать слова целиком, игнорировать регистр или находить строки, начинающиеся или заканчивающиеся определенным символом.</p>
+<p>Опция <code>-i</code> делает поиск нечувствительным к регистру, что критически важно при анализе логов, где уровни ошибок могут писаться как <em>ERROR</em>, так и <em>Error</em>. Игнорирование регистра повышает вероятность нахождения нужной записи в разнородных данных.</p>
+<p>Часто недостаточно просто найти строку, нужно понять контекст ее появления. Флаги <code>-A</code> (after), <code>-B</code> (before) и <code>-C</code> (context) позволяют выводить указанное количество строк до или после найденного совпадения, что облегчает анализ кода или логов.</p>
+
+<p>При работе с бинарными файлами или файлами кодировок, отличных от UTF-8, <em>grep</em> может выдавать предупреждения или некорректный вывод. В таких случаях помогает флаг <code>-a</code>, который заставляет утилиту обрабатывать бинарные файлы как текст, хотя результат может быть нечитаемым.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Поиск ошибки в логах</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Перейдите в директорию с логами</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите grep -i "error" *.log</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Используйте флаг -n для номера строки</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проанализируйте контекст с помощью -C 3</span></div></div>
+
+<p>Для сложных задач фильтрации вывода можно использовать конвейеры (pipes). Результат работы <em>grep</em> можно передать другой утилите, например, <em>sort</em> для сортировки или <em>uniq</em> для удаления дубликатов, создавая мощные цепочки обработки данных.</p>
+
+<h2 id="быстрый-поиск-через-индексацию-locate">Быстрый поиск через индексацию locate</h2>
+
+<p>В ситуациях, когда требуется мгновенный результат и допустима небольшая задержка в актуальности данных (до 24 часов), оптимальным решением является использование утилиты <em>locate</em>. Она работает не с реальной файловой системой, а с предварительно созданной базой данных путей к файлам.</p>
+<p>Основное преимущество метода заключается в скорости: поиск среди миллионов файлов занимает доли секунды, так как операция происходит по индексу, аналогично поиску в книге по оглавлению. Однако, если файл был создан только что, <em>locate</em> его не увидит до следующего обновления базы.</p>
+<p>Обновление базы данных обычно происходит автоматически через планировщик задач <em>cron</em> раз в сутки, но администратор может инициировать этот процесс принудительно. Для этого используется команда <em>updatedb</em>, которую необходимо запускать с правами суперпользователя.</p>
+
+<table>
+<thead>
+<tr>
+<th>Характеристика</th>
+<th>Утилита find</th>
+<th>Утилита locate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Скорость работы</td>
+<td>Медленно (сканирование диска)</td>
+<td>Мгновенно (поиск по базе)</td>
+</tr>
+<tr>
+<td>Актуальность</td>
+<td>100% (реальное время)</td>
+<td>Зависит от расписания</td>
+</tr>
+<tr>
+<td>Нагрузка на CPU</td>
+<td>Высокая во время поиска</td>
+<td>Минимальная</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Настройка и обновление базы данных</h3>
+<p>Конфигурационный файл <code>/etc/updatedb.conf</code> позволяет исключить определенные директории из индексации, что полезно для сокращения размера базы и ускорения работы. Часто из поиска исключают временные папки вроде <code>/tmp</code> или точки монтирования сетевых ресурсов.</p>
+<p>Если база данных повреждена или поиск перестал возвращать ожидаемые результаты, рекомендуется удалить старый файл базы и запустить пересоздание вручную. Путь к базе обычно находится в <code>/var/lib/mlocate/mlocate.db</code>, но может отличаться в зависимости от дистрибутива.</p>
+<p>Использование регулярных выражений в <em>locate</em> ограничено по сравнению с <em>grep</em>, но базовые шаблоны поддерживаются. Для более гибкого поиска по базе можно использовать утилиту <em>mlocate</em> с соответствующими флагами или комбинировать вывод <em>locate</em> с <em>grep</em> через пайп.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для поиска только полных совпадений имени файла в базе locate используйте ключ -b, что отсечет все пути, где искомая строка является частью имени директории.</p></aside>
+
+<h2 id="расширенные-критерии-и-фильтрация-результатов">Расширенные критерии и фильтрация результатов</h2>
+
+<p>Профессиональный поиск часто требует учета метаданных файлов, таких как время создания, размер или владелец. Утилита <em>find</em> предоставляет широкий арсенал инструментов для фильтрации объектов на основе этих атрибутов, позволяя решать сложные задачи аудита.</p>
+<p>Поиск по времени модификации полезен для выявления недавно измененных конфигураций или новых логов. Параметры <code>-mtime</code>, <code>-atime</code> и <code>-ctime</code> позволяют искать файлы, измененные соответственно <em>mtime</em> (содержимое), <em>atime</em> (доступ) и <em>ctime</em> (метаданные) дней назад.</p>
+<p>Важно понимать разницу между положительными и отрицательными значениями аргументов времени. Знак «плюс» означает «более чем», а «минус» — «менее чем», что позволяет гибко настраивать временные интервалы для поиска.</p>
+
+<h3>Фильтрация по размеру и правам доступа</h3>
+<p>Нахождение файлов, занимающих дисковое пространство, часто требуется при очистке сервера. Ключ <code>-size</code> позволяет искать файлы определенного размера, указывая единицы измерения: <code>k</code> (килобайты), <code>M</code> (мегабайты) или <code>G</code> (гигабайты).</p>
+<p>Проверка прав доступа осуществляется через параметр <code>-perm</code>, который принимает числовое (например, 755) или символьное представление прав. Это позволяет быстро находить файлы с опасными правами, доступными для записи всем пользователям.</p>
+<p>Комбинирование условий размера и времени позволяет, например, найти все лог-файлы размером более 100 МБ, которые не менялись более 30 дней, для последующего архивирования или удаления.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Использование сложных масок поиска</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Высокая точность выборки данных</li><li>✅ Возможность автоматизации чистки</li><li>✅ Глубокий анализ состояния системы</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Сложность синтаксиса для новичков</li><li>❌ Риск удаления важных файлов при ошибке</li><li>❌ Высокое потребление ресурсов при глубоком сканировании</li></ul></div>
+</div></div>
+
+<p>При поиске по размеру стоит учитывать, что файлы могут занимать место на диске блоками, а не байтами. Поэтому файл размером 1 байт может отображаться как занимающий 4 КБ, что важно учитывать при точных вычислениях дискового пространства.</p>
+
+<h2 id="типичные-ошибки-при-поиске-данных">Типичные ошибки при поиске данных</h2>
+
+<p>Даже опытные пользователи допускают ошибки при формировании поисковых запросов, что приводит к неполным результатам или ошибкам выполнения. Понимание распространенных pitfalls помогает избегать потери времени и потенциальных проблем с целостностью данных.</p>
+
+<ol>
+<li><strong>Отсутствие экранирования специальных символов</strong> — использование звездочек или вопросительных знаков без кавычек приводит к тому, что shell расширяет их до имен файлов в текущей папке, а не передает утилите; правильно использовать одинарные кавычки: <code>'*.txt'</code>.</li>
+<li><strong>Поиск в корневой директории без ограничений</strong> — запуск <em>find</em> или <em>grep</em> от корня <code>/</code> без фильтрации системных папок может вызвать зависание из-за доступа к <code>/proc</code> или <code>/dev</code>; следует использовать ключ <code>-prune</code> для исключения.</li>
+<li><strong>Игнорирование прав доступа</strong> — попытка поиска в системных директориях от имени обычного пользователя приведет к множеству ошибок «Permission denied»; для полного сканирования необходим запуск через <code>sudo</code>.</li>
+<li><strong>Неверное понимание относительного времени</strong> — использование <code>-mtime 0</code> ищет файлы, измененные ровно 24 часа назад, а не за последние сутки; для поиска за последние сутки нужно использовать <code>-mtime -1</code>.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Правильное использование кавычек, ограничение области поиска и понимание временных интервалов являются ключевыми навыками для эффективной работы с поиском в Linux.</p></aside>
+
+<h2 id="заключение">Заключение</h2>
+
+<p>Освоение инструментов поиска в Linux открывает возможности для эффективного управления файловой системой любой сложности. Комбинация утилит <em>find</em>, <em>grep</em> и <em>locate</em> позволяет решать задачи любой сложности, от простого нахождения документа до глубокого аудита безопасности системы.</p>
+<p>Регулярная практика использования этих команд в повседневной работе способствует выработке мышечной памяти и пониманию внутренней логики операционной системы. Автоматизация поисковых запросов в скриптах позволяет превратить рутинные проверки в автоматические процессы, повышая надежность обслуживания серверов.</p>
+<p>Важно помнить о безопасности и всегда проверять результаты поиска перед выполнением деструктивных операций, таких как удаление или изменение прав. Тщательное тестирование команд на тестовых данных минимизирует риски и обеспечивает стабильность работы инфраструктуры.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-v-fork-pleer-smotret-torrent.html" class="pb-related-card">
+                <span class="pb-related-title">Как в Fork Player смотреть торрент: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по настройке торрентов в Fork Player. Узнайте, как подключить обменники, настроить буф</span>
+            </a><a href="/articles/z/za/zachem-v-chekhlakh-dve-dyrochki-sleva.html" class="pb-related-card">
+                <span class="pb-related-title">Зачем в чехлах две дырочки слева: технический разбор</span>
+                <span class="pb-related-desc">Подробный анализ конструктивных особенностей защитных чехлов. Зачем нужны отверстия в левой части ко</span>
+            </a><a href="/articles/k/ka/kak-nastroit-dostup-k-yandeks-disku-na-webos.html" class="pb-related-card">
+                <span class="pb-related-title">Яндекс Диск на WebOS: как подключить облако к LG TV</span>
+                <span class="pb-related-desc">Подробная инструкция по настройке Яндекс Диска на телевизорах LG с WebOS. Решаем проблемы с доступом</span>
+            </a><a href="/articles/k/ka/kak-udalit-skopirovannyj-tekst-iz-yandeksa.html" class="pb-related-card">
+                <span class="pb-related-title">Как удалить скопированный текст из Яндекса: буфер и история</span>
+                <span class="pb-related-desc">Подробная инструкция по очистке буфера обмена и истории в браузере Яндекс на Android, iPhone и ПК. Б</span>
+            </a><a href="/articles/k/ka/kak-skachat-obnovlenie-v-get-apps-esli-tam-vykhodit-obnovlenie-pozzhe.html" class="pb-related-card">
+                <span class="pb-related-title">Как скачать обновление в GetApps, если оно долго не появляется</span>
+                <span class="pb-related-desc">Подробная инструкция по ускорению выхода обновлений в GetApps. Методы очистки кэша, смены региона и </span>
+            </a><a href="/articles/k/ka/kak-podklyuchit-sim-kartu-k-magnitole-promusic.html" class="pb-related-card">
+                <span class="pb-related-title">Как подключить SIM-карту к магнитоле Promusic: Полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по установке SIM-карты в магнитолу Promusic. Настройка интернета, выбор провай</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

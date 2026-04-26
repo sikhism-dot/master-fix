@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Lazy Loading на Tizen OS: оптимизация и настройка — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по реализации Lazy Load для приложений Tizen. Настройка, коды ошибок и методы ускорения интерфейса.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/l/la/lazy-dlya-os-tizen.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Lazy Loading на Tizen OS: оптимизация и настройка">
+    <meta property="og:description" content="Техническое руководство по реализации Lazy Load для приложений Tizen. Настройка, коды ошибок и методы ускорения интерфейса.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-nav-active">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/tv-pristavki/">ТВ Приставки</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Lazy Loading на Tizen OS: оптимизация и настройка</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#архитектура-рендеринга-и-управление-памятью-в-tizen">Архитектура рендеринга и управление памятью в Tizen</a></li><li><a href="#методы-оптимизации-загрузки-контента-для-разработчиков">Методы оптимизации загрузки контента для разработчиков</a></li><li><a href="#диагностика-проблем-производительности-и-отладка">Диагностика проблем производительности и отладка</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-внедрению">Резюме и рекомендации по внедрению</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/z/za/zagruzochnyj-obraz-windows-98-virtualbox.html">Загрузочный образ Windows 98 для VirtualBox: полная инструкция</a></li><li><a href="/articles/k/ka/kak-v-menyu-trikolor-perejti-na-pusskij-yazyk.html">Как изменить язык меню Триколор: полная инструкция</a></li><li><a href="/articles/k/kl/klass-8-trikolor-chto-eto.html">Приставка Триколор Класс 8: Характеристики, прошивка и ошибки</a></li><li><a href="/articles/k/ka/kak-peregruzit-tyuner-telekarta-s-pomoshchyu-knopok-na-resivere.html">Как перегрузить тюнер Телекарта с пульта: полная инструкция</a></li><li><a href="/articles/b/bu/budet-li-rabotat-pristavka-rostelekom-s-drugim-provajderom.html">Работает ли приставка Ростелеком с другим провайдером: Полный разбор</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Реализация Lazy Loading в среде Tizen OS</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#архитектура-рендеринга-и-управление-памятью-в-tizen">Архитектура рендеринга и управление памятью в Tizen</a></li><li><a href="#методы-оптимизации-загрузки-контента-для-разработчиков">Методы оптимизации загрузки контента для разработчиков</a></li><li><a href="#диагностика-проблем-производительности-и-отладка">Диагностика проблем производительности и отладка</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li><li><a href="#резюме-и-рекомендации-по-внедрению">Резюме и рекомендации по внедрению</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+<p>Пользователи умных телевизоров Samsung часто сталкиваются с ситуацией, когда интерфейс оболочки или тяжелое приложение «застывает» при прокрутке списка контента. Вместо плавного движения изображения происходит рывок, за которым следует подгрузка элементов, что создает ощущение низкой производительности устройства.</p>
+<p>Подобное поведение характерно для систем с ограниченными аппаратными ресурсами, где одновременная отрисовка всех элементов списка приводит к переполнению буфера памяти. В операционной системе Tizen, лежащей в основе большинства современных ТВ Samsung, этот механизм называется ленивой загрузкой или Lazy Loading.</p>
+<p>Понимание принципов работы этого процесса необходимо не только разработчикам, создающим нативные приложения, но и продвинутым пользователям, желающим оптимизировать работу своего устройства. Грамотная настройка или корректная реализация кода позволяют существенно сократить время отклика интерфейса.</p>
+
+<h2 id="архитектура-рендеринга-и-управление-памятью-в-tizen">Архитектура рендеринга и управление памятью в Tizen</h2>
+<p>Операционная система Tizen построена на базе ядра Linux и использует графический движок EFL (Enlightenment Foundation Libraries) для отрисовки интерфейса. Механизм ленивой загрузки здесь интегрирован глубоко в структуру виджетов списков, таких как <code>Elm_List</code> или <code>Evas_Object</code>. Принцип работы заключается в том, что система создает объекты только для тех элементов, которые видимы пользователю в данный момент, и для небольшого буфера сверху и снизу.</p>
+<p>Если у вас возникла необходимость анализировать потребление памяти, стоит обратить внимание на процесс <code>tmee</code> или конкретное запущенное приложение. При скроллинге длинных списков система динамически уничтожает объекты, уходящие из области видимости, и создает новые для появляющихся. Это позволяет держать footprint приложения минимальным, даже если в списке тысячи позиций.</p>
+<p>На практике <strong>управление жизненным циклом объектов</strong> является критическим фактором. Если приложение некорректно обрабатывает события освобождения памяти, может возникнуть утечка, которая приведет к падению производительности всей системы. Tizen использует механизм garbage collection для managed-кода (C#) и ручное управление для нативного C/C++ кода.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На моделях серий J и K (2015-2016 гг.) объем оперативной памяти ограничен 1.5 Гб, что делает оптимизацию списков критически важной для стабильной работы.</p></aside>
+
+<p>Разработчикам стоит учитывать, что стандартные виджеты уже оптимизированы, но кастомные решения требуют ручной настройки параметров кэширования. Ошибки в логике отрисовки часто приводят к тому, что телевизор начинает «подтормаживать» при быстром перемещении по меню.</p>
+
+<h3>Специфика работы на разных версиях прошивки</h3>
+<p>В более старых версиях Tizen (2.x и ранние 3.x) механизм ленивой загрузки был менее агрессивным, что часто приводило к задержкам при первом появлении контента. Новые версии, такие как <em>Tizen 6.0 и 7.0</em>, используют предиктивную загрузку, пытаясь угадать действия пользователя.</p>
+<p>Если вы разрабатываете приложение, важно тестировать его на разных API levels. Поведение виджета <code>ListView</code> в .NET Tizen может отличаться от нативного C++ аналога из-за различий в обертках над базовыми библиотеками EFL.</p>
+
+<h2 id="методы-оптимизации-загрузки-контента-для-разработчиков">Методы оптимизации загрузки контента для разработчиков</h2>
+<p>Для создания отзывчивого интерфейса необходимо правильно настроить параметры списка. Основной задачей является баланс между скоростью прокрутки и потреблением памяти. Если буферизовать слишком много элементов, телевизор начнет тормозить; если слишком мало — пользователь будет видеть пустые места при быстром скролле.</p>
+<p>В нативной разработке на C++ используется функция <code>elm_list_go_to_top</code> и связанные с ней механизмы обновления. Важно использовать callback-функции для создания и уничтожения элементов. Это позволяет системе Tizen самостоятельно управлять тем, какие объекты находятся в памяти в текущий момент времени.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Базовая настройка ListView</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Инициализация Evas_Object</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установка функции-генератора (gen_func)</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Настройка количества видимых элементов</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Активация режима виртуализации</span></div></div>
+
+<p>При работе с изображениями, которые являются самым тяжелым элементом интерфейса, необходимо применять отдельную стратегию. Картинки не должны загружаться в память в полном разрешении, если они отображаются в маленьком превью. Использование библиотеки <code>ImageLoader</code> с параметрами масштабирования позволяет снизить нагрузку на CPU и RAM.</p>
+<p>На практике <strong>асинхронная загрузка</strong> данных является стандартом. Блокирование основного потока (UI thread) ожиданием ответа от сети приведет к тому, что интерфейс перестанет реагировать на пульт. Все запросы должны выполняться в фоновых потоках, а результат передаваться в главный цикл событий через механизмы Ecore.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Описание</th>
+<th>Рекомендуемое значение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cache_size</code></td>
+<td>Размер кэша изображений в Мб</td>
+<td>32-64 Мб</td>
+</tr>
+<tr>
+<td><code>preload_count</code></td>
+<td>Количество элементов для предзагрузки</td>
+<td>3-5 шт.</td>
+</tr>
+<tr>
+<td><code>scroll_threshold</code></td>
+<td>Порог начала подгрузки</td>
+<td>80% списка</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Работа с .NET Tizen и Xamarin</h3>
+<p>При использовании кроссплатформенных фреймворков накладные расходы на работу рантайма могут быть выше. Для списков в Xamarin.Forms или .NET Tizen рекомендуется использовать специализированные контролы, поддерживающие виртуализацию, такие как <code>CollectionView</code> с включенным параметром <code>IsGrouped</code> при необходимости.</p>
+<p>Стоит избегать сложных вычислений внутри методов отрисовки ячеек (<code>OnAppearing</code> или аналогов). Все данные должны быть подготовлены заранее и передаваться в готовом виде. Это особенно актуально для телевизоров с процессорами начального уровня, где каждый такт процессора на счету.</p>
+
+<h2 id="диагностика-проблем-производительности-и-отладка">Диагностика проблем производительности и отладка</h2>
+<p>Если приложение или интерфейс работают нестабильно, необходимо провести диагностику. Первым шагом всегда является мониторинг потребления ресурсов. В Tizen Studio есть встроенные инструменты, такие как <em>Performance Analyzer</em> и <em>Memory Profiler</em>, которые позволяют увидеть, какие процессы потребляют больше всего RAM.</p>
+<p>Допустим, вы заметили, что при прокрутке списка FPS падает ниже 24 кадров в секунду. Это прямой показатель того, что механизм ленивой загрузки не справляется или используется некорректно. Следует проверить логи на наличие ошибок garbage collector или нехватки памяти (OOM - Out Of Memory).</p>
+<p>Для глубокого анализа можно использовать отладчик <code>gdb</code> или встроенные средства Tizen Studio для отслеживания аллокаций памяти в реальном времени. Это поможет найти места в коде, где создаются объекты, но не освобождаются.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование режимов отладки (Debug Mode) на работающем телевизоре может привести к снижению общей производительности системы из-за логирования.</p></aside>
+
+<p>Важно также проверять сетевую активность. Если lazy loading завязан на подгрузку данных из интернета (infinite scroll), то медленный отклик сервера может блокировать интерфейс. Необходимо реализовывать таймауты и индикаторы загрузки, чтобы пользователь понимал, что процесс идет.</p>
+
+<h3>Анализ логов через ADB</h3>
+<p>Для подключения к телевизору и просмотра логов используется утилита ADB (Android Debug Bridge), адаптированная для Tizen, или родной <code>sdb</code> (Smart Development Bridge). Команда для мониторинга памяти в реальном времени выглядит следующим образом:</p>
+<pre><code>sdb shell ps -o pid,ppid,name,rss,vsz | grep [имя_процесса]</code></pre>
+<p>Высокие значения RSS (Resident Set Size) указывают на то, что приложение держит в памяти много данных. Если значение растет постоянно и не уменьшается после очистки видимой области списка, налицо утечка памяти.</p>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>В процессе реализации или настройки механизмов оптимизации часто допускаются стандартные ошибки, которые сводят на нет все усилия. Понимание этих ошибок помогает быстрее находить корень проблемы.</p>
+
+<ol>
+<li><strong>Отсутствие обработки ошибок сети</strong> — если при ленивой загрузке происходит обрыв соединения, приложение может зависнуть в ожидании. Необходимо предусматривать таймауты и механизмы повторной попытки.</li>
+<li><strong>Загрузка полных изображений</strong> — использование оригиналов фото (4K) для миниатюр в списке. Это мгновенно забивает память. Следует использовать серверное ресайзинг или клиентское масштабирование перед отрисовкой.</li>
+<li><strong>Блокировка UI потока</strong> — выполнение тяжелых вычислений или синхронных запросов к базе данных в момент, когда система должна отрисовать новый кадр. Все такие операции нужно выносить в фоновые потоки.</li>
+<li><strong>Игнорирование событий жизненного цикла</strong> — если приложение не освобождает ресурсы при переходе в фоновый режим или при скрытии списка, память не освобождается, что ведет к крашам системы.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Оптимизация через Lazy Load</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Снижение потребления RAM</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Увеличение времени холодной загрузки первого экрана</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-рекомендации-по-внедрению">Резюме и рекомендации по внедрению</h2>
+<p>Реализация ленивой загрузки в среде Tizen OS является не просто рекомендацией, а необходимостью для обеспечения комфортного пользовательского опыта. Правильное использование механизмов EFL и нативных виджетов позволяет создавать сложные интерфейсы, работающие плавно даже на бюджетном hardware.</p>
+<p>Ключевым фактором успеха является баланс между агрессивностью очистки памяти и скоростью отклика. Чрезмерная оптимизация может привести к видимой задержке при скролле, а недостаточная — к падению приложения. Тестирование на реальных устройствах разных лет выпуска помогает найти оптимальные параметры.</p>
+<p>Внедрение описанных практик позволяет значительно повысить стабильность работы приложений и оболочек. Соблюдение принципов асинхронности и грамотное управление ресурсами памяти — залог высокой производительности любого программного продукта под управлением Tizen.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для быстрой проверки производительности списка используйте режим «Show FPS» в настройках разработчика телевизора.</p></aside>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Lazy Loading в Tizen критически важен для работы с большими списками, позволяя экономить оперативную память путем отрисовки только видимых элементов.</p></aside></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/z/za/zagruzochnyj-obraz-windows-98-virtualbox.html" class="pb-related-card">
+                <span class="pb-related-title">Загрузочный образ Windows 98 для VirtualBox: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гид по созданию загрузочного образа Windows 98 в VirtualBox. Настройка виртуальной машины,</span>
+            </a><a href="/articles/k/ka/kak-v-menyu-trikolor-perejti-na-pusskij-yazyk.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить язык меню Триколор: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене языка интерфейса на ресиверах Триколор. Решения для разных моделей, в</span>
+            </a><a href="/articles/k/kl/klass-8-trikolor-chto-eto.html" class="pb-related-card">
+                <span class="pb-related-title">Приставка Триколор Класс 8: Характеристики, прошивка и ошибки</span>
+                <span class="pb-related-desc">Подробный обзор ресивера Триколор Класс 8. Технические характеристики, настройка каналов, обновление</span>
+            </a><a href="/articles/k/ka/kak-peregruzit-tyuner-telekarta-s-pomoshchyu-knopok-na-resivere.html" class="pb-related-card">
+                <span class="pb-related-title">Как перегрузить тюнер Телекарта с пульта: полная инструкция</span>
+                <span class="pb-related-desc">Подробная инструкция по перезагрузке тюнера спутникового телевидения Телекарта через кнопки ресивера</span>
+            </a><a href="/articles/b/bu/budet-li-rabotat-pristavka-rostelekom-s-drugim-provajderom.html" class="pb-related-card">
+                <span class="pb-related-title">Работает ли приставка Ростелеком с другим провайдером: Полный разбор</span>
+                <span class="pb-related-desc">Узнайте, можно ли подключить ТВ-приставку Ростелеком к другому провайдеру. Инструкция по смене MAC-а</span>
+            </a><a href="/articles/v/vl/vlc-dlya-os-tizen.html" class="pb-related-card">
+                <span class="pb-related-title">VLC для OS Tizen: полная инструкция по установке и настройке</span>
+                <span class="pb-related-desc">Подробное руководство по запуску VLC на телевизорах Samsung. Установка через Tizen Studio, SmartHub </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

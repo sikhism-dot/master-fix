@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Tor Server на WebOS: Полная инструкция по настройке — Мастер Фикс</title>
+    <meta name="description" content="Техническое руководство по разворачиванию Tor Relay на LG WebOS. Установка Homebrew Channel, Node.js и конфигурация torrc для анонимного сервера.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/t/to/tor-server-na-web-os.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Tor Server на WebOS: Полная инструкция по настройке">
+    <meta property="og:description" content="Техническое руководство по разворачиванию Tor Relay на LG WebOS. Установка Homebrew Channel, Node.js и конфигурация torrc для анонимного сервера.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Tor Server на WebOS: Полная инструкция по настройке</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-окружения-и-получение-прав-разработчика">Подготовка окружения и получение прав разработчика</a></li><li><a href="#инсталляция-операционной-системы-и-зависимостей">Инсталляция операционной системы и зависимостей</a></li><li><a href="#конфигурация-и-запуск-tor-relay">Конфигурация и запуск Tor Relay</a></li><li><a href="#мониторинг-оптимизация-и-безопасность">Мониторинг, оптимизация и безопасность</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/g/go/google-arkhivator-kak-vosstanovit-dannye.html">Google Архиватор: как восстановить данные из Takeout</a></li><li><a href="/articles/k/ka/kak-v-muvikh-otklyuchit-podpisku.html">Как отключить подписку Мухи: полная инструкция по управлению</a></li><li><a href="/articles/k/ka/kak-obnovit-vajldberriz-na-pk.html">Как обновить Wildberries на ПК: способы для браузеров и PWA</a></li><li><a href="/articles/w/wp/wp-18-konumalar.html">Настройка WordPress для 18+: правила и плагины</a></li><li><a href="/articles/s/st/strelec-proverka-tselostnosti-sistemy-zagruzchika.html">Strelec: проверка целостности системы загрузчика UEFI</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Развертывание Tor Relay на LG WebOS: Техническое руководство</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-окружения-и-получение-прав-разработчика">Подготовка окружения и получение прав разработчика</a></li><li><a href="#инсталляция-операционной-системы-и-зависимостей">Инсталляция операционной системы и зависимостей</a></li><li><a href="#конфигурация-и-запуск-tor-relay">Конфигурация и запуск Tor Relay</a></li><li><a href="#мониторинг-оптимизация-и-безопасность">Мониторинг, оптимизация и безопасность</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Владельцы современных Smart TV на базе <em>LG WebOS</em> часто обнаруживают, что вычислительные возможности их устройств значительно превосходят задачи, для которых они фактически используются. Телевизоры последних лет оснащены многоядерными процессорами ARM, достаточным объемом оперативной памяти и, что самое важное, работают 24 часа в сутки, находясь в режиме ожидания или воспроизводя контент. Однако стандартная операционная система строго ограничивает возможности пользователя, закрывая доступ к системным функциям и не позволяя запускать сторонние фоновые процессы.</p>
+
+<p>Попытка превратить такой «спящий» гаджет в узел сети Tor сталкивается с первыми же шагами: отсутствие нативного терминала, невозможность установки пакетных менеджеров и жесткая верификация подписей приложений. Пользователь, желающий запустить Tor Relay, сталкивается с необходимостью обхода этих ограничений, что требует понимания архитектуры Linux, на которой базируется WebOS, а также готовности работать с рисками нарушения гарантии. Основная сложность заключается не в настройке самого Tor, а в создании среды, где он может функционировать независимо от магазина приложений LG.</p>
+
+<p>Если у вас есть старый телевизор с диагональю от 43 дюймов, выпущенный не ранее 2018 года, он может стать эффективным узлом для поддержки интернет-свободы. Важно понимать, что процесс требует начальной подготовки оборудования, включая наличие клавиатуры и мыши для навигации, так как стандартный пульт не обеспечит необходимого уровня контроля. Далее будет рассмотрен процесс преобразования телевизора в полноценный сервер с минимальным вмешательством в работу штатных функций Smart TV.</p>
+
+<h2 id="подготовка-окружения-и-получение-прав-разработчика">Подготовка окружения и получение прав разработчика</h2>
+
+<p>Первым критически важным этапом является активация режима разработчика, без которого установка любого неофициального ПО невозможна. На практике это делается через встроенное приложение <em>LG Content Store</em>, где необходимо найти и установить утилиту <em>Developer Mode</em>. После запуска приложения потребуется создать или войти в существующий аккаунт LG Developer, что является обязательным требованием платформы для авторизации устройства.</p>
+
+<p>Допустим, вы уже установили приложение и вошли в аккаунт. В главном меню <em>Developer Mode</em> необходимо переключить тумблер в положение <code>ON</code>. Система запросит подтверждение и автоматически перезагрузит интерфейс или предложит сделать это вручную. Ключевым моментом здесь является активация опции <code>Key Server</code> или получение IP-адреса телевизора, который отображается в том же меню. Этот адрес понадобится для удаленного подключения с компьютера.</p>
+
+<p>Для дальнейшей работы на персональном компьютере, подключенном к той же локальной сети, потребуется установка набора инструментов <em>webOS CLI</em> (Command Line Interface). Данный инструментарий базируется на Node.js и позволяет отправлять команды на телевизор, устанавливать пакеты и управлять процессами. Без этого шага взаимодействие с файловой системой TV будет крайне затруднено.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Активация режима разработчика</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите приложение Developer Mode из LG Content Store</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Войдите в аккаунт LG Developer и включите режим</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Запишите IP-адрес телевизора, отображаемый в приложении</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите Node.js и webOS CLI на компьютер</span></div></div>
+
+<p>Стоит помнить, что сессия разработчика имеет ограничение по времени — обычно 1000 часов. По истечении этого срока или после перезагрузки телевизора (в некоторых версиях прошивок) режим может отключиться, и все установленные неофициальные приложения перестанут запускаться до повторной активации. Это <strong>ключевое ограничение</strong> платформы, которое необходимо учитывать при планировании работы сервера.</p>
+
+<h3>Установка Homebrew Channel</h3>
+
+<p>После настройки удаленного доступа следующим логичным шагом станет установка <em>Homebrew Channel</em>. Это неофициальный магазин приложений и среда запуска, которая обходит проверку подписей LG. Для инсталляции используется команда CLI, которая загружает IPA-пакет канала и устанавливает его в пользовательский раздел.</p>
+
+<p>Выполнение команды требует точного указания IP-адреса устройства и пароля, который генерируется в приложении <em>Developer Mode</em> на телевизоре. Если соединение успешно, на главной панели TV появится новый значок. Именно через этот канал в дальнейшем будет запускаться среда выполнения для Tor.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Значение / Действие</th>
+<th>Примечание</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Режим работы</td>
+<td>Developer Mode</td>
+<td>Требует активации каждые 1000 часов</td>
+</tr>
+<tr>
+<td>Инструмент CLI</td>
+<td>ares-cli / webos-cli</td>
+<td>Необходим для передачи команд</td>
+</tr>
+<tr>
+<td>Целевое приложение</td>
+<td>Homebrew Channel</td>
+<td>Среда для запуска неофициального ПО</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="инсталляция-операционной-системы-и-зависимостей">Инсталляция операционной системы и зависимостей</h2>
+
+<p>Запуск Tor напрямую в среде WebOS невозможен из-за отсутствия необходимых библиотек и исполняемых файлов в стандартной прошивке. Решением является установка легковесного дистрибутива Linux или использование контейнеризации. Наиболее распространенным методом является установка <em>Entware</em> или полноценного <em>Debian</em> через приложение <em>RootMan</em> (если доступен) или прямую загрузку в память через <em>Homebrew Channel</em>.</p>
+
+<p>Наиболее стабильным вариантом для серверных задач считается установка <em>Debian</em> в режиме chroot. Это позволяет получить полноценную пакетную базу apt и запускать стандартные бинарники Tor без необходимости их компиляции под специфическую архитектуру процессора телевизора. Процесс занимает значительное время и требует стабильного интернет-соединения.</p>
+
+<p>Если у вас модель 2020 года или новее, процедура может отличаться из-за изменений в ядре Linux. В таких случаях рекомендуется использовать готовые скрипты автоматической установки, которые адаптируют пути монтирования файловых систем. Ошибка на этом этапе может привести к «кирпичеванию» устройства, поэтому важно строго следовать инструкциям для конкретной версии WebOS.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Установка сторонних ОС и получение root-прав аннулирует гарантию. Некорректное вмешательство в системные разделы может вывести телевизор из строя без возможности восстановления.</p></aside>
+
+<h3>Настройка Node.js среды</h3>
+
+<p>Альтернативой тяжелой виртуализации является использование встроенного движка Node.js, который часто присутствует в системе, или его установка через <em>Homebrew</em>. Для работы Tor через Node.js существуют реализации, однако они менее производительны и стабильны по сравнению с нативным бинарным файлом. Тем не менее, для организации простого моста (Bridge) этот метод может быть приемлем.</p>
+
+<p>Проверка наличия интерпретатора выполняется через терминал Homebrew Channel командой <code>node -v</code>. Если система сообщает об отсутствии команды, необходимо установить пакет <em>nodejs</em> через менеджер пакетов опериционной среды, если он доступен, или загрузить статический бинарник.</p>
+
+<p>Важно учитывать ограничения файловой системы WebOS, которая часто смонтирована в режиме «только чтение» для системных разделов. Все данные Tor, включая кэш и логи, должны записываться в пользовательский раздел, обычно доступный по пути <code>/home/developer</code> или аналогичному. Нарушение этого правила приведет к мгновенному падению приложения.</p>
+
+<h2 id="конфигурация-и-запуск-tor-relay">Конфигурация и запуск Tor Relay</h2>
+
+<p>После успешной установки среды выполнения (Debian или Node.js) следующим этапом является загрузка самого клиента Tor. В случае использования Debian это делается стандартной командой <code>apt install tor</code>. Если используется статический бинарник, его необходимо скачать с официального сайта проекта, проверить хеш-сумму и поместить в директорию с правами на исполнение.</p>
+
+<p>Основная конфигурация происходит в файле <code>torrc</code>. Этот текстовый файл определяет роль вашего узла в сети: будет ли это Relay, Exit Node или Bridge. Для домашнего использования на телевизоре наиболее безопасным и рекомендуемым вариантом является настройка <strong>Non-Exit Relay</strong>, который передает трафик внутри сети Tor, но не выпускает его в открытый интернет.</p>
+
+<p>Откройте файл конфигурации в текстовом редакторе. Базовая настройка требует указания псевдонима (Nickname), контактного email (для связи администраторов сети) и портов. Порт <code>ORPort</code> должен быть открыт для входящих соединений, что потребует настройки проброса портов на роутере.</p>
+
+<pre><code>ORPort 9001
+<p>DirPort 9030</p>
+<p>ExitPolicy reject *:*</p>
+<p>ContactInfo admin@example.com</p>
+<p>Nickname MyLGTORelay</code></pre></p>
+
+<p>Обратите внимание на директиву <code>ExitPolicy</code>. Указание <code>reject *:*</code> категорически запрещает вашему узлу быть выходной точкой. Это защищает владельца телевизора от юридической ответственности за действия третьих лиц, использующих сеть, так как весь проходящий трафик будет зашифрован и направлен на другие узлы сети, а не на внешние ресурсы.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Использование статического IP-адреса или настройка DDNS значительно повысит стабильность работы узла и его рейтинг в сети Tor.</p></aside>
+
+<h3>Настройка сетевого оборудования</h3>
+
+<p>Для эффективной работы Relay необходимо, чтобы входящие соединения из сети Tor могли достигать вашего телевизора. Это требует настройки маршрутизатора. Необходимо войти в панель управления роутером (обычно по адресу 192.168.0.1 или 1.1) и найти раздел Port Forwarding.</p>
+
+<p>Создайте новое правило, указав внутренний IP-адрес телевизора (который лучше зафиксировать через DHCP reservation) и порты, указанные в <code>torrc</code> (9001 и 9030). Протокол должен быть установлен в <code>TCP</code>. Без этого шага ваш узел будет виден сети, но не сможет принимать соединения, что сделает его бесполезным.</p>
+
+<ol>
+<li>Зайдите в настройки роутера и найдите раздел WAN или Advanced.</li>
+<li>Выберите Virtual Server / Port Forwarding.</li>
+<li>Добавьте правило для порта 9001 (TCP) на IP-адрес телевизора.</li>
+<li>Добавьте правило для порта 9030 (TCP) на IP-адрес телевизора.</li>
+<li>Сохраните настройки и перезагрузите роутер.</li>
+</ol>
+
+<p>После применения настроек запустите Tor командой <code>tor -f torrc</code> (или аналогичной для вашей среды). Первые минуты система будет загружать консенсус сети. Если в логах появляются сообщения о successful listening on port, значит, сервер начал работу.</p>
+
+<table>
+<thead>
+<tr>
+<th>Порт</th>
+<th>Протокол</th>
+<th>Назначение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9001</td>
+<td>TCP</td>
+<td>Основной порт для клиентских соединений (ORPort)</td>
+</tr>
+<tr>
+<td>9030</td>
+<td>TCP</td>
+<td>Порт для загрузки списков узлов (DirPort)</td>
+</tr>
+<tr>
+<td>80</td>
+<td>TCP</td>
+<td>Используется только для проверки доступности (опционально)</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="мониторинг-оптимизация-и-безопасность">Мониторинг, оптимизация и безопасность</h2>
+
+<p>Запущенный сервер требует постоянного наблюдения. В отличие от ПК, телевизор не имеет удобного интерфейса для просмотра логов в реальном времени. Для мониторинга можно использовать веб-интерфейсы, такие как <em>Nyx</em> (консольный) или настроить удаленный сбор логов. Однако на WebOS наиболее практичным решением является периодическая проверка статуса узла через официальный сайт Tor Project.</p>
+
+<p>Оптимизация энергопотребления и температуры — критический аспект. Процессоры Smart TV не рассчитаны на круглосуточную 100% нагрузку, которую может создавать шифрование трафика. Необходимо следить за температурой корпуса. Если телевизор горячий на ощупь, стоит ограничить пропускную способность в конфигурации <code>torrc</code> директивами <code>RelayBandwidthRate</code> и <code>RelayBandwidthBurst</code>.</p>
+
+<p>Безопасность системы также зависит от изоляции. Убедитесь, что порт SSH (если он открыт для управления) защищен сложным паролем или ключами, и доступ к нему закрыт из внешней сети. Открытый порт SSH — самая частая причина взлома IoT-устройств.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Преимущества использования TV</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Низкое энергопотребление compared to PC</li><li>✅ Бесшумная работа</li><li>✅ Постоянное подключение к сети</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Недостатки платформы:Ограниченная производительность ARM</li><li>❌ Риск потери гарантии</li><li>❌ Сложность обновления системы</li></ul></div>
+</div></div>
+
+<h3>Типичные ошибки и способы их устранения</h3>
+
+<p>В процессе настройки пользователи часто сталкиваются с повторяющимися проблемами. Понимание их природы позволяет быстро восстановить работоспособность сервера без полной переустановки системы.</p>
+
+<ol>
+<li><strong>Сервер не виден в сети</strong> — чаще всего причина кроется в отсутствии проброса портов на роутере или блокировке соединений межсетевым экраном провайдера. Проверьте доступность портов через онлайн-сканеры.</li>
+<li><strong>Ошибки записи логов (Permission denied)</strong> — возникают, когда Tor пытается записать данные в системную директорию. Измените в <code>torrc</code> пути к логам и кэш-файлам на пользовательскую директорию, например <code>/home/developer/tor_data</code>.</li>
+<li><strong>Отключение режима разработчика</strong> — если телевизор выключали из розетки или истекло время сессии, Homebrew Channel перестанет запускать приложения. Требуется повторная активация через приложение Developer Mode.</li>
+<li><strong>Перегрев и троттлинг</strong> — если узел работает нестабильно и выключается, снизьте лимиты пропускной способности в конфигурации до 500 KB/s, чтобы снизить нагрузку на процессор.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Успешная работа Tor Relay на WebOS зависит от правильной настройки сети, ограничения нагрузки на процессор и регулярного обновления ключей разработчика.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Превращение телевизора LG WebOS в узел сети Tor — это технически сложная, но реализуемая задача, позволяющая эффективно использовать простаивающие ресурсы устройства. Ключевыми этапами являются получение прав разработчика, установка среды выполнения (предпочтительно Debian chroot) и грамотная настройка сетевой инфраструктуры. Соблюдение мер безопасности, в частности запрет на роль Exit Node, делает этот процесс безопасным для владельца.</p>
+
+<p>Такая конфигурация требует периодического обслуживания, особенно в части обновления сертификатов разработчика и мониторинга температуры оборудования. При правильной настройке телевизор становится незаметным, но важным участником глобальной сети, обеспечивающим анонимность и свободу доступа к информации для пользователей по всему миру.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/g/go/google-arkhivator-kak-vosstanovit-dannye.html" class="pb-related-card">
+                <span class="pb-related-title">Google Архиватор: как восстановить данные из Takeout</span>
+                <span class="pb-related-desc">Полное руководство по распаковке и восстановлению данных Google Takeout. Решения проблем с ZIP, JSON</span>
+            </a><a href="/articles/k/ka/kak-v-muvikh-otklyuchit-podpisku.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить подписку Мухи: полная инструкция по управлению</span>
+                <span class="pb-related-desc">Подробное руководство, как отключить подписку Мухи на Android, iOS и через оператора. Способы возвра</span>
+            </a><a href="/articles/k/ka/kak-obnovit-vajldberriz-na-pk.html" class="pb-related-card">
+                <span class="pb-related-title">Как обновить Wildberries на ПК: способы для браузеров и PWA</span>
+                <span class="pb-related-desc">Подробная инструкция по обновлению веб-версии и PWA-приложения Wildberries на компьютере. Решение пр</span>
+            </a><a href="/articles/w/wp/wp-18-konumalar.html" class="pb-related-card">
+                <span class="pb-related-title">Настройка WordPress для 18+: правила и плагины</span>
+                <span class="pb-related-desc">Техническое руководство по созданию сайта для взрослых на WordPress. Выбор хостинга, плагины, безопа</span>
+            </a><a href="/articles/s/st/strelec-proverka-tselostnosti-sistemy-zagruzchika.html" class="pb-related-card">
+                <span class="pb-related-title">Strelec: проверка целостности системы загрузчика UEFI</span>
+                <span class="pb-related-desc">Подробная инструкция по проверке целостности загрузчика с помощью Strelec. Диагностика EFI, анализ л</span>
+            </a><a href="/articles/g/gt/gta-2-ne-zapuskaetsya-0xc0000022.html" class="pb-related-card">
+                <span class="pb-related-title">GTA 2 ошибка 0xc0000022: решение проблемы запуска</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибки 0xc0000022 при запуске GTA 2. Настройка совместимости, пра</span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

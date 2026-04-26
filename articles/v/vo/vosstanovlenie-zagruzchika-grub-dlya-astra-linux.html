@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Восстановление GRUB в Astra Linux: пошаговая инструкция — Мастер Фикс</title>
+    <meta name="description" content="Подробное руководство по восстановлению загрузчика GRUB в ОС Astra Linux. Методы через LiveCD, chroot и автоматические утилиты для версий Common Edition и Special Edition.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/v/vo/vosstanovlenie-zagruzchika-grub-dlya-astra-linux.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Восстановление GRUB в Astra Linux: пошаговая инструкция">
+    <meta property="og:description" content="Подробное руководство по восстановлению загрузчика GRUB в ОС Astra Linux. Методы через LiveCD, chroot и автоматические утилиты для версий Common Edition и Special Edition.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Восстановление GRUB в Astra Linux: пошаговая инструкция</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#диагностика-состояния-загрузчика-и-подготовка-окружения">Диагностика состояния загрузчика и подготовка окружения</a></li><li><a href="#автоматическое-восстановление-с-помощью-boot-repair">Автоматическое восстановление с помощью Boot-Repair</a></li><li><a href="#ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</a></li><li><a href="#работа-с-загрузчиком-в-режиме-uefi-и-bios">Работа с загрузчиком в режиме UEFI и BIOS</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/w/ww/www-money-2-mobile-ru-aktivirovat-kartu.html">Активация карты Money 2 Mobile: полная инструкция по запуску</a></li><li><a href="/articles/v/vh/vhix-43f169msy-kak-pereproshit.html">Прошивка vhix-43f169msy: сброс паролей и перепрошивка</a></li><li><a href="/articles/h/hp/hp-deskjet-2320-indikatory.html">HP Deskjet 2320: индикаторы, мигание и расшифровка ошибок</a></li><li><a href="/articles/l/la/lampa-net-zvuka-vo-vstroennom-pleere.html">Нет звука в Lampa: устранение неполадок и настройка плеера</a></li><li><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html">Папка 2ГИС: где хранятся карты и как найти файлы</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Восстановление загрузчика GRUB в Astra Linux</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#диагностика-состояния-загрузчика-и-подготовка-окружения">Диагностика состояния загрузчика и подготовка окружения</a></li><li><a href="#автоматическое-восстановление-с-помощью-boot-repair">Автоматическое восстановление с помощью Boot-Repair</a></li><li><a href="#ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</a></li><li><a href="#работа-с-загрузчиком-в-режиме-uefi-и-bios">Работа с загрузчиком в режиме UEFI и BIOS</a></li><li><a href="#типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Ситуация, когда после обновления ядра, установки второй операционной системы или сбоя файловой системы компьютер перестает загружаться и выводит на экран сообщение вроде «GRUB rescue>» или «error: no such partition», является критической для любого администратора или пользователя Astra Linux.</p>
+<p>В этот момент операционная система формально цела, данные на дисках сохранены, но механизм первичной загрузки поврежден или потерял ссылки на свои конфигурационные файлы, что делает невозможным стандартный запуск.</p>
+<p>Для решения проблемы не требуется переустанавливать операционную систему, достаточно корректно восстановить записи загрузчика и его конфигурацию, используя загрузочный носитель или режим восстановления.</p>
+
+<h2 id="диагностика-состояния-загрузчика-и-подготовка-окружения">Диагностика состояния загрузчика и подготовка окружения</h2>
+<p>Прежде чем приступать к активным действиям по восстановлению, необходимо точно определить характер повреждения и наличие необходимых инструментов, так как методы лечения для разных сценариев могут отличаться.</p>
+<p>Если система выдает меню GRUB, но не может загрузить ядро, проблема часто кроется в поврежденном файле конфигурации <code>grub.cfg</code> или отсутствии файлов ядра в директории <code>/boot</code>.</p>
+<p>В случае появления командной строки <code>grub rescue></code> загрузочный модуль найден, но он не может найти свой каталог с модулями и конфигурацией, что требует ручного указания путей или полной переустановки.</p>
+
+<h3>Анализ симптомов и доступных режимов</h3>
+<p>На практике первым шагом становится определение того, сохранилась ли возможность входа в режим восстановления самой Astra Linux или требуется внешний носитель.</p>
+<p>Если при загрузке доступно меню GRUB, следует выбрать пункт <code>Advanced options for Astra Linux</code> и попытаться загрузиться с предыдущей версии ядра, что иногда позволяет системе запуститься и восстановить себя штатными средствами.</p>
+<p>При полном отсутствии реакции на клавиатуру или мгновенном переходе в <code>grub rescue></code> единственным вариантом остается использование загрузочной флешки или диска с дистрибутивом Astra Linux или совместимым LiveCD.</p>
+<p>Важно убедиться, что версия загрузочного носителя соответствует или новее установленной системы, особенно если используется файловая система с новыми функциями или специфичная разметка разделов.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Использование команды dd или неправильное указание устройства при восстановлении может привести к полной потере данных на диске. Внимательно проверяйте обозначения дисков (sda, sdb, nvme0n1).</p></aside>
+
+<p>Для работы потребуется знать структуру разделов, поэтому сразу после загрузки с LiveCD стоит запустить утилиту <code>lsblk</code> или <code>fdisk -l</code> для визуализации дисков.</p>
+
+<h3>Подготовка загрузочного носителя</h3>
+<p>Оптимальным решением является использование официального установочного ISO-образа Astra Linux той же версии, что установлена на компьютере, так как он содержит все необходимые пакеты и версии ядра.</p>
+<p>Если оригинальный образ недоступен, можно использовать любой дистрибутив на базе Debian, однако в этом случае могут возникнуть нюансы с путями к конфигурационным файлам специфичным для <em>Astra Linux Special Edition</em>.</p>
+<p>Запись образа на флешку производится стандартными средствами, такими как <code>dd</code> в Linux или Rufus в Windows, после чего необходимо настроить BIOS/UEFI для загрузки с созданного устройства.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>В системах с UEFI важно отключить Secure Boot или убедиться, что загрузочный носитель подписан ключом, которому доверяет материнская плата, иначе загрузка может быть заблокирована на уровне firmware.</p></aside>
+
+<p>После успешной загрузки Live-окружения открывается терминал, где и будут выполняться основные операции по восстановлению системных записей.</p>
+
+<h2 id="автоматическое-восстановление-с-помощью-boot-repair">Автоматическое восстановление с помощью Boot-Repair</h2>
+<p>Наиболее простым и безопасным способом для пользователей с недостаточным опытом работы с командной строкой является использование специализированной утилиты Boot-Repair, которая автоматизирует процесс поиска и исправления ошибок.</p>
+<p>Этот инструмент анализирует структуру разделов, определяет местоположение корневой системы и переустанавливает пакеты загрузчика, создавая новую конфигурацию с учетом всех найденных операционных систем.</p>
+
+<h3>Установка и запуск утилиты</h3>
+<p>В Live-режиме Astra Linux или Debian-подобных систем утилита может быть уже предустановлена, но чаще всего её требуется установить из репозитория.</p>
+<p>Для начала работы необходимо добавить репозиторий PPA разработчика утилиты и обновить списки пакетов, выполнив последовательность команд в терминале.</p>
+
+<pre><code>sudo add-apt-repository ppa:yannubuntu/boot-repair
+<p>sudo apt-get update</p>
+<p>sudo apt-get install -y boot-repair</code></pre></p>
+
+<p>После установки запуск производится командой <code>boot-repair</code>, которая откроет графический интерфейс программы.</p>
+<p>В открывшемся окне следует выбрать опцию «Recommended repair» (Рекомендуемое исправление), после чего утилита самостоятельно выполнит все необходимые действия.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Автоматическое восстановление</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Запустите boot-repair из меню приложений</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Нажмите кнопку Recommended repair</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Дождитесь окончания сканирования и установки</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Перезагрузите компьютер без флешки</span></div></div>
+
+<p>Процесс может занять несколько минут, в ходе которого программа может запросить выполнение дополнительных команд в терминале, которые необходимо скопировать и вставить в окно терминала по инструкции на экране.</p>
+<p>По завершении работы утилита сформирует отчет с ссылкой на лог-файл, который стоит сохранить на случай, если автоматическое исправление не приведет к желаемому результату.</p>
+
+<h3>Анализ результатов автоматического исправления</h3>
+<p>В большинстве случаев использование режима «Recommended repair» полностью решает проблему, восстанавливая доступ к меню выбора операционных систем.</p>
+<p>Однако в сложных случаях, например при нестандартной разметке LVM или шифровании дисков, автоматика может не справиться, и потребуется ручное вмешательство.</p>
+<p>Если после работы утилиты система не загружается, следует проверить, не изменилась ли структура разделов или не заблокировал ли антививирус изменения в загрузочном секторе.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Утилита Boot-Repair решает 90% проблем с загрузчиком, автоматически определяя конфигурацию системы и переустанавливая необходимые компоненты GRUB.</p></aside>
+
+<h2 id="ручное-восстановление-grub-через-chroot">Ручное восстановление GRUB через chroot</h2>
+<p>Метод ручного восстановления через окружение <code>chroot</code> является наиболее надежным и универсальным, позволяющим полностью контролировать процесс и исправлять ошибки, с которыми не справляется автоматика.</p>
+<p>Суть метода заключается в том, чтобы «подменить» корневую файловую систему LiveCD на корневую файловую систему установленной Astra Linux, запустив системные процессы от имени поврежденной ОС.</p>
+
+<h3>Монтирование разделов и подготовка chroot</h3>
+<p>Первым шагом необходимо смонтировать корневой раздел установленной системы в директорию <code>/mnt</code>, а также все необходимые системные каталоги для корректной работы.</p>
+<p>Если раздел <code>/boot</code> вынесен в отдельный раздел, его также необходимо смонтировать по соответствующему пути внутри <code>/mnt</code>.</p>
+
+<pre><code>mount /dev/sda2 /mnt
+<p>mount /dev/sda1 /mnt/boot</p>
+<p>mount --bind /dev /mnt/dev</p>
+<p>mount --bind /proc /mnt/proc</p>
+<p>mount --bind /sys /mnt/sys</code></pre></p>
+
+<p>В приведенном примере <code>/dev/sda2</code> — это корневой раздел, а <code>/dev/sda1</code> — раздел загрузки, что характерно для классической схемы разметки.</p>
+<p>Для систем с UEFI критически важно смонтировать EFI-раздел, обычно расположенный по пути <code>/boot/efi</code>, иначе установка загрузчика завершится ошибкой.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Используйте команду lsblk или fdisk -l перед монтированием, чтобы точно определить, какой раздел соответствует корню системы, а какой является EFI-разделом, чтобы не повредить данные на других дисках.</p></aside>
+
+<p>После монтирования всех необходимых точек осуществляется переход в окружение установленной системы с помощью команды <code>chroot</code>.</p>
+
+<pre><code>chroot /mnt</code></pre>
+
+<p>Теперь все выполняемые команды будут применяться к установленной системе, а не к Live-окружению, что позволяет использовать штатные пакетные менеджеры и утилиты.</p>
+
+<h3>Переустановка пакетов и генерация конфигурации</h3>
+<p>Находясь внутри <code>chroot</code>, первым делом стоит обновить информацию о пакетах и переустановить сам пакет <code>grub-efi-amd64</code> (для UEFI) или <code>grub-pc</code> (для BIOS).</p>
+<p>Для Astra Linux Special Edition важно убедиться, что установлены пакеты с патчами безопасности, поэтому после переустановки GRUB рекомендуется выполнить обновление системы.</p>
+
+<pre><code>apt-get update
+<p>apt-get install --reinstall grub-efi-amd64 shim-signed</p>
+<p>grub-install</p>
+<p>update-grub</code></pre></p>
+
+<p>Команда <code>grub-install</code> запишет загрузчик в EFI-раздел или MBR, а <code>update-grub</code> (обертка над <code>grub-mkconfig</code>) сгенерирует новый файл конфигурации, найдя все доступные ядра.</p>
+<p>В процессе выполнения <code>update-grub</code> в выводе должны появиться строки, свидетельствующие о найденном образе Linux и initramfs, что подтверждает корректность путей.</p>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Ручной метод через chroot</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над процессом</li><li>✅ Возможность исправления сложных ошибок</li><li>✅ Работает без интернета внутри chroot</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует точного знания структуры разделов</li><li>❌ Более трудоемкий процесс</li><li>❌ Высокий риск ошибки при вводе команд</li></ul></div>
+</div></div>
+
+<p>После успешного выполнения команд необходимо выйти из окружения <code>chroot</code> командой <code>exit</code> и размонтировать все разделы в обратном порядке.</p>
+
+<h2 id="работа-с-загрузчиком-в-режиме-uefi-и-bios">Работа с загрузчиком в режиме UEFI и BIOS</h2>
+<p>Процедура восстановления существенно различается в зависимости от типа (firmware) материнской платы, так как механизмы хранения и запуска загрузчика принципиально разные.</p>
+<p>Понимание этих различий критически важно, так как попытка установить BIOS-загрузчик на UEFI-систему (или наоборот) приведет к неработоспособности системы.</p>
+
+<h3>Особенности UEFI и EFI-раздела</h3>
+<p>В системах UEFI загрузчик представляет собой файл <code>.efi</code>, расположенный на специальном FAT32-разделе, который должен иметь флаг <code>boot</code> или <code>esp</code>.</p>
+<p>При установке через <code>grub-install</code> в режиме UEFI важно правильно указать путь к EFI-директории, обычно это <code>/boot/efi</code>.</p>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>BIOS (Legacy)</th>
+<th>UEFI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Загрузочная запись</td>
+<td>MBR (Master Boot Record)</td>
+<td>GPT + EFI System Partition</td>
+</tr>
+<tr>
+<td>Файл загрузчика</td>
+<td>core.img в MBR и PBR</td>
+<td>/EFI/debian/grubx64.efi</td>
+</tr>
+<tr>
+<td>Пакет Astra Linux</td>
+<td>grub-pc</td>
+<td>grub-efi-amd64</td>
+</tr>
+</tbody>
+</table>
+
+<p>Если EFI-раздел был отформатирован или поврежден, его необходимо воссоздать с файловой системой FAT32 и скопировать туда файлы загрузчика.</p>
+<p>В некоторых случаях требуется зарегистрировать путь к загрузчику в NVRAM материнской платы с помощью утилиты <code>efibootmgr</code>.</p>
+
+<pre><code>efibootmgr -c -d /dev/sda -p 1 -L"Astra Linux" -l \\EFI\\debian\\grubx64.efi</code></pre>
+
+<p>Здесь <code>-d</code> указывает диск, <code>-p</code> номер раздела EFI, а <code>-l</code> путь к файлу загрузчика внутри раздела.</p>
+
+<h3>Нюансы классического BIOS</h3>
+<p>В режиме Legacy BIOS загрузчик внедряется непосредственно в первые сектора жесткого диска (MBR) и использует второй сектор для хранения core-образа.</p>
+<p>При восстановлении в этом режиме команда <code>grub-install</code> должна выполняться без указания пути к разделу, только имя устройства, например <code>/dev/sda</code>.</p>
+<p>Частой проблемой в BIOS является нехватка места для внедрения образа из-за нестандартной разметки или наличия служебных разделов производителя.</p>
+<p>В таких ситуациях может потребоваться пересоздание таблицы разделов или использование специальных опций при установке, что является рискованной операцией.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Для проверки текущего режима загрузки в Live-среде можно проверить наличие директории /sys/firmware/efi: если она существует, система работает в режиме UEFI.</p></aside>
+
+<h2 id="типичные-ошибки-и-способы-их-устранения">Типичные ошибки и способы их устранения</h2>
+<p>Даже при следовании инструкции могут возникать специфические ошибки, связанные с особенностями оборудования или предыдущими действиями пользователя.</p>
+<p>Знание типовых сценариев failures позволяет быстро диагностировать проблему и применить правильное решение без потери времени.</p>
+
+<ol>
+<li><strong>Ошибка «efi variables are not supported on this system»</strong> — возникает при попытке установки GRUB для UEFI в режиме BIOS или наоборот; решение: проверьте режим загрузки LiveCD и BIOS, убедитесь, что смонтирован EFI-раздел и используется пакет <code>grub-efi</code>.</li>
+<li><strong>GRUB не видит Windows или другие ОС</strong> — часто случается, если <code>os-prober</code> отключен в конфигурации; решение: добавьте строку <code>GRUB_DISABLE_OS_PROBER=false</code> в файл <code>/etc/default/grub</code> и заново запустите <code>update-grub</code>.</li>
+<li><strong>Ошибка «failed to get canonical path of»</strong> — указывает на проблемы с UUID разделов или их отсутствием в <code>/etc/fstab</code>; решение: проверьте соответствие UUID в файлах конфигурации реальным UUID, полученным через команду <code>blkid</code>.</li>
+<li><strong>Система загружается, но сразу перезагружается</strong> — возможный конфликт драйверов видеокарты или ядра; решение: попробуйте добавить параметр <code>nomodeset</code> в строку загрузки ядра через меню GRUB (нажатием клавиши <code>e</code>).</li>
+</ol>
+
+<p>Особое внимание стоит уделить целостности файлов ядра, так как поврешенный образ <code>vmlinuz</code> или <code>initrd</code> приведет к невозможности загрузки даже при исправном загрузчике.</p>
+<p>Для проверки целостности пакетов внутри <code>chroot</code> можно использовать команду <code>apt-get install --reinstall linux-image-...</code> для текущего ядра.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При работе с шифрованными разделами (LUKS) необходимо сначала раскрыть контейнер через cryptsetup, и только потом монтировать логический том для chroot.</p></aside>
+
+<p>Резюме</p>
+<p>Восстановление загрузчика GRUB в Astra Linux является стандартной процедурой администрирования, которая требует внимательности и понимания структуры разделов диска.</p>
+<p>Использование автоматизированных средств, таких как Boot-Repair, предпочтительно для начинающих, тогда как метод <code>chroot</code> дает полный контроль и необходим в сложных случаях.</p>
+<p>Регулярное резервное копирование конфигурационных файлов и знание структуры своей системы позволяют минимизировать время простоя в случае подобных сбоев.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/w/ww/www-money-2-mobile-ru-aktivirovat-kartu.html" class="pb-related-card">
+                <span class="pb-related-title">Активация карты Money 2 Mobile: полная инструкция по запуску</span>
+                <span class="pb-related-desc">Пошаговое руководство по активации карты Money 2 Mobile. Как получить код, зарегистрировать аккаунт,</span>
+            </a><a href="/articles/v/vh/vhix-43f169msy-kak-pereproshit.html" class="pb-related-card">
+                <span class="pb-related-title">Прошивка vhix-43f169msy: сброс паролей и перепрошивка</span>
+                <span class="pb-related-desc">Полная инструкция по перепрошивке vhix-43f169msy. Сброс пароля, установка ПО, устранение ошибок и во</span>
+            </a><a href="/articles/h/hp/hp-deskjet-2320-indikatory.html" class="pb-related-card">
+                <span class="pb-related-title">HP Deskjet 2320: индикаторы, мигание и расшифровка ошибок</span>
+                <span class="pb-related-desc">Полная расшифровка индикаторов HP Deskjet 2320. Что означает мигание кнопки питания и картриджа, как</span>
+            </a><a href="/articles/l/la/lampa-net-zvuka-vo-vstroennom-pleere.html" class="pb-related-card">
+                <span class="pb-related-title">Нет звука в Lampa: устранение неполадок и настройка плеера</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению отсутствия звука в приложении Lampa. Проверка кодеков, настройка </span>
+            </a><a href="/articles/v/v-/v-kakuyu-papku-zapisyvayut-karty-2gis.html" class="pb-related-card">
+                <span class="pb-related-title">Папка 2ГИС: где хранятся карты и как найти файлы</span>
+                <span class="pb-related-desc">Подробная инструкция по поиску папки 2ГИС на Android. Узнайте, куда сохраняются карты, как их перене</span>
+            </a><a href="/articles/k/ka/kak-v-imo-udalit-rekomendovannuyu-komnatu.html" class="pb-related-card">
+                <span class="pb-related-title">Как в Imo удалить рекомендованную комнату: полное руководство</span>
+                <span class="pb-related-desc">Подробная инструкция по очистке списка чатов в Imo. Узнайте, как скрыть или удалить рекомендованную </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Android 15: изменение строки состояния через файловую систему — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по модификации системных файлов Android 15 для изменения строки состояния. Root-права, системные разделы, риски и методы.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/i/iz/izmenenie-stroki-sostoyaniya-na-androide-15-s-pomoshchyu-fajlovoj-sistemy.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Android 15: изменение строки состояния через файловую систему">
+    <meta property="og:description" content="Подробная инструкция по модификации системных файлов Android 15 для изменения строки состояния. Root-права, системные разделы, риски и методы.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-nav-active">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/android-smartfony/">Android Смартфоны</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Android 15: изменение строки состояния через файловую систему</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-файловой-системы-и-получение-доступа">Подготовка файловой системы и получение доступа</a></li><li><a href="#локализация-и-анализ-системных-ресурсов">Локализация и анализ системных ресурсов</a></li><li><a href="#модификация-параметров-и-пересборка">Модификация параметров и пересборка</a></li><li><a href="#типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ki/kivi-dublirovat-ekran-telefona.html">Как дублировать экран на Kivi TV: полная инструкция</a></li><li><a href="/articles/k/ka/kak-vosstanovit-teleprogrammu-na-yandekse-v-telefone.html">Восстановление телепрограммы Яндекс ТВ на телефоне: полная инструкция</a></li><li><a href="/articles/k/ka/kak-pomenyat-yazyk-v-yandekse-s-anglijskogo-na-russkij-na-telefone-android-kshchuvvrsh-vgzgtmtsns-zhzhyapyutsg.html">Как поменять язык в Яндексе на Андроид: инструкция</a></li><li><a href="/articles/h/ho/hoco-es62-prilozhenie-dlya-android.html">Hoco ES62: Подключение и настройки приложения для Android</a></li><li><a href="/articles/d/dp/dp-alt-mode-kakie-modeli-redmi.html">DP Alt Mode на Redmi: список моделей и проверка поддержки</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Модификация строки состояния Android 15 через файловую систему</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-файловой-системы-и-получение-доступа">Подготовка файловой системы и получение доступа</a></li><li><a href="#локализация-и-анализ-системных-ресурсов">Локализация и анализ системных ресурсов</a></li><li><a href="#модификация-параметров-и-пересборка">Модификация параметров и пересборка</a></li><li><a href="#типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</a></li><li><a href="#резюме-и-выводы">Резюме и выводы</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>Владельцы устройств на базе операционной системы <em>Android 15</em> часто сталкиваются с ограничениями визуальной кастомизации, которые не позволяют изменить внешний вид строки состояния стандартными средствами.</p>
+<p>Желание переместить часы, изменить цвет индикаторов или убрать лишние иконки требует прямого вмешательства в структуру системных файлов, так как штатные настройки разработчика не предоставляют такого функционала.</p>
+<p>Попытки использовать сторонние приложения из магазина <em>Google Play</em> без наличия прав суперпользователя обычно заканчиваются неудачей, поскольку эти программы не имеют доступа к критически важным ресурсам системы.</p>
+<p>Глубокая настройка интерфейса возможна только при наличии полного контроля над файловой системой и понимании принципов работы системного раздела <code>/system</code>.</p>
+
+<h2 id="подготовка-файловой-системы-и-получение-доступа">Подготовка файловой системы и получение доступа</h2>
+
+<p>Любые манипуляции с системными файлами требуют наличия прав суперпользователя, так как стандартный доступ пользователя ограничен только разделом данных.</p>
+<p>Для начала работы необходимо разблокировать загрузчик устройства, что в большинстве случаев приводит к полному сбросу данных и потере гарантии производителя.</p>
+<p>После разблокировки загрузчика устанавливается кастомное восстановление <em>TWRP</em> или аналогичное, которое позволяет монтировать системные разделы в режиме записи.</p>
+<p>Ключевым элементом является установка менеджера прав доступа, такого как <em>Magisk</em> или <em>KernelSU</em>, которые внедряются в загрузочный образ и обеспечивают привилегии root.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Разблокировка загрузчика и получение root-прав аннулируют гарантию и могут привести к неработоспособности устройства при ошибках.</p></aside>
+
+<p>Файловая система современных устройств работает с шифрованием, поэтому для доступа к системным файлам необходимо смонтировать раздел <code>/system</code> в режиме чтения-записи.</p>
+<p>Использование файловых менеджеров с поддержкой root, таких как <em>MT Manager</em> или <em>Root Explorer</em>, позволяет и редактировать файлы непосредственно на устройстве.</p>
+<p>Альтернативным методом является подключение устройства к компьютеру и работа через <code>adb</code>, что требует установленной платформы <em>Android SDK Platform-Tools</em>.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Получение доступа к системе</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Разблокируйте загрузчик через Fastboot</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите кастомный рекавери TWRP</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Прошейте архив Magisk.zip через рекавери</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Установите приложение с поддержкой root-прав</span></div></div>
+
+<h3>Особенности разделов A/B и динамических разделов</h3>
+<p>На устройствах с архитектурой <em>A/B partition</em>, характерной для <em>Android 15</em>, системный раздел часто смонтирован только для чтения даже при наличии root-прав.</p>
+<p>Для внесения изменений необходимо использовать утилиты для перемонтирования, например, команду <code>mount -o rw,remount /system</code> в терминале с правами суперпользователя.</p>
+<p>В некоторых случаях требуется создание полной копии образа системы перед модификацией, чтобы иметь возможность отката в случае ошибки.</p>
+<p>Динамические разделы могут требовать специфических инструментов для редактирования, таких как <em>lpunpack</em> и <em>lpmake</em>, работа с которыми возможна только на ПК.</p>
+
+<table>
+<thead>
+<tr>
+<th>Метод доступа</th>
+<th>Необходимые права</th>
+<th>Риск ошибки</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Файловый менеджер (On-device)</td>
+<td>Root</td>
+<td>Средний</td>
+</tr>
+<tr>
+<td>ADB Shell (PC)</td>
+<td>Root + ADB</td>
+<td>Высокий</td>
+</tr>
+<tr>
+<td>Редактирование образа (PC)</td>
+<td>Разблокированный BL</td>
+<td>Критический</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="локализация-и-анализ-системных-ресурсов">Локализация и анализ системных ресурсов</h2>
+
+<p>Основным файлом, отвечающим за визуальное оформление интерфейса, включая строку состояния, является <code>SystemUI.apk</code>.</p>
+<p>Этот файл расположен по пути <code>/system/product/framework/</code> или <code>/system/system_ext/framework/</code> в зависимости от вендора устройства.</p>
+<p>Перед любым редактированием критически важно создать резервную копию оригинального файла, сохранив его в безопасном месте, например, в папке <code>/sdcard/Backup/</code>.</p>
+<p>Структура <code>SystemUI.apk</code> представляет собой архив, содержащий ресурсы, манифест и исполняемый код, сжатый алгоритмами <em>Dex</em> и <em>Arsc</em>.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>Путь к файлу может отличаться на устройствах разных производителей, таких как Samsung, Xiaomi или Pixel. Всегда проверяйте структуру папок.</p></aside>
+
+<p>Для анализа содержимого используются декомпиляторы, такие как <em>apktool</em> или встроенные средства <em>MT Manager</em>, которые позволяют распаковать ресурсный файл.</p>
+<p>Внутри распакованной папки интерес представляют директория <code>res</code>, содержащая графические элементы и XML-разметку, и файл <code>resources.arsc</code>.</p>
+<p>Именно в XML-файлах хранятся определения размеров, отступов, цветов и видимости элементов строки состояния.</p>
+<p>Изменение бинарного кода без глубоких знаний архитектуры <em>Dalvik</em> не рекомендуется, так как это часто приводит к циклической перезагрузке системы.</p>
+
+<h3>Поиск параметров строки состояния</h3>
+<p>В ресурсах <code>SystemUI</code> параметры строки состояния часто обозначаются префиксами <code>status_bar</code> или <code>quick_settings</code>.</p>
+<p>Для поиска конкретных значений, таких как высота строки или размер иконок, используется функция поиска по тексту внутри декомпилированного проекта.</p>
+<p>Некоторые параметры могут быть вынесены в отдельные оверлеи темы, которые имеют приоритет над основными ресурсами системы.</p>
+<p>В <em>Android 15</em> наблюдается тенденция к динамическому подгружаемым ресурсам, что усложняет статическое редактирование файлов.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте функцию «Поиск по всем файлам» в MT Manager, вводя ключевые слова вроде «clock» или «battery» для быстрой навигации.</p></aside>
+
+<table>
+<thead>
+<tr>
+<th>Параметр</th>
+<th>Тип ресурса</th>
+<th>Расположение</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Высота строки</td>
+<td>dimens.xml</td>
+<td>res/values/</td>
+</tr>
+<tr>
+<td>Цвет текста</td>
+<td>colors.xml</td>
+<td>res/values/</td>
+</tr>
+<tr>
+<td>Расположение часов</td>
+<td>layout files</td>
+<td>res/layout/</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="модификация-параметров-и-пересборка">Модификация параметров и пересборка</h2>
+
+<p>Процесс изменения строки состояния заключается в редактировании числовых значений в файлах <code>dimens.xml</code> или перемещении элементов в файлах разметки.</p>
+<p>Например, для изменения высоты строки состояния необходимо найти значение <code>status_bar_height</code> и изменить его на требуемое в пикселях.</p>
+<p>При перемещении часов или индикаторов батареи требуется редактировать XML-файлы, меняя порядок следования тегов или их атрибуты позиционирования.</p>
+<p>Важно соблюдать синтаксис XML, так как любая ошибка в структуре тегов приведет к невозможности загрузки системного интерфейса.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Неправильное редактирование XML-файлов layout может вызвать «bootloop» — циклическую перезагрузку устройства.</p></aside>
+
+<p>После внесения всех необходимых изменений проект необходимо перекомпилировать обратно в формат <code>apk</code>.</p>
+<p>Декомпилятор автоматически подпишет измененный файл тестовым ключом, который отличается от оригинального системного ключа.</p>
+<p>Для успешной установки модифицированного файла необходимо либо переподписать его оригинальным ключом (что сложно без доступа к ключам вендора), либо отключить проверку подписей.</p>
+<p>Отключение проверки подписей осуществляется через модули <em>Magisk</em>, такие как <em>LSPatch</em> или специализированные патчи для <code>SystemUI</code>.</p>
+
+<h3>Установка и активация изменений</h3>
+<p>Модифицированный файл <code>SystemUI.apk</code> копируется обратно в системный раздел с заменой оригинала.</p>
+<p>Файлу должны быть установлены правильные права доступа, обычно это <code>rw-r--r--</code> (644), и владелец <code>root:root</code>.</p>
+<p>После замены файла требуется полная перезагрузка устройства для применения изменений, так как <code>SystemUI</code> загружается при старте системы.</p>
+<p>Если после перезагрузки устройство зависает на логотипе, необходимо зайти в режим восстановления и восстановить оригинальный файл из резервной копии.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Установка модификаций</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Скопируйте apk в системную папку</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Установите права 644 и владельца root</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Перезагрузите устройство</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте результат</span></div><div class="pb-step"><span class="pb-step-num">5</span><span class="pb-step-text">При ошибке восстановите бэкап</span></div></div>
+
+<p>В некоторых случаях изменения вступают в силу только после очистки данных приложения <code>SystemUI</code> через настройки приложений с root-доступом.</p>
+<p>Стоит учитывать, что обновления системы могут перезаписать модифицированные файлы, поэтому процедуру придется повторять после каждого апдейта.</p>
+
+<h2 id="типичные-ошибки-и-диагностика">Типичные ошибки и диагностика</h2>
+
+<p>Работа с системными файлами сопряжена с высокими рисками, и пользователи часто сталкиваются с рядом типичных проблем при попытке кастомизации.</p>
+<p>Понимание причин возникновения ошибок позволяет быстрее диагностировать проблему и вернуть устройство в рабочее состояние.</p>
+<p>Ниже приведен список наиболее частых ошибок и способы их устранения.</p>
+
+<ol>
+<li><strong>Циклическая перезагрузка (Bootloop)</strong> — возникает при синтаксической ошибке в XML или повреждении структуры apk, лечится восстановлением оригинального файла через рекавери.</li>
+<li><strong>Черный экран вместо строки состояния</strong> — следствие неверного указания размеров или координат элементов, требует проверки значений в <code>dimens.xml</code>.</li>
+<li><strong>Отказ запуска SystemUI</strong> — часто вызван mismatch версий или нарушением целостности ресурсов, необходимо пересобрать проект с теми же версиями SDK.</li>
+<li><strong>Неприменение изменений</strong> — результат работы механизмов целостности системы или кэширования, требует очистки кэша далвика и перезагрузки.</li>
+</ol>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Глубокая кастомизация</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Полный контроль над интерфейсом</li><li>✅ Уникальный дизайн</li><li>✅ Независимость от обновлений разработчиков</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Высокий риск поломки</li><li>❌ Сложность процесса</li><li>❌ Необходимость root-прав</li></ul></div>
+</div></div>
+
+<h2 id="резюме-и-выводы">Резюме и выводы</h2>
+
+<p>Изменение строки состояния на <em>Android 15</em> через файловую систему является сложной технической задачей, требующей глубокого понимания архитектуры операционной системы.</p>
+<p>Успешная модификация возможна только при строгом соблюдении синтаксиса XML, наличии актуальных резервных копий и использовании специализированного инструментария.</p>
+<p>Пользователь должен осознавать, что любые изменения в системном разделе несут потенциальный риск потери данных или нестабильной работы устройства.</p>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Модификация SystemUI.apk дает полный визуальный контроль, но требует root-прав, точности в коде и обязательного бэкапа системы.</p></aside>
+
+<p>Для большинства пользователей безопаснее использовать проверенные модули <em>Magisk</em> или темы оформления, которые вносят изменения программным путем без прямой правки системных файлов.</p>
+<p>Тем не менее, для разработчиков и энтузиастов прямое редактирование файловой системы остается мощнейшим инструментом персонализации мобильной среды.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ki/kivi-dublirovat-ekran-telefona.html" class="pb-related-card">
+                <span class="pb-related-title">Как дублировать экран на Kivi TV: полная инструкция</span>
+                <span class="pb-related-desc">Подробный гайд по трансляции экрана смартфона на телевизоры Kivi. Настройка Miracast, Wi-Fi Direct и</span>
+            </a><a href="/articles/k/ka/kak-vosstanovit-teleprogrammu-na-yandekse-v-telefone.html" class="pb-related-card">
+                <span class="pb-related-title">Восстановление телепрограммы Яндекс ТВ на телефоне: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по настройке архива передач и EPG в приложении Яндекс ТВ на Android и iOS. Реш</span>
+            </a><a href="/articles/k/ka/kak-pomenyat-yazyk-v-yandekse-s-anglijskogo-na-russkij-na-telefone-android-kshchuvvrsh-vgzgtmtsns-zhzhyapyutsg.html" class="pb-related-card">
+                <span class="pb-related-title">Как поменять язык в Яндексе на Андроид: инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по смене языка интерфейса Яндекс Браузера и поисковика с английского на русски</span>
+            </a><a href="/articles/h/ho/hoco-es62-prilozhenie-dlya-android.html" class="pb-related-card">
+                <span class="pb-related-title">Hoco ES62: Подключение и настройки приложения для Android</span>
+                <span class="pb-related-desc">Полная инструкция по настройке наушников Hoco ES62. Скачать приложение, подключить к Android, обнови</span>
+            </a><a href="/articles/d/dp/dp-alt-mode-kakie-modeli-redmi.html" class="pb-related-card">
+                <span class="pb-related-title">DP Alt Mode на Redmi: список моделей и проверка поддержки</span>
+                <span class="pb-related-desc">Полный список смартфонов Redmi с DisplayPort Alt Mode. Проверка USB-C, проводники, кабели и решение </span>
+            </a><a href="/articles/k/ka/kak-otklyuchit-protect-yandeksa-na-androide-rastenij.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить Яндекс.Защиту на Android: Полная инструкция</span>
+                <span class="pb-related-desc">Пошаговое руководство по отключению Яндекс.Защиты на Android. Настройки браузера, антивируса, DNS и </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>

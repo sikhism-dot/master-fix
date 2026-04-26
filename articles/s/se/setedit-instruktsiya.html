@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27><text y=%27.9em%27 font-size=%2790%27>🛠</text></svg>">
+    <title>Setedit инструкция: как изменить системные настройки Android — Мастер Фикс</title>
+    <meta name="description" content="Подробная инструкция по использованию setedit на Android. Редактирование базы данных settings.db, сброс параметров и работа через ADB.">
+    <link rel="canonical" href="https://master-fix.netlify.app/articles/s/se/setedit-instruktsiya.html">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="Setedit инструкция: как изменить системные настройки Android">
+    <meta property="og:description" content="Подробная инструкция по использованию setedit на Android. Редактирование базы данных settings.db, сброс параметров и работа через ADB.">
+    <meta property="og:locale" content="ru_RU">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css?v=1777203383">
+    
+</head>
+<body class="pb-body">
+    
+    <div class="pb-topbar"></div>
+    <header class="pb-header">
+        <div class="pb-container pb-header-inner">
+            <a href="/" class="pb-logo">
+                <span class="pb-logo-icon">🛠</span>
+                <span class="pb-logo-text">Мастер Фикс</span>
+            </a>
+            <button class="pb-menu-btn" aria-label="Меню" id="pbMenuBtn">☰</button>
+            <nav class="pb-nav" id="pbMainNav">
+                <a href="/category/nastroika-tv/">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/">💻 Windows ПК</a>
+<div class="pb-nav-dropdown">
+            <button class="pb-dropdown-toggle">📂 Все разделы ▾</button>
+            <div class="pb-dropdown-menu"><a href="/category/nastroika-tv/" class="pb-dropdown-item">📺 Настройка ТВ</a>
+<a href="/category/android-smartfony/" class="pb-dropdown-item">📱 Android Смартфоны</a>
+<a href="/category/tv-pristavki/" class="pb-dropdown-item">📦 ТВ Приставки</a>
+<a href="/category/windows-pk/" class="pb-dropdown-item">💻 Windows ПК</a>
+<a href="/category/internet-routery/" class="pb-dropdown-item">🌐 Интернет и Роутеры</a>
+<a href="/category/prilozheniya-servisy/" class="pb-dropdown-item">📲 Приложения и Сервисы</a>
+<a href="/category/bezopasnost-dostup/" class="pb-dropdown-item">🔐 Безопасность и Доступ</a>
+<a href="/category/multimedia-zvuk/" class="pb-dropdown-item">🎧 Мультимедиа и Звук</a>
+<a href="/category/zhelezo-remont/" class="pb-dropdown-item">🔧 Железо и Ремонт</a>
+<a href="/category/igry-geyming/" class="pb-dropdown-item">🎮 Игры и Гейминг</a>
+<a href="/category/foto-kamery/" class="pb-dropdown-item">📷 Фото и Камеры</a>
+<a href="/category/umnyj-dom/" class="pb-dropdown-item">🏠 Умный Дом</a></div>
+        </div>
+            </nav>
+        </div>
+    </header>
+
+    <nav class="pb-breadcrumbs" aria-label="Навигация">
+        <div class="pb-container"><a href="/">Главная</a><span class="pb-bc-sep">/</span><a href="/category/drugoe/">Другое</a><span class="pb-bc-sep">/</span><span class="pb-bc-current">Setedit инструкция: как изменить системные настройки Android</span></div>
+    </nav>
+
+    <main class="pb-main">
+        <div class="pb-container">
+            <div class="pb-article-layout">
+                <aside class="pb-sidebar">
+                    
+                    <nav class="pb-sidebar-search"><div class="pb-search-box"><input type="text" id="globalSearchInput" placeholder="🔍 Поиск..." autocomplete="off"><div class="search-dropdown" id="globalSearchDropdown"></div></div></nav>
+                    <nav class="pb-sidebar-toc"><h3>📋 Содержание</h3><ul><li><a href="#подготовка-окружения-и-получение-доступа">Подготовка окружения и получение доступа</a></li><li><a href="#синтаксис-и-структура-команд-setedit">Синтаксис и структура команд setedit</a></li><li><a href="#практическое-применение-изменение-параметров">Практическое применение: изменение параметров</a></li><li><a href="#автоматизация-и-расширенные-сценарии">Автоматизация и расширенные сценарии</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></nav>
+                    
+                    <nav class="pb-sidebar-related"><h3>📰 Похожие статьи</h3><ul><li><a href="/articles/k/ka/kak-na-zte-otklyuchit-bezopasnyj-rezhim.html">Как отключить безопасный режим на ZTE: полная инструкция</a></li><li><a href="/articles/p/ph/philips-43pus805760-tsiklicheskaya-perezagruzka.html">Philips 43PUS8057/60: устранение циклической перезагрузки</a></li><li><a href="/articles/t/te/technozone-installer-pishet-oshibka-pri-poluchenii-dannykh-chto-delat.html">Technozone Installer: Ошибка при получении данных — Решение</a></li><li><a href="/articles/d/de/dexp-h32b7000e-obnovlenie.html">DEXP H32B7000E: Обновление прошивки и ПО</a></li><li><a href="/articles/k/ka/kak-izmenit-ajpi-adres.html">Как изменить IP-адрес: пошаговая инструкция для всех ОС</a></li></ul></nav>
+                    
+                </aside>
+                <article class="pb-article">
+                    <h1>Setedit инструкция: управление системными настройками Android</h1>
+                    <nav class="pb-mobile-toc"><details><summary>📋 Содержание</summary><ul><li><a href="#подготовка-окружения-и-получение-доступа">Подготовка окружения и получение доступа</a></li><li><a href="#синтаксис-и-структура-команд-setedit">Синтаксис и структура команд setedit</a></li><li><a href="#практическое-применение-изменение-параметров">Практическое применение: изменение параметров</a></li><li><a href="#автоматизация-и-расширенные-сценарии">Автоматизация и расширенные сценарии</a></li><li><a href="#типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</a></li><li><a href="#резюме">Резюме</a></li></ul></details></nav>
+                    
+                    <div class="pb-article-body">
+
+<p>В процессе эксплуатации мобильного устройства часто возникает необходимость изменить параметры, которые скрыты от пользователя в стандартном интерфейсе. Системные ограничения не позволяют корректировать определенные флаги, отвечающие за работу аппаратных модулей, поведение операционной системы или скрытые функции приложений. Стандартное меню настроек предоставляет лишь базовый функционал, оставляя глубинную конфигурацию недоступной для прямого редактирования.</p>
+<p>Решением этой проблемы становится использование утилиты setedit, которая представляет собой консольную команду для работы с базой данных настроек Android. Этот инструмент позволяет напрямую взаимодействовать с таблицами <em>settings.db</em>, внося изменения в глобальные, системные и безопасные параметры. Доступ к таким функциям открывает возможности по тонкой настройке устройства, выходящей за рамки возможностей стандартных меню.</p>
+<p>Для выполнения операций требуется наличие прав суперпользователя или использование отладочного моста ADB с компьютера. Неправное использование команды может привести к нестабильной работе системы, поэтому каждое действие должно быть осознанным. Ниже представлен подробный алгоритм работы с утилитой, описаны синтаксические правила и приведены примеры безопасного применения.</p>
+
+<h2 id="подготовка-окружения-и-получение-доступа">Подготовка окружения и получение доступа</h2>
+
+<p>Первым шагом перед началом работы является обеспечение необходимого уровня доступа к системе. Утилита <code>setedit</code> не запускается через графический интерфейс и требует выполнения команд в терминале. Существует два основных способа получения доступа: использование root-прав непосредственно на устройстве или подключение к компьютеру через ADB. Выбор метода зависит от наличия прав суперпользователя и конкретной модели гаджета.</p>
+<p>Если на устройстве установлены права root, достаточно открыть любой эмулятор терминала, например <em>Termux</em> или <em>Terminal Emulator</em>. В этом случае команды выполняются напрямую в операционной системе смартфона. При отсутствии root-прав необходимо активировать режим разработчика и отладку по USB, после чего подключиться к ПК.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>На устройствах с оболочками MIUI и EMUI для работы ADB может потребоваться дополнительное подтверждение подключения в всплывающем окне на экране смартфона.</p></aside>
+
+<p>Для работы через компьютер потребуется установить пакет <em>Android SDK Platform Tools</em>. После установки драйверов и настройки ADB соединение проверяется командой <code>adb devices</code>. Успешное подключение отображает серийный номер устройства в списке активных девайсов. Дальнейшие команды вводятся с префиксом <code>adb shell</code>, что позволяет выполнять действия от имени оболочки Android.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Проверка подключения ADB</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Установите драйверы ADB на ПК</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Включите отладку по USB в настройках разработчика</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Подключите смартфон кабелем к компьютеру</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Введите в консоли команду adb devices</span></div></div>
+
+<h3>Особенности доступа на разных версиях Android</h3>
+<p>Начиная с версии <em>Android 6.0</em>, доступ к базе данных настроек через ADB был ограничен по соображениям безопасности. Команды <code>set</code> и <code>delete</code> перестали работать без наличия root-прав, оставив доступной только операцию чтения <code>get</code>. Это означает, что на современных устройствах без root-прав изменить настройки через ADB стандартными методами невозможно.</p>
+<p>Владельцы устройств без root-прав могут воспользоваться обходным путем, предоставляющим временные привилегии. Для этого используется команда <code>appops</code>, которая наделяет приложение <em>Settings Provider</em> правами на запись. Этот метод работает на большинстве стоковых прошивок и некоторых кастомных оболочках, но требует ввода команды каждый раз после перезагрузки устройства.</p>
+
+<h2 id="синтаксис-и-структура-команд-setedit">Синтаксис и структура команд setedit</h2>
+
+<p>Работа с утилитой строится на строгом соблюдении синтаксиса команд. Базовая структура запроса включает имя утилиты, целевую таблицу базы данных, действие и параметры ключа или значения. Понимание структуры таблиц <code>system</code>, <code>secure</code> и <code>global</code> является ключевым для успешного внесения изменений. Ошибка в названии таблицы приведет к тому, что команда не будет выполнена или затронет не тот парамет.</p>
+<p>Таблица <code>system</code> содержит настройки, связанные с интерфейсом и звуком, такие как яркость экрана, громкость и тайм-ауты. Таблица <code>secure</code> хранит более чувствные данные, включая пароли Wi-Fi, настройки безопасности и привязки аккаунтов. Глобальная таблица <code>global</code> отвечает за общесистемные параметры, такие как имя устройства, режимы работы сети и состояние обновлений.</p>
+
+<aside class="pb-callout pb-callout-warning"><span class="pb-callout-icon">⚠️</span><p>Изменение значений в таблице secure может привести к сбросу настроек безопасности или потере доступа к Wi-Fi сетям. Перед внесением изменений рекомендуется сделать резервную копию.</p></aside>
+
+<p>Основные действия, выполняемые утилитой, включают получение значения, установку нового значения, удаление параметра и листинг содержимого. Для получения информации используется команда <code>get</code>, которая выводит текущее значение ключа. Установка значения производится командой <code>put</code>, требующей указания типа данных. Удаление параметра выполняется командой <code>delete</code>, что возвращает настройку к значению по умолчанию.</p>
+
+<h3>Типы данных и форматирование значений</h3>
+<p>При установке новых значений критически важно указать правильный тип данных. Система Android строго типизирована, и попытка записать строку в числовое поле вызовет ошибку. Существует четыре основных типа: строковый (<code>s</code>), целочисленный (<code>i</code>), длинный целочисленный (<code>l</code>) и float (<code>f</code>). Использование неверного типа может привести к игнорированию команды системой.</p>
+<p>Строковые значения используются для текстовых параметров, таких как имена сетей или пути к файлам. Целочисленные типы применяются для булевых флагов (0 или 1) и счетчиков. Длинные целые числа используются для значений, превышающих диапазон стандартного integer. Float необходим для дробных чисел, хотя в настройках встречается реже.</p>
+
+<table>
+<thead>
+<tr>
+<th>Тип данных</th>
+<th>Обозначение</th>
+<th>Пример значения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>String</td>
+<td><code>s</code></td>
+<td>MyWiFiNetwork</td>
+</tr>
+<tr>
+<td>Integer</td>
+<td><code>i</code></td>
+<td>1</td>
+</tr>
+<tr>
+<td>Long</td>
+<td><code>l</code></td>
+<td>1640995200</td>
+</tr>
+<tr>
+<td>Float</td>
+<td><code>f</code></td>
+<td>0.5</td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="практическое-применение-изменение-параметров">Практическое применение: изменение параметров</h2>
+
+<p>На практике наиболее часто требуется изменить конкретные параметры, влияющие на поведение устройства. Например, можно отключить проверку сертификатов Wi-Fi, изменить длительность анимации или активировать скрытые функции модема. Рассмотрим процесс изменения значения на примере настройки длительности перехода между окнами.</p>
+<p>Для начала необходимо узнать текущее значение параметра. Допустим, требуется изменить масштаб анимации окон. Ключом для этого параметра является <code>window_animation_scale</code>. Сначала выполняется команда получения значения, чтобы убедиться в существовании ключа и понять его текущий формат.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">💡</span><p>Используйте команду list для вывода всех доступных параметров в таблице. Это поможет найти точное название ключа, если оно неизвестно.</p></aside>
+
+<p>После получения информации можно приступать к изменению. Если текущее значение равно 1.0, его можно уменьшить до 0.5 для ускорения интерфейса или увеличить для визуального эффекта. Команда должна содержать указание типа данных <code>f</code>, так как масштаб анимации является дробным числом. Изменения применяются мгновенно и не требуют перезагрузки устройства.</p>
+
+<div class="pb-steps"><h4 class="pb-steps-title">📋 Изменение масштаба анимации</h4><div class="pb-step"><span class="pb-step-num">1</span><span class="pb-step-text">Откройте терминал или подключитесь через ADB</span></div><div class="pb-step"><span class="pb-step-num">2</span><span class="pb-step-text">Введите команду get для проверки текущего значения</span></div><div class="pb-step"><span class="pb-step-num">3</span><span class="pb-step-text">Введите команду put с новым значением 0.5</span></div><div class="pb-step"><span class="pb-step-num">4</span><span class="pb-step-text">Проверьте результат визуально на устройстве</span></div></div>
+
+<h3>Сброс настроек и удаление параметров</h3>
+<p>В случаях, когда внесенные изменения привели к нестабильной работе, может потребоваться сброс параметров. Удаление ключа из базы данных возвращает системе возможность использовать значение по умолчанию, определенное в прошивке. Это безопаснее, чем попытка угадать заводское значение вручную.</p>
+<p>Для удаления используется команда <code>delete</code> с указанием таблицы и ключа. Важно понимать, что удаление системно важных ключей может привести к циклической перезагрузке или потере функциональности модулей. Поэтому перед удалением следует убедиться в назначении параметра, проконсультировавшись с документацией или базами знаний.</p>
+<p>Если устройство перестало загружаться после изменения настроек, может потребоваться вход в режим восстановления (Recovery) и выполнение сброса данных (Wipe Data). Это крайняя мера, которая удаляет все пользовательские данные, но возвращает устройство к заводскому состоянию. Регулярное создание бэкапов минимизирует риски потери информации.</p>
+
+<h2 id="автоматизация-и-расширенные-сценарии">Автоматизация и расширенные сценарии</h2>
+
+<p>Для продвинутых пользователей и разработчиков доступен сценарный подход к управлению настройками. Скрипты позволяют применять комплексы изменений одним действием, что особенно удобно при перепрошивке устройств или настройке парка корпоративных гаджетов. Скрипт представляет собой текстовый файл с последовательностью команд, выполняемых в оболочке.</p>
+<p>Создание скрипта начинается с написания команд в текстовом редакторе. Каждая строка содержит полную команду <code>setedit</code> с необходимыми аргументами. Файл сохраняется с расширением <code>.sh</code> и может быть выполнен через терминал. Это позволяет стандартизировать настройки на множестве устройств.</p>
+
+<aside class="pb-callout pb-callout-note"><span class="pb-callout-icon">📝</span><p>При выполнении скриптов убедитесь, что файл имеет исполняемые права. Используйте команду chmod +x script.sh перед запуском.</p></aside>
+
+<h3>Использование в корпоративной среде</h3>
+<p>В корпоративном секторе <code>setedit</code> часто применяется для блокировки нежелательных функций на рабочих устройствах. Администраторы могут отключать передачу геолокации, запрещать установку приложений из неизвестных источников или фиксировать настройки Wi-Fi. Это обеспечивает единый стандарт безопасности для всех сотрудников.</p>
+<p>Интеграция с MDM-системами (Mobile Device Management) позволяет удаленно отправлять команды на устройства сотрудников. Однако для этого требуется наличие соответствующих разрешений и, как правило, root-доступа или использования специальных профилей владения. Автоматизация таких процессов снижает нагрузку на IT-отдел.</p>
+
+<table>
+<thead>
+<tr>
+<th>Сценарий</th>
+<th>Таблица</th>
+<th>Ключ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Отключение GPS</td>
+<td>secure</td>
+<td>location_providers_allowed</td>
+</tr>
+<tr>
+<td>Блокировка USB</td>
+<td>global</td>
+<td>adb_enabled</td>
+</tr>
+<tr>
+<td>Смена имени</td>
+<td>global</td>
+<td>device_name</td>
+</tr>
+</tbody>
+</table>
+
+<div class="pb-proscons">
+<h4 class="pb-proscons-title">Автоматизация настроек</h4>
+<div class="pb-proscons-grid">
+<div class="pb-pros"><div class="pb-pros-header">👍 Преимущества</div><ul><li>✅ Быстрое развертывание конфигурации</li><li>✅ Минимизация человеческих ошибок</li><li>✅ Возможность отката изменений</li></ul></div>
+<div class="pb-cons"><div class="pb-cons-header">👎 Недостатки</div><ul><li>❌ Требует технических знаний</li><li>❌ Риск массовой поломки при ошибке в скрипте</li><li>❌ Необходимость root-прав для некоторых действий</li></ul></div>
+</div></div>
+
+<h2 id="типичные-ошибки-и-методы-их-устранения">Типичные ошибки и методы их устранения</h2>
+
+<p>Работа с системными настройками сопряжена с риском совершения ошибок, которые могут нарушить функционирование устройства. Понимание распространенных проблем позволяет быстро диагностировать и исправить ситуацию. Большинство ошибок связано с синтаксисом команд или недостатком прав доступа.</p>
+
+<ol>
+<li><strong>Ошибка «Permission denied»</strong> — возникает при попытке изменить настройки без root-прав на Android 6.0 и выше через ADB. Решение: использовать команду <code>appops</code> для предоставления временных прав или получить root-доступ.</li>
+<li><strong>Неверный тип данных</strong> — система игнорирует команду, если тип значения не соответствует ожидаемому. Решение: проверить тип данных в документации или попробовать другой тип (например, заменить <code>i</code> на <code>s</code>).</li>
+<li><strong>Опечатка в ключе</strong> — команда выполняется, но эффект отсутствует, так как создан новый параметр вместо изменения существующего. Решение: внимательно проверять синтаксис и использовать автодополнение в терминале.</li>
+<li><strong>Сбой после удаления системного ключа</strong> — устройство начинает работать некорректно. Решение: выполнить сброс настроек через Recovery или восстановить удаленный ключ, если известен его значение по умолчанию.</li>
+</ol>
+
+<aside class="pb-callout pb-callout-summary"><span class="pb-callout-icon">📌</span><p>Корректная работа с setedit требует точного соблюдения синтаксиса, понимания типов данных и наличия необходимых прав доступа к системе.</p></aside>
+
+<h2 id="резюме">Резюме</h2>
+
+<p>Утилита <code>setedit</code> является мощным инструментом для глубокой кастомизации операционной системы Android. Она предоставляет доступ к скрытым параметрам, позволяя оптимизировать работу устройства и адаптировать его под индивидуальные потребности. Однако использование этого инструмента требует осторожности и технического понимания процессов, происходящих в системе.</p>
+<p>Грамотное применение команд <code>get</code>, <code>put</code> и <code>delete</code> позволяет решать широкий спектр задач, от простой смены имени устройства до сложной автоматизации настроек. Соблюдение правил синтаксиса и предварительное создание резервных копий данных минимизируют риски и обеспечивают безопасную работу с системными таблицми базы данных.</p></div>
+                    
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <section class="pb-related-bottom">
+        <div class="pb-container">
+            <h2 class="pb-related-heading">📖 Читайте также</h2>
+            <div class="pb-related-list"><a href="/articles/k/ka/kak-na-zte-otklyuchit-bezopasnyj-rezhim.html" class="pb-related-card">
+                <span class="pb-related-title">Как отключить безопасный режим на ZTE: полная инструкция</span>
+                <span class="pb-related-desc">Подробное руководство по выходу из безопасного режима на смартфонах ZTE. Методы перезагрузки, сброса</span>
+            </a><a href="/articles/p/ph/philips-43pus805760-tsiklicheskaya-perezagruzka.html" class="pb-related-card">
+                <span class="pb-related-title">Philips 43PUS8057/60: устранение циклической перезагрузки</span>
+                <span class="pb-related-desc">Инструкция по устранению бесконечной перезагрузки Philips 43PUS8057/60. Сброс, прошивка, анализ лого</span>
+            </a><a href="/articles/t/te/technozone-installer-pishet-oshibka-pri-poluchenii-dannykh-chto-delat.html" class="pb-related-card">
+                <span class="pb-related-title">Technozone Installer: Ошибка при получении данных — Решение</span>
+                <span class="pb-related-desc">Подробный гайд по устранению ошибки получения данных в Technozone Installer. Проверка сети, DNS, сбр</span>
+            </a><a href="/articles/d/de/dexp-h32b7000e-obnovlenie.html" class="pb-related-card">
+                <span class="pb-related-title">DEXP H32B7000E: Обновление прошивки и ПО</span>
+                <span class="pb-related-desc">Полная инструкция по обновлению ПО телевизора DEXP H32B7000E. Методы OTA, USB, устранение ошибок. Пр</span>
+            </a><a href="/articles/k/ka/kak-izmenit-ajpi-adres.html" class="pb-related-card">
+                <span class="pb-related-title">Как изменить IP-адрес: пошаговая инструкция для всех ОС</span>
+                <span class="pb-related-desc">Подробное руководство по смене IP-адреса на Windows, macOS, Linux, Android и iOS. Методы, команды, у</span>
+            </a><a href="/articles/w/wn/wnp-ua-019-drajver-ne-ustanavlivaetsya.html" class="pb-related-card">
+                <span class="pb-related-title">wnp-ua-019 драйвер не устанавливается: решение проблемы</span>
+                <span class="pb-related-desc">Подробная инструкция по устранению ошибок установки драйвера wnp-ua-019. Методы ручного обновления, </span>
+            </a></div>
+        </div>
+    </section>
+
+    <footer class="pb-footer">
+        <div class="pb-container">
+            <div class="pb-footer-top">
+                <div class="pb-footer-brand">🛠 Мастер Фикс</div>
+                <p class="pb-footer-desc"></p>
+            </div>
+            <div class="pb-footer-links">
+                <div class="pb-footer-cats"><a href="/category/nastroika-tv/">📺 Настройка ТВ</a> · <a href="/category/android-smartfony/">📱 Android Смартфоны</a> · <a href="/category/tv-pristavki/">📦 ТВ Приставки</a> · <a href="/category/windows-pk/">💻 Windows ПК</a> · <a href="/category/internet-routery/">🌐 Интернет и Роутеры</a> · <a href="/category/prilozheniya-servisy/">📲 Приложения и Сервисы</a></div>
+                <div class="pb-footer-info">
+                    <a href="/">Главная</a> · 
+                    <a href="/about.html">О проекте</a> · 
+                    <a href="/contact.html">Контакты</a> · 
+                    <a href="/privacy.html">Конфиденциальность</a>
+                </div>
+            </div>
+            <div class="pb-footer-bottom">
+                <p>© Мастер Фикс. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    <div id="cookie-consent" class="pb-cookie">
+        <div class="pb-cookie-inner">
+            <span>🍪 Мы используем файлы cookie для улучшения работы сайта.</span>
+            <button id="cookie-accept" class="pb-cookie-btn">Принять</button>
+        </div>
+    </div>
+    <script src="/static/js/main.js"></script>
+    <script>
+    document.getElementById('pbMenuBtn')?.addEventListener('click', () => {
+        document.getElementById('pbMainNav')?.classList.toggle('pb-nav-open');
+    });
+    // Dropdown menu toggle (click for touch devices)
+    document.querySelectorAll('.pb-dropdown-toggle').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            btn.closest('.pb-nav-dropdown').classList.toggle('pb-dd-open');
+        });
+    });
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.pb-nav-dropdown.pb-dd-open').forEach(d => d.classList.remove('pb-dd-open'));
+    });
+    (function() {
+        const popup = document.getElementById('cookie-consent');
+        const btn = document.getElementById('cookie-accept');
+        if (popup && btn && !localStorage.getItem('cookie-accepted')) {
+            setTimeout(() => popup.classList.add('pb-cookie-visible'), 1500);
+            btn.onclick = () => { localStorage.setItem('cookie-accepted','true'); popup.classList.remove('pb-cookie-visible'); };
+        }
+    })();
+    </script>
+    <script>
+    function pbPollVote(el) {
+        var poll = el.closest('.pb-poll');
+        if (poll.classList.contains('voted')) return;
+        poll.classList.add('voted');
+        el.classList.add('selected');
+        var opts = poll.querySelectorAll('.pb-poll-option');
+        var n = opts.length;
+        var raw = [];
+        var sum = 0;
+        for (var i = 0; i < n; i++) {
+            var v = Math.random() * 50 + 5;
+            if (opts[i] === el) v += 30;
+            raw.push(v);
+            sum += v;
+        }
+        var pcts = raw.map(function(v) { return Math.round(v / sum * 100); });
+        var diff = 100 - pcts.reduce(function(a,b){ return a+b; }, 0);
+        pcts[Array.from(opts).indexOf(el)] += diff;
+        setTimeout(function() {
+            opts.forEach(function(opt, i) {
+                opt.querySelector('.pb-poll-bar').style.width = pcts[i] + '%';
+                opt.querySelector('.pb-poll-pct').textContent = pcts[i] + '%';
+            });
+        }, 50);
+    }
+    </script>
+    
+    <script src="/static/js/inject.js" defer></script>
+</body>
+</html>
