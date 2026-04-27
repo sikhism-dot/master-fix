@@ -9,7 +9,7 @@ ym(108768935,'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webv
 
 // VideoRoll — Под текстом статьи, перед похожими
 (function(){
-    var target = document.querySelector('.article-body');
+    var target = document.querySelector('.article-body') || document.querySelector('.pb-article-body');
     if (!target) return;
 
     // Ad container
